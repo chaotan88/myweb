@@ -1,0 +1,28 @@
+body, *{
+  font-family: 'microsoft yahei';
+  margin: 0;
+}
+
+h1, h2, h3, p, dl, dd, ul{
+  margin: 0;
+  padding: 0;
+}
+
+li{
+  list-style-type: none;
+}
+
+a{
+  color: #333;
+  text-decoration: none;
+}
+
+.w1200{
+  width: 1200px;
+  margin: 0 auto;
+}
+
+img{
+  vertical-align: top;
+}
+
