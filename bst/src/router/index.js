@@ -4,6 +4,10 @@ import  Home from '@/views/home.vue'
 import  Index from '@/views/index.vue'
 import  AirTicketsList from '@/views/airTicketsList.vue'
 import  AirTicketsInfo from '@/views/airTicketsInfo.vue'
+import  Service from '@/views/service.vue'
+import  News from '@/views/news.vue'
+import  About from '@/views/about.vue'
+import  Concat from '@/views/concat.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -13,21 +17,42 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+      redirect: '/index',
       children: [
         {
-          path: 'index',
+          path: '/index',
           name: 'index',
           component: Index
         },
         {
-          path: 'airTicketsList',
+          path: '/airTicketsList/:id',
           name: 'airTicketsList',
           component: AirTicketsList
         },
         {
-          path: 'airTicketsInfo',
+          path: '/airTicketsInfo/:id',
           name: 'airTicketsInfo',
           component: AirTicketsInfo
+        },
+        {
+          path: '/service',
+          name: 'service',
+          component: Service
+        },
+        {
+          path: 'news',
+          name: 'news',
+          component: News
+        },
+        {
+          path: '/about',
+          name: 'about',
+          component: About
+        },
+        {
+          path: '/concat',
+          name: 'concat',
+          component: Concat
         }
       ]
     }

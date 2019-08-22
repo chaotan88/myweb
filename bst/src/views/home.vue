@@ -41,11 +41,17 @@
         </div>
       </div>
     </div>
-    <router-link :to="to"></router-link>
+    <router-view></router-view>
+    <Footer></Footer>
+    <div class="site-info">
+      <div>服务热线：4006-888-878      公司地址：上海普陀区光新路88号中一国际商务大厦18F</div>
+      <div>Copyright @ 2018    沪ICP备18040379号      万游商旅 版权所有</div>
+    </div>
   </div>
 </template>
 
 <script>
+import Footer from '@/views/components/footer.vue';
 export default {
   data() {
     return {
@@ -72,8 +78,7 @@ export default {
         }, {
           title: '联系我们'
         }
-      ],
-      to: '/index'
+      ]
     }
   },
   methods: {
@@ -84,7 +89,7 @@ export default {
       cb(results);
     },
     handleSelect(item) {
-      console.log(item);
+      
     },
     createFilter(queryString) {
       return (restaurant) => {
@@ -99,11 +104,31 @@ export default {
     },
     menuSelect(key, keyPath) {
       console.log(key, keyPath);
-      this.$router.push({ path: '/airTicketsList' });
+      const links = [
+        {id: '0', path: '/index'},
+        {id: '1', path: '/airTicketsList'},
+        {id: '2', path: '/airTicketsInfo'},
+        {id: '3', path: '/service'},
+        {id: '4', path: '/news'},
+        {id: '5', path: '/about'},
+        {id: '6', path: '/concat'}
+      ]
+      if (key && key.indexOf('-') === -1) {
+        let link = links.filter(lin => lin.id === key);
+        if (link && link.length > 0)
+        this.$router.push({ path:  link[0].path});
+      } else {
+        let link = links.filter(lin => lin.id === key.split('-')[0]);
+        if (link && link.length > 0)
+        this.$router.push({ path:  `${link[0].path}/${key.split('-')[1]}` });
+      }
     }
   },
   mounted() {
     this.restaurants = this.loadAll();
+  },
+  components: {
+    Footer
   }
 }
 </script>
@@ -122,6 +147,8 @@ export default {
 </style>
 <style lang="less" scoped>
   .home {
+    overflow: auto;
+    height: 100%;
     .set-site {
       height: 30px;
       background: #f5f5f5;
@@ -225,6 +252,20 @@ export default {
             }
           }
         }
+      }
+    }
+    .site-info {
+      margin-top: 40px;
+      text-align: center;
+      div:nth-child(1) {
+        font-size: 14px;
+        color: rgb(127, 127, 127);
+      }
+      div:nth-child(2) {
+        padding-bottom: 10px;
+        font-family: "Microsoft YaHei";
+        word-spacing: -1.5px;
+        color: rgb(127, 127, 127);
       }
     }
   }
