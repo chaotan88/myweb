@@ -7,7 +7,11 @@ import router from './router'
 import Elementui from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../static/css/base.css'
-
+// import vueSwiper from 'vue-awesome-swiper'
+// import 'swiper/dist/css/swiper.css'
+// Vue.use(vueSwiper)
+import carousel from '@/views/components/carousel.vue'
+Vue.component('carousel', carousel)
 Vue.use(Elementui)
 Vue.config.productionTip = false
 
