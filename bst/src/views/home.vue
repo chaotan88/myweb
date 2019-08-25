@@ -72,7 +72,8 @@ export default {
         }, {
           title: '服务优势'
         }, {
-          title: '新闻动态'
+          title: '新闻动态',
+          child: [{title: '公司新闻'}, {title: '行业新闻'}, {title: '常见问题'}]
         }, {
           title: '关于我们'
         }, {

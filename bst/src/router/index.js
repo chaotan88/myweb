@@ -40,7 +40,7 @@ export default new Router({
           component: Service
         },
         {
-          path: 'news',
+          path: 'news/:id',
           name: 'news',
           component: News
         },
