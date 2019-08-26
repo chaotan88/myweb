@@ -21,7 +21,7 @@
 			<div class="icon-item">
 				<img src="../../static/images/concat-email.png"/>
 				<div class="label">公司邮箱</div>
-				<div class="val">{{conpanyInfo.address}}</div>
+				<div class="val">{{conpanyInfo.email}}</div>
 			</div>
 			<div class="icon-item">
 				<img src="../../static/images/concat-user.png"/>
@@ -47,20 +47,20 @@ export default {
   data() {
     return {
 			conpanyInfo: {
-				address: '上海普陀区光新路88号中一国际商务大厦18F',
-				tel: '4006-888-878',
-				emal: 'service@wanyouair.com',
-				qq: '3244707232'
+				address: '深圳市龙岗区龙岗街道新生社区锦城星苑',
+				tel: '13538048630',
+				email: '294519179@qq.com',
+				qq: '294519179'
 			}
 		};
   },
   methods: {
     initMap() {
       let map = new BMap.Map("allmap");
-      let point = new BMap.Point(113.948638, 22.554346);
+      let point = new BMap.Point(114.286397,22.751773);
       map.centerAndZoom(point, 15);
 
-      let marker = new BMap.Marker(new BMap.Point(113.948638, 22.554346)); // 创建点
+      let marker = new BMap.Marker(new BMap.Point(114.286397,22.751773)); // 创建点
       //	marker.addEventListener("click",attribute);
       map.addOverlay(marker); //增加点
       map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
@@ -71,12 +71,12 @@ export default {
       let opts = {
         width: 340, // 信息窗口宽度
         height: 100, // 信息窗口高度
-        title: "深圳市南山区xx街道xx大厦", // 信息窗口标题
+        title: "深圳市龙岗区龙岗街道新生社区锦城星苑", // 信息窗口标题
         enableMessage: true, //设置允许信息窗发送短息
       };
       let infoWindow = new BMap.InfoWindow(
         '<div style="margin:0;line-height:20px;padding:2px;line-height: 24px;font-size: 16px;color: #333333;">' +
-          "地址：深圳市南山区xx街道xx大厦"+
+          "地址：深圳市龙岗区龙岗街道新生社区锦城星苑"+
           "</div>",
         opts
       ); // 创建信息窗口对象

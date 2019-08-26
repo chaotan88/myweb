@@ -23,7 +23,7 @@
         <img src="../../static/images/phone.png"/>
         <div class="phone-num">
           <div>24小时客户咨询</div>
-          <div>4006-888-xxx</div>
+          <div>13538048630</div>
         </div>
       </div>
     </div>
@@ -44,8 +44,8 @@
     <router-view></router-view>
     <Footer></Footer>
     <div class="site-info">
-      <div>服务热线：4006-888-878      公司地址：上海普陀区光新路88号中一国际商务大厦18F</div>
-      <div>Copyright @ 2018    沪ICP备18040379号      万游商旅 版权所有</div>
+      <div>服务热线：13538048630      公司地址：深圳市龙岗区龙岗街道新生社区锦城星苑</div>
+      <div>Copyright @ 2018    贝斯特国际商务</div>
     </div>
   </div>
 </template>

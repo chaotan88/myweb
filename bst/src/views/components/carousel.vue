@@ -18,7 +18,7 @@ export default {
   props: {
     banner: {
         type: Array,
-        default: [
+        default: () => [
             {image: '../../static/images/baner1.png'},
             {image: '../../static/images/banner2.png'}
         ]
