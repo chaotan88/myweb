@@ -155,7 +155,12 @@ export default {
       background: #f5f5f5;
     }
     .home-header {
-      display: flex;
+      display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+      display: -moz-box; /* Firefox 17- */
+      display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+      display: -moz-flex; /* Firefox 18+ */
+      display: -ms-flexbox; /* IE 10 */
+      display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
       justify-content: space-around;
       .home-header-left {
         div {
@@ -165,7 +170,12 @@ export default {
       }
       .home-header-search {
         width: 460px;
-        display: flex;
+        display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+        display: -moz-box; /* Firefox 17- */
+        display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+        display: -moz-flex; /* Firefox 18+ */
+        display: -ms-flexbox; /* IE 10 */
+        display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
         margin-top: 20px;
         .inline-input {
           width: 380px;
@@ -187,7 +197,12 @@ export default {
         }
       }
       .home-header-right {
-        display: flex;
+        display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+        display: -moz-box; /* Firefox 17- */
+        display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+        display: -moz-flex; /* Firefox 18+ */
+        display: -ms-flexbox; /* IE 10 */
+        display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
         margin-top: 13px;
         img {
           width: 47px;
@@ -214,7 +229,12 @@ export default {
       background-color: #2577e3;
       margin-top: 10px;
       width: 100%;
-      display: flex;
+      display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+      display: -moz-box; /* Firefox 17- */
+      display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+      display: -moz-flex; /* Firefox 18+ */
+      display: -ms-flexbox; /* IE 10 */
+      display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
       .product-category {
         width: 210px;
         background: rgb(255,153,0) none no-repeat left top;
@@ -226,7 +246,12 @@ export default {
         text-align: center;
       }
       .menus {
-        display: flex;
+        display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+        display: -moz-box; /* Firefox 17- */
+        display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+        display: -moz-flex; /* Firefox 18+ */
+        display: -ms-flexbox; /* IE 10 */
+        display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
         font-size: 16px;
         .menu-container {
           ul {
