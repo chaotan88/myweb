@@ -71,7 +71,7 @@ export default {
       let opts = {
         width: 340, // 信息窗口宽度
         height: 100, // 信息窗口高度
-        title: "深圳市龙岗区龙岗街道新生社区锦城星苑", // 信息窗口标题
+        title: "深圳市贝斯特国际商务服务有限公司", // 信息窗口标题
         enableMessage: true, //设置允许信息窗发送短息
       };
       let infoWindow = new BMap.InfoWindow(

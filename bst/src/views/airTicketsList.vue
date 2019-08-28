@@ -37,14 +37,14 @@
     </div>
     <div class="air-content">
       <div class="air-item" v-for="(item, index) in tableData" :key="index">
-        <img :src="`../../static/images/airImage/${item.selectImg}.jpg`" v-if="item.selectImg" class="big-img"/>
-        <img :src="`../../static/images/airImage/${item.images[0]}.jpg`" v-if="!item.selectImg" class="big-img"/>
+        <img :src="`../../static/images/airImage/${item.selectImg}.jpg`" v-if="item.selectImg" class="big-img" @click="toDetail(item)"/>
+        <img :src="`../../static/images/airImage/${item.images[0]}.jpg`" v-if="!item.selectImg" class="big-img" @click="toDetail(item)"/>
         <div class="small-img">
           <img v-for="(img, imgIndex) in item.images" :key="imgIndex" @click="selectSmallImg(index, imgIndex)"
            :src="`../../static/images/airImage/${img}.jpg`" v-if="imgIndex < 3"/>
         </div>
         <p class="price">&yen;{{item.offerPrice}}</p>
-        <div class="name">{{item.from}}-{{item.to}} {{item.name}}</div>
+        <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
       </div>
     </div>
   </div>
@@ -102,7 +102,11 @@ export default {
       let item = this.tableData[index];
       item.selectImg = item.images[imgIndex];
       this.$set(this.tableData, index, item);
-    }
+    },
+    toDetail(item) {
+      sessionStorage.setItem('air_detail', JSON.stringify(item));
+      this.$router.push({ path: '/airDetail' });
+    },
   },
   mounted() {
     this.groupData();

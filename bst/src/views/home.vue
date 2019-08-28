@@ -11,7 +11,7 @@
           class="inline-input"
           v-model="keyword"
           :fetch-suggestions="querySearch"
-          placeholder="请输入内容"
+          placeholder="贝斯特国际"
           @select="handleSelect"
           width="380"
         ></el-autocomplete>
@@ -31,7 +31,8 @@
       <div class="product-category">产品分类</div>
       <div class="menus">
         <div class="menu-container" v-for="(menu, pIndex) in menus" :key="pIndex">
-          <el-menu :default-active="activeIndex" mode="horizontal" @select="menuSelect">
+          <el-menu :default-active="activeIndex" mode="horizontal" @select="menuSelect"
+          :class="activeIndex == pIndex ? 'is-active' : ''">
             <el-submenu v-if="menu.child && menu.child.length > 0" :index="`${pIndex}`">
               <template slot="title">{{menu.title}}</template>
               <el-menu-item :index="`${pIndex}-${cIndex}`" v-for="(child, cIndex) in menu.child" :key="cIndex">{{child.title}}</el-menu-item>
@@ -99,8 +100,7 @@ export default {
     },
     loadAll() {
       return [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" }
+       
       ];
     },
     menuSelect(key, keyPath) {
@@ -155,14 +155,10 @@ export default {
       background: #f5f5f5;
     }
     .home-header {
-      display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
-      display: -moz-box; /* Firefox 17- */
-      display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
-      display: -moz-flex; /* Firefox 18+ */
-      display: -ms-flexbox; /* IE 10 */
-      display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
+      display: flex;
       justify-content: space-around;
       .home-header-left {
+        display: inline-block;
         div {
           color: #CCCCCC;
           font-size: 14px;
@@ -182,12 +178,14 @@ export default {
           /deep/ input {
             border-radius: 3px 0 0 3px;
           }
+          display: inline-block;
         }
         .search-btn {
           width: 80px;
           height: 40px;
           background: #2577e3;
           border-radius: 0 3px 3px 0;
+          display: inline-block;
           .iconfont {
             font-size: 27px;
             color: #fff;
