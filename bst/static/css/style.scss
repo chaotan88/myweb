@@ -35,7 +35,16 @@ $inputHeight: 35px;
 //     font-size: 32px !important;
 //   }
 // }
-
+.el-menu--horizontal {
+    background: #2577e3;
+}
+.el-menu {
+    background: #2577e3;
+    .el-menu-item {
+      background: #2577e3;
+      color: #fff;
+    }
+  }
 .el-select {
     width: $selectWidth;
     height: $inputHeight;

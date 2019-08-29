@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <div class="set-site"></div>
+    <div class="set-site">
+      <!-- <a id="SetHome" href="javascript:" onclick="_g.setHomeIfNecessary(false)" style="behavior: url(#default#homepage)">设为首页</a>    <em>|</em><a href="#" onclick="AddFavorite(window.location,document.title)">加入收藏</a>    <em>|</em><a  href="/self_define/guest_book.php?username=wanyouair">在线留言</a>    <em>|</em><a  target="target"  href="/self_define/phone.php?username=wanyouair">手机站</a> -->
+    </div>
     <div class="home-header">
       <div class="home-header-left">
         <img src="../../static/images/logo.jpg">
@@ -28,7 +30,7 @@
       </div>
     </div>
     <div class="home-menu">
-      <div class="product-category">产品分类</div>
+      <div class="product-category" @click="toList()">产品分类</div>
       <div class="menus">
         <div class="menu-container" v-for="(menu, pIndex) in menus" :key="pIndex">
           <el-menu :default-active="activeIndex" mode="horizontal" @select="menuSelect"
@@ -123,6 +125,9 @@ export default {
         if (link && link.length > 0)
         this.$router.push({ path:  `${link[0].path}/${key.split('-')[1]}` });
       }
+    },
+    toList() {
+      this.$router.push({ path: `/airTicketsList/0` });
     }
   },
   mounted() {
@@ -155,8 +160,8 @@ export default {
       background: #f5f5f5;
     }
     .home-header {
-      display: flex;
-      justify-content: space-around;
+      width: 1200px;
+      margin: auto;
       .home-header-left {
         display: inline-block;
         div {
@@ -166,26 +171,22 @@ export default {
       }
       .home-header-search {
         width: 460px;
-        display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
-        display: -moz-box; /* Firefox 17- */
-        display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
-        display: -moz-flex; /* Firefox 18+ */
-        display: -ms-flexbox; /* IE 10 */
-        display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
-        margin-top: 20px;
+        display: inline-block;
+        margin-left: 100px;
+        margin-bottom: 10px;
         .inline-input {
           width: 380px;
           /deep/ input {
             border-radius: 3px 0 0 3px;
           }
-          display: inline-block;
+          float: left;
         }
         .search-btn {
           width: 80px;
           height: 40px;
           background: #2577e3;
           border-radius: 0 3px 3px 0;
-          display: inline-block;
+          float: right;
           .iconfont {
             font-size: 27px;
             color: #fff;
@@ -195,19 +196,16 @@ export default {
         }
       }
       .home-header-right {
-        display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
-        display: -moz-box; /* Firefox 17- */
-        display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
-        display: -moz-flex; /* Firefox 18+ */
-        display: -ms-flexbox; /* IE 10 */
-        display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
-        margin-top: 13px;
+        float: right;
+        margin-top: 30px;
         img {
           width: 47px;
           height: 43px;
+          display: inline-block;
         }
         .phone-num {
           margin-left: 10px;
+          display: inline-block;
           div:nth-child(1) {
             font-family: 微软雅黑;
             font-size: 14px;
@@ -227,12 +225,6 @@ export default {
       background-color: #2577e3;
       margin-top: 10px;
       width: 100%;
-      display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
-      display: -moz-box; /* Firefox 17- */
-      display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
-      display: -moz-flex; /* Firefox 18+ */
-      display: -ms-flexbox; /* IE 10 */
-      display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
       .product-category {
         width: 210px;
         background: rgb(255,153,0) none no-repeat left top;
@@ -242,16 +234,15 @@ export default {
         color: #fff;
         margin-left: 200px;
         text-align: center;
+        float: left;
+        cursor: pointer;
       }
       .menus {
-        display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
-        display: -moz-box; /* Firefox 17- */
-        display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
-        display: -moz-flex; /* Firefox 18+ */
-        display: -ms-flexbox; /* IE 10 */
-        display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
+        float: left;
+        margin-left: 165px;
         font-size: 16px;
         .menu-container {
+          display: inline-block;
           ul {
             width: 100px;
             height: 45px;

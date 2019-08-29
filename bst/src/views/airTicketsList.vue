@@ -76,6 +76,7 @@ export default {
     },
     changeIsland(item) {
       this.selectIsland = item;
+      this.selectCity = '全部';
       if (item === '全部') {
         this.cityss = [];
       } else {
@@ -88,15 +89,34 @@ export default {
       this.searchData();
     },
     searchData() {
-      this.getTableData()
+      this.getTableData();
+      if (!this.startPrice && !this.endPrice) return false;
+      this.tableData = this.tableData.filter(da => da.offerPrice > this.startPrice && da.offerPrice < this.endPrice);
     },
     searchChange(item) {
       this.selectButton = item;
+      if (item === '价格从高到底') {
+        const sort = (a, b) => a.offerPrice - b.offerPrice;
+        this.getTableData();
+        this.tableData.sort(sort);
+      } else if (item === '价格从低到高') {
+        const sort = (a, b) => b.offerPrice - a.offerPrice;
+        this.getTableData();
+        this.tableData.sort(sort);
+      }
     },
     getTableData() {
       if (this.selectIsland === '全部') this.tableData = airs;
       else if (this.selectCity === '全部') this.tableData = airs.filter(da => da.island === this.selectIsland);
-      else this.tableData = airs.filter(da => (da.island === this.selectIsland && da.city === this.selectCity));
+      else this.tableData = airs.filter(da => (da.island === this.selectIsland && da.to === this.selectCity));
+      this.tableData.forEach(data => {
+        if (!data.images) {
+          data.images = ['1', '2', '3', '4'];
+        }
+        if (!data.detais) {
+          data.detais = ['5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+        }
+      })
     },
     selectSmallImg(index, imgIndex) {
       let item = this.tableData[index];
@@ -109,6 +129,10 @@ export default {
     },
   },
   mounted() {
+    if (this.$route.params.id) {
+      const islands = ['美洲', '澳洲', '欧洲', '亚洲'];
+      this.selectIsland = islands[this.$route.params.id];
+    }
     this.groupData();
     this.getTableData();
   }
@@ -218,7 +242,8 @@ export default {
           width: 210px;
           height: 210px;
           margin-left: 30px;
-          margin-top: 20px; 
+          margin-top: 20px;
+          cursor: pointer;
         }
         .small-img {
           display: flex;
@@ -242,6 +267,11 @@ export default {
           color: #555555;
           margin-left: 20px;
           margin-top: 20px;
+          cursor: pointer;
+        }
+        .name:hover {
+          color: #0001CC;
+          text-decoration: underline;
         }
       }
     }

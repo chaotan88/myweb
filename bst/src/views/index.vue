@@ -9,7 +9,7 @@
       <div class="limited-time">
         <div class="item" v-for="(item, index) in hots" :key="index">
           <img :src="`../../static/images/airImage/${item.images[0]}.jpg`">
-          <p>{{item.from}}-{{item.to}} {{item.name}}</p>
+          <p @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</p>
           <div><span>&yen;{{item.offerPrice}}</span><span>&yen;{{item.price}}</span></div>
         </div>
       </div>
@@ -20,7 +20,7 @@
             <span>美洲机票</span>
           </div>
           <p class="title2">国际机票，天天享特价！</p>
-          <p class="btn">查看更多</p>
+          <p class="btn" @click="toList('0')">查看更多</p>
           <div class="title3">
             当季热门
           </div>
@@ -33,7 +33,7 @@
         <div class="right">
           <div v-for="(item, index) in meizhouAir" :key="index" class="right-item">
             <img :src="`../../static/images/airImage/${item.images[0]}.jpg`"/>
-            <div class="name">{{item.from}}-{{item.to}} {{item.name}}</div>
+            <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
         </div>
@@ -45,7 +45,7 @@
             <span>欧洲机票</span>
           </div>
           <p class="title2">国际机票，天天享特价！</p>
-          <p class="btn">查看更多</p>
+          <p class="btn" @click="toList(2)">查看更多</p>
           <div class="title3">
             当季热门
           </div>
@@ -58,7 +58,7 @@
         <div class="right">
           <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item">
             <img :src="`../../static/images/airImage/${item.images[0]}.jpg`"/>
-            <div class="name">{{item.from}}-{{item.to}} {{item.name}}</div>
+            <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
         </div>
@@ -70,7 +70,7 @@
             <span>澳洲机票</span>
           </div>
           <p class="title2">国际机票，天天享特价！</p>
-          <p class="btn">查看更多</p>
+          <p class="btn" @click="toList(1)">查看更多</p>
           <div class="title3">
             当季热门
           </div>
@@ -83,7 +83,7 @@
         <div class="right">
           <div v-for="(item, index) in aozhouAir" :key="index" class="right-item">
             <img :src="`../../static/images/airImage/${item.images[0]}.jpg`"/>
-            <div class="name">{{item.from}}-{{item.to}} {{item.name}}</div>
+            <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
         </div>
@@ -115,6 +115,37 @@ export default {
       this.meizhouCity = citys.filter(da => da.island === '美洲')[0].citys;
       this.aozhouCity = citys.filter(da => da.island === '澳洲')[0].citys;
       this.ouzhouCity = citys.filter(da => da.island === '欧洲')[0].citys;
+      this.meizhouAir.forEach(data => {
+        if (!data.images) {
+          data.images = ['1', '2', '3', '4'];
+        }
+        if (!data.detais) {
+          data.detais = ['5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+        }
+      })
+      this.aozhouAir.forEach(data => {
+        if (!data.images) {
+          data.images = ['1', '2', '3', '4'];
+        }
+        if (!data.detais) {
+          data.detais = ['5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+        }
+      })
+      this.ouzhouAir.forEach(data => {
+        if (!data.images) {
+          data.images = ['1', '2', '3', '4'];
+        }
+        if (!data.detais) {
+          data.detais = ['5', '6', '7', '8', '9', '10', '11', '12', '13', '14'];
+        }
+      })
+    },
+    toDetail(item) {
+      sessionStorage.setItem('air_detail', JSON.stringify(item));
+      this.$router.push({ path: '/airDetail' });
+    },
+    toList(item) {
+      this.$router.push({ path: `/airTicketsList/${item}` })
     }
   },
   mounted() {
@@ -206,6 +237,7 @@ export default {
             line-height: 38px;
             margin: auto;
             margin-top: 40px;
+            cursor: pointer;
           }
           .title3 {
             font-weight: 700;
