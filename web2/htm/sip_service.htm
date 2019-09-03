@@ -1,0 +1,1377 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+<%int line;%>
+<%int lines_count;%>
+<%int is320;%>
+<%int isBlf;%>
+
+<%@is320=PHONE_GETVAR(IS320)%>
+<%@isBlf=PHONE_GETVAR(IS_BLF_LEDS)%>
+<%@lines_count = PHONE_GETVAR(LINESCOUNT)%>
+
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(SIP_SERVICE)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+  if(Chksubmit())
+  {
+    document.sipdialing.action="../mainform.cgi/sip_service.htm";
+    document.sipdialing.submit();
+  }
+
+}
+
+function check_callfor(index) {   
+   var one = parseFloat(document.sipdialing['CFTY_'+index].value);
+   switch(one) {
+      case(0):
+         document.getElementById("forward_time_"+index).style.display="none";
+         document.getElementById("forward_type_td_"+index).className="TDRow";
+         
+      break;
+      case(1):
+         document.getElementById("forward_time_"+index).style.display="none";
+         document.getElementById("forward_type_td_"+index).className="TDRow";
+      break;
+      case(2):
+         document.getElementById("forward_time_"+index).style.display="";
+         document.getElementById("forward_type_td_"+index).className="TDRow";
+      break;   
+   }
+}
+
+function is_number_string(str)
+{ 
+   for(var i=0; i<str.length; i++) 
+      {
+  	   if ((str.charAt(i) > '9' ||str.charAt(i) < '0') &&(str.charAt(i)!='#' && str.charAt(i)!='*') )
+	      return false;
+      }
+   return true;
+}
+
+function trim(str) {
+        return str.replace(/^\s+|\s+$/g,"");
+}
+
+function Chksubmit()
+{
+  var forwardOk = 1;
+  var i = 0;       
+  for(i = 0; i < <%@lines_count%> ; i++)
+    if(document.sipdialing["TFNRF_"+i].value == "" || isNumeric(document.sipdialing["TFNRF_"+i].value,1,65535) == 0 || document.sipdialing["TFNRF_"+i].value == 0)
+    {
+        forwardOk = 0;
+    }
+      
+  if(forwardOk == 0)    
+  {
+     alert("Forward on No Reply time must be in range of 1-65535!");
+     return false;
+  }
+  
+  var forwardOk = 1;
+  var forwardNumber = "";
+
+  
+  for(i = 0; i < <%@lines_count%> ; i++)
+  {
+    forwardNumber = trim(document.sipdialing["ECFDST_"+i].value);
+    
+    if(document.sipdialing["ECFS_"+i].value == 1 
+      &&  document.sipdialing["ECFS1_"+i].value == 1 
+      && (forwardNumber == ""
+      || forwardNumber[0] == '@'))
+    {
+        forwardOk = 0;
+    }
+    }
+  if(forwardOk == 0)    
+  {
+     alert("Forward destination number can't be empty!");
+     return false;
+  }
+  
+
+ if(document.sipdialing.ESMWI.value != 0){ /* hanselh, 20100608, if Enabled the MWI */
+    if (document.sipdialing.MWISA.value == "")
+    {
+      alert("<%HTMLPRINTTEXT(MWI_Server_IP_address_can't_be_empty!, sip_service.txt)%>");
+      document.sipdialing.MWISA.focus();
+      return false;
+    }
+ 
+ 
+    if(document.sipdialing.MWISP.value == "" || isNumeric(document.sipdialing.MWISP.value,0,65535) == 0)
+    {
+       alert("MWI port range must be in range of 0-65535!");
+       return false;
+    }
+    if(document.sipdialing.MWISET.value == "" || isNumeric(document.sipdialing.MWISET.value,0,72000) == 0)
+    {
+       alert("MWI Subscribe Expiration time must be in range of 10-72000!");
+       return false;
+    }
+ }
+  <%if @isBlf==1%>  
+  if(document.sipdialing.BLFTY.value == 1 && document.sipdialing.SERTY.value ==2 && document.sipdialing.BLFURL.value == "")
+  {
+    alert("User Resource list can't be empty!");
+    document.sipdialing.BLFURL.focus();
+    return false;
+  }  
+  <%endif%>
+  if(document.sipdialing.STTD.value == "" || isNumeric(document.sipdialing.STTD.value,1000,60000) == 0)
+  {
+     alert("Stutter Tone Duration must be in range of 1000-60000!");
+     return false;
+  }
+  /* hanselh, allow to input XXXX@<IP Address> 
+  if( is_number_string(document.sipdialing.MWINB.value) == false )
+  {
+     alert("Numerical values only!");
+     return false;
+  }
+*/
+ return true;
+}
+
+function wuisync(){
+  WaitingOnChange();
+  forwardLineIndexOnChange();
+  
+  DndOnChange();
+/*  ConferenceOnChange();*/
+  MWISwOnChange();
+  <%if @isBlf==1%>  
+  BLFOnChange();
+  BLFRegistrarOnChange();  
+  <%endif%>
+  AOCOnChange();
+  ConfOnChange();
+  AppServTypeOnChange();
+  PagingOnChange();
+}
+
+
+function WaitingOnChange()
+{
+  var one = parseFloat(document.sipdialing.ECAI.value);
+  switch(one)
+  {
+      case 0:	  	
+		 document.getElementById("waiting_generate_tone").style.display="none";
+         document.getElementById("waiting_reply").style.display="none";
+         document.getElementById("waiting_sw").className="TDEnd";
+         //document.sipdialing.ESMWI.value ='0';
+         //MWIToOnChange();
+         
+      break;
+      case 1:
+		 document.getElementById("waiting_generate_tone").style.display="";
+         document.getElementById("waiting_reply").style.display="";
+         document.getElementById("waiting_sw").className="TDRow";
+         //document.quicksetup.ESMWI.value ='1';
+         
+      break;
+  }
+}
+
+function ForwardOnChange1(index)
+{  
+  var one = parseFloat(document.sipdialing['ECFS1_'+index].value);  
+  switch(one)
+  {
+      case 0:
+         document.getElementById("forward_type_"+index).style.display="none";
+         document.getElementById("forward_time_"+index).style.display="none";
+         document.getElementById("forward_dst_"+index).style.display="none";         
+         document.getElementById("forward_sw1_td_"+index).className="TDEnd";
+      break;
+      case 1:
+         document.getElementById("forward_type_"+index).style.display="";
+         document.getElementById("forward_time_"+index).style.display="";
+         document.getElementById("forward_dst_"+index).style.display="";
+         document.getElementById("forward_sw1_td_"+index).className="TDRow";
+         check_callfor(index);
+      break;
+  }
+  
+}
+
+
+function ForwardOnChange(index)
+{ 
+  var one = parseFloat(document.sipdialing['ECFS_'+index].value);
+  
+  switch(one)
+  {
+      case 0:
+         document.getElementById("forward_type_"+index).style.display="none";
+         document.getElementById("forward_time_"+index).style.display="none";
+         document.getElementById("forward_sw1_"+index).style.display="none";
+         document.getElementById("forward_dst_"+index).style.display="none";
+         document.getElementById("forward_sw_td_"+index).className="TDEnd";
+         // unactivate forward
+         document.sipdialing['ECFS1_'+index].value = 0;
+      break;
+      case 1:
+         document.getElementById("forward_type_"+index).style.display="";
+         document.getElementById("forward_time_"+index).style.display="";
+         document.getElementById("forward_sw1_"+index).style.display="";
+         document.getElementById("forward_dst_"+index).style.display="";         
+         document.getElementById("forward_sw_td_"+index).className="TDRow";
+         ForwardOnChange1(index);
+      break;
+  }
+  
+}
+
+function forwardLineIndexOnChange()
+{
+    var line_index = parseFloat(document.sipdialing.LINEINDEX.value);
+    var i = 0; 
+       
+    for(i = 0; i < <%@lines_count%> ; i++)
+    {
+        document.getElementById("forward_type_"+i).style.display="none";
+        document.getElementById("forward_time_"+i).style.display="none";
+        document.getElementById("forward_sw1_"+i).style.display="none";
+        document.getElementById("forward_dst_"+i).style.display="none";
+        document.getElementById("forward_sw_"+i).style.display="none"; 
+    }
+    
+    document.getElementById("forward_type_"+line_index).style.display="";
+    document.getElementById("forward_time_"+line_index).style.display="";
+    document.getElementById("forward_sw1_"+line_index).style.display="";
+    document.getElementById("forward_dst_"+line_index).style.display="";
+    document.getElementById("forward_sw_"+line_index).style.display="";
+    
+    document.getElementById("forward_select_line").style.display="";
+    <%if @lines_count==1%>
+        document.getElementById("forward_select_line").style.display="none";
+    <%endif%>
+        
+    ForwardOnChange(line_index);      
+}
+
+function DndOnChange()
+{
+  var i = 0; 
+  var one = parseFloat(document.sipdialing.EDND.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("dnd_sw").className="TDEnd";         
+         document.getElementById("dnd_select_line").style.display="none";
+         for(i = 0; i < <%@lines_count%> ; i++)
+         {
+            document.getElementById("dnd_activate_"+i).style.display="none";             
+            document.sipdialing['DND_ACTIVATE_'+i].value = 0;
+         }
+         
+      break;
+      case 1:
+         document.getElementById("dnd_sw").className="TDRow";
+         document.getElementById("dnd_select_line").style.display="";
+         <%if @lines_count==1%>
+            document.getElementById("dnd_select_line").style.display="none";
+         <%endif%>       
+         dndLineIndexOnChange();
+      break;
+  }
+  
+}
+
+function dndLineIndexOnChange()
+{
+    var lineIndex = parseFloat(document.sipdialing.DND_LINEINDEX.value);
+    
+    for(i = 0; i < <%@lines_count%> ; i++)
+    {
+        document.getElementById("dnd_activate_"+i).style.display="none";
+    }
+    
+    document.getElementById("dnd_activate_"+lineIndex).style.display="";
+}
+	
+/*function ConferenceOnChange()
+{
+  var one = parseFloat(document.sipdialing.W3CM.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("conference_server").style.display="none";
+         document.getElementById("conference_sw").className="TDEnd";
+      break;
+      case 1:
+         document.getElementById("conference_server").style.display="";
+         document.getElementById("conference_sw").className="TDRow";
+      break;
+  }
+}*/
+
+function MWISwOnChange()
+{
+  var one = parseFloat(document.sipdialing.EMWI.value);
+  switch(one)
+  {
+      case 0:
+	 //Hansel He, 20100408, VI 82396  - MWI - WEB Issue: Voice mail Number should not be  located under "Activate"
+        // document.getElementById("mwi_nb").style.display ="none";		 
+         document.getElementById("mwi_to").style.display="none";
+         document.getElementById("mwi_sw").className="TDEnd";
+         document.sipdialing.ESMWI.value ='0';
+      break;
+      case 1:
+	  //Hansel He, 20100408, VI 82396  - MWI - WEB Issue: Voice mail Number should not be  located under "Activate"
+         //document.getElementById("mwi_nb").style.display ="";		 
+         document.getElementById("mwi_to").style.display="";
+         document.getElementById("mwi_sw").className="TDRow";
+      break;
+  }
+  MWIToOnChange();
+}
+
+function MWIToOnChange()
+{
+  var one = parseFloat(document.sipdialing.ESMWI.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("mwi_ip").style.display="none";
+         document.getElementById("mwi_port").style.display="none";
+         document.getElementById("mwi_time").style.display="none";
+         document.getElementById("mwi_sw2").className="TDEnd";
+      break;
+      case 1:
+         document.getElementById("mwi_ip").style.display="";
+         document.getElementById("mwi_port").style.display="";
+         document.getElementById("mwi_time").style.display="";
+         document.getElementById("mwi_sw2").className="TDRow";
+      break;
+  }
+}
+
+function BLFOnChange()
+{
+  var one = parseFloat(document.sipdialing.BLFTY.value);
+  var two = parseFloat(document.sipdialing.SERTY.value);
+	<%if @isBlf==1%> 
+  document.getElementById("BLFCOLOR_TD").style.display="none";
+	<%endif%>
+  if (one == 0) {
+     document.getElementById("BLF_CALL_PU").style.display="none";
+	 document.getElementById("BLF_CALL_PU_AC").style.display="none";
+     document.getElementById("BLFSUBTIME").style.display="none";
+     document.getElementById("BLF_USER_RES_LIST").style.display="none";
+     document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";	 
+     document.getElementById("BLFSUBTYPE_TD").className="TDEnd";
+     document.sipdialing.BLFSUR.value = '1';
+  }
+  else {
+     document.getElementById("BLF_CALL_PU").style.display="";
+	 BLFCallPickUpChange();
+     document.getElementById("BLFSUBTIME").style.display="";
+
+     if( two == 2 )
+     {
+       document.getElementById("BLF_USER_RES_LIST").style.display="";
+       document.getElementById("BLFSUB_USE_REGISTRAR").style.display="";
+     }
+	 
+     document.getElementById("BLFSUBTYPE_TD").className="TDRow";	 
+
+     if( two == 0 || two == 1 || two ==3 || two == 4 || two == 5 )
+     {
+       document.sipdialing.BLFSUR.value = '1';
+       document.getElementById("BLF_USER_RES_LIST").style.display="none";
+       document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";
+       document.getElementById("BLFSUBTIME_TD").className="TDEnd";	 
+  }      
+	 if(two == 5){
+	 	<%if @isBlf==1%> 
+	 	document.getElementById("BLFCOLOR_TD").style.display="";
+	 	document.getElementById("BLFSUBTIME_TD").className="TDRow";
+		document.getElementById("BLFCOLOR_TD").className="TDEnd";
+		<%else%>
+		document.getElementById("BLFSUBTIME_TD").className="TDEnd";
+		<%endif%>
+	 }
+}
+
+  BLFRegistrarOnChange();
+}
+
+function BLFCallPickUpChange()
+{
+	var bBLFCallPickUp = parseFloat(document.sipdialing.BLFCPU.value);
+	if( bBLFCallPickUp == 0 )
+	{
+		document.getElementById("BLF_CALL_PU_AC").style.display="none";
+	}
+	else
+	{
+		document.getElementById("BLF_CALL_PU_AC").style.display="";
+	}
+	BLFRegistrarOnChange();
+}
+
+function BLFRegistrarOnChange()
+{
+  var one = parseFloat(document.sipdialing.BLFSUR.value);
+  if (one == 1) {
+     document.getElementById("BLF_AS_ADDR").style.display="none";
+     document.getElementById("BLFSUB_USE_REGISTRAR_TD").className="TDEnd";
+  }
+  else {
+     document.getElementById("BLF_AS_ADDR").style.display="";
+     document.getElementById("BLFSUB_USE_REGISTRAR_TD").className="TDRow";	 
+  }      
+}
+
+function AOCOnChange()
+{
+ 	var one = parseFloat(document.sipdialing.AOCSW.value);
+  
+	if (one == 0) {
+		document.getElementById("AOCCURR").style.display="none";
+		document.getElementById("AOCRAT").style.display="none";
+		document.getElementById("AOCSW").className="TDEnd";
+	}
+	else {
+		document.getElementById("AOCSW").className="TDRow";
+		document.getElementById("AOCCURR").style.display="";
+		document.getElementById("AOCRAT").style.display="";
+
+	}
+}
+
+function PagingOnChange()
+{
+ 	var one = parseFloat(document.sipdialing.PAGING_AVAILABLE.value);
+  
+	if (one == 0) {
+		document.getElementById("BARGE_IN").style.display="none";		
+		document.getElementById("PAGING_AVAILABLE").className="TDEnd";
+	}
+	else {
+		document.getElementById("PAGING_AVAILABLE").className="TDRow";
+		document.getElementById("BARGE_IN").style.display="";
+	}
+}
+
+function ConfOnChange()
+{
+ 	var one = parseFloat(document.sipdialing.CONFM.value);
+  
+	if (one == 0) {
+		document.getElementById("RCONFADDR").style.display="none";
+		document.getElementById("CONFMODE").className="TDEnd";
+	}
+	else {
+		document.getElementById("CONFMODE").className="TDRow";
+		document.getElementById("RCONFADDR").style.display="";
+	}
+}
+
+function AppServTypeOnChange()
+{
+	var one = parseFloat(document.sipdialing.SERTY.value);
+	
+	<%if @isBlf==1%>
+	var two = parseFloat(document.sipdialing.BLFTY.value);
+	<%endif%>
+	if(one==5){
+		<%if @isBlf==1%> 
+		if(two==1)
+		document.getElementById("BLFCOLOR_TD").style.display="";
+		<%endif%>
+		document.getElementById("LYNCS").style.display="";
+		document.getElementById("BSFTS").style.display="none";
+		document.getElementById("APP_SER_TYPE").className="TDRow";
+	}
+	else if(one==2){
+		document.getElementById("BSFTS").style.display="";
+		document.getElementById("LYNCS").style.display="none";
+		document.getElementById("APP_SER_TYPE").className="TDRow";
+	}
+	else{
+		<%if @is320==1%> 
+		document.getElementById("BLFCOLOR_TD").style.display="none";
+		<%endif%>
+		document.getElementById("LYNCS").style.display="none";
+		document.getElementById("BSFTS").style.display="none";
+		document.getElementById("APP_SER_TYPE").className="TDEnd";
+	}
+}
+function AppServerTypeOnChange()
+{
+  var one = parseFloat(document.sipdialing.SERTY.value);
+  var two = parseFloat(document.sipdialing.BLFTY.value);
+  
+  switch(one)
+  {
+      case 0:
+      document.getElementById("BLF_USER_RES_LIST").style.display="none";
+      document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";	 
+      document.getElementById("BLF_AS_ADDR").style.display="none";
+	  
+      if( two == 0 )
+         document.getElementById("BLFSUBTYPE_TD").className="TDEnd";
+      else
+         document.getElementById("BLFSUBTIME_TD").className="TDEnd";
+	  
+      break;
+      case 1:
+      document.getElementById("BLF_USER_RES_LIST").style.display="none";
+      document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";
+      document.getElementById("BLF_AS_ADDR").style.display="none";	  
+
+      if( two == 0 )
+         document.getElementById("BLFSUBTYPE_TD").className="TDEnd";
+      else
+         document.getElementById("BLFSUBTIME_TD").className="TDEnd";
+
+	  
+      break;
+      case 2:
+      if( two == 0 )
+      {
+        document.getElementById("BLFSUBTIME").style.display="none";
+        document.getElementById("BLF_USER_RES_LIST").style.display="none";
+        document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";
+        document.getElementById("BLF_AS_ADDR").style.display="none";	 
+      }
+      else if(two == 1)
+      {
+        document.getElementById("BLFSUBTIME").style.display="";
+        document.getElementById("BLF_USER_RES_LIST").style.display="";
+        document.getElementById("BLFSUB_USE_REGISTRAR").style.display="";		
+        BLFRegistrarOnChange();
+      }
+	  	
+      document.getElementById("BLFSUBTIME_TD").className="TDRow";
+      document.getElementById("BLFSUBTYPE_TD").className="TDRow";	  
+      break;	  
+
+      case 3:
+      document.getElementById("BLF_USER_RES_LIST").style.display="none";
+      document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";
+      document.getElementById("BLF_AS_ADDR").style.display="none";	  
+
+      if( two == 0 )
+         document.getElementById("BLFSUBTYPE_TD").className="TDEnd";
+      else
+         document.getElementById("BLFSUBTIME_TD").className="TDEnd";
+
+      break;
+
+      case 4:
+      document.getElementById("BLF_USER_RES_LIST").style.display="none";
+      document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";
+      document.getElementById("BLF_AS_ADDR").style.display="none";	  
+
+      if( two == 0 )
+         document.getElementById("BLFSUBTYPE_TD").className="TDEnd";
+      else
+         document.getElementById("BLFSUBTIME_TD").className="TDEnd";
+
+      break;
+
+      case 5:
+      document.getElementById("BLF_USER_RES_LIST").style.display="none";
+      document.getElementById("BLFSUB_USE_REGISTRAR").style.display="none";
+      document.getElementById("BLF_AS_ADDR").style.display="none";	  
+
+      if( two == 0 )
+         document.getElementById("BLFSUBTYPE_TD").className="TDEnd";
+      else
+         document.getElementById("BLFSUBTIME_TD").className="TDRow";
+
+      break;
+	  
+  }
+}
+
+
+function ShowAlert()
+{
+   <%SIP_SHOWDATA(DHSGALERT)%>
+}
+
+</SCRIPT>
+
+<body onload="ShowAlert();wuisync();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Services</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="sipdialing" method="post">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Server','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">Application Server</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="Server">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="APP_SER_TYPE">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Type:</td>
+                                      <td class="TdMid" ><select name="SERTY" onclick="AppServerTypeOnChange()" onchange="AppServTypeOnChange()"><%SIP_SHOWDATA(SERTY)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="LYNCS">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Presence:</td>
+                                      <td class="TdMid" ><select name="LYNC"><%SIP_SHOWDATA(LYNC)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </div>
+				  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Fks','Tr11')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr11">Feature Key Syncronization</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                  <DIV id="Fks">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <td class="TDEnd">
+                          <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td width="3%" class="TdMid">&nbsp;</td>
+                                  <td width="47%" class="TD_Item_First" Align="left">Feature Key Synchronization:</td>
+                                  <td class="TdMid" ><select name="BSFT"><%SIP_SHOWDATA(BSFT)%></select></td>
+                              </tr>
+                          </table>
+                      </td>
+                  </table>
+                  </DIV>
+				  <br>
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('dialing','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Call Waiting</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="waiting_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Activate:</td>
+                                      <td class="TdMid" ><select name="ECAI" onclick="WaitingOnChange()"><%SIP_SHOWDATA(ECAI)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="waiting_reply">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Call Waiting SIP Reply:</td>
+                                      <td class="TdMid" ><select name="CWSR"><%SIP_SHOWDATA(CWSR)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="waiting_generate_tone">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Generate Tone:</td>
+                                      <td class="TdMid" ><select name="CWGT"><%SIP_SHOWDATA(CWGT)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Automatic','Tr3')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">Call Forward</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit" id="forward_select_line">
+                          <td class="TDRow" id="forward">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">	Line Number:</td>
+                                      <td class="TdMid" >
+                                        <select name="LINEINDEX" onchange="forwardLineIndexOnChange()"><%SIP_SHOWDATA(ENABLED_LINE_INDEX)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%for @line=0;<@lines_count;1%>           
+                      <tr class="TRedit" id="forward_sw_<%@line%>">
+                          <td class="TDRow" id="forward_sw_td_<%@line%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable:</td>
+                                      <td class="TdMid" ><select name="ECFS_<%@line%>" onclick="ForwardOnChange(<%@line%>)"><%SIP_SHOWLINEDATA(@line, ECFS)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                         <tr class="TRedit" id="forward_sw1_<%@line%>">
+                          <td class="TDRow" id="forward_sw1_td_<%@line%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Activate:</td>
+                                      <td class="TdMid" ><select name="ECFS1_<%@line%>" onclick="ForwardOnChange1(<%@line%>)"><%SIP_SHOWLINEDATA(@line, ECFS1)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="forward_type_<%@line%>">
+                          <td class="TDRow" id="forward_type_td_<%@line%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Call Forward Type:</td>
+                                      <td class="TdMid" ><select name="CFTY_<%@line%>" onchange="check_callfor(<%@line%>)"><%SIP_SHOWLINEDATA(@line, CFTY)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="forward_time_<%@line%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Forward on No Reply Timeout:</td>
+                                      <td class="TdMid" ><input type="text" name="TFNRF_<%@line%>" size="5" maxlength="5" value="<%SIP_SHOWLINEDATA(@line, TFNRF)%>" class="unnamed11"> <%SIP_SHOWLINEDATA(@line, NR_TIMEOUT_MODE)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="forward_dst_<%@line%>">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Forward Destination:</td>
+                                      <td class="TdMid" ><input type="text" name="ECFDST_<%@line%>" size="32" maxlength="64" value="<%SIP_SHOWLINEDATA(@line, ECFDST)%>" class="unnamed11"> </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%endfor%>
+              </table>
+                  </DIV>
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('CONF','Tr10')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr7">Conference</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="CONF">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="CONFMODE">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Mode:</td>
+                                      <td class="TdMid" ><select name="CONFM"  onchange="ConfOnChange();"><%SIP_SHOWDATA(CONFM)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="RCONFADDR">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Remote Conference Media Server:</td>
+                                      <td class="TdMid" ><input type="text" name="RCMS" size="32" maxlength="64" value="<%SIP_SHOWDATA(RCMS)%>"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                 
+                  </table>
+                  </div>  
+                  <br>                
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('DND','Tr4')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">DND (Do Not Disturb)</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="DND">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TdMid" id="dnd_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable:</td>
+                                      <td class="TdMid" ><select name="EDND" onclick="DndOnChange()"><%SIP_SHOWDATA(EDND)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="dnd_select_line">
+                          <td class="TDRow" id="dnd_select_line_td">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TdMid" Align="left">	Line Number:</td>
+                                      <td class="TdMid" >
+                                        <select name="DND_LINEINDEX" onchange="dndLineIndexOnChange()"><%SIP_SHOWDATA(ENABLED_LINE_INDEX)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%for @line=0;<@lines_count;1%>
+                      <tr class="TRedit" id="dnd_activate_<%@line%>">
+                         <td class="TDEnd" id="dnd_activate_td">
+                             <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                 <tr>
+                                     <td width="3%" class="TdMid">&nbsp;</td>
+                                     <td width="47%" class="TD_Item_First" Align="left">Activate:</td>
+                                     <td class="TdMid" ><select name="DND_ACTIVATE_<%@line%>"><%SIP_SHOWLINEDATA(@line, DND_ACTIVATE)%></select></td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+                      <%endfor%>
+
+                                                                                     
+                  </table>
+                  </div>
+                 <br>
+  <!--                 <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Conference','Tr5')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr5">3-Way Conference</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+
+                   <DIV id="Conference">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="conference_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">3-Way Conference Mode:</td>
+                                      <td class="TdMid" ><select name="W3CM" onclick="ConferenceOnChange()"><%SIP_SHOWDATA(W3CM)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="conference_server">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Media Server Address:</td>
+                                      <td class="TdMid" ><input type="text" name="MSAA" size="32" maxlength="64" value="<%SIP_SHOWDATA(MSAA)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                                                                              
+                  </table>
+                  </div>
+                  <br>
+  -->                
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Message','Tr6')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr6">Message Waiting Indication (MWI)</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Message">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                        <tr class="TRedit">
+                         <td class="TDRow" id="mwi_nb">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Voice Mail Number:</td>
+                                      <td class="TdMid" ><input type="text" name="MWINB" size="30" maxlength="30" value="<%SIP_SHOWDATA(MWINB)%>" class="unnamed11"></td>
+                                   </tr>
+                              </table>
+                          </td>
+                      </tr>    
+                      <tr class="TRedit">
+                          <td class="TDRow" id="mwi_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Activate:</td>
+                                      <td class="TdMid" ><select name="EMWI" onclick="MWISwOnChange()"><%SIP_SHOWDATA(EMWI)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="mwi_to">
+                          <td class="TDRow" id="mwi_sw2">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Subscribe To MWI:</td>
+                                      <td class="TdMid" ><select name="ESMWI" onclick="MWIToOnChange()"><%SIP_SHOWDATA(ESMWI)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="mwi_ip">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">MWI Server IP Address or Host Name:</td>
+                                      <td class="TdMid" ><input type="text" name="MWISA" size="32" maxlength="64" value="<%SIP_SHOWDATA(MWISA)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="mwi_port">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">MWI Server Port:</td>
+                                      <td class="TdMid" ><input type="text" name="MWISP" size="5" maxlength="5" value="<%SIP_SHOWDATA(MWISP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="mwi_time">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">MWI Subscribe Expiry Time:</td>
+                                      <td class="TdMid" ><input type="text" name="MWISET" size="6" maxlength="6" value="<%SIP_SHOWDATA(MWISET)%>" class="unnamed11"> Seconds</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                                                                              
+                  </table>
+                  </div>
+                  <br>
+                  <%if @isBlf==1%>    
+                  
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('BLF','Tr7')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr7">BLF Support</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="BLF">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit" id="BLFSUBTYPE">
+                          <td class="TDRow" id="BLFSUBTYPE_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Activate:</td>
+                                      <td class="TdMid" ><select name="BLFTY"  onchange="BLFOnChange();"><%SIP_SHOWDATA(BLFTY)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                       <tr class="TRedit" id="BLF_CALL_PU">
+                          <td class="TDRow" id="BLF_CALL_PU_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Call Pick Up:</td>
+                                      <td class="TdMid" ><select name="BLFCPU" onchange="BLFCallPickUpChange();"><%SIP_SHOWDATA(BLFCPU)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+					  <tr class="TRedit" id="BLF_CALL_PU_AC">
+                          <td class="TDRow" id="BLF_CALL_PU_AC_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Access code:</td>
+                                      <td class="TdMid" ><input type="text" name="BLFCPUAC" size="37" maxlength="64" value="<%SIP_SHOWDATA(BLFCPUAC)%>"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="BLFSUBTIME">
+                          <td class="TDRow" id="BLFSUBTIME_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">BLF Subscription Period:</td>
+                                      <td class="TdMid" ><input type="text" name="BLFST" size="8" maxlength="8" value="<%SIP_SHOWDATA(BLFST)%>"> Seconds</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="BLFCOLOR_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">FreeSwitch Color Setting:</td>
+                                      <td class="TdMid" ><select name="FSCS"><%SIP_SHOWDATA(FSCS)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="BLF_USER_RES_LIST">
+                          <td class="TDRow" id="BLF_USER_RES_LIST_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">User Resource list:</td>
+                                      <td class="TdMid" ><input type="text" name="BLFURL" size="32" maxlength="64" value="<%SIP_SHOWDATA(BLFURL)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="BLFSUB_USE_REGISTRAR">
+                          <td class="TDRow" id="BLFSUB_USE_REGISTRAR_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Use Registrar as Application Server Address:</td>
+                                      <td class="TdMid" ><select name="BLFSUR"  onchange="BLFRegistrarOnChange();"><%SIP_SHOWDATA(BLFSUR)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="BLF_AS_ADDR">
+                          <td class="TDEnd" id="BLF_AS_ADDR_TD">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Application Server Address or Domain Name:</td>
+                                      <td class="TdMid" ><input type="text" name="BLFASD" size="32" maxlength="64" value="<%SIP_SHOWDATA(BLFASD)%>" class="unnamed11"></td>
+                                      
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+                 </table>
+                 </div> 
+                 <br>	                
+ 				 <%endif%> 							
+ 						
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Parameters','Tr8')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr8">General Parameters</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Parameters">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Stutter Tone Duration:</td>
+                                      <td class="TdMid" ><input type="text" name="STTD" size="5" maxlength="5" value="<%SIP_SHOWDATA(STTD)%>" class="unnamed11"> msec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Out of Service Behavior:</td>
+                                      <td class="TdMid" ><select name="OFSB"><%SIP_SHOWDATA(OFSB)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                                                                                        
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Disconnect:</td>
+                                       <td class="TdMid" ><select name="AUDS" ><%SIP_SHOWDATA(AUDS)%></select></td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Electronic Hook Switch:</td>
+                                       <td class="TdMid" ><select name="DHSG" ><%SIP_SHOWDATA(DHSG)%></select></td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Reject Code:</td>
+                                       <td class="TdMid" ><select name="RJCODE" ><%SIP_SHOWDATA(RJCODE)%></select></td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                  </div>
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('AOC','Tr9')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr9">AOC Support</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="AOC">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="AOCSW">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enabled:</td>
+                                      <td class="TdMid" ><select name="AOCSW"  onchange="AOCOnChange();"><%SIP_SHOWDATA(AOCSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="AOCCURR">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Currency:</td>
+                                      <td class="TdMid" ><input type="text" name="AOCCUR" size="8" maxlength="8" value="<%SIP_SHOWDATA(AOCCUR)%>"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="AOCRAT">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Ratio:</td>
+                                      <td class="TdMid" ><input type="text" name="AOCRAT" size="32" maxlength="64" value="<%SIP_SHOWDATA(AOCRAT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                   
+                  </table>
+                  </div>
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('PAGING','Tr10')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr10">Paging</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="PAGING">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="PAGING_AVAILABLE">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enabled:</td>
+                                      <td class="TdMid" ><select name="PAGING_AVAILABLE"  onchange="PagingOnChange();"><%SIP_SHOWDATA(PAGING_AVAILABLE)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="BARGE_IN">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Barge-in:</td>
+                                      <td class="TdMid" ><select name="PAGING_BARGE_IN"><%SIP_SHOWDATA(PAGING_BARGE_IN)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                         
+                  </table>
+                  </div>
+
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>

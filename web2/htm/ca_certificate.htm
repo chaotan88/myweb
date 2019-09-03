@@ -1,0 +1,447 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int ca_cert0_status;%>
+<%int ca_cert1_status;%>
+<%int ca_cert2_status;%>
+<%int ca_cert3_status;%>
+<%int ca_cert4_status;%>
+<%TLS_GETTLSFILE()%>
+<%TLS_GETSUBMIT(TLS_SECURITY)%>
+<%@ca_cert0_status=PHONE_GETVAR(CA_CERT_STATUS0)%>
+<%@ca_cert1_status=PHONE_GETVAR(CA_CERT_STATUS1)%>
+<%@ca_cert2_status=PHONE_GETVAR(CA_CERT_STATUS2)%>
+<%@ca_cert3_status=PHONE_GETVAR(CA_CERT_STATUS3)%>
+<%@ca_cert4_status=PHONE_GETVAR(CA_CERT_STATUS4)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function checkLoadCaCertAndSubmit(form, index)
+{
+	var val;
+	switch(index)
+	{
+		case 0:
+			val = form.ca_cert0.value;
+			break;
+		case 1:
+			val = form.ca_cert1.value;
+			break;
+		case 2:
+			val = form.ca_cert2.value;
+			break;
+		case 3:
+			val = form.ca_cert3.value;
+			break;
+		case 4:
+			val = form.ca_cert4.value;
+			break;
+		default:
+	}
+
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('DISPLAY_TLSCA_CERT_TAB'+index);
+		el.parentNode.removeChild(el);
+		for(var i=0; i<5;i++)
+		{
+			if(index != i)
+			{
+				el = document.getElementById('UPTLSCA_CERT'+i);
+				el.parentNode.removeChild(el);
+			}
+		}
+
+		document.getElementById("TDTLSCA_CERT"+index).className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function DelCaCert(index)
+{
+	switch(index)
+	{
+		case 0:
+			document.tls_ca_certificate.DEL_TLSCA_CERT0.value="1";
+			break;
+		case 1:
+			document.tls_ca_certificate.DEL_TLSCA_CERT1.value="1";
+			break;
+		case 2:
+			document.tls_ca_certificate.DEL_TLSCA_CERT2.value="1";
+			break;
+		case 3:
+			document.tls_ca_certificate.DEL_TLSCA_CERT3.value="1";
+			break;
+		case 4:
+			document.tls_ca_certificate.DEL_TLSCA_CERT4.value="1";
+			break;
+	}
+	
+	var el = document.getElementById('DISPLAY_TLSCA_CERT_TAB'+index);
+	el.parentNode.removeChild(el);
+	for(var i=0; i<5;i++)
+	{
+		if(index != i)
+		{
+			el = document.getElementById('UPTLSCA_CERT'+i);
+			el.parentNode.removeChild(el);
+		}
+	}
+	document.getElementById("TDTLSCA_CERT"+index).className="TDEnd";
+	document.tls_ca_certificate.action="../mainform.cgi/ca_certificate.htm";
+	document.tls_ca_certificate.submit();
+}
+
+function DisplayCaCert(index)
+{
+	if(document.getElementById("DISPLAY_TLSCA_CERT_TAB"+index).style.display == "none")
+	{
+		document.getElementById("DISPLAY_TLSCA_CERT_TAB"+index).style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_TLSCA_CERT_TAB"+index).style.display="none";
+	}
+}
+
+function ShowAlert()
+{
+	<%TLS_SHOWDATA(TLSCA_CERT)%>
+}
+
+function wuisync()
+{
+	document.getElementById("DISPLAY_TLSCA_CERT_TAB0").style.display="none";
+	document.getElementById("DISPLAY_TLSCA_CERT_TAB1").style.display="none";
+	document.getElementById("DISPLAY_TLSCA_CERT_TAB2").style.display="none";
+	document.getElementById("DISPLAY_TLSCA_CERT_TAB3").style.display="none";
+	document.getElementById("DISPLAY_TLSCA_CERT_TAB4").style.display="none";
+}
+
+function redirect_security()
+{
+	document.location = "../mainform.cgi/ca_certificate.htm";
+}
+
+function doAction()
+{
+	window.setTimeout("redirect_security()",5);
+	window.status="OK";
+}
+</SCRIPT>
+
+
+<body onload="wuisync();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Root CA Certificate</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="tls_ca_certificate" method="post">
+                  <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('Security','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                                      Root CA Certificates(<span style="color:red">Changing the below parameters requires a reboot</span>)</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Security">
+
+                   <table id="UPTLSCA_CERT0" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCA_CERT" class="TRedit">
+                          <td id="TDTLSCA_CERT0" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="1%" class="TdMid">&nbsp;&nbsp;</td>
+                                      <%if @ca_cert0_status==1%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 1:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 1:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="10">
+                                          <input type="file" name="ca_cert0" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCA_CERT0" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 0)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCA_CERT0" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(0)">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCA_CERT0" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(0)">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCA_CERT_TAB0" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(TLS_SECURITY_ROOT_CA_0)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+				   <table id="UPTLSCA_CERT1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCA_CERT" class="TRedit">
+                          <td id="TDTLSCA_CERT1" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="1%" class="TdMid">&nbsp;&nbsp;</td>
+                                      <%if @ca_cert1_status==1%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 2:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 2:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="10">
+                                          <input type="file" name="ca_cert1" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCA_CERT1" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 1)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCA_CERT1" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(1)">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCA_CERT1" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(1)">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCA_CERT_TAB1" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(TLS_SECURITY_ROOT_CA_1)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <table id="UPTLSCA_CERT2" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCA_CERT" class="TRedit">
+                          <td id="TDTLSCA_CERT2" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="1%" class="TdMid">&nbsp;&nbsp;</td>
+                                      <%if @ca_cert2_status==1%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 3:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 3:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="10">
+                                          <input type="file" name="ca_cert2" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCA_CERT2" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 2)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCA_CERT2" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(2)">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCA_CERT2" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(2)">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCA_CERT_TAB2" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(TLS_SECURITY_ROOT_CA_2)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <table id="UPTLSCA_CERT3" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCA_CERT" class="TRedit">
+                          <td id="TDTLSCA_CERT3" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="1%" class="TdMid">&nbsp;&nbsp;</td>
+                                      <%if @ca_cert3_status==1%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 4:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 4:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="10">
+                                          <input type="file" name="ca_cert3" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCA_CERT3" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 3)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCA_CERT3" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(3)">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCA_CERT3" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(3)">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCA_CERT_TAB3" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(TLS_SECURITY_ROOT_CA_3)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <table id="UPTLSCA_CERT4" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCA_CERT" class="TRedit">
+                          <td id="TDTLSCA_CERT4" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="1%" class="TdMid">&nbsp;&nbsp;</td>
+                                      <%if @ca_cert4_status==1%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 5:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="16%" class="TD_Item_First" Align="left">Root CA 5:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="10">
+                                          <input type="file" name="ca_cert4" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCA_CERT4" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 4)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCA_CERT4" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(4)">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCA_CERT4" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(4)">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCA_CERT_TAB4" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(TLS_SECURITY_ROOT_CA_4)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   </DIV>
+                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>

@@ -1,0 +1,216 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<%SIP_GETSUBMIT(SIP_LOGGING)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function down(){
+	var url='../../<%Network_SHOWDATA(LOG_FILE_NAME)%>';
+        window.open(url,'Download'); 
+
+}
+
+function show_log(){
+	var url='../mainform.cgi/show_logs.htm';
+        window.open(url);
+}
+function clean_log(){
+	document.autoform.CLEAN_LOG.value="1";
+	document.autoform.submit();
+}
+
+function Formsubmit(no)
+{
+ switch(no){
+    case(1):
+       document.trace_setting.submit();
+	   break;
+
+    case(2):
+       document.autoform.submit();
+	   break;
+ }   
+}
+
+function ShowAlert() {
+    <%SIP_SHOWDATA(TRACEALERT)%>
+}
+</SCRIPT>
+
+<body onload="ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">
+                                        Tracing System Key Behavior
+                                    </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content_TYPE1" style="overflow-x:hidden;overflow-y:auto;">
+
+      <form name="trace_setting" method="post">
+
+       <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+          <tr class="TRedit">
+              <td>
+                  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                          <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('setting','Tr2')" style="text-decoration:none">
+                          <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Setting</A></Td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+       </table>   
+
+       <DIV id="setting">
+       <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+          <tr class="TRedit" id="max_file_size" >
+              <td class="TDRow">
+                  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                          <td width="3%" class="TdMid">&nbsp;</td>
+                          <td width="47%" class="TD_Item_First" Align="left">Max File Size:</td>
+                          <td class="TdMid" ><input type="text" name="TRACEMAXFILESIZE" size="5" maxlength="5" value="<%SIP_SHOWDATA(TRACEMAXFILESIZE)%>" class="unnamed11"></td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+          <tr class="TRedit" id="level">
+              <td class="TDEnd">
+                  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                          <td width="3%" class="TdMid">&nbsp;</td>
+                          <td width="47%" class="TD_Item_First" Align="left">Trace Level:</td>
+                          <td class="TdMid" > 
+                          	<select name="TRACELEVEL" onclick=""><%SIP_SHOWDATA(TRACELEVEL)%></select>
+                          </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+
+          <tr>
+            <td>
+               <a href="JAVASCRIPT:Formsubmit(1)">
+               <IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+               </a>                           
+            </td>
+      	</tr>
+      </table>
+      </div>
+     
+      </form>
+
+
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <!-- show detail-->
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0" >
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td  Align="center">Log file</td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                     
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr height="270">
+                                      <td width="100%" class="TD_Item_First" Align="center">
+                                          <textarea rows="16" name="S1" cols="89" wrap="OFF" style="FONT-SIZE: 14px" readonly="readonly">
+<%SIP_SHOWDATA(TRACE_LOG)%>
+                                          </textarea>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td Align="center">
+                           <form method="POST" name="autoform">
+                           <input type="hidden" name="CLEAN_LOG" value="0" class="unnamed11">
+                           <input type="button" value="Clean log" name="apply" onClick="clean_log()">
+                           <input type="button" value="Save log" name="apply" onClick="javascript:down()">
+                           <input type="button" value="<%HTMLPRINTTEXT(Refresh, button.txt)%>" name="apply" onClick="Formsubmit(2)">
+                           <input type="button" value="Maximize" name="apply" onClick="javascript:show_log()">
+                           </form>
+                        </td>
+        	         </tr>
+                  </table>
+              </div>   
+              <!--end-->    
+                  <br>
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        <tr>
+           <td colspan="3">
+		<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+         </tr>
+      </table>
+  </DIV>
+</body>
+</html>
+<%Update_READDATA(REBOOT)%>

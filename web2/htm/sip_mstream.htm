@@ -1,0 +1,529 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int haveG723;%>
+<%int isOPUSsupp;%>
+<%@haveG723=PHONE_GETVAR(HAVEG723)%>
+<%@isOPUSsupp=PHONE_GETVAR(IS_OPUS_SUPP)%> 
+
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(SIP_MSTREAM)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" src="../htm/utility.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+  if(Chksubmit())
+  {
+    document.sipdialing.action="../mainform.cgi/sip_mstream.htm";
+    document.sipdialing.submit();
+
+    var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+  }
+
+}
+
+function SrtpOnChange()
+{
+  var one = parseFloat(document.sipdialing.SRTPSW.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("srtp_sw").className="TDEnd";
+	 document.getElementById("authentication_method").style.display="none";
+	 document.getElementById("aria").style.display="none";
+      break;
+      case 1:
+         document.getElementById("srtp_sw").className="TDRow";
+	 document.getElementById("authentication_method").style.display="";
+	 document.getElementById("aria").style.display="";
+      break;
+  }
+}
+  
+function chkisithexNumber(s)
+{
+  var len = s.length;
+  var lowcase = s.toLowerCase();
+
+  if (len < 4)
+    return false;
+  if(s.charAt(0) != 0)
+    return false;
+  if(s.charAt(1) != 'x')
+    return false;
+  if(lowcase.charAt(2) != 'a' && lowcase.charAt(2) != 'b' && lowcase.charAt(2) != 'c' && lowcase.charAt(2) != 'd' && lowcase.charAt(2) != 'e' && lowcase.charAt(2) != 'f')
+  {
+      if(s.charAt(2) < '0' || s.charAt(2) > '9')
+         return false;
+  }
+  if(lowcase.charAt(3) != 'a' && lowcase.charAt(3) != 'b' && lowcase.charAt(3) != 'c' && lowcase.charAt(3) != 'd' && lowcase.charAt(3) != 'e' && lowcase.charAt(3) != 'f')
+  {
+      if(s.charAt(3) < '0' || s.charAt(3) > '9')
+         return false;
+  }
+ return true;
+}
+
+function Chksubmit()
+{
+  var g722_enable;
+  var g722_8000_enable;
+  if(document.sipdialing.R2833PT.value == "" || isNumeric(document.sipdialing.R2833PT.value,96,127) == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_MSTREAM_2833_DTMF_PAYLOAD_RANGE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.TOSH.value == "")
+  {
+     alert("<%HTMLPRINTTEXT(SIP_MSTREAM_TOS_EMPTY_CHECK, error.lang)%>");
+     return false;
+  }
+  else if(document.sipdialing.TOSH.value != "")
+  {
+    
+  }
+
+	if (document.sipdialing.NCOD1.value == 9)
+	{
+	    g722_enable = 1;
+	}
+	if (document.sipdialing.NCOD1.value == 999)
+	{
+	    g722_8000_enable = 1;
+	}
+	if (document.sipdialing.NCOD2.value == 9)
+	{
+	    if (g722_8000_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_enable = 1;
+	}
+	if (document.sipdialing.NCOD2.value == 999)
+	{
+	    if (g722_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_8000_enable = 1;
+	}
+	if (document.sipdialing.NCOD3.value == 9)
+	{
+	    if (g722_8000_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_enable = 1;
+	}
+	if (document.sipdialing.NCOD3.value == 999)
+	{
+	    if (g722_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_8000_enable = 1;
+	}
+	if (document.sipdialing.NCOD4.value == 9)
+	{
+	    if (g722_8000_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_enable = 1;
+	}
+	if (document.sipdialing.NCOD4.value == 999)
+	{
+	    if (g722_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_8000_enable = 1;
+	}
+	if (document.sipdialing.NCOD5.value == 9)
+	{
+	    if (g722_8000_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_enable = 1;
+	}
+	if (document.sipdialing.NCOD5.value == 999)
+	{
+	    if (g722_enable ==1 )
+	    {
+			alert("<%HTMLPRINTTEXT(SIP_MSTREAM_G722_16_8_CHECK, error.lang)%>");
+			return false;
+	    }
+	    else
+	        g722_8000_enable = 1;
+	}
+
+
+  if(document.sipdialing.RPRCS.value == ""|| isNumeric(document.sipdialing.RPRCS.value,0,65535) == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_MSTREAM_RTP_PORT_RANGE, error.lang)%>");
+     return false;
+  }
+
+ return true;
+}
+
+function HandleCodecOption(id1, id2){
+
+  ShowWarningMsg();
+
+  var one = parseFloat(id1.value);
+
+  if(one == 114 || one == 115 || one == 119 || one == 120)
+  {
+    var s1 = new HandleSelect(id2,0);
+    s1.addOpt(0,20,20);
+    s1.addOpt(1,40,40);
+	s1.addOpt(2,60,60);
+  }
+  else if(one == 4)
+  {
+    var s1 = new HandleSelect(id2,0);
+    s1.addOpt(0,30,30);
+    s1.addOpt(1,60,60);
+  }
+  else
+  {
+    var s1 = new HandleSelect(id2,0);
+    s1.addOpt(0,10,10);
+    s1.addOpt(1,20,20,0,1);
+    s1.addOpt(2,30,30);
+    s1.addOpt(3,40,40);
+    //s1.addOpt(4,60,60);
+    //s1.value = '1';
+
+  }
+}
+
+function ShowWarningMsg() {
+<%if @isOPUSsupp==0%> 
+    for (var i = 1; i <= 5; i++)
+    {
+        var codec = document.getElementById("codec" + i);
+        var selectedCodecType = codec.options[codec.selectedIndex].text;
+        if (selectedCodecType.indexOf("OPUS") > -1)
+		{ 
+	        document.getElementById("warning_msg").style.display = "";
+			return;
+		}
+    }
+<%endif%>
+    document.getElementById("warning_msg").style.display = "none";
+}
+
+
+function ShowAlert() {
+    <%SIP_SHOWDATA(HICOUNTRY)%>
+}
+
+</SCRIPT>
+
+
+<body onload="ShowAlert();SrtpOnChange();ShowWarningMsg();" onrefresh="reload" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+        <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+        <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+        <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%></span>
+        <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SIP_MSTREAM_TITLE, general.lang)%></span>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="sipdialing" method="post">
+                  <div id="setupTable" class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Media','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_MEDIA_STREAM_PARAMETER, general.lang)%></A>
+                    </div>
+                <DIV id="Media">
+                    <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="53%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_RTP_PORT_RANGE, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="RPRCS" size="5" maxlength="5" value="<%SIP_SHOWDATA(RPRCS)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="53%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_2833_DMTF_PAYLOAD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="R2833PT" size="5" maxlength="3" value="<%SIP_SHOWDATA(R2833PT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                          </td>
+                      </tr>
+                    </table>
+                </DIV>
+                  <br>
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                                <%HTMLPRINTTEXT(SIP_GENERAL_SIP_QOS, general.lang)%></A>
+                    </div>
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="53%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TOS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="TOSH" size="5" maxlength="4" value="<%SIP_SHOWDATA(TOSH)%>" class="unnamed11"> Hex</td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </div>
+                  <br>
+                  <DIV id="warning_msg" style="display:none;">
+		  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+		      <tr class="TRedit">
+		          <td>
+                              
+                  </td>
+                      </tr>
+		  </table>
+                  </div>
+                    <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Key','Tr3')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                                <%HTMLPRINTTEXT(SIP_MSTREAM_CODECS_STR, general.lang)%></A>
+                    </div>
+                   <DIV id="Key">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                         <td width="15%" align="center" class="TdTitleLeft">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_CODEC_PRIORITY, general.lang)%>
+                         </td>
+                         <td width="23%" align="center" class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(SIP_MSTREAM_CODEC_TYPE, general.lang)%>
+                         </td>
+                         <td width="30%" align="center" class="TdTitleRight">
+                             <%HTMLPRINTTEXT(SIP_MSTREAM_CODEC_PTIME, general.lang)%>
+                         </td>
+                      </tr>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_1_CODEC, general.lang)%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                             <select name="NCOD1" id="codec1" onchange="HandleCodecOption(codec1, time1)"><%SIP_SHOWDATA(NCOD1)%></select>
+                         </td>
+                         <td align="center" class="TdRight">
+                             <select name="PCOD1" id="time1"><%SIP_SHOWDATA(PCOD1)%></select>
+                         </td>
+                      </tr>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_2_CODEC, general.lang)%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                             <select name="NCOD2" id="codec2" onchange="HandleCodecOption(codec2,time2)"><%SIP_SHOWDATA(NCOD2)%></select>
+                         </td>
+                         <td align="center" class="TdRight">
+                             <select name="PCOD2" id="time2"><%SIP_SHOWDATA(PCOD2)%></select>
+                         </td>
+                      </tr>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_3_CODEC, general.lang)%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                             <select name="NCOD3" id="codec3" onchange="HandleCodecOption(codec3, time3)"><%SIP_SHOWDATA(NCOD3)%></select>
+                         </td>
+                         <td align="center" class="TdRight">
+                             <select name="PCOD3" id="time3"><%SIP_SHOWDATA(PCOD3)%></select>
+                         </td>
+                      </tr>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_4_CODEC, general.lang)%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                             <select name="NCOD4" id="codec4" onchange="HandleCodecOption(codec4, time4)"><%SIP_SHOWDATA(NCOD4)%></select>
+                         </td>
+                         <td align="center" class="TdRight">
+                             <select name="PCOD4" id="time4"><%SIP_SHOWDATA(PCOD4)%></select>
+                         </td>
+                      </tr>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%HTMLPRINTTEXT(SIP_MSTREAM_5_CODEC, general.lang)%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                             <select name="NCOD5" id="codec5" onchange="HandleCodecOption(codec5, time5)"><%SIP_SHOWDATA(NCOD5)%></select>
+                         </td>
+                         <td align="center" class="TdRight">
+                             <select name="PCOD5" id="time5"><%SIP_SHOWDATA(PCOD5)%></select>
+                         </td> 
+                      </tr>              
+                  </table>
+                  </div>
+                  <br>
+
+                    <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('SRTP','Tr4')" style="text-decoration:none">
+                                <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">
+                                  <%HTMLPRINTTEXT(SIP_MSTREAM_RTP_SRTP, general.lang)%></A>
+                    </div>
+                   <DIV id="SRTP">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="srtp_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+						<td width="3%" class="TdMid">&nbsp;</td>
+						<td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_ENABLE_SRTP, general.lang)%></td>
+						<td class="TdMid" >
+						<select name="SRTPSW" onchange="SrtpOnChange()"><%SIP_SHOWDATA(SRTPSW)%></select>
+						</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="authentication_method">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_SRTP_METHOD, general.lang)%></td>
+                                      <td class="TdMid" >
+                                      <select name="SRTPMETHOD"><%SIP_SHOWDATA(SRTPMETHOD)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="aria">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_SRTP_ARIR, general.lang)%></td>
+                                      <td class="TdMid" >
+                                      <select name="ARIA"><%SIP_SHOWDATA(ARIA)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </div>
+                  <br>
+<%if @haveG723==1%>       
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Bitrate','Tr5')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr5">
+                                <%HTMLPRINTTEXT(SIP_MSTREAM_G723_BITRATE, general.lang)%></A>
+                    </div>
+                   <DIV id="Bitrate">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_G723_BITRATE, general.lang)%>:</td>
+                                      <td class="TdMid" ><select name="B7231"><%SIP_SHOWDATA(B723)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </div>
+<%endif%>
+				<div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('SRTP','Tr4')" style="text-decoration:none">
+                                <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">
+                                  <%HTMLPRINTTEXT(SIP_MSTREAM_RTCP_XR, general.lang)%></A>
+                </div>
+				<DIV id="RTCP-XR">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="rtcpxrsw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+						<td width="3%" class="TdMid">&nbsp;</td>
+						<td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_MSTREAM_RTCP_XR_MODE, general.lang)%></td>
+						<td class="TdMid" >
+						<select name="RTCPXRSW"><%SIP_SHOWDATA(RTCPXRSW)%></select>
+						</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </div>
+                  
+                  </form>
+                </td>
+          </tr>
+      </table>
+  </DIV>
+</from>
+<DIV id="bottom" class="bottom">
+        <input type="button" align="right" name="Submit" BORDER="0" onClick="Formsubmit()" class="submit-button" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
+  </DIV>
+</body>
+</html>

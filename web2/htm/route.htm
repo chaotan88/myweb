@@ -1,0 +1,470 @@
+<!--[if IE 7]>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml2/DTD/xhtml1-strict.dtd">
+<![endif]-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>HL-20X IP PHONE</title>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int pass;%>
+<%int doline;%>
+<%int max_num;%>
+<%int count;%>
+<%int edit_num;%>
+<%@edit_num = GET3THDATA()%>
+<%@pass = GETCGIPASSWORD()%>
+<%Network_READDATA(ROUTE)%>
+<%Network_GETSUBMIT(ROUTE)%>
+<%@max_num = NETWORK_GETVAR(ROUTEMAX)%>
+<%@count = NETWORK_GETVAR(ROUTECOUNT)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+function showform()
+{
+   var editnum = <%@edit_num%>;
+   var count = <%@count%>;
+   var maxcount = <%@max_num%>;
+
+   if(count == maxcount && editnum == 0)
+   {
+      document.getElementById("modify").style.display="none";
+   }
+}
+</SCRIPT>
+
+<body onload="showform();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="800" height="452" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td height="95" colspan="2"><img src="../image/TEK-top.jpg" width="800" height="98"></td>
+  </tr>
+  <tr>
+      <td width="150" valign="top" bgcolor="D0D4DB"><table width="148" border="0" align="center" cellpadding="0" cellspacing="0">
+          <tr>
+            <td><div align="right"><img src="../image/arrow1.gif" width="26" height="38" hspace="10" vspace="5"></div></td>
+          </tr>
+          <tr>
+            <td><img src="../image/line.gif" width="148" height="3" vspace="5"></td>
+          </tr>
+      </table>
+	  <table width="100" border="0" align="center" cellpadding="0" cellspacing="0">
+	  <tr>
+            <td width="179" valign="top"><%SHOWWEBLEFT()%></td>
+	 </tr>
+	 <tr>
+           <td>&nbsp;</td>
+         </tr>
+	 <tr>
+           <td>&nbsp;</td>
+         </tr>
+	 <tr>
+           <td>&nbsp;</td>
+         </tr>
+	 </table>
+      <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td><div align="right"></div>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><img src="../image/line.gif" width="148" height="3" vspace="5"></td>
+        </tr>
+      </table></td>
+    <td width="650" valign="top" bgcolor="#FFFFFF">
+      <table width="85%" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><span class="unnamed-title1"><b><%HTMLPRINTTEXT(Routing_Table, Routing_Table.txt)%></b></span></td>
+        </tr>
+        <tr>
+          <td height="30" class="unnamed12"><%HTMLPRINTTEXT(You_could_set_routing_table_in_this_page., Routing_Table.txt)%></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="unnamed12"><form method="POST" name="RoutingForm">
+              <table width="100%" border="0" cellpadding="3" cellspacing="1" id="table3">
+                <tr bgcolor="8792A4"> 
+                  <td align="center" width="8%">
+                    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(No., Routing_Table.txt)%></font></b>
+                  </td>
+                  <td align="center" width="25%">
+                    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(IP, Routing_Table.txt)%></font></b>
+                  </td>
+                  <td align="center" width="25%">
+		    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(Netmask, Routing_Table.txt)%></font></b>
+		  </td>
+		  <td align="center" width="25%">
+		    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(Gateway, Routing_Table.txt)%></font></b>
+		  </td>
+		  <td align="center" width="10%">
+		    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(Interface, Routing_Table.txt)%></font></b>
+		  </td>
+                  <td align="center" width="7%">
+		    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(Select, Routing_Table.txt)%></font></b>
+		  </td>
+                </tr>
+                <%for @doline=1;<=@count;1%>
+                <tr bgcolor="#FFFFDD" class="unnamed-bg">
+                  <td align="center">
+                     <a href="JAVASCRIPT:Editlink(<%@doline%>)"><%@doline%></a>
+		  </td>
+                  <td align="center">
+                      <%Network_SHOWDATA(@doline, ROUTEIP)%>
+                  </td>
+                  <td align="center">
+                     <%Network_SHOWDATA(@doline, ROUTEMASK)%>
+                  </td>
+                  <td align="center">
+                     <%Network_SHOWDATA(@doline, ROUTEGW)%>
+                  </td>
+                  <td align="center">
+                     <%Network_SHOWDATA(@doline, ROUTEDEVICE)%>
+                  </td>
+                  <td align="center">
+                     <%Network_SHOWDATA(@doline, ROUTESELECT)%>
+		  </td>
+                </tr>
+                <%endfor%>
+              </table>
+              <p align="center">
+	        <font face="Arial">
+                  <input type="button" value="<%HTMLPRINTTEXT(Delete_Selected, button.txt)%>" name="DelSelected" onClick="Formsubmit(1)" class="unnamed11">
+                  &nbsp; 
+                  <input type="submit" value="<%HTMLPRINTTEXT(Delete_All, button.txt)%>" onClick="return deleteAllClick()" name="DELALL" class="unnamed11">
+                </font>
+	      </p>
+            </form>
+          </td>
+        </tr>
+        <tr> 
+          <td>&nbsp;</td>
+        </tr>
+        <tr id="modify">
+          <td><form method="POST" name="ModifyForm">
+              <table border="0">
+              <%if @edit_num == 0%>
+              <tr>
+                 <td class="unnamed12"><b><%HTMLPRINTTEXT(Add, Routing_Table.txt)%></b></td>
+              </tr>
+              <%else%>
+              <tr>
+                 <td class="unnamed12"><b><%HTMLPRINTTEXT(Edit, Routing_Table.txt)%></b></td>
+              </tr>
+              <%endif%>
+                <tr>
+                  <td align="right" class="unnamed11"><%HTMLPRINTTEXT(IP:, Routing_Table.txt)%></td>
+                  <td>
+                    <%Network_SHOWDATA(@edit_num, ROUTEIP_E)%>
+                  </td>
+                  <td class="unnamed11"><%HTMLPRINTTEXT(Netmask:, Routing_Table.txt)%></td>
+                  <td class="unnamed11">
+                    <%Network_SHOWDATA(@edit_num, ROUTEMASK_E)%>
+                  </td>
+                  <td class="unnamed11"><%HTMLPRINTTEXT(Gateway:, Routing_Table.txt)%></td>
+                  <td>
+                    <%Network_SHOWDATA(@edit_num, ROUTEGW_E)%>
+                  </td>
+                  <td class="unnamed11"><%HTMLPRINTTEXT(Interface:, Routing_Table.txt)%></td>
+                   <td class="unnamed11">
+                      <select name="INTERFACE" class="unnamed11">
+                         <%Network_SHOWDATA(@edit_num, ROUTEDEVICE_E)%>
+                      </select>        
+                   </td>
+                </tr>
+                <input type="hidden" name="EDITNUM" value="<%@edit_num%>">
+              </table>
+              <p align="center" style="margin-top: 20px">
+                <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="ADD" onClick="Formsubmit(0)" class="unnamed11">
+                &nbsp;
+                <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="B4" style="margin-top: 0; margin-bottom: 0" class="unnamed11">
+                &nbsp;
+                <%if @edit_num > 0 %>
+                <input type="button" value="<%HTMLPRINTTEXT(Cancel, button.txt)%>" name="CANCEL" onClick="Hreflink('Ip_Mapping.htm')" class="unnamed11">
+                <%endif%>
+              </p>
+              <%if @count == @max_num%>
+              <tr>
+                 <td align="center"><%HTMLPRINTTEXT(Note:The_routing_table_is_full_you_can't_add_a_new_one_any_more!!, Routing_Table.txt)%></td>
+              </tr>
+              <%endif%>
+             </form>
+            </td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+
+<SCRIPT LANGUAGE="JavaScript">
+function Formsubmit(dowhat)
+{
+   switch(dowhat)
+   {
+     case 0:
+       if(checksubmit())
+       {
+           document.ModifyForm.action="../mainform.cgi/Routing_Table.htm;<%@pass%>;<%OUTRAND()%>?";
+           document.ModifyForm.submit();
+       }
+     break;
+     case 1:
+       if(checkdelete())
+       {
+           document.RoutingForm.action="../mainform.cgi/Routing_Table.htm;<%@pass%>;<%OUTRAND()%>?";
+           document.RoutingForm.submit();
+       }
+     break;
+   }
+}
+function deleteAllClick()
+{
+   if (!confirm('<%HTMLPRINTTEXT(Do_you_really_want_to_delete_all_routing_table_in_this_page?, Routing_Table.txt)%>'))
+      return false;
+   else
+      return true;
+}
+
+function chkChkbox(object) {
+   var i, chkid;
+   chkid = 0;
+   for(i=0;i<object.length;i++)
+   {
+      if (object[i].checked == 1)
+      {
+         chkid++;
+      }
+   }
+   return(chkid);
+}
+
+function checksubmit()
+{
+   if(document.ModifyForm.IP.value == '')
+   {
+       alert("<%HTMLPRINTTEXT(IP_value_can't_be_empty!!, Routing_Table.txt)%>");
+       document.ModifyForm.IP.focus();
+       return false;
+   }
+   if(document.ModifyForm.NETMASK.value == '')
+   {
+       alert("<%HTMLPRINTTEXT(NETMASK_value_can't_be_empty!!, Routing_Table.txt)%>");
+       document.ModifyForm.NETMASK.focus();
+       return false;
+   }
+   if(document.ModifyForm.GATEWAY.value == '')
+   {
+       alert("<%HTMLPRINTTEXT(GATEWAY_value_can't_be_empty!!, Routing_Table.txt)%>");
+       document.ModifyForm.GATEWAY.focus();
+       return false;
+   }
+   if(checkIpAddr(document.ModifyForm.IP, '<%HTMLPRINTTEXT(Invalid_IP, Routing_Table.txt)%>') == false)
+   {
+        document.ModifyForm.IP.focus();
+        return false;
+   }
+   if ( valid_IP(document.ModifyForm.NETMASK.value) == 0) {
+      alert('<%HTMLPRINTTEXT(Invalid_netmask_value._It_should_be_the_decimal_number_(0-9)!!, Routing_Table.txt)%>');
+      field.focus();
+      return false;
+   }
+   if (document.ModifyForm.GATEWAY.value!="0.0.0.0" )
+   {
+      if ( checkIpAddr(document.ModifyForm.GATEWAY,'<%HTMLPRINTTEXT(Invalid_gateway, Routing_Table.txt)%>') == 0)
+      {
+         alert('<%HTMLPRINTTEXT(Invalid_gateway_value._It_should_be_the_decimal_number_(0-9)!!, Routing_Table.txt)%>');
+         field.focus();
+         return false;
+      }
+   }
+   if ( !checkMask(document.ModifyForm.NETMASK.value,1) ) 
+   {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_1st_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Routing_Table.txt)%>');
+	document.ModifyForm.NETMASK.focus();
+	return false;
+   }
+   if ( !checkMask(document.ModifyForm.NETMASK.value,2) ) 
+   {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_2nd_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Routing_Table.txt)%>');
+	document.ModifyForm.NETMASK.focus();
+	return false;
+   }
+   if ( !checkMask(document.ModifyForm.NETMASK.value,3) ) 
+   {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_3rd_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Routing_Table.txt)%>');
+	document.ModifyForm.NETMASK.focus();
+	return false;
+   }
+   if ( !checkMask(document.ModifyForm.NETMASK.value,4) ) 
+   {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_4th_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Routing_Table.txt)%>');
+	document.ModifyForm.NETMASK.focus();
+	return false;
+   }
+   /*if (document.ModifyForm.GATEWAY.value!="0.0.0.0" ) 
+   {
+       if ( !checkSubnet(document.ModifyForm.IP.value,document.ModifyForm.NETMASK.value,document.ModifyForm.GATEWAY.value)) 
+       {
+          alert('Invalid gateway address!\nIt should be located in the same subnet of current IP address!!');
+	  document.ModifyForm.GATEWAY.focus();
+	  return false;
+       }
+   }*/
+   return true;
+}
+
+function checkdelete()
+{
+   var chkid;
+   chkid = chkChkbox(document.RoutingForm);
+
+   if(chkid == 0)
+   {
+      alert("<%HTMLPRINTTEXT(No_data_to_delete!!, Routing_Table.txt)%>")
+      return false;
+   }
+   return true;
+}
+
+function Editlink(gopage)
+{
+   top.location.href="../mainform.cgi/Routing_Table.htm;<%@pass%>;<%OUTRAND()%>;"+gopage+"?"
+}
+
+function Hreflink(htm_name)
+{
+   top.location.href="../mainform.cgi/"+htm_name+";<%@pass%>;<%OUTRAND()%>?"
+}
+
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+
+function valid_IP(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function checkIpAddr(field, msg)
+{
+   if ( valid_IP(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(value._It_should_be_the_decimal_number_(0-9)!!, Routing_Table.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,255) ) {
+      alert(msg+' <%HTMLPRINTTEXT(range_in_the_1st_number._It_should_be_0-255!!, Routing_Table.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_2nd_number._It_should_be_0-255!!, Routing_Table.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_3rd_number._It_should_be_0-255!!, Routing_Table.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,0,1) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_4th_number._It_should_be_0-255!!, Routing_Table.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   return true;
+}
+
+/*function check_gateway(ip, mask, client)
+{
+  ip_d = getDigit(ip, 1);
+  mask_d = getDigit(mask, 1);
+  client_d = getDigit(client, 1);
+  if ((ip_d & mask_d) != (client_d & mask_d ))
+	return false;
+
+  ip_d = getDigit(ip, 2);
+  mask_d = getDigit(mask, 2);
+  client_d = getDigit(client, 2);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 3);
+  mask_d = getDigit(mask, 3);
+  client_d = getDigit(client, 3);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 4);
+  mask_d = getDigit(mask, 4);
+  client_d = getDigit(client, 4);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  return true;
+}*/
+
+function checkMask(s, num)
+{
+  d = getDigit(s,num);
+  if( !(d==0 || d==128 || d==192 || d==224 || d==240 || d==248 || d==252 || d==254 || d==255 ))
+  	return false;
+  return true;
+}
+
+</SCRIPT>
+
+

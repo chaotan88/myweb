@@ -1,0 +1,369 @@
+
+<html>
+<head>
+<title>HL-20X IP PHONE</title>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int pass;%>
+<%@pass = GETCGIPASSWORD()%>
+<%Network_READDATA(WAN)%>
+<%Network_READDATA(WANSTATUS)%>
+<%Network_READDATA(LANSTATUS)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+function Hreflink(htm_name){
+         top.location.href="../mainform.cgi/"+htm_name+";<%@pass%>;<%OUTRAND()%>?"
+}
+</SCRIPT>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px"><%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%></span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(DIAGNOSTICS, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%></span>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+
+        <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+          <tr class="TRedit">
+            <td  class="">
+                     <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                             <Td>&nbsp;<%HTMLPRINTTEXT(NETWORK_STATUS_LAN_INFORMATION, general.lang)%></td>
+                          </tr>
+                      </Table>
+                  </td>
+            </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANTYPE)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_IP_ADDR, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANIP)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SUBNET, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANMASK)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_DEFAULT_GATEWAY, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANGW)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_PRIMARY_DNS, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANDNS1)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SECONDARY_DNS, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANDNS2)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_MAC_ADDRESS, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <%Network_SHOWDATA(WANMAC)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                    </table>
+                  </form>
+              </td>
+          </tr>  
+      </table>
+      <br>
+      <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+        <tr class="TRedit">
+            <td  class="">
+                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <Td>&nbsp;<%HTMLPRINTTEXT(NETWORK_STATUS_PORT_MODE_STATUS, general.lang)%></td>
+                    </tr>
+                </Table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_ATTRIBUTE, general.lang)%></b></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_LAN_PORT, general.lang)%></b></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_PC_PORT, general.lang)%></b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_LINK_STATE, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_Link_State)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_Link_State)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_NEGOTIATION, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_Negotiation)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_Negotiation)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_SPEED, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_Speed)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_Speed)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_DUPLEX, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_Duplex)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_Duplex)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+		<tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_VLAN_ACTIVATE, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_VLAN_Activate)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_VLAN_Activate)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+		<tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_VLAN_ID, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_VLAN_ID)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_VLAN_ID)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+		<tr class="TRedit">
+            <td class="TDEnd">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_VLAN_PRIORITY, general.lang)%>:</td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(LAN_VLAN_Prio)%></td>
+                        <td width="35%" class="TD_Item_First" Align="left"><%Network_SHOWDATA(PC_VLAN_Prio)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+      </table>
+      <br>
+      <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+        <tr class="TRedit">
+            <td  class="">
+                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <Td>&nbsp;<%HTMLPRINTTEXT(NETWORK_STATUS_802.1X_STATUS, general.lang)%></td>
+                    </tr>
+                </Table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_EAP_TYPE, general.lang)%>:</td>
+                        <td class="TdMid" ><%Network_SHOWDATA(EAP_TYPE_STATUS)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDEnd">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(NETWORK_STATUS_STATUS, general.lang)%>:</td>
+                        <td class="TdMid" ><%Network_SHOWDATA(IEEE802_1X_STATUS)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+      </table>
+
+	  <br>
+      <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+        <tr class="TRedit">
+            <td  class="">
+                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <Td>&nbsp;<%HTMLPRINTTEXT(NETWORK_STATUS_DNS_SRV, general.lang)%></td>
+                    </tr>
+                </Table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="41%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_HOST_NAME, general.lang)%></b></td>
+                        <td width="20%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_PROTOCOL, general.lang)%></b></td>
+                        <td width="12%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_PORT_STR, general.lang)%></b></td>
+						<td width="12%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_PRIORITY, general.lang)%></b></td>
+						<td width="12%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(NETWORK_STATUS_WEIGHT, general.lang)%></b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+		<%Network_SHOWDATA(DNS-SRV)%>
+      </table>
+  </DIV>
+
+<DIV id="bottom" class="bottom">
+        <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit(2)" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
+    <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table> -->
+  </DIV>
+
+   </body>
+</html>

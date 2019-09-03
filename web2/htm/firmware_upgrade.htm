@@ -1,0 +1,283 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<%Network_GETSUBMIT(TFTP)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function validateKey(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+
+function checkIpAddr(field, msg)
+{
+   if ( validateKey(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(value._It_should_be_the_decimal_number_(0-9)!, Set_WAN.txt)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,255) ) {
+      alert(msg+' <%HTMLPRINTTEXT(range_in_the_1st_number._It_should_b_0-255!, Set_WAN.txt)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_2nd_number._It_should_b_0-255!, Set_WAN.txt)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_3rd_number._It_should_b_0-255!, Set_WAN.txt)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_4th_number._It_should_b_1-254!, Set_WAN.txt)%>');
+      field.focus();
+      return false;
+   }
+   return true;
+}
+
+function Formsubmit(dowhat){
+   switch(dowhat)
+   {
+      case 1:
+        if (document.upgradeform.upname.value == "")
+        {
+          alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Firmware_Upgrade.txt)%>");
+          return;
+        }
+        document.upgradeform.action="../mainform.cgi/upgrade_bdo.htm";
+        document.upgradeform.submit();
+      break;
+      case 2:
+        if (document.tftpform.TFTPSERVER.value=="") 
+        {
+	  alert("<%HTMLPRINTTEXT(IP_address_can't_be_empty!_It_should_be_filled_with_4_number_numbers_as_xxx.xxx.xxx.xxx!!, Set_WAN.txt)%>");
+	  document.tftpform.TFTPSERVER.focus();
+	  return;
+        }
+
+        if ( checkIpAddr(document.tftpform.TFTPSERVER, 'Invalid IP address!') == false )
+	  return;
+        document.tftpform.action="../mainform.cgi/Firmware_Upgrade.htm";
+        document.tftpform.submit();
+      break;
+   }
+}
+
+function ShowAlert() {
+    <%Network_SHOWDATA(HICOUNTRY)%>
+}
+
+</SCRIPT>
+
+
+
+<body onload="ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                      <span id="title" style="position:relative;left:10px">
+                                          <%HTMLPRINTTEXT(Firmware_Upgrade, Firmware_Upgrade.txt)%>
+                                      </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">
+                                      &nbsp;
+                                  </td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+              <!--
+                  <form method="POST" enctype="multipart/form-data" name="upgradeform">
+                  <table align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><%HTMLPRINTTEXT(Firmware_Upgrade, Firmware_Upgrade.txt)%></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(File_Location:, Firmware_Upgrade.txt)%>
+                                      </td>
+                                      <td class="TdMid" >
+                                         <input type="file" name="upname" size="36">
+                                      </td>
+                                  </tr>             
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td align="center">
+                              <INPUT TYPE="SUBMIT" NAME="Sub_Send" VALUE="Send" onclick="Formsubmit(1)">
+                              <INPUT type="reset" NAME="Sub_Cancel" VALUE="Reset">
+                          </td>
+                      </tr>
+                  </table>
+                  </form>
+                -->  
+                  <form method="POST" name="tftpform">  
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle">
+                                          <%HTMLPRINTTEXT(Firmware_Upgrade, Firmware_Upgrade.txt)%>
+                                      </Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">
+                                          <%HTMLPRINTTEXT(TFTP_Server_IP_Address_or_Host_Name:, Backup.txt)%>
+                                      </td>
+                                      <td class="TdMid">
+                                          <input type="text" name="TFTPSERVER" size="15" maxlength="17" value="<%Network_SHOWDATA(TFTPSERVER)%>">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>   
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">
+                                          <%HTMLPRINTTEXT(Firmware_File:, Backup.txt)%>
+                                      </td>
+                                      <td class="TdMid">
+                                          <input type="text" name="BOOTFILE" size="15" maxlength="30" value="<%Network_SHOWDATA(BOOTFILE)%>">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td colspan="2" align="center">
+                              <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="apply" onClick="Formsubmit(2)">
+                                  &nbsp;
+                              <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="Clear">
+                          </td>
+                      </tr>                                      
+                  </table>
+                  </form>
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+        <tr>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+            <td align="center" HEIGHT="47px"><IMG align="right" class="editImg" src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">&nbsp;
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</form>
+</body>
+</html>

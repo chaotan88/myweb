@@ -1,0 +1,404 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+var xmlReq = null;
+var timerId = null;
+var refreshDelay = 5000;
+var xmlDoc;
+var selectedLineId = -1;
+
+function init() {
+    refreshPage();
+}
+
+function refreshPagePeriodic() {
+    if (refreshDelay != 0)
+        refreshPage();
+}
+
+function refreshPage() {
+    if (xmlReq != null)
+        return;
+    xmlReq = createHttpRequest();
+    xmlReq.open("GET", "/voip_status.cgi", true);
+    xmlReq.onreadystatechange = updatePage;
+    xmlReq.send(null);
+    if (timerId != null) {
+        timerId = null;
+    }
+}
+
+function updatePage() {
+    if (xmlReq.readyState != 4)
+        return;
+
+    if (refreshDelay != 0)
+        timerId = setTimeout('refreshPagePeriodic()', refreshDelay);
+    if (xmlReq.status != 200) {
+        xmlReq = null;
+        return;
+    }
+    xmlDoc = xmlReq.responseXML.documentElement;
+    xmlReq = null;
+    fillStats();
+}
+
+function getLineNode() {
+    var lineid = document.getElementById("selLine").value;
+    var lines = xmlDoc.getElementsByTagName("Line");
+    for (var i=0; i<lines.length; ++i) {
+        if (lineid == lines[i].attributes[0].nodeValue) {
+            return lines[i];
+        }
+    }
+    return null;
+}
+
+function buildTable(id, title, names, attributes, columns)
+{
+    var column_width = ["50%","33%","25%","20%","16%","14%"];
+
+    var node = document.getElementById(id);
+
+    var html = "";
+    html += "<table align=\"center\" class=\"SetupTable\" border=\"0\" cellpadding=\"1\" cellspacing=\"0\">";
+    html += "<tr height='50'>";
+    html += "<td class=\"\" style='padding-left: 20px;'>";
+    html += title;
+    html += "</td>";
+    html += "</tr>";
+    
+    for (var i=0; i<attributes.length; ++i)
+    {
+        html += "<tr class=\"TRedit\" id=\"tr_"+attributes[i]+"\">";
+        if( i < attributes.length-1 )
+        {
+            html += "<td class=\"TDRow\"  style='padding-left: 20px;'>";
+        }    
+        else
+        {
+            html += "<td class=\"TDEnd\"  style='padding-left: 20px;'>";
+        }    
+            
+        html += "<table border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
+
+        html += "<tr>";
+        //html += "<td width=\"3%\" class=\"TdMid\">&nbsp;</td>";
+        html += "<td width=\""+column_width[columns-1]+"\" class=\"TD_Status\" Align=\"left\">"+names[i]+"</td>";
+        for( var j=0; j<columns; ++j )
+        {
+            html += "<td width=\""+column_width[columns-1]+"\" id=\""+attributes[i]+j+"\" class=\"TD_Status\">&nbsp;</td>";
+        }      
+        html += "</tr>";
+
+        html += "</table>";
+    
+        html += "</td>";
+        html += "</tr>";
+    }
+    
+    html += "</table>";
+    
+    node.innerHTML = html;
+}
+
+function showDetails(id) {
+    selectedLineId = id;
+    fillStats();
+}
+
+function fillStats() {
+    var phoneNames = ["<%HTMLPRINTTEXT(VOIP_STATUS_HOOKSTATE, general.lang)%>", "<%HTMLPRINTTEXT(VOIP_STATUS_AUDIODEVICE, general.lang)%>"];
+    var phoneAttr  = ["HookState", "AudioDevice"];
+
+    var errorXml = xmlDoc.getElementsByTagName("Error");
+
+    if (errorXml.length > 0) {
+        var errorNode = document.getElementById("Phone");
+        var val = "-";
+        if (errorXml[0].childNodes[0] != null)
+            val = errorXml[0].childNodes[0].nodeValue;
+
+        errorNode.innerText = val;
+        errorNode.textContent = val;
+
+        document.getElementById("Lines").innerHTML = "";
+        document.getElementById("Calls").innerHTML = "";
+        return;
+    }
+
+    buildTable("Phone", "<%HTMLPRINTTEXT(VOIP_STATUS_PHONE_STATUS, general.lang)%>", phoneNames, phoneAttr, 1);
+
+    for (var i=0; i<phoneAttr.length; ++i) {
+        var nodes = xmlDoc.getElementsByTagName(phoneAttr[i]);
+        var val = "-";
+        if (nodes.length > 0 && nodes[0].childNodes[0] != null)
+            val = nodes[0].childNodes[0].nodeValue;
+
+        var el = document.getElementById(phoneAttr[i]+"0");
+        if (el == null)
+            continue;
+
+        el.innerText = val;
+        el.textContent = val;
+    }
+
+    var lines = xmlDoc.getElementsByTagName("Line");
+    var selectedLine = null;
+	var lineNames;
+	var lineAttr;
+
+    lineNames = ["<%HTMLPRINTTEXT(VOIP_STATUS_LINE_NUMBER, general.lang)%>", 
+				"<%HTMLPRINTTEXT(VOIP_STATUS_SIP_REGISTRATION1_STATUS, general.lang)%>", 
+				"<%HTMLPRINTTEXT(VOIP_STATUS_REGISTER_SERVER, general.lang)%>", 
+				"<%HTMLPRINTTEXT(VOIP_STATUS_SIP_REGISTRATION2_STATUS, general.lang)%>", 
+				"<%HTMLPRINTTEXT(VOIP_STATUS_DND_STATUS, general.lang)%>", 
+				"<%HTMLPRINTTEXT(VOIP_STATUS_MUTE_STATUS, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_FORWARD_STATE, general.lang)%>",
+                 "<%HTMLPRINTTEXT(VOIP_STATUS_FORWARD_DESTINATION, general.lang)%>"];
+    lineAttr  = ["LineNum", "SipStatus", "SipRegSrv", "SipStatusSecondary", "Dnd", "Mute", "ForwardState",
+                      "ForwardDestination"];
+
+    if (lines.length == 0)
+        return;
+
+    var length = 0;
+    for (var i=0; i<lines.length; ++i) {
+        var status = lines[i].getElementsByTagName("PhoneState");
+        if (status.length == 0 || status[0].childNodes[0].nodeValue == "<%HTMLPRINTTEXT(VOIP_STATUS_DISABLE_STRING, general.lang)%>")
+            break;
+        length++;
+    }
+
+    buildTable("Lines", "<%HTMLPRINTTEXT(VOIP_STATUS_LINE_STATUS, general.lang)%>", lineNames, lineAttr, length);
+    if (length == 1) {
+        selectedLineId = 0;
+    }
+
+    for (var i=0; i<length; ++i) {
+        var stats = lines[i].childNodes;
+        var id = parseInt(lines[i].attributes[0].nodeValue);
+        var lineName = document.getElementById("LineNum"+id);
+        var calls = lines[i].getElementsByTagName("Call");
+        var lineStr = "Line "+(id+1);
+        if (length > 1 && calls.length > 0) {
+            var table;
+            table  = "<table border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"><tr>";
+            table += "<td width=\"90%\">"+lineStr+"</td>";
+            table += "<td width=\"10%\">"
+            table += "<input type=\"button\" value=\"<%HTMLPRINTTEXT(VOIP_STATUS_INPUT_SHOW_DETAILS, general.lang)%>\" class=\"SubBut\" onclick=\"showDetails("+id+")\">";
+            table += "</td></tr></table>";
+            lineName.innerHTML = table;
+        } else {
+            lineName.innerHTML = lineStr;
+        }
+
+        if (id == selectedLineId)
+            selectedLine = lines[i];
+        for (var j=0; j<stats.length; ++j) {
+            var name = stats[j].nodeName + id;
+            var el = document.getElementById(name);
+            if (el == null)
+                continue;
+            var val = "-";
+            if (stats[j].childNodes[0] != null)
+                val = stats[j].childNodes[0].nodeValue;
+            el.innerText = val;
+            el.textContent = val;
+        }
+    }
+
+    // Is used for hiding some rows in a table
+    var hiden = xmlDoc.getElementsByTagName("Hiden");
+    var hide = hiden[0].childNodes;    
+    for (var i=0; i<hide.length; ++i)
+    {   
+        if(hide[i].childNodes[0] != null && hide[i].childNodes[0].length != 0)
+        {            
+            var row = document.getElementById("tr_"+ hide[i].childNodes[0].nodeValue);
+            if (row != null)
+              row.style.display="none";
+        }
+    }   
+
+    fillCalls(selectedLine);
+}
+
+function fillCalls(line) {
+    var names = ["<%HTMLPRINTTEXT(VOIP_STATUS_CALL_NUMBER, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_CALLSTATE, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_ORIGIN, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_REMOTE_NUMBER, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_REMOTEID, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_DURATION, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_CODEC, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_PACKETS_SENT, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_PACKETS_RECEIVED, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_BYTES_SENT, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_BYTES_RECEIVED, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_PACKETS_LOST, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_FRACTION_LOST, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_JITTER, general.lang)%>",
+				"<%HTMLPRINTTEXT(VOIP_STATUS_ROUND_TRIP_DELAY, general.lang)%>"];
+    var attributes = ["CallNum", "CallState", "Origin", "RemoteNumber", "RemoteId", "Duration",
+                      "Codec", "PacketsSent", "PacketsReceived",
+                      "BytesSent", "BytesReceived", "PacketsLost",
+                      "FractionLost", "Jitter", "RoundTrip"];
+
+    var calls = null;
+    if (line != null)
+        calls = line.getElementsByTagName("Call");
+
+    if (line == null || calls == null || calls.length == 0) {
+        var node = document.getElementById("Calls");
+        node.innerHTML = "";
+        return;
+    }
+
+    var title = "<%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> "+(parseInt(line.attributes[0].nodeValue)+1)+" <%HTMLPRINTTEXT(VOIP_STATUS_CALL_INFORMATION, general.lang)%>";
+    buildTable("Calls", title, names, attributes, calls.length);
+
+    var stats;
+    for (var i=0; i<calls.length; ++i) {
+        var stats = calls[i].childNodes;
+        var callName = document.getElementById("CallNum"+i);
+        callName.innerHTML = "<%HTMLPRINTTEXT(VOIP_STATUS_CALL_STRING, general.lang)%> "+(i+1);
+        for (var j=0; j<stats.length; ++j) {
+            var name = stats[j].nodeName + i;
+            var el = document.getElementById(name);
+            if (el == null)
+                continue;
+            var val = "-";
+            if (stats[j].childNodes[0] != null)
+                val = stats[j].childNodes[0].nodeValue;
+            el.innerText = val;
+            el.textContent = val;
+        }
+    }
+}
+
+function setRefreshRate() {
+    var refreshCtl = document.getElementById("refreshRate");
+    refreshDelay = refreshCtl.value;
+    refreshPagePeriodic();
+}
+
+</SCRIPT>
+
+<body onload="init();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px"><%HTMLPRINTTEXT(VOIP_STATUS_TITLE, general.lang)%></span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(DIAGNOSTICS, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(VOIP_STATUS_TITLE, general.lang)%></span>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+            <td valign="top" id="Phone">&nbsp;</td>
+          </tr>  
+          <tr>
+            <td><br/></td>
+          </tr>  
+          <tr>
+            <td valign="top" id="Lines">&nbsp;</td>
+          </tr>  
+          <tr>
+            <td><br/></td>
+          </tr>  
+          <tr>
+            <td valign="top" id="Calls">&nbsp;</td>
+          </tr>  
+    </table>
+  </DIV>
+
+<DIV id="bottom" class="bottom" style="margin-top: 20px;">
+        <div style="FONT: bold 10pt Arial"><%HTMLPRINTTEXT(VOIP_STATUS_REFRESH_RATE, general.lang)%>:&nbsp;
+            <select id="refreshRate" onchange="setRefreshRate()">
+              <option value="0"><%HTMLPRINTTEXT(VOIP_STATUS_DISABLE_REFRESH, general.lang)%></option>
+              <option value="5000" selected="selected">5 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+              <option value="10000">10 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+              <option value="20000">20 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+              <option value="30000">30 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+              <option value="40000">40 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+              <option value="50000">50 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+              <option value="60000">60 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+            </select>
+            &nbsp;
+            <input type="button" value="<%HTMLPRINTTEXT(VOIP_STATUS_REFRESH_NOW, general.lang)%>" style="margin-top: 0;" class="submit-button"  onClick="refreshPage();">
+            </div>
+    <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td align="center" valign="center" HEIGHT="47px">
+                           <div style="FONT: bold 10pt Arial"><%HTMLPRINTTEXT(VOIP_STATUS_REFRESH_RATE, general.lang)%>:&nbsp;
+                           <select id="refreshRate" onchange="setRefreshRate()">
+                             <option value="0"><%HTMLPRINTTEXT(VOIP_STATUS_DISABLE_REFRESH, general.lang)%></option>
+                             <option value="5000" selected="selected">5 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                             <option value="10000">10 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                             <option value="20000">20 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                             <option value="30000">30 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                             <option value="40000">40 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                             <option value="50000">50 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                             <option value="60000">60 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></option>
+                           </select>
+                           &nbsp;
+                           <input type="button" value="<%HTMLPRINTTEXT(VOIP_STATUS_REFRESH_NOW, general.lang)%>" class="SubBut"  onClick="refreshPage();">
+                           </div>
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table> -->
+  </DIV>
+</body>
+</html>

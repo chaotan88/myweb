@@ -1,0 +1,78 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function down(){
+	var url='../../<%Network_SHOWDATA(LOG_FILE_NAME)%>';
+        window.open(url,'Download'); 
+
+}
+	
+function clean_log(){
+	document.autoform.CLEAN_LOG.value="1";
+	document.autoform.submit();
+}
+
+function Formsubmit()
+{
+	document.autoform.submit();
+}
+
+function loadcheck()
+{
+   
+}
+</SCRIPT>
+
+<%SIP_GETSUBMIT(SIP_LOGGING)%>
+
+<body onload="loadcheck();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  
+
+  <DIV id="div_content" >
+
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%" height="100%">
+          <tr>
+              <td valign="top">
+
+                      <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                              <td width="100%"  Align="center">
+                                   <textarea style="width:100%;word-break:break-all;overflow:auto;FONT-SIZE: 14px" rows=30  name=s1  wrap="OFF">
+<%SIP_SHOWDATA(TRACE_LOG)%>
+                                  </textarea>
+                              </td>
+                          </tr>
+                      </table>
+ 
+                      <tr>
+                        <td Align="center">
+                           <form method="POST" name="autoform">
+                           <input type="hidden" name="CLEAN_LOG" value="0" class="unnamed11">
+                           <input type="button" value="Clean log" name="apply" onClick="clean_log()">
+                           <input type="button" value="Save log" name="apply" onClick="javascript:down()">
+                           <input type="button" value="<%HTMLPRINTTEXT(Refresh, button.txt)%>" name="apply" onClick="Formsubmit()">
+                           </form>
+                        </td>
+        	         </tr>
+  
+                  <br>
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+
+  </DIV>
+</body>
+</html>
+<%Update_READDATA(REBOOT)%>

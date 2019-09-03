@@ -1,0 +1,256 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<%Network_READDATA(WAN)%>
+<%Network_GETSUBMIT(WAN)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+
+function Formsubmit()
+{
+	if(checksubmit())
+	{
+		document._802_1X.action="../mainform.cgi/Set_802.1X.htm";
+		document._802_1X.submit();
+	}
+}
+
+function includeSpace(str)
+{
+	for(var i=0; i<str.length; i++)
+	{
+		if ( str.charAt(i) == ' ' )
+			return true;
+	}
+	return false;
+}
+
+function checksubmit()
+{
+	switch(document._802_1X.EAP_TYPE.value)
+	{
+		case('0'):
+		{
+			break;
+		}
+		case('1'):
+		{
+			if ( document._802_1X.MD5_IDENTITY.value.length == 0 )
+			{
+				alert('<%HTMLPRINTTEXT(Identity_cannot_be_empty!, Set_802_1X.txt)%> ');
+				document._802_1X.MD5_IDENTITY.focus();
+				return false;
+			}
+			if ( includeSpace(document._802_1X.MD5_PASSWORD.value))
+			{
+				alert('<%HTMLPRINTTEXT(Md5_Password_Space_characters_are_not_allowed!, Set_802_1X.txt)%>');
+				document._802_1X.MD5_PASSWORD.focus();
+				return false;
+			}
+			if ( document._802_1X.MD5_PASSWORD.value != document._802_1X.CONFIRM_MD5_PASSWORD.value)
+			{
+				alert("<%HTMLPRINTTEXT(Md5_Password_mismatch!_Please_re-type_the_password., Set_802_1X.txt)%>");
+				document._802_1X.MD5_PASSWORD.value="";
+				document._802_1X.CONFIRM_MD5_PASSWORD.value="";
+				document._802_1X.MD5_PASSWORD.focus();
+				return false;
+			}
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+
+	return true;
+}
+
+
+function EapTypeOnChange()
+{
+	switch(document._802_1X.EAP_TYPE.value)
+	{
+		case('0'):
+		{
+			document.getElementById("EAP_Type").className="TDEnd";
+			document.getElementById("Md5_Identity").style.display="none";
+			document.getElementById("Md5_Password").style.display="none";
+			document.getElementById("Confirm_Md5_Password").style.display="none";
+			break;
+		}
+		case('1'):
+		{
+			document.getElementById("EAP_Type").className="TDRow";
+			document.getElementById("Md5_Identity").style.display="";
+			document.getElementById("Md5_Password").style.display="";
+			document.getElementById("Confirm_Md5_Password").style.display="";
+			break;
+		}
+		case('2'):
+		{
+			document.getElementById("EAP_Type").className="TDEnd";
+			document.getElementById("Md5_Identity").style.display="none";
+			document.getElementById("Md5_Password").style.display="none";
+			document.getElementById("Confirm_Md5_Password").style.display="none";
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+}
+
+function ShowAlert()
+{
+   <%Network_SHOWDATA(REBOOT_CHECK)%>
+}
+
+
+</SCRIPT>
+
+<%SYS_SHOWDATA(REDIRECT)%>
+
+<body onload="EapTypeOnChange();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">802.1X Settings</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="_802_1X" method="post">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Automatic','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1"><%HTMLPRINTTEXT(802.1X_Settings, Set_802_1X.txt)%></A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+		               	  <tr  class="TRedit">
+	                      <td  id="EAP_Type" class="TDRow">
+	                          <table  border="0" width="100%" cellpadding="0" cellspacing="0">
+	                              <tr>
+	                                  <td width="3%" class="TdMid">&nbsp;</td>
+	                                  <td width="37%" class="TD_Item_First" Align="left">EAP Type:</td>
+	                                  <td class="TdMid" >
+	                                      <select name="EAP_TYPE" onclick="EapTypeOnChange()"><%Network_SHOWDATA(EAP_TYPE)%></select>
+	                                  </td>
+	                              </tr>
+	                          </table>
+	                      </td>
+	                  </tr>
+                      <tr id="Md5_Identity" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="37%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Identity:, Set_802_1X.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="MD5_IDENTITY" size="58" value="<%Network_SHOWDATA(MD5_IDENTITY)%>" maxlength="32" class="unnamed11" ></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="Md5_Password" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="37%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Md5_Password:, Set_802_1X.txt)%></td>
+                                      <td class="TdMid" ><input type="password" name="MD5_PASSWORD" size="58" value="<%Network_SHOWDATA(MD5_PASSWORD)%>" maxlength="32" class="unnamed11" ></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="Confirm_Md5_Password" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="37%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Confirm_Md5_Password:, Set_802_1X.txt)%></td>
+                                      <td class="TdMid" ><input type="password" name="CONFIRM_MD5_PASSWORD" size="58" value="<%Network_SHOWDATA(CONFIRM_MD5_PASSWORD)%>" maxlength="32" class="unnamed11" ></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                  </div>                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>
+

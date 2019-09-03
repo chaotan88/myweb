@@ -1,0 +1,734 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+  if(Chksubmit())
+  {
+    document.sipdialing.action="../mainform.cgi/sip_voice.htm";
+    document.sipdialing.submit();
+  }
+}
+
+function Chksubmit()
+{
+  if(document.sipdialing.Fast_Adaptation_Duration.value == "" || isNumeric(document.sipdialing.Fast_Adaptation_Duration.value,0,65535) == 0)
+  {
+     alert("Fast Adaptation Duration must be in range of 0-65535!");
+     return false;
+  }
+  if(document.sipdialing.MDLY.value == "" || isNumeric(document.sipdialing.MDLY.value,10,250) == 0)
+  {
+     alert("Minimum Delay must be in range of 10-250!");
+     return false;
+  }
+  return true;
+}
+
+function wuisync(){
+   NR_OnChange();
+   SilenceOnChange();
+}
+
+function NR_OnChange()
+{
+  var one = parseFloat(document.sipdialing.NR_SW.value);
+
+  switch(one)
+  {
+      case 0:
+         document.getElementById("NR_Suppression_SW").style.display="none";
+         document.getElementById("NR_Suppression_Gain").style.display="none";
+         document.getElementById("NR_PostGain_Switch").style.display="none";
+         document.getElementById("NR_Threshold_ID").style.display="none";
+         document.getElementById("NR_Attenuation_ID").style.display="none";
+         document.getElementById("NR_Switch").className="TDEnd";
+      break;
+      case 1:
+         document.getElementById("NR_Suppression_SW").style.display="";
+         document.getElementById("NR_Suppression_Gain").style.display="";
+         document.getElementById("NR_PostGain_Switch").style.display="";
+         document.getElementById("NR_Threshold_ID").style.display="";
+         document.getElementById("NR_Attenuation_ID").style.display="";
+         document.getElementById("NR_Switch").className="TDRow";
+         NR_Sup_OnChange();
+      break;
+  }
+}
+
+function NR_Sup_OnChange()
+{
+  var one = parseFloat(document.sipdialing.NR_PostGain_SW.value);
+
+  switch(one)
+  {
+      case 0:
+         document.getElementById("NR_Suppression_Gain").style.display="none";
+      break;
+      case 1:
+         document.getElementById("NR_Suppression_Gain").style.display="";
+      break;
+  }
+}
+
+function SilenceOnChange()
+{
+  var one = parseFloat(document.sipdialing.ESCS.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("silence_sw").className="TDEnd";
+      break;
+      case 1:
+         document.getElementById("silence_sw").className="TDEnd";
+      break;
+  }
+}
+
+</SCRIPT>
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(SIP_VOICE)%>
+
+<body onload="wuisync();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Voice</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="sipdialing" method="post">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">Gain Control</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                       <tr class="TRedit" id="gain_max_gain">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Max Gain:</td>
+                                      <td class="TdMid" ><select name="MAX_GAIN"><%SIP_SHOWDATA(MAX_GAIN)%></select> dB</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                       <tr class="TRedit" id="gain_fast_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Fast Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Fast_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Fast_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                     <tr class="TRedit" id="gain_fast_adap_duration">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Fast Adaptation Duration (0 - 65535):</td>
+                                      <td class="TdMid" ><input type="text" name="Fast_Adaptation_Duration" size="5" maxlength="5" value="<%SIP_SHOWDATA(Fast_Adaptation_Duration)%>" class="unnamed11"> msec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <!--Hands Free NB-->
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Hands Free:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Narrow Band:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="handsfree_NB_slow_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Slow Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Handsfree_NB_Slow_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Handsfree_NB_Slow_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                    </tr>
+                      <tr class="TRedit" id="handsfree_NB_direction">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Gain Control Direction:</td>
+                                      <td class="TdMid" ><select name="Handsfree_NB_direction"><%SIP_SHOWDATA(Handsfree_NB_direction)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="handsfree_NB_enabled">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Automatic Gain Control:</td>
+                                      <td class="TdMid" ><select name="Handsfree_NB_enabled"><%SIP_SHOWDATA(Handsfree_NB_enabled)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                    <tr class="TRedit" id="gain_hands_free_NB_TE">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Target Energy:</td>
+                                      <td class="TdMid" ><select name="Hands_free_NB_TE"><%SIP_SHOWDATA(Hands_free_NB_TE)%></select> dBm</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <!--Hands Free WB-->
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Wide Band:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="handsfree_WB_slow_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Slow Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Handsfree_WB_Slow_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Handsfree_WB_Slow_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                    </tr>
+                      <tr class="TRedit" id="handsfree_WB_direction">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Gain Control Direction:</td>
+                                      <td class="TdMid" ><select name="Handsfree_WB_direction"><%SIP_SHOWDATA(Handsfree_WB_direction)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="handsfree_WB_enabled">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Automatic Gain Control:</td>
+                                      <td class="TdMid" ><select name="Handsfree_WB_enabled"><%SIP_SHOWDATA(Handsfree_WB_enabled)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                    <tr class="TRedit" id="gain_hands_free_WB_TE">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Target Energy:</td>
+                                      <td class="TdMid" ><select name="Hands_free_WB_TE"><%SIP_SHOWDATA(Hands_free_WB_TE)%></select> dBm</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <!--Handset NB-->
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Handset:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Narrow Band:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="handset_NB_slow_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Slow Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Handset_NB_Slow_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Handset_NB_Slow_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                    </tr>
+                      <tr class="TRedit" id="handset_NB_direction">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Gain Control Direction:</td>
+                                      <td class="TdMid" ><select name="Handset_NB_direction"><%SIP_SHOWDATA(Handset_NB_direction)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="handset_NB_enabled">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Automatic Gain Control:</td>
+                                      <td class="TdMid" ><select name="Handset_NB_enabled"><%SIP_SHOWDATA(Handset_NB_enabled)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                     <tr class="TRedit" id="gain_handset_NB_TE">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Target Energy:</td>
+                                      <td class="TdMid" ><select name="Handset_NB_TE"><%SIP_SHOWDATA(Handset_NB_TE)%></select> dBm</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <!--Handset WB-->
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Wide Band:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="handset_WB_slow_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Slow Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Handset_WB_Slow_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Handset_WB_Slow_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                    </tr>
+                      <tr class="TRedit" id="handset_WB_direction">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Gain Control Direction:</td>
+                                      <td class="TdMid" ><select name="Handset_WB_direction"><%SIP_SHOWDATA(Handset_WB_direction)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="handset_WB_enabled">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Automatic Gain Control:</td>
+                                      <td class="TdMid" ><select name="Handset_WB_enabled"><%SIP_SHOWDATA(Handset_WB_enabled)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                    <tr class="TRedit" id="gain_handset_WB_TE">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Target Energy:</td>
+                                      <td class="TdMid" ><select name="Handset_WB_TE"><%SIP_SHOWDATA(Handset_WB_TE)%></select> dBm</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <!--Headset NB -->
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Headset:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Narrow Band:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="headset_NB_slow_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Slow Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Headset_NB_Slow_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Headset_NB_Slow_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                    </tr>
+                      <tr class="TRedit" id="headset_NB_direction">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Gain Control Direction:</td>
+                                      <td class="TdMid" ><select name="Headset_NB_direction"><%SIP_SHOWDATA(Headset_NB_direction)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="headset_NB_enabled">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Automatic Gain Control:</td>
+                                      <td class="TdMid" ><select name="Headset_NB_enabled"><%SIP_SHOWDATA(Headset_NB_enabled)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                     <tr class="TRedit" id="gain_headset_NB_TE">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Target Energy:</td>
+                                      <td class="TdMid" ><select name="Headset_NB_TE"><%SIP_SHOWDATA(Headset_NB_TE)%></select> dBm</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <!-- Headset WB -->
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b>Wide Band:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="headset_WB_slow_adap_gain_slope">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Slow Adaptation Gain Slope:</td>
+                                      <td class="TdMid" ><select name="Headset_WB_Slow_Adaptation_Gain_Slope"><%SIP_SHOWDATA(Headset_WB_Slow_Adaptation_Gain_Slope)%></select> dB/sec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                    </tr>
+                      <tr class="TRedit" id="headset_WB_direction">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Automatic Gain Control Direction:</td>
+                                      <td class="TdMid" ><select name="Headset_WB_direction"><%SIP_SHOWDATA(Headset_WB_direction)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="headset_WB_enabled">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Automatic Gain Control:</td>
+                                      <td class="TdMid" ><select name="Headset_WB_enabled"><%SIP_SHOWDATA(Headset_WB_enabled)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                    <tr class="TRedit" id="gain_headset_WB_TE">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Target Energy:</td>
+                                      <td class="TdMid" ><select name="Headset_WB_TE"><%SIP_SHOWDATA(Headset_WB_TE)%></select> dBm</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                 </table>
+                  </DIV>
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Jitter Buffer</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Minimum Delay (10 to 250 milliseconds):</td>
+                                      <td class="TdMid" ><input type="text" name="MDLY" size="5" maxlength="3" value="<%SIP_SHOWDATA(MDLY)%>" class="unnamed11"> msec</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Optimization Factor (1 to 13):</td>
+                                      <td class="TdMid" ><select name="OPFR"><%SIP_SHOWDATA(OPFR)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                                       
+                  </table>
+                  </div>
+                  
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                     <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Key','Tr3')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">Silence Compression</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Key">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="silence_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Silence Compression:</td>
+                                      <td class="TdMid" ><select name="ESCS" onclick="SilenceOnChange()"><%SIP_SHOWDATA(ESCS)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                  </table>
+                  </div>
+
+                  <br>
+                  <table id="NoiseReduction" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('Noise_Reduction','Tr4')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">Noise Reduction</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="Noise_Reduction">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="NR_Switch">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Noise Reduction:</td>
+                                      <td class="TdMid" ><select name="NR_SW" onclick="NR_OnChange()"><%SIP_SHOWDATA(NR_SW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="NR_Suppression_SW">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Noise Reduction Suppression:</td>
+                                      <td class="TdMid" ><select name="NR_Sup_SW" ><%SIP_SHOWDATA(NR_Sup_SW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="NR_PostGain_Switch">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Noise Reduction Post Gain:</td>
+                                      <td class="TdMid" ><select name="NR_PostGain_SW" onclick="NR_Sup_OnChange()"><%SIP_SHOWDATA(NR_PostGain_SW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="NR_Suppression_Gain">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Noise Reduction Post Gain(10h-20h):</td>
+                                      <td class="TdMid" ><input type="text" name="NR_Sup_Gain" size="5" maxlength="4" value="<%SIP_SHOWDATA(NR_Sup_Gain)%>" class="unnamed11"> Hex</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="NR_Threshold_ID">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Stationary Level:(0-3):</td>
+                                      <td class="TdMid" ><select name="NR_Threshold"><%SIP_SHOWDATA(NR_Threshold)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="NR_Attenuation_ID">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Maximal Attenuation:(0-15):</td>
+                                      <td class="TdMid" ><input type="text" name="NR_Attenuation" size="5" maxlength="3" value="<%SIP_SHOWDATA(NR_Attenuation)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                  
+                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>

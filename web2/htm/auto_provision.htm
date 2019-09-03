@@ -1,0 +1,448 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<%Network_READDATA(AUTO_ST)%>
+<%Network_GETSUBMIT(AUTO_ST)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+
+
+function validateKey(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+
+
+function checkIpAddr(field, msg)
+{
+   if ( validateKey(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK, error.lang)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,255) ) {
+      alert(msg+' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE1, error.lang)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE2, error.lang)%>');
+        field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE3, error.lang)%>');
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE4, error.lang)%>');
+      field.focus();
+      return false;
+   }
+   return true;
+}
+function Formsubmit(dowhat){
+     switch(document.tftpform.ASU_METHOD.value) {
+         case('0') :  
+         break;
+         case('1'): 
+					if(dowhat == 5)
+					{
+					   document.tftpform.FW_DYN.value = "1";
+					}
+					if(dowhat == 6)
+					{  
+
+					document.tftpform.CFG_DYN.value = "1";
+
+				}
+         break;
+         case('2'): 
+            if (dowhat == 3||dowhat == 1)
+            {
+            if(dowhat == 3)
+               document.tftpform.NOW_FW.value = "1";
+          }
+           
+           if (dowhat == 4||dowhat == 1)
+            {
+           if(dowhat == 4)
+              document.tftpform.NOW_CFG.value = "1";
+            }
+        break;
+         case('3'): //via DHCP
+	  
+        break;
+
+      }
+
+     document.tftpform.action="../mainform.cgi/Auto_Provision.htm";
+     document.tftpform.submit();
+     var a = document.createElement("div"),
+      p = document.createElement("p"),
+      img = document.createElement("img"),
+      textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+  img.src="../../image/success.png";
+  p.appendChild(textNode);
+  var content = document.createElement("div");
+  content.setAttribute('class', 'success-info');
+  content.appendChild(img);
+  content.appendChild(p);
+  document.getElementsByTagName("body")[0].appendChild(content);
+  setTimeout(function () {
+    content.parentNode.removeChild(content);
+  },3000);
+
+}
+
+function ShowAlert() {
+    <%Network_SHOWDATA(AUTOST_CHECK)%>
+}
+
+function check_show() {
+	switch(document.tftpform.ASU_METHOD.value) 
+  {
+  	case('1'):
+		document.getElementById("fw_url").style.display="none";
+		document.getElementById("cfg_url").style.display="none";
+		document.getElementById("optval").style.display="";
+		document.getElementById("dynamic_fw_url").style.display="";
+		document.getElementById("dynamic_cfg_url").style.display="";
+		document.getElementById("period").className="TDEnd";
+  	break;
+  	case('2'):
+		document.getElementById("optval").style.display="none";
+		document.getElementById("fw_url").style.display="";
+		document.getElementById("cfg_url").style.display="";
+		document.getElementById("dynamic_fw_url").style.display="none";
+		document.getElementById("dynamic_cfg_url").style.display="none";
+		document.getElementById("period").className="TDEnd";
+  	break;
+  	case('3'):
+		document.getElementById("optval").style.display="none";
+		document.getElementById("fw_url").style.display="none";
+		document.getElementById("cfg_url").style.display="none";
+		document.getElementById("dynamic_fw_url").style.display="none";
+		document.getElementById("dynamic_cfg_url").style.display="none";
+		document.getElementById("per0").className="TDEnd";
+		document.getElementById("per1").style.display="none";
+		document.getElementById("per_add_0").style.display="none";
+		document.getElementById("per_add_1").style.display="none";
+		document.getElementById("per_add_2").style.display="none";
+		
+  	return;
+  	break;
+  	case('0'):
+	  	document.getElementById("optval").style.display="none";
+	       document.getElementById("fw_url").style.display="none";
+	       document.getElementById("cfg_url").style.display="none";
+	 	document.getElementById("dynamic_fw_url").style.display="none";
+	 	document.getElementById("dynamic_cfg_url").style.display="none";
+	       document.getElementById("per0").className="TDEnd";
+	       document.getElementById("per1").style.display="none";
+	       document.getElementById("per_add_0").style.display="none";
+	       document.getElementById("per_add_1").style.display="none";
+	       document.getElementById("per_add_2").style.display="none";
+
+  	return;
+
+  	break;
+  	
+  }
+ 
+		document.getElementById("per1").style.display="";
+		document.getElementById("per0").className="TDRow";
+   switch(document.tftpform.ASU_PERIOD.value) {
+      case('0'):
+         document.getElementById("per_add_0").style.display="";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+         document.getElementById("random_tr").style.display="none";
+      break;
+      case('1'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="";
+         document.getElementById("per_add_2").style.display="none";
+         document.getElementById("random_tr").style.display="";
+      break;
+      case('2'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="";
+         document.getElementById("random_tr").style.display="";
+      break;
+      case('3'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+         document.getElementById("random_tr").style.display="none";
+      break;
+   }
+}
+</SCRIPT>
+
+
+
+<body onload="check_show();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(MANAGEMENT, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_AUTOMATIC_UPDATE, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <form method="POST" name="tftpform">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <table id="setupTable" align="center"   class="SetupTable"  border="0" cellpadding="1" cellspacing="0">
+                      <!-- <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td>&nbsp;</td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr> -->
+                     
+			<tr id="per3"  >
+ 
+                       <td id="ver_name"  class="TDRow">
+                          <table border="0" width="100%"  cellpadding="0" cellspacing="0">
+
+                          <td width="50%"  class="TD_Item_First" Align="left">
+                              &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_FIRMWARE_VERSION, general.lang)%> :&nbsp;&nbsp;
+                          </td>
+                           <td  width="50%" class="TD_Item_First" height="30" Align="left">
+                              &nbsp;&nbsp;<%Network_SHOWDATA(FWVERSION)%>
+                          </td>
+                          </table>
+                        </td>
+
+                     </tr>
+
+                      <tr class="TRedit">
+                          <td id="per0" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                 <tr>
+                                    <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_PROVISIONING_METHOD, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                          <select name="ASU_METHOD" onchange="check_show()">
+                                           <%Network_SHOWDATA(ASU_METHOD)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+
+                             <tr id="fw_url">
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_FIRMWARE_URL, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <input type="text" name="FW_URL" size="58" maxlength="256" value="<%Network_SHOWDATA(FW_URL)%>" class="unnamed11">
+                                      </td>
+                                     <td class="TdMid"  Align="center">
+                                         <input type="hidden" name="NOW_FW" value="0" class="unnamed11">
+                                         <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(3)">  
+                                      </td>
+                                     
+                                 </tr>
+         
+                                                      
+                                  <tr id="cfg_url">
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                         &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_CONFIGURATION_URL, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <input type="text" name="CFG_URL" size="58" maxlength="256" value="<%Network_SHOWDATA(CFG_URL)%>" class="unnamed11">
+                                      </td>
+                                      
+       
+                                      <td class="TdMid"  Align="center">
+                                         <input type="hidden" name="NOW_CFG" value="0" class="unnamed11">
+                                         <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(4)">  
+                                      </td>
+                          
+                                  </tr>
+                             
+                                  <tr    id="dynamic_fw_url">
+   
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                           &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_DYNAMIC_FIRMWARE_URL, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                 
+                                      <td  class="TdMid"  Align="left">
+                                       <table border="0" width="100%" cellpadding="0" cellspacing="0"> 
+	                                      <td  width="80%"    Align="left">
+	                                      &nbsp;<label  >  <%Network_SHOWDATA(DNY_FW_URL)%></label>
+	                                      </td>
+                                    
+	                                        <td     Align="center">
+	  					      <input type="hidden" name="FW_DYN" value="0" class="unnamed11">
+	                                         <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(5)">  
+	                                        </td>
+	                                 </table> 
+                                       </td>
+                                    
+                                      </tr> 
+                                      <tr id="dynamic_cfg_url">
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                           &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_DYNAMIC_CONFIG_URL, general.lang)%> :
+                                      </td>
+                                        <td  class="TdMid"  Align="left">
+                                    <table border="0" width="100%" cellpadding="0" cellspacing="0"> 
+                                     <td width="80%"    Align="left">
+                                       &nbsp;<label  >  <%Network_SHOWDATA(DNY_CFG_URL)%></label>
+                                      </td>
+                                      
+                                       <td     Align="center">
+                                         <input type="hidden" name="CFG_DYN" value="0" class="unnamed11">
+                                         <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(6)">  
+                                      </td>
+ 	                                 </table> 
+                                     </td>
+
+                                  </tr>
+			 <tr id="optval">
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_DHCP_OPTION_VALUE, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td  class="TdMid"  Align="left">
+                                         <input type="text" name="OPTVAL" size="3" maxlength="3" value="<%Network_SHOWDATA(OPTVAL)%>" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              
+                           
+                             </table>
+                          </td>
+                      </tr>
+                      <tr id="per1" class="TRedit">
+                          <td id="period" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_CHECK_PERIOD, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <select name="ASU_PERIOD" onchange="check_show()">
+                                           <%Network_SHOWDATA(ASU_PERIOD)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+                                  
+                                  <tr id="per_add_0">
+
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_STR, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <input type="text" name="ASU_HOURS" size="3" maxlength="3" value="<%Network_SHOWDATA(ASU_HOURS)%>" class="unnamed11"> <%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_HOUR_STR, general.lang)%>
+                                      </td>
+                                  </tr>
+                                  <tr id="per_add_1">
+  
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_DAY_AT, general.lang)%> :&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <select name="ASU_EDTIME">
+                                           <%Network_SHOWDATA(ASU_EDTIME)%>
+                                         </select>
+                                      </td>
+                                     
+                                  </tr>
+                                  <tr id="per_add_2">
+                                      <td width="27%" class="TD_Item_First" Align="left">
+                                          &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_STR, general.lang)%>:&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <select name="ASU_EDWDAY">
+                                           <%Network_SHOWDATA(ASU_EDWDAY)%>
+                                         </select>
+                                         &nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_AT, general.lang)%>&nbsp;
+                                         <select name="ASU_EDWTIME">
+                                           <%Network_SHOWDATA(ASU_EDWTIME)%>
+                                         </select>
+                                      </td>
+
+                                  </tr>
+                                  <tr id="random_tr">
+                                         <td width="27%" class="TD_Item_First" Align="left">
+                                      &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_RANDOM_TIME, general.lang)%>:
+                                      </td>
+                                        <td class="TdMid"  Align="left">
+                                         <input type="text" name="ASU_RANDOM" size="3" maxlength="3" value="<%Network_SHOWDATA(ASU_RANDOM)%>" class="unnamed11"> <%HTMLPRINTTEXT(GENERAL_UNITS_MINUTES, general.lang)%>
+                                      </td>
+                                 </tr>
+
+                              </table>
+                          </td>
+                      </tr>
+                 </table>
+              </td>
+          </tr>  
+      </table>
+  </form>
+  </DIV>
+  <DIV id="bottom" class="bottom">
+        <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit(1)">
+  </DIV>
+</body>
+</html>

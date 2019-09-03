@@ -1,0 +1,430 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<%int c_doline;%>
+<%int cmax_num;%>
+<%int cbegin_num;%>
+<%int page_num;%>
+<%Network_GETSUBMIT(ACD)%>
+<%@page_num = NETWORK_GETVAR(PAGENUM)%>
+<%@cbegin_num = NETWORK_GETVAR(ACDREASONCODEBEGINE)%>
+<%@cmax_num = NETWORK_GETVAR(ACDREASONCODEEND)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit(dowhat)
+{
+	switch(dowhat)
+	{
+		case 0:
+			if(Chksubmit())
+			{
+				document.acdsetting.action="../mainform.cgi/set_acd.htm";
+				document.acdsetting.submit();
+			}
+		break;
+		
+		case 1:
+			document.AcdReasonCodePageForm.action = "../mainform.cgi/set_acd.htm";
+			document.AcdReasonCodePageForm.submit();
+			break;
+		case 2:
+			document.AcdUnavailabeReasonCodeForm.action="../mainform.cgi/set_acd.htm";
+			document.AcdUnavailabeReasonCodeForm.submit();
+			break;	
+			
+		default:
+			break;
+	}
+}
+
+function Chksubmit()
+{
+	return true;
+}
+
+function acd_use_sip()
+{
+  var one = parseFloat(document.acdsetting.ACDUS.value);
+  switch(one)
+  {
+	 case 1:
+	  document.getElementById("acd_sa").style.display="none";
+  	  document.getElementById("acd_port").style.display="none";
+  	  break;
+     case 0:
+	  document.getElementById("acd_sa").style.display="";
+  	  document.getElementById("acd_port").style.display="";
+
+  break;
+  default:
+  	break;
+}
+}
+
+
+function acd_enable()
+{
+  var one = parseFloat(document.acdsetting.ACDSW.value);
+  switch(one)
+  {
+	 case 0:
+	  document.getElementById("acd_sever_use_sip").style.display="none";
+	  document.getElementById("acd_sa").style.display="none";
+  	  document.getElementById("acd_port").style.display="none";
+  	  document.getElementById("acd_un").style.display="none";
+  	  document.getElementById("acd_pw").style.display="none";
+	  document.getElementById("acd_expire_time").style.display="none";
+	  document.getElementById("acd_state_after_login").style.display="none";
+	  document.getElementById("acd_first_noify_close_enable").style.display="none";
+	  document.getElementById("acd_sever_type").style.display="none";
+	  document.getElementById("acd_reason_header_table").style.display="none";  
+	  document.getElementById("acd_reason_code_table").style.display="none";
+	  document.getElementById("acd_reason_code_page_table").style.display="none";
+	  document.getElementById("acd_sw").className="TDEnd";
+  	  break;
+   case 1:
+	  document.getElementById("acd_sever_use_sip").style.display="";
+	  document.getElementById("acd_sa").style.display="";
+  	  document.getElementById("acd_port").style.display="";
+  	  document.getElementById("acd_un").style.display="";
+  	  document.getElementById("acd_pw").style.display="";
+	  document.getElementById("acd_expire_time").style.display="";
+	  document.getElementById("acd_state_after_login").style.display = type == 0 ? "" : "none";
+	  document.getElementById("acd_first_noify_close_enable").style.display="";
+	  document.getElementById("acd_sever_type").style.display="";
+	  document.getElementById("acd_reason_header_table").style.display="";  
+	  document.getElementById("acd_reason_code_table").style.display="";
+	  document.getElementById("acd_reason_code_page_table").style.display="";
+	  document.getElementById("acd_sw").className="TDRow";
+      acd_use_sip();
+  break;
+  default:
+  	break;
+}
+}
+
+function wuisync()
+{
+	acd_enable();
+}
+
+</SCRIPT>
+
+<body onLoad="wuisync();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+	<DIV id="div_bar" class="Bar">
+	<table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+		<tr>
+			<td>
+		   <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+				  <Tr>
+					  <Td>
+						  <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+							  <tr>
+								  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+								  <td style="background:url(../image/page_header_M.gif);">
+									<span id="title" style="position:relative;left:10px">ACD</span>
+								  </td>
+								  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+								  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+							  </tr>
+						  </Table>
+					  </Td>
+				  </Tr>
+			   </table>
+			</td>
+		</tr>
+	</table>
+	</DIV>
+
+	<DIV id="div_setup" class="Setup">
+	  <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+		  <tr>
+			<Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+			<td class="barSeparate">&nbsp;</td>
+			<Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+		  </tr>
+	  </table>
+	</DIV>
+
+  	<DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+		<table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+			  <tr>
+					<td valign="top">
+						<form name="acdsetting" method="post">
+							<table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+							  <tr class="TRedit">
+								  <td>
+									  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+										  <tr>
+											  <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('acd_setting','Tr1')" style="text-decoration:none">
+											  <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">ACD</A></Td>
+										  </tr>
+									  </table>
+								  </td>
+							  </tr>
+							</table>
+							
+						   <DIV id="acd_setting">
+								<table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+								  <tr class="TRedit">
+									  <td class="TDRow" id="acd_sw">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" class="TD_Item_First" Align="left">Active:</td>
+												  <td class="TdMid" >
+													<select name="ACDSW" onclick="acd_enable()"><%Network_SHOWDATA(ACDSW)%></select>
+												  </td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								
+								 <tr class="TRedit" id="acd_sever_type">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" Align="left" class="TD_Item_First">Server Type: </td>
+												  <td class="TdMid" >
+												  <select name="ACDSERVERTYPE"><%Network_SHOWDATA(ACDSERVERTYPE)%></select>
+																						</td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								  
+								  
+								 <tr class="TRedit" id="acd_sever_use_sip">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" Align="left" class="TD_Item_First">Use Sip Server As ACD Server: </td>
+												  <td class="TdMid" >
+												  <select name="ACDUS"  onclick="acd_use_sip()"><%Network_SHOWDATA(ACDUS)%></select>
+													</td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								  
+								  <tr class="TRedit" id="acd_sa">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" class="TD_Item_First" Align="left">Server Address:</td>
+												  <td class="TdMid" ><input type="text" name="ACDSA" size="32" maxlength="255" value="<%Network_SHOWDATA(ACDSA)%>" class="unnamed11"></td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								
+								
+								  <tr class="TRedit" id="acd_port">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" class="TD_Item_First" Align="left">Port:</td>
+												  <td class="TdMid" ><input type="text" name="ACDPORT" size="6" maxlength="18" value="<%Network_SHOWDATA(ACDPORT)%>" class="unnamed11"></td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								
+								  <tr class="TRedit" id="acd_un">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" class="TD_Item_First" Align="left">User Name:</td>
+												  <td class="TdMid" ><input type="text" name="ACDUN" size="32" maxlength="255" value="<%Network_SHOWDATA(ACDUN)%>" class="unnamed11"></td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								
+								  <tr class="TRedit" id="acd_pw">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" class="TD_Item_First" Align="left">Password:</td>
+												  <td class="TdMid" >
+												  <input type="password" name="ACDPW" size="32" maxlength="255" value="<%Network_SHOWDATA(ACDPW)%>" class="unnamed11">
+												  </td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								
+								  <tr class="TRedit" id="acd_expire_time">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" class="TD_Item_First" Align="left">Expire Time:</td>
+												  <td class="TdMid" ><input type="text" name="ACDEXPIRETIME" size="32" maxlength="255" value="<%Network_SHOWDATA(ACDEXPIRETIME)%>" class="unnamed11"></td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								
+								<tr class="TRedit" id="acd_state_after_login">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" Align="left" class="TD_Item_First">State After Login:</td>
+												  <td class="TdMid" >
+												  <select name="ACDStateAfterLogin"><%Network_SHOWDATA(ACDStateAfterLogin)%></select>
+												</td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								  
+								  <tr class="TRedit" id="acd_first_noify_close_enable">
+									  <td class="TDRow">
+										  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+											  <tr>
+												  <td width="3%" class="TdMid">&nbsp;</td>
+												  <td width="47%" Align="left" class="TD_Item_First">First Notify Close Enabled: </td>
+												  <td class="TdMid" >
+												  <select name="ACDSFIRSTNOTIFYCLOSE"><%Network_SHOWDATA(ACDSFIRSTNOTIFYCLOSE)%></select>
+																						</td>
+											  </tr>
+										  </table>
+									  </td>
+								  </tr>
+								  
+								  <tr>
+									<td>
+										<a href="JAVASCRIPT:Formsubmit(0)">
+										<IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+										</a>   				  
+									</td>
+								  </tr>
+								</table>
+							</div>
+						</form>
+					
+						<tr>
+							<td class="barSeparate"></td>
+						</tr>
+						   
+						<DIV id="acd_unavailabe_reason_div">
+						  <table id="acd_reason_header_table" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+							  <tr class="TRedit">
+								  <td>
+									  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+										  <tr>
+											  <Td class="tdTitle"><!--A HREF="javascript:OpenCloseDiv('acd_setting','Tr1')" style="text-decoration:none"-->
+											  <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">Unavailabe Reason Code</A></Td>
+										  </tr>
+									  </table>
+								  </td>
+							  </tr>
+							</table>   
+						   
+							<table id="acd_reason_code_page_table" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+								
+								<tr class="TRedit" id="acd_reason_code_page">
+								  <td class="TDRow">
+									  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+										  <tr>
+											  <td width="3%" class="TdMid">&nbsp;</td>
+											  <td width="47%" Align="left" class="TD_Item_First">Reason Code Page: </td>
+											  <td class="TdMid" >
+												<form method="POST" name="AcdReasonCodePageForm">									
+												<select size="1" name="ACDREASONCODEPAGE" onChange="Formsubmit(1)" class="unnamed11">
+												<%Network_SHOWDATA(ACDREASONCODEPAGE)%>
+												</select>
+												</form>
+												</td>
+											</tr>
+									  </table>
+								  </td>
+							  </tr>          
+							</table>
+							<table id="acd_reason_code_table" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">	
+								<form method="POST" name="AcdUnavailabeReasonCodeForm">			  
+									<tr class="TRedit">
+										<td width="5%" align="center"  class="TdTitleLeft">
+										<%HTMLPRINTTEXT(ReasonNo., Phone_Book.txt)%>
+										</td>
+										<td width="20%" align="center" class="TdTitleLeft">
+										<%HTMLPRINTTEXT(ReasonCode, Phone_Book.txt)%>
+										</td>
+										<td width="20%" align="center"   class="TdTitleLeft">
+										<%HTMLPRINTTEXT(ReasonName, Phone_Book.txt)%>
+										</td>							
+									</tr>
+									
+									<%for @c_doline=@cbegin_num;<=@cmax_num;1%>
+									<tr class="TrTwo">
+										<td align="center" class="TdLeft"><%@c_doline%>
+										<input name="ACD_REASON_INDEX" style="display:none" value="<%@c_doline%>">
+										</td>
+										<td class="TdMid" ><input type="text" name="ACD_REASONCODE" size="32" maxlength="255" value="<%Network_SHOWDATA(@c_doline, ACD_REASONCODE)%>" class="unnamed11"></td>
+										<td class="TdMid" ><input type="text" name="ACD_REASONNAME" size="32" maxlength="255" value="<%Network_SHOWDATA(@c_doline, ACD_REASONNAME)%>" class="unnamed11"></td>
+									</tr>
+									<%endfor%>
+									<input name="PAGENUM" style="display:none" value="<%@page_num%>">					
+								</form>  
+								
+								<tr>
+									<td>
+									</td>
+									<td>
+									</td>
+									<td align="right">
+										<a href="JAVASCRIPT:Formsubmit(2)">
+										<IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+										</a>   	
+									</td>							
+								</tr>
+
+								 
+							</table>
+						</div> 
+					</td>
+			  </tr>  
+ 		</table>
+	</DIV>
+  
+	<DIV id="bottom" class="bottom">
+		<table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+			<!--TR>
+				<Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+				<td>
+				<td class="barSeparate">&nbsp;</td>
+				</td>
+				<Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+			<tr-->
+			<tr>
+				<td colspan="3">
+					<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+							<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+							<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+  	</DIV>
+</body>
+</html>
+

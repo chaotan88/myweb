@@ -1,0 +1,140 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<%GenerateCsr_GETSUBMIT(GEN_CSR)%>
+<SCRIPT LANGUAGE="JavaScript">
+
+function down(){
+	var url='../../<%GenerateCsr_SHOWDATA(DOWNLOAD_CSR)%>';
+
+	if('<%GenerateCsr_SHOWDATA(DOWNLOAD_CSR)%>' == '')
+	{
+		alert("No CSR file");
+		return;
+	}
+	window.open(url,'Download');
+}
+
+function Generate_Csr(){
+	document.autoform.GEN_CSR.value="1";
+	document.autoform.action="../mainform.cgi/Generate_CSR.htm";
+	document.autoform.submit();
+}
+
+function ShowAlert() {
+    <%GenerateCsr_SHOWDATA(GEN_CSR_CHECK)%>
+}
+
+</SCRIPT>
+<body onload="ShowAlert();"leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">
+                                        <%HTMLPRINTTEXT(Certificate_Signing_Request, Auto_Config.txt)%>
+                                    </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+  
+  <DIV id="div_content" class="Content_TYPE1" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0" >
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td  Align="center"><%HTMLPRINTTEXT(Certificate_Signing_Request, Auto_Config.txt)%></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                     
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr height="270">
+                                      <td width="100%" class="TD_Item_First" Align="center">
+                                          <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%GenerateCsr_SHOWDATA(CSR_FILE)%>
+                                          </textarea>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td Align="center">
+                           <form method="POST" name="autoform">
+                           <input type="hidden" name="GEN_CSR" value="0" class="unnamed11">
+                           <input type="button" value="<%HTMLPRINTTEXT(Generate_Certificate_Signing_Request, button.txt)%>" name="apply" onClick="Generate_Csr()">
+                           <input type="button" value="<%HTMLPRINTTEXT(Save_Certificate_Signing_Request, button.txt)%>" name="apply" onClick="down()">
+                           </form>
+                        </td>
+        	         </tr>
+                  </table>
+                  
+                  <br>
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        <tr>
+           <td colspan="3">
+		<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+         </tr>
+      </table>
+  </DIV>
+</body>
+</html>
+

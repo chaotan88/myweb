@@ -1,0 +1,691 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int vlan_fg;%>
+<%Network_READDATA(WAN)%>
+<%Network_READDATA(LAN)%>
+<%Network_GETSUBMIT(LAN)%>
+<%@vlan_fg = NETWORK_GETVAR(VLAN)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+
+function Formsubmit(){
+   if(checksubmit())
+      {
+        document.lanform.action="../mainform.cgi/Set_LAN.htm";
+        document.lanform.submit();
+      }
+}
+
+function validateKey(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+function isNumeric(str,small,max)
+{  
+      if (str.charAt(0) == 0)
+        return 2;
+      if (!isNaN(str) && str >= small && str <= max){
+        return true
+      }
+      return false;
+}
+
+function checkMask(s, num)
+{
+  d = getDigit(s,num);
+  if( !(d==0 || d==128 || d==192 || d==224 || d==240 || d==248 || d==252 || d==254 || d==255 ))
+  	return false;
+  return true;
+}
+
+function checkSubnet(ip, mask, client)
+{
+  ip_d = getDigit(ip, 1);
+  mask_d = getDigit(mask, 1);
+  client_d = getDigit(client, 1);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 2);
+  mask_d = getDigit(mask, 2);
+  client_d = getDigit(client, 2);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 3);
+  mask_d = getDigit(mask, 3);
+  client_d = getDigit(client, 3);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 4);
+  mask_d = getDigit(mask, 4);
+  client_d = getDigit(client, 4);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  return true;
+}
+
+function checkIpAddr(field, msg)
+{
+   var wanip = new Array;
+   var lanip = new Array;
+   var i = 0,j = 0;
+
+   wanip = '<%Network_SHOWDATA(IP)%>';
+   lanip = field.value;
+   //alert(lanip);
+   
+   for(i=0;i<13;i++)
+   {
+      if(lanip[i] != wanip[i])
+         break;
+      else
+      {
+         if(lanip[i] == '.')
+            j++;
+      }
+   }
+   if(j == 3)
+   {
+      alert("<%HTMLPRINTTEXT(Wan_IP_range_can't_be_same_with_Lan_IP!!, Set_LAN.txt)%>");
+      field.focus();
+      return false;
+   }
+   if ( validateKey(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(value._It_should_be_the_decimal_number_(0-9)!!, Set_LAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,255) ) {
+      alert(msg+' <%HTMLPRINTTEXT(range_in_the_1st_number._It_should_be_0-255!!, Set_LAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_2nd_number._It_should_be_0-255!!, Set_LAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_3rd_number._It_should_be_0-255!!, Set_LAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_4th_number._It_should_be_1-254!!, Set_LAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   return true;
+}
+
+function checksubmit()
+{
+  var str = document.lanform.LANMAC.value;
+  var i;
+
+  if(str.length == 0)
+  {
+      alert("<%HTMLPRINTTEXT(MAC_address_can't_be_empty!!, Set_LAN.txt)%>");
+      document.lanform.LANMAC.focus();
+      return false;
+  }
+  else if(str.length < 17)
+  {
+      alert("<%HTMLPRINTTEXT(MAC_address_should_be_17_characters_in_all!!, Set_LAN.txt)%>");
+      document.lanform.LANMAC.focus();
+      return false;
+  }
+  if(str.charAt(0) != '0' || str.charAt(1) != '0')
+  {
+      alert("<%HTMLPRINTTEXT(MAC_address_should_begin_with_\"00\"_!!, Set_LAN.txt)%>");
+      document.lanform.LANMAC.focus();
+      return false;
+  }
+  if(str.charAt(2) != ':' || str.charAt(5) != ':' || str.charAt(8) != ':' || str.charAt(11) != ':' || str.charAt(14) != ':')
+  {
+      alert("<%HTMLPRINTTEXT(MAC_address_format_error,it_should_separate_with_\":\"_!!, Set_LAN.txt)%>");
+      document.lanform.LANMAC.focus();
+      return false;
+  }
+  for (i=0; i<str.length; i++)
+  {
+      if(i==2 || i==5 || i==8 || i==11 || i==14)
+         continue;
+      if ( (str.charAt(i) >= '0' && str.charAt(i) <= '9') ||
+	   (str.charAt(i) >= 'a' && str.charAt(i) <= 'f') ||
+	   (str.charAt(i) >= 'A' && str.charAt(i) <= 'F') )
+	    continue;
+      else
+      {
+         alert("<%HTMLPRINTTEXT(Invalid_MAC_address._It_should_be_in_hex_number_(0-9_or_a-f_or_A-F)!!, Set_LAN.txt)%>");
+         document.lanform.LANMAC.focus();
+         return false;
+      }
+  }
+
+  if(document.lanform.LMODE[1].checked && document.lanform.DHCP[0].checked)
+  {
+         alert("<%HTMLPRINTTEXT(Can't_use_dhcp_server_on_bridge_mode!!, Set_LAN.txt)%>");
+         dhcpsDisabled();
+         return false;
+  }
+     if (document.lanform.LANIP.value=="") 
+     {
+	      alert("<%HTMLPRINTTEXT(LANIP_address_can't_be_empty!_It_should_be_filled_with_4_number_numbers_as_xxx.xxx.xxx.xxx!!, Set_LAN.txt)%>");
+	      //document.lanform.LANIP.value = document.lanform.LANIP.defaultValue;
+	      document.lanform.LANIP.focus();
+	      return false;
+     }
+     if ( checkIpAddr(document.lanform.LANIP, '<%HTMLPRINTTEXT(Invalid_LANIP_address, Set_LAN.txt)%>') == false )
+	      return false;
+     if (document.lanform.LANMASK.value=="") 
+     {
+      	alert("<%HTMLPRINTTEXT(Subnet_mask_can't_be_empty!_It_should_be_filled_with_4_digit_numbers_as_xxx.xxx.xxx.xxx!!, Set_LAN.txt)%>");
+	      //document.lanform.LANMASK.value = document.lanform.LANMASK.defaultValue;
+	      document.lanform.LANMASK.focus();
+	      return false;
+     }
+     if ( validateKey( document.lanform.LANMASK.value ) == 0 ) 
+     {
+      	alert("<%HTMLPRINTTEXT(Invalid_subnet_mask_value._It_should_be_the_decimal_number_(0-9)!!, Set_LAN.txt)%>");
+      	      //document.lanform.LANMASK.value = document.lanform.LANMASK.defaultValue;
+	      document.lanform.LANMASK.focus();
+	      return false;
+     }
+     if ( !checkMask(document.lanform.LANMASK.value,1) ) 
+     {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_1st_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Set_LAN.txt)%>');
+	      //document.lanform.LANMASK.value = document.lanform.LANMASK.defaultValue;
+	      document.lanform.LANMASK.focus();
+	      return false;
+     }
+     if ( !checkMask(document.lanform.LANMASK.value,2) ) 
+     {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_the_2nd_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Set_LAN.txt)%>');
+	      //document.lanform.LANMASK.value = document.lanform.LANMASK.defaultValue;
+	      document.lanform.LANMASK.focus();
+	      return false;
+     }
+     if ( !checkMask(document.lanform.LANMASK.value,3) ) 
+     {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_the_3rd_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Set_LAN.txt)%>');
+	      //document.lanform.LANMASK.value = document.lanform.LANMASK.defaultValue;
+	      document.lanform.LANMASK.focus();
+	      return false;
+     }
+     if ( !checkMask(document.lanform.LANMASK.value,4) ) 
+     {
+      	alert('<%HTMLPRINTTEXT(Invalid_netmask_in_the_4th_number.\nIt_should_be_0_128_192_224_240_248_252_254_or_255!!, Set_LAN.txt)%>');
+	      //document.lanform.LANMASK.value = document.lanform.LANMASK.defaultValue;
+	      document.lanform.LANMASK.focus();
+	      return false;
+     }
+     if (document.lanform.DHCP[0].checked)
+     {
+        if (!(isNumeric(document.lanform.STARTIP.value,1,254)))
+        {
+           alert('<%HTMLPRINTTEXT(The_Start_LANIP_address_should_be_between_1_and_254!!, Set_LAN.txt)%>');
+          //document.lanform.STARTIP.value=document.lanform.STARTIP.defaultValue;
+           document.lanform.STARTIP.focus();         
+	       return false;
+        }
+        else if (isNumeric(document.lanform.STARTIP.value,1,254) == 2)
+        {
+           alert('<%HTMLPRINTTEXT(The_Start_LANIP_address_should_not_begin_with_0!!, Set_LAN.txt)%>');
+          //document.lanform.STARTIP.value=document.lanform.STARTIP.defaultValue;
+           document.lanform.STARTIP.focus();         
+	       return false;
+        }
+        if (!(isNumeric(document.lanform.ENDIP.value,1,254)))
+        {
+          alert('<%HTMLPRINTTEXT(The_End_LANIP_address_should_be_between_1_and_254!!, Set_LAN.txt)%>');
+         //document.lanform.ENDIP.value=document.lanform.ENDIP.defaultValue;
+          document.lanform.ENDIP.focus();
+	       return false;
+        }
+        else if (isNumeric(document.lanform.ENDIP.value,1,254) == 2)
+        {
+           alert('<%HTMLPRINTTEXT(The_End_LANIP_address_should_not_begin_with_0!!, Set_LAN.txt)%>');
+          //document.lanform.STARTIP.value=document.lanform.STARTIP.defaultValue;
+           document.lanform.ENDIP.focus(); 
+	       return false;
+        }
+        /*if (!(isNumeric(document.lanform.LT1.value,0,99)))
+        {
+          alert('The [hh] should be between 0 and 99!!');
+         //document.lanform.LT1.value=document.lanform.LT1.defaultValue;
+          document.lanform.LT1.focus();         
+	       return false;
+        }
+        else if(document.lanform.LT1.value != 0 && isNumeric(document.lanform.LT1.value,0,99) == 2)
+        {
+          alert('The [hh] should be begin with 0!!');
+         //document.lanform.LT1.value=document.lanform.LT1.defaultValue;
+          document.lanform.LT1.focus();         
+	       return false;
+        }*/
+        if (!(isNumeric(document.lanform.LT2.value,0,65535)))
+        {
+          alert('<%HTMLPRINTTEXT(The_[mm]_should_be_between_0_and_65535!!, Set_LAN.txt)%>');
+         //document.lanform.LT2.value=document.lanform.LT2.defaultValue;
+          document.lanform.LT2.focus();
+	       return false;
+        }
+        else if(document.lanform.LT2.value != 0 && isNumeric(document.lanform.LT2.value,0,65535) == 2)
+        {
+          alert('<%HTMLPRINTTEXT(The_[mm]_should_be_begin_with_0!!, Set_LAN.txt)%>');
+         //document.lanform.LT2.value=document.lanform.LT2.defaultValue;
+          document.lanform.LT2.focus();
+	       return false;
+        }
+        if ( checkIpAddr(document.lanform.DHDNS1, '<%HTMLPRINTTEXT(Invalid_DNS_Server_1_address, Set_LAN.txt)%>') == false )
+	      return false;
+        if ( checkIpAddr(document.lanform.DHDNS2, '<%HTMLPRINTTEXT(Invalid_DNS_Server_2_address, Set_LAN.txt)%>') == false )
+	      return false;
+      document.lanform.STARTIP.value=parseInt(document.lanform.STARTIP.value);
+      document.lanform.ENDIP.value=parseInt(document.lanform.ENDIP.value);
+      //document.lanform.LT1.value=parseInt(document.lanform.LT1.value);
+      document.lanform.LT2.value=parseInt(document.lanform.LT2.value);
+      if(parseInt(document.lanform.STARTIP.value)>=parseInt(document.lanform.ENDIP.value))
+      {
+         alert('<%HTMLPRINTTEXT(The_end_LANIP_address_should_be_bigger_than_the_start_LANIP_address!!, Set_LAN.txt)%>');
+         document.lanform.ENDIP.focus();
+	     return false;
+      }
+      /*if (document.lanform.LT1.value=='0' && document.lanform.LT2.value=='0')
+      {
+         alert('The lease time could not be 0!!');
+         document.lanform.LT1.focus();
+         return false;
+      }*/
+   }
+  return true;
+}
+
+function dhcpsDisabled()
+{
+  if(document.lanform.LMODE[1].checked)
+  {
+     document.lanform.DHCP[0].disabled = true;
+     document.lanform.DHCP[1].disabled = true;
+     document.lanform.DHCP[1].checked = true;
+     document.lanform.STARTIP.disabled = true;
+     document.lanform.ENDIP.disabled = true;
+     //document.lanform.LT1.disabled = true;
+     document.lanform.LT2.disabled = true;
+     document.lanform.DHDN.disabled = true;
+     document.lanform.DHDNS1.disabled = true;
+     document.lanform.DHDNS2.disabled = true;
+  }
+  else if(document.lanform.DHCP[1].checked)
+  {
+     document.lanform.STARTIP.disabled = true;
+     document.lanform.ENDIP.disabled = true;
+     //document.lanform.LT1.disabled = true;
+     document.lanform.LT2.disabled = true;
+     document.lanform.DHDN.disabled = true;
+     document.lanform.DHDNS1.disabled = true;
+     document.lanform.DHDNS2.disabled = true;
+  }
+}
+
+function dhcpsEnabled()
+{
+   if(document.lanform.LMODE[0].checked && document.lanform.DHCP[0].checked)
+   {
+     document.lanform.DHCP[0].disabled = false;
+     document.lanform.DHCP[1].disabled = false;
+     document.lanform.STARTIP.disabled = false;
+     document.lanform.ENDIP.disabled = false;
+     //document.lanform.LT1.disabled = false;
+     document.lanform.LT2.disabled = false;
+     document.lanform.DHDN.disabled = false;
+     document.lanform.DHDNS1.disabled = false;
+     document.lanform.DHDNS2.disabled = false;
+   }
+   else if(document.lanform.LMODE[0].checked)
+   {
+     document.lanform.DHCP[0].disabled = false;
+     document.lanform.DHCP[1].disabled = false;
+   }
+}
+function NATMode()
+{
+  dhcpsEnabled();
+  document.lanform.LANIP.disabled = false;
+  document.lanform.LANMASK.disabled = false;
+  document.lanform.LANMAC.disabled = false;  
+
+}
+function BridgeMode()
+{
+   dhcpsDisabled();
+   document.lanform.LANIP.disabled = true;
+   document.lanform.LANMASK.disabled = true;
+   document.lanform.LANMAC.disabled = false;   
+}
+function loadcheck()
+{
+   var vlan = '<%@vlan_fg%>';
+   if(document.lanform.LMODE[0].checked) {
+      //NAT
+      if(document.lanform.DHCP[0].checked)
+         dhcpsEnabled();
+      else
+         dhcpsDisabled();
+   }
+   else {
+      BridgeMode();
+   }
+   if(vlan == 1)
+   {
+      document.lanform.LMODE[0].disabled = true;
+      document.lanform.LMODE[1].disabled = true;
+      document.lanform.DHCP[0].disabled = true;
+      document.lanform.DHCP[1].disabled = true;
+   }
+}
+
+function ShowAlert()
+{
+   <%Network_SHOWDATA(ALERT)%>
+}
+
+
+</SCRIPT>
+
+
+
+<body onload="loadcheck();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px"><%HTMLPRINTTEXT(LAN_Settings, Set_LAN.txt)%></span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="lanform" method="post">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1"><%HTMLPRINTTEXT(LAN_Setting, Set_LAN.txt)%></A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(LAN_Mode:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" >
+                                      <input type="radio" name="LMODE" value="0" onClick="NATMode();" <%Network_SHOWDATA(LMODE0)%>><%HTMLPRINTTEXT(NAT, Set_LAN.txt)%>&nbsp;                                      
+                                      <input type="radio" name="LMODE" value="1" onClick="BridgeMode();" <%Network_SHOWDATA(LMODE1)%>><%HTMLPRINTTEXT(Bridge, Set_LAN.txt)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(IP_Address:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="LANIP" size="20" maxlength="15" value="<%Network_SHOWDATA(LANIP)%>"              class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Netmask:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="LANMASK" size="20" maxlength="15"                                                value="<%Network_SHOWDATA(LANMASK)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(MAC_Address:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="LANMAC" size="20" maxlength="17" value="<%Network_SHOWDATA(LANMAC)%>"  class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                  <br>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2"><%HTMLPRINTTEXT(DHCP_Server, Set_LAN.txt)%></A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(DHCP_Server:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" >
+                                         <input type="radio" name="DHCP" value="1" id="fp1" onClick="dhcpsEnabled()" <%Network_SHOWDATA(DHCP1)%>>
+	                                 <label for="fp1"><%HTMLPRINTTEXT(Enable, Set_LAN.txt)%></label>&nbsp;
+	                                 <input type="radio" name="DHCP" value="0" id="fp2" onClick="dhcpsDisabled()" <%Network_SHOWDATA(DHCP0)%>>                   
+	                                 <label for="fp2"><%HTMLPRINTTEXT(Disable, Set_LAN.txt)%></label>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Start_IP:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="STARTIP" size="3" maxlength="3" value="<%Network_SHOWDATA(STARTIP)%>"             class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(End_IP:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="ENDIP" size="3" maxlength="3" value="<%Network_SHOWDATA(ENDIP)%>"                 class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Lease Time:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="LT2" size="5" value="<%Network_SHOWDATA(LT2)%>" maxlength="5"                    class="unnamed11"><%HTMLPRINTTEXT((minutes), Set_LAN.txt)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Domain_Name:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" ><input type="text" name="DHDN" size="20" maxlength="30" value="<%Network_SHOWDATA(DHDN)%>"                    class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Primary_DNS:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" >
+                                      <input type="text" name="DHDNS1" size="20" maxlength="30" value="<%Network_SHOWDATA(DHDNS1)%>"             class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Secondary_DNS:, Set_LAN.txt)%></td>
+                                      <td class="TdMid" >
+                                      <input type="text" name="DHDNS2" size="20" maxlength="30" value="<%Network_SHOWDATA(DHDNS2)%>"             class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </div>                                     
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>

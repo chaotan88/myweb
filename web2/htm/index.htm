@@ -1,0 +1,679 @@
+<html>
+<head>
+
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css">
+
+<SCRIPT>
+var dd;
+
+
+
+
+
+var GstrTreeStructor=""; 
+var GintBranchCount=0;  
+var GintItemCount=0;  
+
+
+
+var GstrBookClose="../image/folder_close.gif";
+var GstrBookOpen="../image/folder_open.gif";
+var GstrPage="../image/doc.gif";
+var closeImg = '../image/down.png';
+var openImg = '../image/up.png';
+
+
+
+
+function objItem(n,k) {
+
+ this.name=n;
+ this.link=k;
+}
+
+
+function menuExpend(id) {
+
+ top.focus();
+//  var img=eval("document.all.img"+id);
+//  var tab=eval("document.all.tab"+id);
+for (var i = 0; i < 20; i++) {
+    if (i != id) {
+        var img = document.getElementById('img'+i);
+        var beforeimg = document.getElementById('beforeimg'+i);
+        var tab = document.getElementById('tab'+i);
+        if (img) {
+            img.src=closeImg;
+            img.parentElement.setAttribute('class', 'menu-item');
+        }
+        if (beforeimg) {
+            beforeimg.src = beforeimg.src.replace('_hover', '');
+        }
+        if (tab) {
+            tab.style.display="none";
+            tab.setAttribute('class', 'menu-child-table');
+        }
+    } else {
+        var img = document.getElementById('img'+id);
+        var tab = document.getElementById('tab'+id);
+        var beforeimg = document.getElementById('beforeimg'+i);
+        if (beforeimg && beforeimg.src.indexOf('_hover.png') == -1) {
+            var arr = beforeimg.src.split('.png');
+            beforeimg.src = arr[0] + '_hover.png';
+        }
+        if(tab.style.display=="none") {
+            tab.style.display="block";
+        //   img.src=GstrBookOpen;
+            img.src=openImg;
+            img.parentElement.setAttribute('class', 'menu-item border-left');
+            tab.setAttribute('class', 'menu-child-table border-left')
+
+        } else {
+            tab.style.display="none";
+            //   img.src=GstrBookClose;
+            img.src=closeImg;
+        }
+    }
+}
+}
+var clickMenu = function(links) {
+    var link = links.split('@')[0];
+    var oid = links.split('@')[1];
+    document.getElementById('subFrame').src = '../mainform.cgi/'+link;
+    var items = document.getElementsByClassName('child-item');
+    for(var i = 0; i < items.length; i++) {
+        var itemi = items[i];
+        if (itemi.getAttribute('id') == oid) {
+            itemi.setAttribute('class', 'child-item child-item-checked');
+        } else {
+            itemi.setAttribute('class', 'child-item');
+        }
+    }
+}
+function getBeforeIcon(obj, id) {
+    var imgID = id + '_before';
+    var beforeImage = '';
+    var beforeIconArr = [
+        {label: 'Quick Setup', zhLabel: '快速配置', image: '../image/quick_setup.png'},
+        {label: 'Personal Settings', zhLabel: '个人设置', image: '../image/user_setting.png'},
+        {label: 'Network Connections', zhLabel: '网络连接', image: '../image/set_wan.png'},
+        {label: 'Voice Over IP', zhLabel: '语音电话', image: '../image/video_phone.png'},
+        {label: 'Advanced Applications', zhLabel: '其他应用', image: '../image/other.png'},
+        {label: 'Automatic Update', zhLabel: '自动升级', image: '../image/auto_provision.png'},
+        {label: 'Manual Update', zhLabel: '手动升级', image: '../image/user_provision.png'},
+        {label: 'Administration', zhLabel: '话机管理', image: '../image/phone_manage.png'},
+        {label: 'Remote Management', zhLabel: '远程管理', image: '../image/remote_manage.png'},
+        {label: 'System Status', zhLabel: '系统状态', image: '../image/system_status.png'},
+        {label: 'History', zhLabel: '记录', image: '../image/call_log.png'}
+    ];
+    for (var i = 0; i < beforeIconArr.length; i++) {
+        if (obj[0] && (beforeIconArr[i].label === obj[0] || beforeIconArr[i].zhLabel === obj[0])) {
+            beforeImage = beforeIconArr[i].image;
+        }
+    }
+    // return beforeImage ? "<img class='before-icon' id=" + imgID +" src=" + beforeImage + ">" : "";
+    return beforeImage;
+}
+
+function treeBuild(obj,pos) {
+
+
+ if(pos=="end" && obj.constructor!=Array)
+  GstrTreeStructor+="<tr><td>";
+ else
+  GstrTreeStructor+="<tr><td>";
+
+ if(obj.constructor==Array) {
+
+  GintBranchCount++;
+  var beforeImg = getBeforeIcon(obj, GintBranchCount);
+  var tabID="tab"+GintBranchCount;
+  var imgID="img"+GintBranchCount;
+  var beforeImgID="beforeimg"+GintBranchCount;
+
+  GstrTreeStructor+=
+  "<div><div class='menu-item' href='exp:" + imgID + "' target=_self" +
+  " onclick=\"javascript: menuExpend(" + GintBranchCount + "); return false;\">" +
+//   getBeforeIcon(obj, imgID)
+  "<img class='before-icon' id=" + beforeImgID +" src=" + beforeImg + ">"+
+//   "<img align=absMiddle border=0 id=" + imgID +
+//   " src=" + GstrBookClose + " valign=middle>" +
+    obj[0] + "<img class='expand-icon' id=" + imgID +" src=" + closeImg + "></div>"
+ + "<table class='menu-child-table' id=" + tabID + " border=0 cellpadding=0 cellspacing=0" +
+  " style=\"position:relative; display:none;\">"
+
+  for(var i=1; i<obj.length; i++)
+   if(i==(obj.length-1)) treeBuild(obj[i],"end");
+   else treeBuild(obj[i],"mid");
+
+  GstrTreeStructor+="</table></div>";
+  }
+
+ else {
+
+    GintItemCount++;
+    var oid = "lnk" + GintItemCount;
+    // var links = '../mainform.cgi/' +  obj.link;
+    var links = obj.link+"@"+oid;
+    GstrTreeStructor+=
+    // "<img align=absMiddle border=0 src=" + GstrPage + ">" +
+    "<a class='child-item' style='text-decoration:none;' id=lnk" + GintItemCount + 
+    " onclick=clickMenu('"+links+"'); target=subFrame>" + obj.name + "</a>";
+    //" href=../mainform.cgi/" + obj.link + " target=subFrame>" + obj.name + "</a>";
+
+  }
+
+ GstrTreeStructor+="</td></tr>";
+
+}
+
+ 
+
+function configTreeCreate() {
+
+<%int isSip100;%>
+<%int isSip200;%>
+<%int is320;%>
+<%int is405;%>
+<%int is420;%>
+<%int is430;%>
+<%int is440;%>
+<%int isAcd;%>
+
+<%@isSip100=PHONE_GETVAR(ISSIP100)%>
+<%@isSip200=PHONE_GETVAR(ISSIP200)%>
+<%@is320=PHONE_GETVAR(IS320)%>
+<%@is405=PHONE_GETVAR(IS405)%>
+<%@is420=PHONE_GETVAR(IS420)%>
+<%@is430=PHONE_GETVAR(IS430)%>
+<%@is440=PHONE_GETVAR(IS440)%>
+<%@isAcd=PHONE_GETVAR(IS_ACD_SUPPORT)%>
+
+    var arTree=new Array();
+
+    //Root
+    var i=-1, j = -1;
+
+    i++;
+    arTree[i]="My Papers";
+
+    i++;
+    arTree[i]=new Array();
+    arTree[i][0]="<%HTMLPRINTTEXT(QUICK_SETUP_TITLE, general.lang)%>";
+    arTree[i][1]=new objItem("<%HTMLPRINTTEXT(QUICK_SETUP_TITLE, general.lang)%>","Quick_setup.htm");
+
+    i++;
+    j = 0;
+    arTree[i]=new Array();
+    arTree[i][j++]="<%HTMLPRINTTEXT(MENU_PERSONAL_SETTINGS, general.lang)%>";
+    
+
+ //arTree[i][j++]=new objItem("Language","Language.htm");
+
+ arTree[i][j++]=new objItem("<%HTMLPRINTTEXT(PHONE_BOOK_TITLE, general.lang)%>","Phone_Book.htm");
+
+ arTree[i][j++]=new objItem("<%HTMLPRINTTEXT(SPEED_DIAL_TITLE, general.lang)%>","Speed_Dial.htm");
+
+ //arTree[i][j++]=new objItem("Line Key","Line_Key.htm");
+ //arTree[i][j++]=new objItem("Programmable Keys","Line_Keys_Configuration.htm");
+ //arTree[i][j++]=new objItem("Tones","tones.htm");
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_NETWORK_CONNECTIONS, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(SET_WAN_TITLE, general.lang)%>","Set_WAN.htm");
+// arTree[i][2]=new objItem("802.1X Settings","Set_802.1X.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(SIP_GENERAL_TITLE, general.lang)%>","sip_general.htm");
+ arTree[i][2]=new objItem("<%HTMLPRINTTEXT(SIP_DIAL_TITLE, general.lang)%>","sip_dialing.htm");
+ arTree[i][3]=new objItem("<%HTMLPRINTTEXT(SIP_MSTREAM_TITLE, general.lang)%>","sip_mstream.htm");
+ //arTree[i][4]=new objItem("Voice","sip_voice.htm");
+ arTree[i][4]=new objItem("<%HTMLPRINTTEXT(GAIN_SETTINGS_TITLE, general.lang)%>","gain_settings.htm");
+ arTree[i][5]=new objItem("<%HTMLPRINTTEXT(SIP_LINESETTING_TITLE, general.lang)%>","sip_linesetting.htm");
+ arTree[i][6]=new objItem("<%HTMLPRINTTEXT(SIP_VOICE_TEST_TITLE, general.lang)%>","sip_test.htm");
+// arTree[i][7]=new objItem("Services","sip_service.htm");
+
+// i++;
+// arTree[i]=new Array();
+// arTree[i][0]="Security";
+//arTree[i][1]=new objItem("Root CA Certificate","ca_certificate.htm");
+//arTree[i][2]=new objItem("Client Certificate","client_certificate.htm");
+//arTree[i][3]=new objItem("Certificate Signing Request","generate_csr.htm");
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_ADVANCED_APPLICATION, general.lang)%>";
+ //arTree[i][1]=new objItem("Calendar","Schedule.htm.htm");
+ //arTree[i][2]=new objItem("Alarm Clock","Alarm.htm");
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(SET_SNTP_TITLE, general.lang)%>","Set_Sntp.htm");
+ //arTree[i][2]=new objItem("LDAP","set_ldap.htm");
+ //<%if @isAcd==1%>
+ //arTree[i][3]=new objItem("ACD","set_acd.htm");
+ //<%endif>
+ //arTree[i][2]=new objItem("IP Mapping","Ip_Mapping.htm");
+ //arTree[i][5]=new objItem("Routing","Routing_Table.htm");
+ //arTree[i][2]=new objItem("Firmware Upgrade","Firmware_Upgrade.htm");
+ //arTree[i][3]=new objItem("Backup & Recover","Backup.htm");
+ //arTree[i][5]=new objItem("Factory Defaults","Reset.htm");
+
+
+ /*i++;
+ arTree[i]=new Array();
+ arTree[i][0]="Global SIP Settings";
+ arTree[i][1]=new objItem("Port Settings","Set_Port.htm");
+ arTree[i][2]=new objItem("Codec Settings","Set_Codec.htm");
+ arTree[i][3]=new objItem("Other Settings","Set_Others.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="SIP Account";
+ arTree[i][1]=new objItem("SIP Account","Service_Domain.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="Network Connections";
+ arTree[i][1]=new objItem("WAN Settings","Set_WAN.htm");
+ arTree[i][2]=new objItem("LAN Settings","Set_LAN.htm");
+ arTree[i][4]=new objItem("NTP & Time Settings","Set_Sntp.htm");
+ arTree[i][5]=new objItem("IP Mapping","Ip_Mapping.htm");
+ arTree[i][6]=new objItem("Routing Table","Routing_Table.htm");*/
+ 
+ GstrTreeStructor="<table id=configTabTree border=0 cellspacing=0 cellpadding=0";
+ GstrTreeStructor+=" style=\"position:relative;width: 100%;\" >";
+
+
+ for(i=1; i<arTree.length-1; i++) treeBuild(arTree[i],"mid");
+ treeBuild(arTree[arTree.length-1],"end");
+
+
+
+ 
+
+ GstrTreeStructor+="</table>";
+ document.write(GstrTreeStructor);
+ document.all.configTabTree.style.visibility="visible";
+
+}
+
+function manageTreeCreate() {
+ var arTree=new Array();
+
+
+ var i=-1;
+
+ i++;
+ arTree[i]="My Papers";
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_AUTOMATIC_UPDATE, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(AUTO_PROVISION_TITLE, general.lang)%>","Auto_Provision.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_MANUAL_UPDATE, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(MANU_CONFIG_TILE, general.lang)%>","Manu_Config.htm");
+ arTree[i][2]=new objItem("<%HTMLPRINTTEXT(MANU_FIRMWARE_UPGRADE_TITLE, general.lang)%>","Manu_Firmware_Upgrade.htm");
+  
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_ADMINISTRATION, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(SYSTEM_AUTH_TITLE, general.lang)%>","System_Auth.htm");
+ arTree[i][2]=new objItem("<%HTMLPRINTTEXT(RESET_TITLE, general.lang)%>","Reset.htm");
+ arTree[i][3]=new objItem("<%HTMLPRINTTEXT(REBOOT_TITLE, general.lang)%>","Reboot.htm");
+
+ i++;
+ j=0;
+ arTree[i]=new Array();
+ arTree[i][j++]="<%HTMLPRINTTEXT(MENU_REMOTE_MANAGEMENT, general.lang)%>";
+
+ arTree[i][j++]=new objItem("<%HTMLPRINTTEXT(TR069_TITLE, general.lang)%>","Tr69.htm");
+
+ arTree[i][j++]=new objItem("<%HTMLPRINTTEXT(TELNET_TITLE, general.lang)%>","telnet.htm");
+
+ GstrTreeStructor="<table id=manageTabTree border=0 cellspacing=0 cellpadding=0";
+ GstrTreeStructor+=" style=\"position:relative; width: 100%;\" >";
+
+
+ for(i=1; i<arTree.length-1; i++)
+   treeBuild(arTree[i],"mid");
+   
+ treeBuild(arTree[arTree.length-1],"end"); 
+
+ GstrTreeStructor+="</table>";
+ document.write(GstrTreeStructor);
+ document.all.manageTree.style.visibility="hidden";
+}
+
+function statusTreeCreate() {
+ var arTree=new Array();
+
+ var i=-1;
+
+ i++;
+ arTree[i]="My Papers";
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(NETWORK_STATUS_TITLE, general.lang)%>","Network_Status.htm");
+ arTree[i][2]=new objItem("<%HTMLPRINTTEXT(VOIP_STATUS_TITLE, general.lang)%>","Voip_Status.htm");
+ arTree[i][3]=new objItem("<%HTMLPRINTTEXT(MEMORY_STATUS_TITLE, general.lang)%>","Memory_Status.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(CALL_LOG_MENU, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(CALL_LOG_TITLE, general.lang)%>","Call_Log.htm");
+ 
+// i++;
+// arTree[i]=new Array();
+// arTree[i][0]="System Information";
+// arTree[i][1]=new objItem("General","info.htm");
+// arTree[i][2]=new objItem("Release Information","release.htm");
+ 
+//  i++;
+// arTree[i]=new Array();
+// arTree[i][0]="Diagnostics";
+// arTree[i][1]=new objItem("Logging","Logging.htm");
+// arTree[i][2]=new objItem("Monitoring","Monitoring.htm");
+// arTree[i][3]=new objItem("Recording","Recording.htm");
+// arTree[i][4]=new objItem("Crash Dump","Crash_Dump.htm");
+// arTree[i][5]=new objItem("Tracing","tracing.htm");
+// arTree[i][6]=new objItem("Core Dump","core_dump.htm");
+ 
+ GstrTreeStructor="<table id=statusTabTree border=0 cellspacing=0 cellpadding=0";
+ GstrTreeStructor+=" style=\"position:relative; width: 100%;\" >";
+
+
+ for(i=1; i<arTree.length-1; i++)
+   treeBuild(arTree[i],"mid");
+   
+ treeBuild(arTree[arTree.length-1],"end"); 
+
+ GstrTreeStructor+="</table>";
+ document.write(GstrTreeStructor);
+ document.all.statusTree.style.visibility="hidden";
+}
+
+</SCRIPT>
+
+<SCRIPT>
+
+  function setButtonCss(id) {
+    var ids = ['img_config', 'img_manage', 'img_status'];
+    for (var i = 0; i < ids.length; i++) {
+        if (ids[i] == id) {
+            document.getElementById(ids[i]).setAttribute('class', 'button_hover');
+        } else {
+            document.getElementById(ids[i]).setAttribute('class', '');
+        }
+    }
+  }
+  function ScenConfApp()
+  {
+    document.getElementById("img_config").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_CONFIGURATION_SELECTED, general.lang)%>";
+    document.getElementById("img_manage").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_MANAGEMANT, general.lang)%>";
+    document.getElementById("img_status").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_STATUS, general.lang)%>";
+
+	document.getElementById("manageTree").style.display="none";
+    //document.getElementById("manageTree").style.visibility="hidden";
+	//document.getElementById("manageTabTree").style.visibility="hidden";
+	document.getElementById("statusTree").style.display="none";
+    //document.getElementById("statusTree").style.visibility="hidden";
+    //document.getElementById("statusTabTree").style.visibility="hidden";
+	document.getElementById("configTree").style.display="";
+	document.getElementById("configTree").style.visibility="visible";
+	document.getElementById("configTabTree").style.visibility="visible";
+    setButtonCss('img_config');
+  }
+  
+  function ScenManfApp()
+  {
+    document.getElementById("img_config").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_CONFIGURATION, general.lang)%>";
+    document.getElementById("img_manage").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_MANAGEMANT_SELECTED, general.lang)%>";
+    document.getElementById("img_status").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_STATUS, general.lang)%>";
+
+	document.getElementById("configTree").style.display="none";
+    //document.getElementById("configTree").style.visibility="hidden";
+	//document.getElementById("configTabTree").style.visibility="hidden";
+	document.getElementById("statusTree").style.display="none";
+    //document.getElementById("statusTree").style.visibility="hidden";
+	//document.getElementById("statusTabTree").style.visibility="hidden";
+	document.getElementById("manageTree").style.display="";
+	document.getElementById("manageTree").style.visibility="visible";
+	document.getElementById("manageTabTree").style.visibility="visible";
+    setButtonCss('img_manage');
+  }
+  
+  function ScenStatfApp()
+  {
+    document.getElementById("img_config").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_CONFIGURATION, general.lang)%>";
+    document.getElementById("img_manage").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_MANAGEMANT, general.lang)%>";
+    document.getElementById("img_status").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_STATUS_SELECTED, general.lang)%>";
+
+	document.getElementById("configTree").style.display="none";
+    //document.getElementById("configTree").style.visibility="hidden";
+	//document.getElementById("configTabTree").style.visibility="hidden";
+	document.getElementById("manageTree").style.display="none";
+    //document.getElementById("manageTree").style.visibility="hidden";
+	//document.getElementById("manageTabTree").style.visibility="hidden";
+    document.getElementById("statusTree").style.display="";
+	document.getElementById("statusTree").style.visibility="visible";
+	document.getElementById("statusTabTree").style.visibility="visible";
+    setButtonCss('img_status');
+  }
+  
+  function resize()
+  {
+  //alert(screen.height);
+    var x=screen.width,y=screen.height;
+    if(y==768)
+    {
+    //   document.getElementById('configTree').style.height=y-440;
+        document.getElementById('configTree').style.height="100%";
+      document.getElementById('configtree_tab').style.height=y-440;
+    //   document.getElementById('manageTree').style.height=y-440;
+    document.getElementById('manageTree').style.height="100%";
+      document.getElementById('managetree_tab').style.height=y-440;
+    //   document.getElementById('statusTree').style.height=y-440;
+    document.getElementById('statusTree').style.height="100%";
+      document.getElementById('statustree_tab').style.height=y-440;
+      document.getElementById('menuTd').style.height=y-429;
+    }
+    if(y==1024)
+    {
+    //   document.getElementById('configTree').style.height=y-490;
+    document.getElementById('configTree').style.height="100%";
+      document.getElementById('configtree_tab').style.height=y-490;
+    //   document.getElementById('manageTree').style.height=y-490;
+    document.getElementById('manageTree').style.height="100%";
+      document.getElementById('managetree_tab').style.height=y-490;
+    //   document.getElementById('statusTree').style.height=y-490;
+    document.getElementById('statusTree').style.height="100%";
+      document.getElementById('statustree_tab').style.height=y-490;
+      document.getElementById('menuTd').style.height=y-479;
+    //   document.getElementById('subFrame').style.height='720px';
+    document.getElementById('subFrame').style.height='100%';
+    }
+
+    document.getElementById('header1').style.width=x-4;
+    document.getElementById('subFrame').style.width=x-300;
+  }
+  
+  function loadImage()
+  {
+    document.getElementById("img_config").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_CONFIGURATION_SELECTED, general.lang)%>";
+    document.getElementById("img_manage").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_MANAGEMANT, general.lang)%>";
+    document.getElementById("img_status").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_STATUS, general.lang)%>";  
+  }
+  
+  function Home()
+  {
+    window.location.reload();
+    // document.getElementById("home").src="../image/<%HTMLPRINTTEXT(INDEX_PIC_HOME_PRESSED, general.lang)%>";
+  }
+  
+  function GetHome()
+  {
+    top.subFrame.window.location.href="./mainform.cgi/info.htm;?";
+  
+  }
+
+  function Formsubmit()
+  {
+    document.LogOffForm.action="../mainform.cgi/LogOff.htm;?";
+    document.LogOffForm.submit();
+  }
+
+</SCRIPT>
+
+<title><%PHONE_SHOWDATA(TITLE)%></title>
+<link rel="icon" href="../image/title-logo.png" type="image/x-icon">
+</head>
+
+<body onload="resize();loadImage();">
+  <DIV id="topBar" class="topBar">
+  <form method="POST" name="LogOffForm">
+    <Table id="header1" style="position:absolute;left:0px;top:0px;HEIGHT:80px;" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+        <Tr id="1">
+            <Td style="width: 110px;">
+                <IMG style="MARGIN-LEFT:35px" HEIGHT=36 src="../image/logo.png" WIDTH="50" ALIGN="left">
+            </TD>
+            <td>
+                <font face="arial" color="#ffffff" style="font-size:25px"><B><%PHONE_SHOWDATA(PRODUCT)%></B></FONT>
+            </td>
+            <td style="display: flex;">
+            <A HREF="javascript:ScenConfApp();" style="text-decoration: none;display: inline-block; margin-left: 125px;">
+                <div id="img_config" BORDER="0" NAME="configuration" class="button_hover"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></div>
+            </A>
+            <A HREF="javascript:ScenManfApp();" style="text-decoration: none;display: inline-block;">
+                    <div id="img_manage" BORDER="0" NAME="management"><%HTMLPRINTTEXT(MANAGEMENT, general.lang)%></div>
+                </A>
+            <A HREF="javascript:ScenStatfApp();" style="text-decoration: none;display: inline-block;">
+                    <div id="img_status" BORDER="0" NAME="status"><%HTMLPRINTTEXT(DIAGNOSTICS, general.lang)%></div>
+                </A>
+            </td>
+            <td style="width: 200px;text-align: right;padding-right: 30px;">
+            <div style="position: relative;padding-right: 50px;">
+                <img src="../image/user-img.png" style="width:48px; height: 48px;"/>
+                <span style="color: #d7dadc; font-size: 16px; position: absolute;top: 13px; margin-left: 10px;">Admin</span>
+            </div>
+            </td>
+            <Td style="width:260px;">
+                <!--<A HREF="javascript:deviceActionDrop()"><IMG HEIGHT=47 id="DeviceActionImg" src="../image/device_down.gif" BORDER=0></A>&nbsp;&nbsp;&nbsp;-->
+                <input type="button" id="home" class="header-button" onClick="Home()" value="Home" style="padding: 0 15px;">
+                <!-- <input type="image" id="home" src="../image/<%HTMLPRINTTEXT(INDEX_PIC_HOME, general.lang)%>" BORDER="0" onClick="Home()"> -->
+                &nbsp;
+                <input type="button" value="Login out" class="header-button" onClick="Formsubmit()">
+                <input type="hidden" name="CLEAR" value="1">
+            </TD>
+            <Td WIDTH="5" style="BACKGROUND:url(../image/toolbar_R.gif)"></TD>
+      </TR>
+    </TABLE>
+  </form>
+  </DIV>
+
+  <!--<DIV id="deviceActionDropTBL">
+    <Table WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR>
+            <Td id="LCF" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','LCF')" onmouseover="deviceActionSelect('','LCF')" onclick="deviceActionDrop(),DeviceFrameSrc('ConfigurationFile')">
+              Load Configuration File
+            </TD>
+        </TR>
+        <TR>
+            <Td id="SCF" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','SCF')" onmouseover="deviceActionSelect('','SCF')" onclick="deviceActionDrop(),DeviceFrameSrc('ConfigurationFile')">
+              Save Configuration File
+            </TD>
+        </TR>
+        <TR>
+            <Td id="R" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','R')" onmouseover="deviceActionSelect('','R')" onclick="deviceActionDrop(),DeviceFrameSrc('ResetBoard')">
+              Reset
+            </TD>
+        </TR>
+        <TR>
+            <Td id="SU" class="deviceActionSoftUpdt" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','SU')" onmouseover="deviceActionSelect('','SU')" onclick="deviceActionDrop(),DeviceFrameSrc('SoftwareWizard')">
+              Software Upgrade Wizard
+            </TD>
+        </TR>
+    </TABLE>
+  </DIV>-->
+
+  <DIV id="menuFrame">
+      <TABLE WIDTH="300" CELLPADDING="4" CELLSPACING="0" BORDER="0" 
+      style="BACKGROUND:url(./image/background.gif) repeat-x;position: absolute;top: 80px;left:0px;
+        background: #0c2739;height: 100%;">
+          <TR>
+              <Td style="vertical-align: top;">
+                  <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" style="position: relative;left:4px;height: 75px;background: #1e3a4d;">
+                      <TR>
+                          <!-- <Td WIDTH="9" style="BACKGROUND:url(../image/tabs_L.gif)">&nbsp;</TD> -->
+                          
+                          <!-- <Td WIDTH="9" style="BACKGROUND:url(../image/tabs_R.gif)">&nbsp;</TD> -->
+                      </TR>
+                  </TABLE>
+                  <DIV id="div_config">
+                      <TABLE BORDER="0" style="WIDTH:270px;position: relative;left:4px" CELLPADDING="0" CELLSPACING="0">
+                          <TR>
+                              <!-- <Td style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"><BR></TD> -->
+                              <Td style="WIDTH:264px">
+                                  <TABLE BORDER="0" style="WIDTH:264px" CELLPADDING="0" CELLSPACING="0">
+                                      <TR>
+                                          <TD id="menuTd" HEIGHT="341"></TD>
+                                      </TR>
+                                  </TABLE>
+                              </TD>
+                              <!-- <Td style="BACKGROUND-IMAGE:url(../image/page_R.gif);WIDTH:3px"><BR></TD> -->
+                          </TR>
+                      </TABLE>
+                  </DIV>
+              </TD>
+          </TR>
+      </TABLE>
+  </DIV>
+  <DIV id="configTree" style="overflow-x: hidden;overflow-y: auto;width:300;position: absolute;top: 80px;left:0;background: #1e3a4d;">
+      <TABLE CELLSPACING="0" id="configtree_tab" CELLPADDING="2" BORDER="0" width="230" bgcolor="#edf3fe" ALIGN=center>
+          <tr VALIGN=top id="SeCont">
+              <TD>
+                  <script language="javascript">configTreeCreate();</script>
+              </TD>
+          </TR>
+      </TABLE>
+  </DIV>
+  <DIV id="manageTree" style="overflow-x: hidden;overflow-y: auto;width:300;position: absolute;top: 80px;left:0;background: #1e3a4d;">
+      <TABLE CELLSPACING="0" id="managetree_tab" CELLPADDING="2" BORDER="0" width="230" bgcolor="#edf3fe" ALIGN=center>
+          <tr VALIGN=top id="SeCont">
+              <TD>
+                  <script language="javascript">manageTreeCreate();</script>
+              </TD>
+          </TR>
+      </TABLE>
+  </DIV>
+  <DIV id="statusTree" style="overflow-x: hidden;overflow-y: auto;width:300;position: absolute;top: 80px;left:0;background: #1e3a4d;height:100%;">
+      <TABLE CELLSPACING="0" id="statustree_tab" CELLPADDING="2" BORDER="0" width="230" bgcolor="#edf3fe" ALIGN=center>
+          <tr VALIGN=top id="SeCont">
+              <TD>
+                  <script language="javascript">statusTreeCreate();</script>
+              </TD>
+          </TR>
+      </TABLE>
+  </DIV>
+  <div id="viewFrame" class="viewFrame">
+      <table border="0" cellSpacing="0" cellpadding="0" height="100%">
+          <tr>
+              <td>
+                  <IFRAME id="subFrame" name="subFrame" src="../mainform.cgi/info.htm;?" scrolling="no" frameBorder="no" style="WIDTH:720px;HEIGHT:100%"></IFRAME>
+              </td>
+          </tr>
+      </table>
+  </div>
+ </body>
+</html>

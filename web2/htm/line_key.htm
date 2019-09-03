@@ -1,0 +1,169 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%PHONE_GETSUBMIT(LINE_KEY)%>
+
+<%int line;%>
+<%int lines_count;%>
+<%int isScaAvailable;%>
+<%@isScaAvailable=PHONE_GETVAR(SCA_AVAILABLE)%>
+
+<%@lines_count = PHONE_GETVAR(LINE_KEY_COUNT)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+var lineSettings;
+
+function Formsubmit()
+{
+    if (!AreArraysEqual(lineSettings, GetSettings())) {
+      if(confirm("Applying these settings will restart the phone, are you sure you want to apply these settings ?")) {
+          document.LineKey.action="../mainform.cgi/Line_Key.htm?wait=1";
+          document.LineKey.submit();
+      }
+  } else {
+      document.LineKey.submit();
+  }
+}
+
+function AreArraysEqual(arr1, arr2)
+{
+    for (var i=0; i<arr1.length; ++i) {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+    return true;
+}
+
+function GetSettings()
+{
+    var arr = new Array();
+    for (var i=0; true; ++i) {
+        var param = document.LineKey['LINE_KEY_LINE'+i];
+        if (param == null)
+            break;
+        arr[i] = param.value;
+    }
+    return arr;
+}
+
+function redirect()
+{
+  document.location = "../mainform.cgi/info.htm";
+}
+
+function Init()
+{
+    var wait = self.location.search.substring("wait");
+    if (wait) {
+        setTimeout("redirect()", 50000);
+        document.getElementById("wait_restart").style.display="";
+    }
+    lineSettings = GetSettings();
+}
+</SCRIPT>
+
+<body onload="Init()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Line Key</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+            <td>
+	          <DIV class="Bar" align="center" style="display:none;color:red" id="wait_restart">
+	            Please wait while restarting, you will be automatically redirected to home page...
+	          </DIV>
+              <%if @isScaAvailable==1%>
+              <form method="POST" name="LineKey" action="../mainform.cgi/Line_Key.htm">
+                <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                  <tr class="TRedit">
+                    <td width="5%" align="center"  class="TdTitleLeft">
+                      Key
+                    </td>
+                    <td width="20%" align="center"  class="TdTitleRight">
+                      Line
+                    </td>
+                  </tr>
+                  <%for @line=0;<@lines_count;1%>
+                        <tr class="TrTwo">
+                          <td align="center" class="TdLeft">
+                            Line Key <%INCR(@line)%>
+                          </td>
+                          <td align="center" class="TdRight">
+                            <select size="1" name="LINE_KEY_LINE<%@line%>">
+                            &nbsp;<%PHONE_SHOWDATA(@line, LINE_KEY_LINE)%>
+                            </select>
+                          </td>
+                        </tr>
+		          <%endfor%>
+                </table>                 
+              </form>
+              <%endif%>
+            </td>
+          </tr>  
+    </table>
+  </DIV>
+
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                          &nbsp;
+                          <%if @isScaAvailable==1%>
+                          <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                          <%endif%>
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</body>
+</html>

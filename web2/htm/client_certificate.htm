@@ -1,0 +1,969 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int dot1x_cert_status;%>
+<%int dot1x_pkey_status;%>
+<%int sip_cert_status;%>
+<%int sip_pkey_status;%>
+<%int autoupdate_cert_status;%>
+<%int autoupdate_pkey_status;%>
+<%int ldaps_cert_status;%>
+<%int ldaps_pkey_status;%>
+<%TLS_GETTLSFILE()%>
+<%TLS_GETSUBMIT(TLS_SECURITY)%>
+<%@dot1x_cert_status=PHONE_GETVAR(DOT1X_CERT_STATUS)%>
+<%@dot1x_pkey_status=PHONE_GETVAR(DOT1X_PKEY_STATUS)%>
+<%@sip_cert_status=PHONE_GETVAR(SIP_CERT_STATUS)%>
+<%@sip_pkey_status=PHONE_GETVAR(SIP_PKEY_STATUS)%>
+<%@autoupdate_cert_status=PHONE_GETVAR(AUTOUPDATE_CERT_STATUS)%>
+<%@autoupdate_pkey_status=PHONE_GETVAR(AUTOUPDATE_PKEY_STATUS)%>
+<%@ldaps_cert_status=PHONE_GETVAR(LDAPS_CERT_STATUS)%>
+<%@ldaps_pkey_status=PHONE_GETVAR(LDAPS_PKEY_STATUS)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+var SwDisplayDot1xCert = 1;
+var SwDisplaySipCert = 1;
+var SwDisplayAutoUpdateCert = 1;
+var SwDisplayLdapsCert = 1;
+
+function checkLoadDot1xCertAndSubmit(form)
+{
+	var val = form.dot1x_cert.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_sip');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_auto_update');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_ldaps');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPDOT1XTLSPKEY');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('DISPLAY_DOT1X_TLSCERT_TAB');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDDOT1XTLSCERT").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadDot1xPkeyAndSubmit(form)
+{
+	var val = form.dot1x_pkey.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_sip');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_auto_update');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_ldaps');
+		el.parentNode.removeChild(el);
+	el = document.getElementById('UPDOT1XTLSCERT');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDDOT1XTLSPKEY").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+
+function checkLoadSipCertAndSubmit(form)
+{
+	var val = form.sip_cert.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_dot1x');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_auto_update');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_ldaps');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPSIPTLSPKEY');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('DISPLAY_SIP_TLSCERT_TAB');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDSIPTLSCERT").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadSipPkeyAndSubmit(form)
+{
+	var val = form.sip_pkey.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_dot1x');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_auto_update');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_ldaps');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPSIPTLSCERT');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDSIPTLSPKEY").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+function checkLoadAutoUpdateCertAndSubmit(form)
+{
+	var val = form.autoupdate_cert.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_dot1x');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_sip');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_ldaps');
+		el.parentNode.removeChild(el);
+
+		el = document.getElementById('UPAUTOUPDATETLSPKEY');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('DISPLAY_AUTOUPDATE_TLSCERT_TAB');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDAUTOUPDATETLSCERT").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadAutoUpdatePkeyAndSubmit(form)
+{
+	var val = form.autoupdate_pkey.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_dot1x');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_sip');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_ldaps');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPAUTOUPDATETLSCERT');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDAUTOUPDATETLSPKEY").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadLdapsCertAndSubmit(form)
+{
+	var val = form.ldaps_cert.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_dot1x');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_sip');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_auto_update');
+		el.parentNode.removeChild(el);		
+		
+		el = document.getElementById('UPLDAPSTLSPKEY');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('DISPLAY_LDAPS_TLSCERT_TAB');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDLDAPSTLSCERT").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadLdapsPkeyAndSubmit(form)
+{
+	var val = form.ldaps_pkey.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('tls_security_dot1x');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_sip');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('tls_security_auto_update');
+		el.parentNode.removeChild(el);		
+		el = document.getElementById('UPLDAPSTLSCERT');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDLDAPSTLSPKEY").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function DelDot1xCert()
+{
+	var el = document.getElementById('tls_security_sip');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('tls_security_auto_update');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_ldaps');
+	el.parentNode.removeChild(el);
+	
+	
+	el = document.getElementById('UPDOT1XTLSPKEY');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_DOT1X_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDDOT1XTLSCERT").className="TDEnd";
+	document.tls_security_dot1x.DEL_DOT1X_TLSCERT.value="1";
+	document.tls_security_dot1x.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_dot1x.submit();
+}
+
+function DelDot1xPkey()
+{
+	var el = document.getElementById('tls_security_sip');
+	el.parentNode.removeChild(el);
+
+	el = document.getElementById('tls_security_auto_update');
+	el.parentNode.removeChild(el);
+
+	el = document.getElementById('tls_security_ldaps');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('UPDOT1XTLSCERT');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDDOT1XTLSPKEY").className="TDEnd";
+	document.tls_security_dot1x.DEL_DOT1X_TLSPKEY.value="1";
+	document.tls_security_dot1x.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_dot1x.submit();
+}
+
+function DelSipCert()
+{
+	var el = document.getElementById('tls_security_dot1x');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('tls_security_auto_update');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_ldaps');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('UPSIPTLSPKEY');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_SIP_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDSIPTLSCERT").className="TDEnd";
+	document.tls_security_sip.DEL_SIP_TLSCERT.value="1";
+	document.tls_security_sip.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_sip.submit();
+}
+
+function DelSipPkey()
+{
+	var el = document.getElementById('tls_security_dot1x');
+	el.parentNode.removeChild(el);
+
+	el = document.getElementById('tls_security_auto_update');
+	el.parentNode.removeChild(el);
+	
+	
+	el = document.getElementById('tls_security_ldaps');
+	el.parentNode.removeChild(el);
+
+	el = document.getElementById('UPSIPTLSCERT');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDSIPTLSPKEY").className="TDEnd";
+	document.tls_security_sip.DEL_SIP_TLSPKEY.value="1";
+	document.tls_security_sip.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_sip.submit();
+}
+
+function DelAutoUpdateCert()
+{
+	var el = document.getElementById('tls_security_dot1x');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('tls_security_sip');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_ldaps');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('UPAUTOUPDATETLSPKEY');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_AUTOUPDATE_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDAUTOUPDATETLSCERT").className="TDEnd";
+	document.tls_security_auto_update.DEL_AUTOUPDATE_TLSCERT.value="1";
+	document.tls_security_auto_update.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_auto_update.submit();
+}
+
+function DelAutoUpdatePkey()
+{
+	var el = document.getElementById('tls_security_dot1x');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('tls_security_sip');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_ldaps');
+	el.parentNode.removeChild(el);
+		
+	el = document.getElementById('UPAUTOUPDATETLSCERT');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDAUTOUPDATETLSPKEY").className="TDEnd";
+	document.tls_security_auto_update.DEL_AUTOUPDATE_TLSPKEY.value="1";
+	document.tls_security_auto_update.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_auto_update.submit();
+}
+
+function DelLdapsCert()
+{
+	var el = document.getElementById('tls_security_dot1x');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('tls_security_sip');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_auto_update');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('UPLDAPSTLSPKEY');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_LDAPS_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDLDAPSTLSCERT").className="TDEnd";
+	document.tls_security_ldaps.DEL_LDAPS_TLSCERT.value="1";
+	document.tls_security_ldaps.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_ldaps.submit();
+}
+
+function DelLdapsPkey()
+{
+	var el = document.getElementById('tls_security_dot1x');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_sip');
+	el.parentNode.removeChild(el);
+	
+	el = document.getElementById('tls_security_auto_update');
+	el.parentNode.removeChild(el);	
+	
+	el = document.getElementById('UPLDAPSTLSCERT');
+	el.parentNode.removeChild(el);
+
+	document.getElementById("TDLDAPSTLSPKEY").className="TDEnd";
+	
+	document.tls_security_ldaps.DEL_LDAPS_TLSPKEY.value="1";
+	document.tls_security_ldaps.action="../mainform.cgi/client_certificate.htm";
+	document.tls_security_ldaps.submit();
+}
+
+function DisplayDot1xCert()
+{
+	if(SwDisplayDot1xCert == 1)
+	{
+		document.getElementById("DISPLAY_DOT1X_TLSCERT_TAB").style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_DOT1X_TLSCERT_TAB").style.display="none";
+	}
+
+	if(SwDisplayDot1xCert == 1)
+	{
+		SwDisplayDot1xCert = 0;
+	}
+	else
+	{
+		SwDisplayDot1xCert = 1;
+	}
+}
+
+function DisplaySipCert()
+{
+	if(SwDisplaySipCert == 1)
+	{
+		document.getElementById("DISPLAY_SIP_TLSCERT_TAB").style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_SIP_TLSCERT_TAB").style.display="none";
+	}
+
+	if(SwDisplaySipCert == 1)
+	{
+		SwDisplaySipCert = 0;
+	}
+	else
+	{
+		SwDisplaySipCert = 1;
+	}
+}
+function DisplayAutoUpdateCert()
+{
+	if(SwDisplayAutoUpdateCert == 1)
+	{
+		document.getElementById("DISPLAY_AUTOUPDATE_TLSCERT_TAB").style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_AUTOUPDATE_TLSCERT_TAB").style.display="none";
+	}
+
+	if(SwDisplayAutoUpdateCert == 1)
+	{
+		SwDisplayAutoUpdateCert = 0;
+	}
+	else
+	{
+		SwDisplayAutoUpdateCert = 1;
+	}
+}
+
+function DisplayLdapsCert()
+{
+	if(SwDisplayLdapsCert == 1)
+	{
+		document.getElementById("DISPLAY_LDAPS_TLSCERT_TAB").style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_LDAPS_TLSCERT_TAB").style.display="none";
+	}
+
+	if(SwDisplayLdapsCert == 1)
+	{
+		SwDisplayLdapsCert = 0;
+	}
+	else
+	{
+		SwDisplayLdapsCert = 1;
+	}
+}
+function ShowAlert()
+{
+	<%TLS_SHOWDATA(TLSCLIENT_CERT)%>
+}
+
+function wuisync()
+{
+	document.getElementById("DISPLAY_DOT1X_TLSCERT_TAB").style.display="none";
+	document.getElementById("DISPLAY_SIP_TLSCERT_TAB").style.display="none";
+	document.getElementById("DISPLAY_AUTOUPDATE_TLSCERT_TAB").style.display="none";
+	document.getElementById("DISPLAY_LDAPS_TLSCERT_TAB").style.display="none";
+	SwDisplayDot1xCert = 1;
+	SwDisplaySipCert= 1;
+	SwDisplayAutoUpdateCert= 1;
+	SwDisplayLdapsCert= 1;
+}
+
+function redirect_security()
+{
+	document.location = "../mainform.cgi/client_certificate.htm";
+}
+
+function doAction()
+{
+	window.setTimeout("redirect_security()",5);
+	window.status="OK";
+}
+</SCRIPT>
+
+
+<body onload="wuisync();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Client Certificate</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="tls_security_dot1x" id="tls_security_dot1x" method="post">
+                  <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('dot1x','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                                      802.1x (<span style="color:red">Changing the below parameters requires a reboot</span>)</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="dot1x">
+
+                   <table id="UPDOT1XTLSCERT" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCERT" class="TRedit">
+                          <td id="TDDOT1XTLSCERT" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @dot1x_cert_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="11">
+                                          <input type="file" name="dot1x_cert" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadDot1xCertAndSubmit(document.tls_security_dot1x)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_DOT1X_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelDot1xCert()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_DOT1X_TLSCERT" value="0" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_DOT1X_TLSCERT_TAB" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(DOT1X_TLS_CERT_FILE)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   <table id="UPDOT1XTLSPKEY" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSPKEY" class="TRedit">
+                          <td id="TDDOT1XTLSPKEY" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @dot1x_pkey_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="13">
+                                          <input type="file" name="dot1x_pkey" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadDot1xPkeyAndSubmit(document.tls_security_dot1x)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_DOT1X_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelDot1xPkey()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   </DIV>
+                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="tls_security_sip" id="tls_security_sip" method="post">
+                  <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('sip','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                                      SIP</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="sip">
+
+                   <table id="UPSIPTLSCERT" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCERT" class="TRedit">
+                          <td id="TDSIPTLSCERT" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @sip_cert_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="11">
+                                          <input type="file" name="sip_cert" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadSipCertAndSubmit(document.tls_security_sip)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_SIP_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelSipCert()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_SIP_TLSCERT" value="0" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_SIP_TLSCERT_TAB" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(SIP_TLS_CERT_FILE)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   <table id="UPSIPTLSPKEY" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSPKEY" class="TRedit">
+                          <td id="TDSIPTLSPKEY" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @sip_pkey_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="13">
+                                          <input type="file" name="sip_pkey" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadSipPkeyAndSubmit(document.tls_security_sip)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_SIP_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelSipPkey()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   </DIV>
+                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="tls_security_auto_update" id="tls_security_auto_update" method="post">
+                  <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('Automatic Updates','Tr3')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                                      Automatic Updates</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="Automatic Updates">
+
+                   <table id="UPAUTOUPDATETLSCERT" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCERT" class="TRedit">
+                          <td id="TDAUTOUPDATETLSCERT" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @autoupdate_cert_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="11">
+                                          <input type="file" name="autoupdate_cert" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadAutoUpdateCertAndSubmit(document.tls_security_auto_update)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_AUTOUPDATE_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelAutoUpdateCert()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_AUTOUPDATE_TLSCERT" value="0" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_AUTOUPDATE_TLSCERT_TAB" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(AUTOUPDATE_TLS_CERT_FILE)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   <table id="UPAUTOUPDATETLSPKEY" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSPKEY" class="TRedit">
+                          <td id="TDAUTOUPDATETLSPKEY" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @autoupdate_pkey_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="13">
+                                          <input type="file" name="autoupdate_pkey" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadAutoUpdatePkeyAndSubmit(document.tls_security_auto_update)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_AUTOUPDATE_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelAutoUpdatePkey()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   </DIV>
+                  </form>
+                </td>
+          </tr>
+      </table>
+
+    <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="tls_security_ldaps" id="tls_security_ldaps" method="post">
+                  <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('Ldaps','Tr4')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">
+                                      Ldaps</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>
+                   <DIV id="Ldaps">
+
+                   <table id="UPLDAPSTLSCERT" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCERT" class="TRedit">
+                          <td id="TDLDAPSTLSCERT" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @ldaps_cert_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="11">
+                                          <input type="file" name="ldaps_cert" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadLdapsCertAndSubmit(document.tls_security_ldaps)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_LDAPS_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelLdapsCert()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_LDAPS_TLSCERT" value="0" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_LDAPS_TLSCERT_TAB" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_READDATA(LDAPS_TLS_CERT_FILE)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   <table id="UPLDAPSTLSPKEY" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSPKEY" class="TRedit">
+                          <td id="TDLDAPSTLSPKEY" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @ldaps_pkey_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="13">
+                                          <input type="file" name="ldaps_pkey" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadLdapsPkeyAndSubmit(document.tls_security_ldaps)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_LDAPS_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelLdapsPkey()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   </DIV>
+                  </form>
+                </td>
+          </tr>
+      </table>      
+      
+  </DIV>
+
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>
+

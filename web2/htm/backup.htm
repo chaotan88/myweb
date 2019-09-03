@@ -1,0 +1,200 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%SYSBACKSUBMIT()%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit(dowhat)
+{
+   switch(dowhat)
+   {
+      case 1:
+        document.backupform.backup.disabled = true;
+        document.backupform.action="../mainform.cgi/Backup.htm";
+        document.backupform.submit();
+      break;
+      case 2:
+          if(document.recoverform.upname.value == "")
+          {
+             alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+             return;
+          }
+          //alert('If recover successfully,system will reboot.');
+          document.recoverform.action="../mainform.cgi/Backup.htm";
+          document.recoverform.submit();
+      break;
+      case 3:
+        if(document.configform.upname.value == "")
+        {
+             alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+             return;
+        }
+        document.configform.action="../mainform.cgi/Backup.htm";
+        document.configform.submit();
+      break;
+   }
+}
+
+function ShowAlert()
+{
+   <%SYSTEMBACKSHOW(RECOVER)%>
+}
+
+</SCRIPT>
+
+<%SYS_SHOWDATA(REDIRECT)%>
+
+<body onload="ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">
+                                        <%HTMLPRINTTEXT(Backup_and_Restore, Backup.txt)%>
+                                    </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form method="POST" name="backupform">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td>
+                                          <%HTMLPRINTTEXT(Backup_System_Configuration, Backup.txt)%>
+                                      </td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          <%HTMLPRINTTEXT(Configuration_File:, Backup.txt)%>
+                                      </td>
+                                      <td class="TdMid" >
+                                          <input class="word" type="hidden" name="makef" value="1" size="20">
+		                          <%SYSTEMBACKSHOW(SHOWFILE)%>
+		                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td colspan="2" align="center">
+                              <input class="unnamed11" type="button" value="<%HTMLPRINTTEXT(Backup, button.txt)%>" name="backup" onClick="Formsubmit(1)" id="display">
+                          </td>
+                     </tr>
+                  </table>
+                  </form>
+
+                  <form method="POST" enctype="multipart/form-data" name="recoverform">  
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle">
+                                          <%HTMLPRINTTEXT(Restore_System_Configuration, Backup.txt)%>
+                                      </Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>          
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">
+                                          <%HTMLPRINTTEXT(File_Location:, Backup.txt)%>
+                                      </td>
+                                      <td class="TdMid">
+                                          <input type="file" name="upname" size="36" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td colspan="2" align="center">
+                              <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="apply" onClick="Formsubmit(2)">
+                                  &nbsp;
+                              <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="Clear">
+                          </td>
+                      </tr>                                      
+                  </table>
+                  </form>
+                  
+                  
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td HEIGHT="47px">
+                            <IMG align="right" class="editImg" src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>

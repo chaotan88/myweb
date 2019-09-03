@@ -1,0 +1,265 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int type;%>
+<%int missed_index;%>
+<%int doline;%>
+<%int max_num;%>
+<%int begin_num;%>
+<%PHONE_GETSUBMIT(CL)%>
+<%@type = PHONE_GETVAR(TYPE)%>
+<%@missed_index = PHONE_GETVAR(MISSED_INDEX)%>
+<%@begin_num = PHONE_GETVAR(LOGBEGIN)%>
+<%PHONE_READDATA(@type, HISTORY)%>
+<%@max_num = PHONE_GETVAR(CL)%>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function Changetype()
+{
+   document.LogForm.PAGENUM.value = 0;
+   Formsubmit(1);
+}
+
+function Formsubmit(dowhat)
+{
+  switch(dowhat)
+  {
+    case 1:
+     document.LogForm.Delete.value = 0;
+     document.LogForm.action="../mainform.cgi/Call_Log.htm";
+     document.LogForm.submit();
+     var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
+    break;
+    case 2:
+     document.LogForm.Delete.value = 1;
+     document.LogForm.action="../mainform.cgi/Call_Log.htm";
+     document.LogForm.submit();
+     var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
+    break;
+    case 3:
+     if(confirm('Are you sure you want to delete all entries?')) {
+     document.LogForm.DeleteAll.value = 1;
+     document.LogForm.action="../mainform.cgi/Call_Log.htm";
+     document.LogForm.submit();
+     var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
+     }
+    break;
+  }
+}
+
+function DialNumber(num)
+{
+    var dialForm = document.getElementById("dialNumber").contentWindow.document.DIAL;
+    dialForm.number.value = num;
+    dialForm.submit();
+}
+
+</SCRIPT>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px"><%HTMLPRINTTEXT(CALL_LOG_TITLE, general.lang)%></span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(DIAGNOSTICS, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(CALL_LOG_MENU, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(CALL_LOG_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+    <form method="POST" name="LogForm">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <TR class="TRedit">
+                          <TD width="100%">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="">&nbsp;</Td>
+                                  </Tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td align="center" class="TdEnd">
+                            <table align="center" border="0" width="100%" cellpadding="0" cellspacing="0">
+                               &nbsp;<%HTMLPRINTTEXT(CALL_LOG_TYPE, general.lang)%>
+                               <font face="Arial"> 
+                               <select size="1" name="QTYPE" onchange="Changetype()" class="unnamed11">
+                                  <%PHONE_SHOWDATA(QTYPE)%>
+                               </select>
+                                  &nbsp;&nbsp;
+                                  <%HTMLPRINTTEXT(CALL_LOG_PAGE, general.lang)%>
+                               <select size="1" name="PAGENUM" onchange="Formsubmit(1)" class="unnamed11">
+                                  <%PHONE_SHOWDATA(LOGPAGENUM)%>
+                               </select>
+                               </font>
+                            </table>
+                         </td>
+                      </tr>
+                      <!-- <tr>
+                          <td class="separate"></td>
+                      </tr> -->
+                  </table>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TdTitleLeft" width="10%" align="center">
+                              <input type="hidden" name="Delete" value="0">
+                              <input type="hidden" name="DeleteAll" value="0">
+                              <%HTMLPRINTTEXT(CALL_LOG_NO, general.lang)%>
+                          </td>
+                          <td class="TdTitleLeft" width="20%" align="center">
+                              <%HTMLPRINTTEXT(CALL_LOG_NAME, general.lang)%>
+                          </td>
+                          <td class="TdTitleLeft" width="25%" align="center">
+                              <%HTMLPRINTTEXT(CALL_LOG_NUMBER, general.lang)%>
+                          </td>
+                          <td class="TdTitleLeft" width="25%" align="center">
+                              <%HTMLPRINTTEXT(CALL_LOG_TIME, general.lang)%>
+                          </td>
+                          <%if @type != @missed_index %>
+                          <td class="TdTitleLeft" width="10%" align="center">
+                              <%HTMLPRINTTEXT(CALL_LOG_DURA, general.lang)%>
+                          </td>
+                          <%endif%>
+                          <td class="TdTitleRight" width="10%" align="center">
+                              <%HTMLPRINTTEXT(CALL_LOG_DELE, general.lang)%>
+                          </td>
+                       </tr>
+                       <%for @doline=@begin_num;<=@max_num;1%>
+                       <tr class="TrTwo">
+                           <td align="center" class="TdLeft">
+                             <%@doline%>
+                           </td>
+                           <td align="center" class="TdLeft">
+                              <%PHONE_SHOWDATA(@doline, LOGPHONENAME)%>
+                           </td>
+                           <td align="center" class="TdLeft">
+                              <%PHONE_SHOWDATA(@doline, LOGPHONENUM)%>
+                           </td>
+                           <td align="center" class="TdLeft">
+                             <%PHONE_SHOWDATA(@doline, TIME)%>
+                           </td>
+                           <%if @type != @missed_index %>
+                           <td align="center" class="TdLeft">
+                             <%PHONE_SHOWDATA(@doline, DURATION)%>
+                           </td>
+                           <%endif%>
+                           <td align="center" class="TdRight">
+                             <input name="check" type="checkbox" value="<%@doline%>" class="checkbox_css">
+                           </td>
+                       </tr>
+		       <%endfor%>
+		  </table>
+              </td>
+          </tr>  
+      </table>
+    </form>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+        <INPUT TYPE="SUBMIT" NAME="Sub_Delete" VALUE="<%HTMLPRINTTEXT(CALL_LOG_DELE, general.lang)%>" class="delete-button" onclick="Formsubmit(2)">
+        <INPUT TYPE="SUBMIT" NAME="Sub_Delete_All" VALUE="<%HTMLPRINTTEXT(CALL_LOG_DELA, general.lang)%>" class="delete-button" onclick="Formsubmit(3)">
+    <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                  <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td align="center" HEIGHT="47px">
+                           
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+      </table> -->
+  </DIV>
+
+<iframe id="dialNumber" src="Dial.htm" width="1" height="1" frameborder="0" marginwidth="0" marginheight="0" >
+</iframe>
+</body>
+</html>

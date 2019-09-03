@@ -1,0 +1,232 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<%Network_READDATA(VOICETEST)%>
+<%Network_GETSUBMIT(VOICETEST)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit(dowhat){
+	if(dowhat == 1)
+	{
+		document.testform.VOICE_TEST_START.value = "0";
+	}
+	if(dowhat == 2)
+	{  
+		document.testform.VOICE_TEST_START.value = "1";
+	}
+
+     document.testform.action="../mainform.cgi/sip_test.htm";
+     document.testform.submit();
+	 var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+}
+
+function ShowAlert() {
+    //<%Network_SHOWDATA(VOICETEST)%>
+}
+
+function check_show() {
+	switch(document.testform.VOICE_TEST_ENABLE.value) 
+  {
+  	case('1'):
+  	break;
+  	case('0'):
+			document.getElementById("rconfig").style.display="none";
+	       document.getElementById("per_add_0").style.display="none";
+	       document.getElementById("per_add_1").style.display="none";
+	       document.getElementById("per_add_2").style.display="none";
+  	return;
+  	break;
+  }
+ 
+		document.getElementById("rconfig").style.display="";
+   switch(document.testform.VOICE_TEST_PERIOD.value) {
+      case('0'):
+         document.getElementById("per_add_0").style.display="";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+      case('1'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+      case('2'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="";
+      break;
+      case('3'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+   }
+}
+</SCRIPT>
+
+
+
+<body onload="check_show();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+		<span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+		<span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+    	<span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%></span>
+		<span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <form method="POST" name="testform">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+			<tr>
+				<td valign="top">
+					<table id="setupTable" align="center"   class="SetupTable"  border="0" cellpadding="1" cellspacing="0">
+						<!-- <tr class="TRedit">
+							<td  class="tdTitle">
+								<Table border="0" width="100%" cellpadding="0" cellspacing="0">
+									<tr>
+										<Td>&nbsp;</td>
+									</tr>
+								</Table>
+							</td>
+						</tr> -->
+                     
+						<tr >
+							<td id="dstatus"  class="TDRow">
+								<table border="0" width="100%"  cellpadding="0" cellspacing="0">
+									<tr class="height: 80px;">
+										<td width="27%"  class="TD_Item_First" Align="left" >
+											&nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_STATUS, general.lang)%> :&nbsp;&nbsp;
+										</td>
+										<td   class="TD_Item_First" height="30" colspan="2" Align="left">
+											&nbsp;&nbsp;<%Network_SHOWDATA(VOICE_TEST_STATUS)%>
+										</td>
+									</tr>
+									<tr >
+										<td width="27%"  class="TD_Item_First" Align="left">
+											&nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_DETAIL, general.lang)%> :&nbsp;&nbsp;
+										</td>
+										<td  class="TdMid" colspan="2" Align="left">
+											&nbsp;&nbsp;<%Network_SHOWDATA(VOICE_TEST_DETAIL)%>
+										</td>
+									</tr> 
+									 <tr >
+										 <td width="27%"  class="TD_Item_First" Align="left">
+											  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_TIME, general.lang)%> :&nbsp;&nbsp;
+										  </td>
+										  <td  class="TdMid"  colspan="2" Align="left">
+											  &nbsp;&nbsp;<%Network_SHOWDATA(VOICE_TEST_TIME)%>
+										  </td>
+									 </tr> 
+									 <tr id="dbutton" class="TDRow">
+										<td width="27%" class="TD_Item_First" Align="left">
+											  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_ENABLE, general.lang)%> :&nbsp;&nbsp;
+										 </td>
+										 <td class="TdMid"  Align="left">
+												  <select name="VOICE_TEST_ENABLE" onchange="check_show()">
+												   <%Network_SHOWDATA(VOICE_TEST_ENABLE)%>
+												 </select>
+										 </td>
+										 <td class="TdMid"  Align="center">
+														 <input type="hidden" name="VOICE_TEST_START" value="0" class="unnamed11">
+														 <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(2)">  
+										</td>
+									</tr>
+									<tr id="rconfig" >
+										<td colspan="3">
+											<table border="0" width="100%" cellpadding="0" cellspacing="0">
+												<tr>
+													<td width="27%" class="TD_Item_First" Align="left">
+													  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_CHECK_PERIOD, general.lang)%> :&nbsp;&nbsp;
+													</td>
+													 <td class="TdMid"  Align="left">
+														 <select name="VOICE_TEST_PERIOD" onchange="check_show()">
+														   <%Network_SHOWDATA(VOICE_TEST_PERIOD)%>
+														 </select>
+													  </td>
+												</tr>
+                                  
+												<tr id="per_add_0">
+													<td width="27%" class="TD_Item_First" Align="left">
+													  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_STR, general.lang)%> :&nbsp;&nbsp;
+													</td>
+													<td class="TdMid"  Align="left">
+													 <input type="text" name="VOICE_TEST_HOURS" size="3" maxlength="3" value="<%Network_SHOWDATA(VOICE_TEST_HOURS)%>" class="unnamed11"> <%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_HOUR_STR, general.lang)%>
+													</td>
+												</tr>
+
+												<tr id="per_add_1">
+													<td width="27%" class="TD_Item_First" Align="left">
+													  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_DAY_AT, general.lang)%> :&nbsp;&nbsp;
+													</td>
+													 <td class="TdMid"  Align="left">
+														 <select name="VOICE_TEST_EDTIME">
+														   <%Network_SHOWDATA(VOICE_TEST_EDTIME)%>
+														 </select>
+													 </td>
+												</tr>
+
+												<tr id="per_add_2">
+													<td width="27%" class="TD_Item_First" Align="left">
+														  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_STR, general.lang)%>:&nbsp;&nbsp;
+													</td>
+													<td class="TdMid"  Align="left">
+														 <select name="VOICE_TEST_EDWDAY">
+														   <%Network_SHOWDATA(VOICE_TEST_EDWDAY)%>
+														 </select>
+														 &nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_AT, general.lang)%>&nbsp;
+														 <select name="VOICE_TEST_EDWTIME">
+														   <%Network_SHOWDATA(VOICE_TEST_EDWTIME)%>
+														 </select>
+													 </td>
+												</tr>
+
+											</table>
+										</td>
+									</tr>
+									<tr id="last_line" height="2px" width="100%">
+										<td colspan="3"   class="TdEnd" />
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+
+						</tr>
+					</table>
+				</td>
+			</tr>  
+		</table>
+  </form>
+  </DIV>
+</body>
+<DIV id="bottom" class="bottom">
+		<input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit(1)">    
+  </DIV>
+</html>

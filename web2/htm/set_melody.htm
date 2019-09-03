@@ -1,0 +1,430 @@
+<html>
+<head>
+<title>VT-30X IP PHONE</title>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int pass;%>
+<%int count;%>
+<%int doline;%>
+<%int wav_stat;%>
+<%int free_space;%>
+<%int free_time;%>
+<%@pass = GETCGIPASSWORD()%>
+<%SYSBACKSUBMIT()%>
+<%PHONE_READDATA(READRING)%>
+<%PHONE_GETSUBMIT(RINGTONE)%>
+<%@free_space = PHONE_GETVAR(FREEDF)%>
+<%@free_time = PHONE_GETVAR(FREETIME)%>
+<%@wav_stat = PHONE_GETVAR(WAVSTAT)%>
+<%PHONE_SHOWDATA(UPLOADWAV)%>
+
+<body onload="loadaction();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28px" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Ring Tone</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+              <Td style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+              <td valign="top">
+                  <table align="center" class="Setup" border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                          <Td class="barSeparate"></td>
+                      </tr>
+                      <TR>
+                          <TD>
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;Ring Tone</Td>
+                                  </Tr>
+                              </Table>
+                          </td>
+                      </tr>
+
+        <%if @wav_stat == 2%>
+        <tr>
+          <td class="TDRow">
+             <table width="100%" border="0" cellpadding="3" cellspacing="1">
+                <tr> 
+                   <td class="TdEnd" align="center" height="50">
+                     <strong><font size="4"><%HTMLPRINTTEXT(Converting_file!_please_wait........, Set_Melody.txt)%></font></strong>
+                   </td>
+                </tr>
+              </table>
+          </td>
+        </tr>
+        <%else%>
+        <tr>
+          <td>
+            <form method="POST" name="ringform">
+              <table width="100%" border="0" cellpadding="3" cellspacing="1">
+              <tr><td class="TdEnd">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                  <tr> 
+                    <td width="107" class="TdMid" align="right"><%HTMLPRINTTEXT(Ringing_Tone_Action:, Set_Melody.txt)%></td>
+                    <td class="TdMid" align="center">
+                      <input type="radio" name="MELO" value="1" class="unnamed11" onclick="ringaction1()" checked>
+                      <%HTMLPRINTTEXT(Set, Set_Melody.txt)%>&nbsp; 
+                      <input type="radio" name="MELO" value="2" class="unnamed11" onclick="ringaction2()">
+                      <%HTMLPRINTTEXT(Upload, Set_Melody.txt)%>&nbsp;
+                      <input type="radio" name="MELO" value="3" class="unnamed11" onclick="ringaction3()">
+                      <%HTMLPRINTTEXT(Delete, Set_Melody.txt)%>
+                    </td>
+                  </tr>
+                </table>
+              </td></tr>
+             </table>
+
+             <table border="0" width="100%" cellpadding="0" cellspacing="0" id="set">
+                      <TR>
+                          <TD>
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;</Td>
+                                  </Tr>
+                              </Table>
+                          </td>
+                      </tr>
+
+               <tr><td class="TdEnd">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                <tr> 
+                  <td width="107" class="TdMid" align="right"><%HTMLPRINTTEXT(Ringing_Tone_Name:, Set_Melody.txt)%></td>
+                  <td class="TdMid" align="center">&nbsp;
+                    <select name="UPVOICE" class="unnamed11">
+                      <%PHONE_SHOWDATA(UPVOICE)%>
+                    </select>
+                  </td>
+                </tr>
+                <tr> 
+                  <td width="107" class="TdMid" align="right"><%HTMLPRINTTEXT(Music_On_Hold:, Set_Melody.txt)%></td>
+                  <td class="TdMid" align="center">&nbsp;
+                    <select name="MUSICONHOLD" class="unnamed11">
+                      <%PHONE_SHOWDATA(MUSICONHOLD)%>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+              </td></tr>
+               <tr><Td>&nbsp;</td></tr>
+                <!--<tr>
+                  <td align="center"> 
+                    <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="apply" class="unnamed11" onclick="Formsubmit(1)">
+                    &nbsp; 
+                    <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="Clear" class="unnamed11">
+                  </td>
+                </tr>-->
+                <tr>
+                  <td align="center"> 
+                    &nbsp;
+                  </td>
+                </tr>
+                <%@count = PHONE_GETVAR(RINGTONE)%>
+               </form>
+               </table>
+
+
+             <table border="0" width="100%" cellpadding="0" cellspacing="0" id="delete">
+               <form method="POST" name="deleteform">
+                  <TR>
+                     <TD>
+                       <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                        <Tr>
+                        <Td class="tdTitle">
+                         <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                  <td width="30%" align="center"><%HTMLPRINTTEXT(ID, Set_Melody.txt)%></td>
+                  <td width="50%" align="center"><%HTMLPRINTTEXT(Ringing_Tone_Name, Set_Melody.txt)%></td>
+                  <td width="20%" align="center"><%HTMLPRINTTEXT(Select, Set_Melody.txt)%></td>
+                  </tr>
+                    </td>
+                    </Tr>
+			<%for @doline=1;<=@count;1%>
+			<tr>
+			<td width="30%" class="TDRow" align="center"><%@doline%></td>
+			<td width="50%" class="TDRow" align="center"><%PHONE_SHOWDATA(@doline, UPVOICES)%></td>
+			<td width="20%" class="TDRow" align="center">
+			<input class="word" name="DELETE" type="checkbox" value="<%PHONE_SHOWDATA(@doline, UPVOICES)%>"></td>
+			</tr>
+                	<%endfor%>
+                              </Table>
+                          </td>
+                      </tr>
+
+                      <tr>
+                          <Td>&nbsp;</td>
+                      </tr>
+                <!--<tr>
+                  <td align="center"> 
+                    <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="apply" class="unnamed11" onclick="Formsubmit(2)">
+                    &nbsp;
+                    <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="Clear" class="unnamed11">
+                  </td>
+                </tr>-->
+                <tr>
+                  <td colspan="2" align="center"> 
+                    &nbsp;
+                  </td>
+                </tr>
+               </form>
+              </table>
+             </td></tr>
+
+             
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" id="upload">
+                <form method="POST" enctype="multipart/form-data" name="upringform">
+                    <TR>
+                          <TD>
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">Uploading Ring Tone</Td>
+                                  </Tr>
+                              </Table>
+                          </td>
+                      </tr>
+
+                <%if @count < 10%>
+                <tr><td class="TdEnd">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                 <tr>
+                  <td width="107" align="center" class="TdMid"><%HTMLPRINTTEXT(Ringing_Tone_Name:, Set_Melody.txt)%></td>
+                  <td class="TdMid">&nbsp;
+		    <input type="text" name="upfilename" size="32" maxlength="32">
+		    <input type="hidden" name="checkuploadringtone" size="1" value="1">
+		  </td>
+                </tr>
+                <tr>
+                  <td width="107" align="center" class="TdMid"><%HTMLPRINTTEXT(File_Location:, Set_Melody.txt)%></td>
+                  <td class="TdMid">&nbsp;
+		    <input type="file" name="upname" size="32" class="unnamed11">
+		    (<%@free_space%>KB / <%@free_time%> <%HTMLPRINTTEXT(sec, Set_Melody.txt)%>)
+		  </td>
+                </tr>
+                </td>
+                </tr>
+              </table>
+
+                <!--<tr>
+                  <td colspan="2" align="center"> 
+                    <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="apply" class="unnamed11" onclick="Formsubmit(1)">
+                    &nbsp; 
+                    <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="Clear" class="unnamed11">
+                  </td>
+                </tr>-->
+                <tr>
+                  <td colspan="2" align="center"> 
+                    &nbsp;
+                  </td>
+                </tr>
+                <%endif%>
+                <%if @count == 10%>
+                <tr>
+                  <td align="center" class="TdEnd">
+                     <%HTMLPRINTTEXT(Ringing_Tone_file_count_is_to_maxinum_please_delete_a_file_for_uploading_a_new_one., Set_Melody.txt)%>
+                  </td>
+                </tr>
+                <%endif%>
+                <%if @free_time == 0%>
+                <tr>
+                  <td align="center" class="TdEnd">
+                     <%HTMLPRINTTEXT(Disk_space_is_full_please_delete_a_file_for_uploading_a_new_one., Set_Melody.txt)%>
+                  </td>
+                </tr>
+                <%endif%>
+                </form>
+              </table>
+              </form>
+             </td>
+            </tr>
+          <%endif%>
+             </table>
+                </td>
+              <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>  
+      </table>
+  </DIV>
+
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30px"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30px"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+
+</table>
+</body>
+<SCRIPT LANGUAGE="JavaScript">
+var  uploadmode = 0;
+var  ringcount = <%@count%>;
+function Formsubmit()
+{
+  var whichone;
+
+  if(document.ringform.MELO[0].checked)
+       whichone = 1;
+  else if(document.ringform.MELO[1].checked)
+       whichone = 2;
+  else if(document.ringform.MELO[2].checked)
+       whichone = 3;
+
+   switch(whichone)
+   {
+     case 1:
+     if(uploadmode == 0)
+     {
+        document.ringform.submit();
+        document.ringform.action="../mainform.cgi/Set_Melody.htm;<%@pass%>;<%OUTRAND()%>?";
+     }
+     break;
+     case 2:
+     if(uploadmode == 1 && ringcount < 10)
+     {
+        if(checksubmit())
+        {
+           document.upringform.submit();
+           document.upringform.action="../mainform.cgi/Set_Melody.htm;<%@pass%>;<%OUTRAND()%>?";
+        }
+     }
+     break;
+     case 3:
+        document.deleteform.submit();
+        document.deleteform.action="../mainform.cgi/Set_Melody.htm;<%@pass%>;<%OUTRAND()%>?";
+     break;
+   }
+
+}
+function loadaction()
+{
+   document.getElementById("set").style.display="";
+   document.getElementById("upload").style.display="none";
+   document.getElementById("delete").style.display="none";
+}
+
+function ringaction1()
+{
+   document.getElementById("set").style.display="";
+   document.getElementById("upload").style.display="none";
+   document.getElementById("delete").style.display="none";
+   uploadmode = 0;
+}
+
+function ringaction2()
+{
+   document.getElementById("set").style.display="none";
+   document.getElementById("upload").style.display="";
+   document.getElementById("delete").style.display="none";
+   uploadmode = 1;
+   //alert(<%@free_space%>);
+}
+
+function ringaction3()
+{
+   document.getElementById("set").style.display="none";
+   document.getElementById("upload").style.display="none";
+   document.getElementById("delete").style.display="";
+   uploadmode = 0;
+}
+
+function checksubmit()
+{
+    var name_len = document.upringform.upfilename.value.length;
+    var i;
+    var s = document.upringform.upfilename.value;
+    
+    if(document.upringform.upfilename.value == '')
+    {
+       alert("<%HTMLPRINTTEXT(Ringing_Tone_Name_can't_be_empty!, Set_Melody.txt)%>")
+       document.upringform.upfilename.focus();
+       return false;
+    }
+    if(document.upringform.upname.value == '')
+    {
+       alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Set_Melody.txt)%>")
+       document.upringform.upname.focus();
+       return false;
+    }
+    for(i=0;i<name_len;i++)
+    {
+       if(document.upringform.upfilename.value.charAt(i) == ' ')
+       {
+          alert("<%HTMLPRINTTEXT(Ringing_Tone_Name_can't_be_with_a_space_character!, Set_Melody.txt)%>")
+          document.upringform.upfilename.focus();
+          return false;
+       }
+       if ((s.charAt(i) >= 'a' && s.charAt(i) <= 'z') || (s.charAt(i) >= 'A' && s.charAt(i) <= 'Z') || s.charAt(i) >= '0' && s.charAt(i) <= '9' || s.charAt(i) =='_' || s.charAt(i) =='-')
+	     continue;
+       else
+       {
+          alert("<%HTMLPRINTTEXT(Ringing_Tone_Name_value_is_invalid!, Set_Melody.txt)%>");
+          return false;
+       }
+    }
+    return true;
+}
+
+/*function chksize(strFileName)
+{
+   var maxsize = 3000;
+   var objStream = new ActiveXObject("adodb.stream");
+   objStream.Type = 1;
+   objStream.Open();
+   objStream.LoadFromFile(strFileName);
+   if(Math.round(objStream.Size/1024,2)>maxsize)
+   {
+      alert ("upload file size "+Math.round(objStream.Size/1024,2)+"KB exceed "+maxsize+"KB restriction");
+      document.upringform.reset();
+      return false;
+   }
+   return true;
+}*/
+
+function Hreflink(htm_name)
+{
+   top.location.href="../mainform.cgi/"+htm_name+";<%@pass%>;<%OUTRAND()%>?"
+}
+function ShowAlert() {
+    <%SYSTEMBACKSHOW(UPLOADWAV)%>
+}
+</SCRIPT>
+</html>

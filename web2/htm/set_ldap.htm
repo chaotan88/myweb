@@ -1,0 +1,404 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%Network_GETSUBMIT(LDAP)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+	if(Chksubmit())
+	{
+		document.ldapsetting.action="../mainform.cgi/set_ldap.htm";
+		document.ldapsetting.submit();
+	}
+}
+
+function Chksubmit()
+{
+	return true;
+}
+
+function ldap_enable()
+{
+  var one = parseFloat(document.ldapsetting.LDAPSW.value);
+  switch(one)
+  {
+	 case 0:
+	  document.getElementById("ldap_sa").style.display="none";
+	  document.getElementById("ldap_ssl").style.display="none";
+  	  document.getElementById("ldap_port").style.display="none";
+  	  document.getElementById("ldap_un").style.display="none";
+  	  document.getElementById("ldap_pw").style.display="none";
+	  document.getElementById("ldap_bs").style.display="none";
+  	  document.getElementById("ldap_nf").style.display="none";
+  	  document.getElementById("ldap_na").style.display="none";
+  	  document.getElementById("ldap_nbf").style.display="none";
+  	  document.getElementById("ldap_nba").style.display="none";
+  	  document.getElementById("ldap_dn").style.display="none";
+  	  document.getElementById("ldap_mh").style.display="none";
+  	  document.getElementById("ldap_cc").style.display="none";
+  	  document.getElementById("ldap_ac").style.display="none";
+  	  document.getElementById("ldap_sr").style.display="none";
+  	  document.getElementById("ldap_st").style.display="none";
+  	  document.getElementById("ldap_il").style.display="none";
+  	  document.getElementById("ldap_sw").className="TDEnd";
+  	  break;
+   case 1:
+	  document.getElementById("ldap_sa").style.display="";
+ 	  document.getElementById("ldap_ssl").style.display="";
+ 	  document.getElementById("ldap_port").style.display="";
+  	  document.getElementById("ldap_un").style.display="";
+  	  document.getElementById("ldap_pw").style.display="";
+	  document.getElementById("ldap_bs").style.display="";
+  	  document.getElementById("ldap_nf").style.display="";
+  	  document.getElementById("ldap_na").style.display="";
+  	  document.getElementById("ldap_nbf").style.display="";
+  	  document.getElementById("ldap_nba").style.display="";
+  	  document.getElementById("ldap_dn").style.display="";
+  	  document.getElementById("ldap_mh").style.display="";
+  	  document.getElementById("ldap_cc").style.display="";
+  	  document.getElementById("ldap_ac").style.display="";
+  	  document.getElementById("ldap_sr").style.display="";
+  	  document.getElementById("ldap_st").style.display="";
+  	  document.getElementById("ldap_il").style.display="";
+      document.getElementById("ldap_sw").className="TDRow";
+  break;
+  default:
+  	break;
+}
+}
+
+function wuisync()
+{
+	  ldap_enable();
+}
+
+function ShowAlert()
+{
+	<%Network_SHOWDATA(LDAPALERT)%>
+}
+
+</SCRIPT>
+
+<body onload="ShowAlert();wuisync();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">LDAP</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="ldapsetting" method="post">
+
+                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('ldap_setting','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">LDAP</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="ldap_setting">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="ldap_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Active:</td>
+                                      <td class="TdMid" >
+                                        <select name="LDAPSW" onclick="ldap_enable()"><%Network_SHOWDATA(LDAPSW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                        <tr class="TRedit">
+                          <td class="TDRow" id="ldap_ssl">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Use TLS (SSL):</td>
+                                      <td class="TdMid" >
+                                        <select name="LDAPSSL"><%Network_SHOWDATA(LDAPSSL)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_sa">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Server Address:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPSA" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPSA)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+
+                      <tr class="TRedit" id="ldap_port">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Port:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPPORT" size="6" maxlength="18" value="<%Network_SHOWDATA(LDAPPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_un">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">User Name:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPUN" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPUN)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_pw">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Password:</td>
+                                      <td class="TdMid" ><input type="password" name="LDAPPW" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPPW)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_bs">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Base:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPBS" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPBS)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+
+                      <tr class="TRedit" id="ldap_nf">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Name Filter:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPNF" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPNF)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_na">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Name Attributes:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPNA" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPNA)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_nbf">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Number Filter:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPNBF" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPNBF)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_nba">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Number Attributes:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPNBA" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPNBA)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                       <tr class="TRedit" id="ldap_dn">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Display Name:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPDN" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPDN)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                     <tr class="TRedit" id="ldap_mh">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Max Hits:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPMH" size="6" maxlength="18" value="<%Network_SHOWDATA(LDAPMH)%>" class="unnamed11">&nbsp;<label  >(1~1000)</label></td>
+								      
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="ldap_cc">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Country Code:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPCC" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPCC)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_ac">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Area Code:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPAC" size="32" maxlength="255" value="<%Network_SHOWDATA(LDAPAC)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="ldap_sr">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Sort Result:</td>
+                                      <td class="TdMid" >
+                                      <select name="LDAPSR"><%Network_SHOWDATA(LDAPSR)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_st">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Search Timeout:</td>
+                                      <td class="TdMid" ><input type="text" name="LDAPST" size="6" maxlength="18" value="<%Network_SHOWDATA(LDAPST)%>" class="unnamed11"><label  >&nbsp;seconds</label></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ldap_il">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Call Lookup:</td>
+                                      <td class="TdMid" >
+                                      <select name="LDAPIL"><%Network_SHOWDATA(LDAPIL)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                  </table>
+                  </div>
+                 
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</body>
+</html>
+

@@ -1,0 +1,677 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+   
+<%PHONE_GETSUBMIT(LINE_KEYS_CONFIGURATION)%>
+<%SYSBACKSUBMIT()%>
+
+<%int keyNumber;%>
+<%int isLineKeysSettings;%>
+<%int isSoftKeysSettings;%>
+<%int isNavigationKeysSettings;%>
+
+<%int softKeysCount;%>
+<%int navigationKeysCount;%>
+<%int isScaAvailable;%>
+
+<%@isLineKeysSettings = PHONE_GETVAR(IS_LINE_KEYS_SETTINGS)%>
+<%@isSoftKeysSettings = PHONE_GETVAR(IS_SOFT_KEYS_SETTINGS)%>
+<%@isNavigationKeysSettings = PHONE_GETVAR(IS_NAVIGATION_KEYS_SETTINGS)%>
+<%@isScaAvailable=PHONE_GETVAR(SCA_AVAILABLE)%>
+
+<%@softKeysCount = PHONE_GETVAR(GET_SOFT_KEYS_COUNT)%>
+<%@navigationKeysCount = PHONE_GETVAR(GET_NAVIGATION_KEYS_COUNT)%>
+
+<%int line;%>
+<%int lines_count;%>
+<%int numbers_of_enabled_lines;%>
+<%@lines_count = PHONE_GETVAR(LINE_KEY_COUNT)%>
+<%@numbers_of_enabled_lines = PHONE_GETVAR(LINESCOUNT)%>
+
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+<%if @isLineKeysSettings==1 %>
+var memoryKeyPaging;
+memoryKeyPaging = <%PHONE_SHOWDATA(0, MEMORY_KEYS_PAGING)%>;
+<%endif%>
+
+function downloadLineKeys()
+{
+  var url='/line_keys.cgi';  
+  window.open(url,'Download');     
+}
+
+function checkLoadAndSubmit(form)
+{
+ var val = form.upname.value;
+ if (val == '')
+    {
+        alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+    }    
+    else
+    {
+        var el;
+        
+        <%if @isLineKeysSettings==1%>
+        el = document.getElementById('t2');
+        el.parentNode.removeChild(el);
+        <%endif%>
+        
+        <%if @isSoftKeysSettings==1%>
+        el = document.getElementById('t4');
+        el.parentNode.removeChild(el);
+        <%endif%>
+        
+        <%if @isNavigationKeysSettings==1%>
+        el = document.getElementById('t5');
+        el.parentNode.removeChild(el);
+        <%endif%>
+      
+        form.encoding = "multipart/form-data";
+        form.submit();
+    }
+}
+
+function Formsubmit()
+{
+    // Remove "Delete All" flag
+    var el = document.getElementById('DEL_ALL_PROG_KEYS');
+    if( el )
+    {
+        el.parentNode.removeChild(el);
+    }    
+    
+    if( Validate() )  
+    {
+        document.LineKeys.submit();
+    }    
+}
+
+function FormDeleteAll()
+{
+    if( confirm( '<%HTMLPRINTTEXT(Are_you_sure_you_want_to_delete_all_programmable_keys_entries?, Speed_Dial.txt)%>' ) )
+    {
+        document.LineKeys.submit();
+    }
+}
+
+
+function Init()
+{    
+    <%if @isLineKeysSettings==1 %>
+    lineIndexOnChange();
+    <%endif%>
+
+    var i;
+    <%if @isSoftKeysSettings==1%>
+    for( i=1; i<=<%@softKeysCount%>; i++ )    
+    {
+        changeSoftKeyFunction( i );
+    }
+    <%endif%>
+    
+    <%if @isNavigationKeysSettings==1%>
+    for( i=1; i<=<%@navigationKeysCount%>; i++ )
+    {
+        changeNavigationKeyOperation( i );
+    }
+    <%endif%>
+}
+
+<%if @isLineKeysSettings==1 %>
+function lineKeyTypeOnChange(lineIndex)
+{
+    var elem = document.getElementById("LINE_KEY_TYPE" + String(lineIndex));
+    var lineType = elem.value;     
+    
+    <%for @line=0;<@lines_count;1%>
+      document.getElementById("TR_LINE_KEY_LINE<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_SPEEDDIAL_NUM<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_KEY_LABEL<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_PAGING_GROUP<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_PAGING_ADDRESS<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_PAGING_PORT<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_EVENT<%@line%>").style.display="none";
+      document.getElementById("TR_LINE_KEY_EVENT<%@line%>").style.display="none";
+      
+      document.getElementById("TD_LINE_KEY_TYPE<%@line%>").className                 = "TDRow";
+      document.getElementById("TD_LINE_KEY_LINE<%@line%>").className                 = "TDRow";
+      document.getElementById("TD_LINE_KEY_SPEEDDIAL_NUM<%@line%>").className        = "TDRow";
+      document.getElementById("TD_LINE_KEY_KEY_LABEL<%@line%>").className            = "TDRow";
+      document.getElementById("TD_LINE_KEY_PAGING_PORT<%@line%>").className          = "TDRow";
+      document.getElementById("TD_LINE_KEY_EVENT<%@line%>").className                = "TDRow";
+    <%endfor%>
+    
+    if(lineType == 3)    
+    {
+        document.getElementById("TR_LINE_KEY_KEY_LABEL" + String(lineIndex)).style.display = "";
+        document.getElementById("TR_LINE_KEY_LINE" + String(lineIndex)).style.display      = ""; 
+        document.getElementById("TD_LINE_KEY_LINE" + String(lineIndex)).className          = "TDEnd";
+    } 
+    else if(lineType == 0 || lineType == 1)
+    {
+      document.getElementById("TR_LINE_KEY_KEY_LABEL" + String(lineIndex)).style.display       = "";
+      document.getElementById("TR_LINE_KEY_SPEEDDIAL_NUM" + String(lineIndex)).style.display   = "";
+      document.getElementById("TD_LINE_KEY_SPEEDDIAL_NUM" + String(lineIndex)).className       = "TDEnd";
+    }
+    else if(lineType == 2)
+    {
+      document.getElementById("TR_LINE_KEY_KEY_LABEL" + String(lineIndex)).style.display      = "";
+      document.getElementById("TR_LINE_KEY_PAGING_GROUP" + String(lineIndex)).style.display   = "";
+      document.getElementById("TR_LINE_KEY_PAGING_ADDRESS" + String(lineIndex)).style.display = "";
+      document.getElementById("TR_LINE_KEY_PAGING_PORT" + String(lineIndex)).style.display    = "";
+      document.getElementById("TD_LINE_KEY_PAGING_PORT" + String(lineIndex)).className        = "TDEnd";
+    }
+    else if(lineType == 4)
+    {
+      document.getElementById("TR_LINE_KEY_KEY_LABEL" + String(lineIndex)).style.display = "";
+      document.getElementById("TR_LINE_KEY_EVENT" + String(lineIndex)).style.display     = "";
+      document.getElementById("TD_LINE_KEY_EVENT" + String(lineIndex)).className         = "TDEnd";
+    }
+	else
+	{
+      document.getElementById("TD_LINE_KEY_TYPE" + String(lineIndex)).className = "TDEnd";
+	}  
+}
+<%endif%>
+
+<%if @isLineKeysSettings==1 %>
+function lineIndexOnChange()
+{
+  var lineIndex = parseFloat(document.LineKeys.LINEINDEX.value);  
+  
+  <%for @line=0;<@lines_count;1%>
+  document.getElementById("TR_LINE_KEY_TYPE<%@line%>").style.display="none";  
+  <%endfor%>
+  
+  lineKeyTypeOnChange(lineIndex);
+  
+  document.getElementById("TR_LINE_KEY_TYPE" + String(lineIndex)).style.display="";
+ 
+}
+<%endif%>
+
+
+function Validate()
+{
+    <%if @isLineKeysSettings==1 %>
+    var i, j;
+   
+    for( i = 0; i < <%@lines_count%>; i++ )
+    {
+        <%if @numbers_of_enabled_lines==1 %>
+        <%if @isScaAvailable==0 %>
+        // check all line keys that there are no more then two keys are assigned to the same line only for single line mode
+        var theSameLineCntr = 0;
+        for( j = 0; j < <%@lines_count%>; j++ )
+        {
+            if( ( document.getElementById( "LINE_KEY_TYPE"+String(j)).value == 3 ) && 
+                ( document.getElementById( "LINE_KEY_LINE"+String(j)).value == i ) )
+            {
+                theSameLineCntr++;
+                if( theSameLineCntr > 2 )
+                {
+                    alert( "There are more then two programmable keys are assigned to the line - " + ( i + 1 ) );
+                    return false;
+                }
+            }
+        }    
+        <%endif%>
+        <%endif%>
+
+        //check other line keys for the same paging configuration
+        for( j = (i+1); j < <%@lines_count%>; j++ )
+        {
+            if( document.getElementById("LINE_KEY_PAGING_ADDRESS"+String(i)).value == document.getElementById("LINE_KEY_PAGING_ADDRESS"+String(j)).value && 
+                document.getElementById("LINE_KEY_PAGING_PORT"+String(i)).value == document.getElementById("LINE_KEY_PAGING_PORT"+String(j)).value && 
+                ( (document.getElementById("LINE_KEY_TYPE"+String(i)).value == 2) && (document.getElementById("LINE_KEY_TYPE"+String(j)).value == 2) ) )
+            {
+                alert( "Line Key " + (i+1) + " and Line Key " + (j+1) + " have the same configuration! Two keys can't have the same multicast address and port.");
+            
+                return false;
+            }            
+        }
+        
+         for( j = 0; j < memoryKeyPaging.length; j++ )
+        {
+            if( j in memoryKeyPaging )
+            {
+                if( document.getElementById("LINE_KEY_PAGING_ADDRESS"+String(i)).value == memoryKeyPaging[j][1] && 
+                    document.getElementById("LINE_KEY_PAGING_PORT"+String(i)).value == memoryKeyPaging[j][2] && 
+                    document.getElementById("LINE_KEY_TYPE"+String(i)).value == 2 )
+                {
+                    alert("Line Key " + (i+1) + " and Memory Key " + (memoryKeyPaging[j][0]) + " have the same configuration! Two keys can't have the same multicast address and port.");
+                    
+                    return false;
+                }                
+            }
+        }
+    }
+    <%endif%>
+    
+    return true;
+}
+
+
+<%if @isSoftKeysSettings==1%>
+function changeSoftKeyFunction( softKeyNumber )
+{
+    var form = document.forms[0];
+    
+    if( ( form.elements["SOFT_KEYS_FUNCTION"+softKeyNumber].value==9 ) || ( form["SOFT_KEYS_FUNCTION"+softKeyNumber].value==10 ) )
+    {
+		form.elements["SOFT_KEYS_NUMBER"+softKeyNumber].style.display = "";  
+		form.elements["SOFT_KEYS_LABEL"+softKeyNumber].style.display  = "";  
+    }
+    else
+    {
+		form.elements["SOFT_KEYS_NUMBER"+softKeyNumber].style.display = "none";  
+		form.elements["SOFT_KEYS_LABEL"+softKeyNumber].style.display = "none";  
+    }
+    
+    if( ( form.elements["SOFT_KEYS_FUNCTION" + softKeyNumber].value==8 ) )
+    {
+        form.elements["SOFT_KEYS_FUNCTION" + softKeyNumber].disabled = true;
+		form.elements["SOFT_KEYS_PSK_LABEL" + softKeyNumber].style.display = "";  
+		form.elements["SOFT_KEYS_DELETE" + softKeyNumber].style.display = "none";  
+    }
+    else
+    {
+        form.elements["SOFT_KEYS_FUNCTION" + softKeyNumber].disabled = false;
+		form.elements["SOFT_KEYS_PSK_LABEL" + softKeyNumber].style.display = "none";  
+		form.elements["SOFT_KEYS_DELETE" + softKeyNumber].style.display = "";  
+    }
+}
+<%endif%>
+
+<%if @isNavigationKeysSettings==1%>
+function changeNavigationKeyOperation( navigationKeyNumber )
+{
+}
+<%endif%>
+
+</SCRIPT>
+
+<body onload="Init()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Programmable Keys</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <form method="POST" name="LineKeys" action="../mainform.cgi/Line_Keys_Configuration.htm">
+        <%if @isLineKeysSettings==1 %>
+        <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+            <tr>
+                <td>
+	                <DIV class="Bar" align="center" style="display:none;color:red" id="wait_restart">
+	                    Please wait while restarting, you will be automatically redirected to home page...
+	                </DIV>              
+	                <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                        <tr class="TRedit">
+                            <td  class="tdTitle">
+                                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <Td><A HREF="javascript:OpenCloseDiv('LineKeysSettingsBlock','Tr1')" style="text-decoration:none">
+                                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">Line Settings
+                                            </A>
+                                        </td>
+                                    </tr>
+                                </Table>
+                            </td>
+                        </tr>
+                    </table>           
+                    <div id="LineKeysSettingsBlock">                    
+                    <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                        <tr class="TRedit">
+                            <td class="TDRow" id="LineKey">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Line Key:</td>
+                                        <td class="TdMid" >
+                                            <select name="LINEINDEX" onchange="lineIndexOnChange()"><%SIP_SHOWDATA(LINE_INDEX)%></select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <%for @line=0;<@lines_count;1%>
+                        <tr class="TRedit" id="TR_LINE_KEY_TYPE<%@line%>">
+                            <td class="TDRow" id="TD_LINE_KEY_TYPE<%@line%>">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Key Type:</td>
+                                      <td class="TdMid" >                                     
+                                        <select name="LINE_KEY_TYPE<%@line%>" id="LINE_KEY_TYPE<%@line%>" onchange="lineKeyTypeOnChange(<%@line%>)"><%PHONE_SHOWDATA(@line, LINE_KEY_TYPE)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="TR_LINE_KEY_KEY_LABEL<%@line%>">
+                          <td class="TDRow" id="TD_LINE_KEY_KEY_LABEL<%@line%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Key Label:</td>
+                                        <td class="TdMid" >
+                                            <input type="text" name="LINE_KEY_KEY_LABEL<%@line%>" id="LINE_KEY_KEY_LABEL<%@line%>" size="37" maxlength="35" value="<%PHONE_SHOWDATA(@line, LINE_KEY_KEY_LABEL)%>" class="unnamed11">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="TRedit" id="TR_LINE_KEY_LINE<%@line%>">
+                            <td class="TDRow" id="TD_LINE_KEY_LINE<%@line%>">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">SIP Account:</td>
+                                        <td class="TdMid" >                                     
+                                            <select name="LINE_KEY_LINE<%@line%>" id="LINE_KEY_LINE<%@line%>"><%PHONE_SHOWDATA(@line, LINE_KEY_LINE)%></select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="TRedit" id="TR_LINE_KEY_SPEEDDIAL_NUM<%@line%>">
+                            <td class="TDRow" id="TD_LINE_KEY_SPEEDDIAL_NUM<%@line%>">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Line Speed Dial Number:</td>
+                                        <td class="TdMid" >
+                                            <input type="text" name="LINE_KEY_SPEEDDIAL_NUM<%@line%>" id="LINE_KEY_SPEEDDIAL_NUM<%@line%>" size="37" maxlength="35" value="<%PHONE_SHOWDATA(@line, LINE_KEY_SPEEDDIAL_NUM)%>" class="unnamed11">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="TRedit" id="TR_LINE_KEY_PAGING_GROUP<%@line%>">
+                            <td class="TDRow" id="TD_LINE_KEY_PAGING_GROUP<%@line%>">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Paging Group Name:</td>
+                                      <td class="TdMid" >
+                                        <input type="text" name="LINE_KEY_PAGING_GROUP<%@line%>" id="LINE_KEY_PAGING_GROUP<%@line%>" size="37" maxlength="35" value="<%PHONE_SHOWDATA(@line, LINE_KEY_PAGING_GROUP)%>" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="TR_LINE_KEY_PAGING_ADDRESS<%@line%>">
+                          <td class="TDRow" id="TD_LINE_KEY_PAGING_ADDRESS<%@line%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Paging Multicast Address:</td>
+                                        <td class="TdMid" >
+                                            <input type="text" name="LINE_KEY_PAGING_ADDRESS<%@line%>" id="LINE_KEY_PAGING_ADDRESS<%@line%>" size="37" maxlength="35" value="<%PHONE_SHOWDATA(@line, LINE_KEY_PAGING_ADDRESS)%>" class="unnamed11">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="TRedit" id="TR_LINE_KEY_PAGING_PORT<%@line%>">
+                            <td class="TDRow" id="TD_LINE_KEY_PAGING_PORT<%@line%>">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Paging Multicast Port:</td>
+                                        <td class="TdMid" >
+                                            <input type="text" name="LINE_KEY_PAGING_PORT<%@line%>" id="LINE_KEY_PAGING_PORT<%@line%>" size="37" maxlength="35" value="<%PHONE_SHOWDATA(@line, LINE_KEY_PAGING_PORT)%>" class="unnamed11">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="TRedit" id="TR_LINE_KEY_EVENT<%@line%>">
+                            <td class="TDRow" id="TD_LINE_KEY_EVENT<%@line%>">
+                                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="3%" class="TdMid">&nbsp;</td>
+                                        <td width="47%" class="TD_Item_First" Align="left">Key Event:</td>
+                                        <td class="TdMid" >                                     
+                                            <select name="LINE_KEY_EVENT<%@line%>" id="LINE_KEY_EVENT<%@line%>"><%PHONE_SHOWDATA(@line, LINE_KEY_EVENT_TYPE)%></select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <%endfor%>
+                    </table> 
+                    </div>
+                </td>
+            </tr>  
+        </table>
+        <br>
+        <%endif%>    
+                      
+        <%if @isSoftKeysSettings==1%>
+        <table id="t4" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td>
+	                <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                        <tr class="TRedit">
+                            <td  class="tdTitle">
+                                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <Td class="tdTitle">
+                                            <A HREF="javascript:OpenCloseDiv('SoftKeysSettingsBlock','Tr2')" style="text-decoration:none">
+                                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Soft Keys
+                                            </A>
+                                        </td>
+                                    </tr>
+                                </Table>
+                            </td>
+                        </tr>
+                    </table>           
+                    <div id="SoftKeysSettingsBlock">
+                    <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                        <tr class="TRedit">
+                            <td class="TdTitleLeft" width="10%" align="center">
+                                <%HTMLPRINTTEXT(Key, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="30%" class="TdTitleLeft">
+                                <%HTMLPRINTTEXT(Function, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="17%" class="TdTitleLeft">
+                                <%HTMLPRINTTEXT(Number, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="18%" class="TdTitleLeft">
+                                <%HTMLPRINTTEXT(Label, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="15%" class="TdTitleLeft">
+                                <%HTMLPRINTTEXT(Psk_Label, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="10%" class="TdTitleRight">
+                                <%HTMLPRINTTEXT(Delete, Speed_Dial.txt)%>
+                            </td>
+                        </tr>       
+                        <%for @keyNumber=1;<=@softKeysCount;1%>                
+                            <tr class="TrTwo">
+                                <td align="center" class="TdLeft">
+                                    <%@keyNumber%>
+                                </td>
+                                <td align="center" class="TdLeft">
+                                    <select size="1" name="SOFT_KEYS_FUNCTION<%@keyNumber%>" style="max-width: 150; width:100%;" onchange="changeSoftKeyFunction(<%@keyNumber%>)">
+                                        <%PHONE_SHOWDATA(@keyNumber, SOFT_KEYS_FUNCTION)%>
+                                    </select>
+                                </td>
+                                <td align="center" class="TdLeft">
+                                    <input type="text" name="SOFT_KEYS_NUMBER<%@keyNumber%>" style="width:95%;" maxlength="32" value="<%PHONE_SHOWDATA(@keyNumber, SOFT_KEYS_NUMBER)%>">
+                                </td>
+                                <td align="center" class="TdLeft">
+                                    <input type="text" name="SOFT_KEYS_LABEL<%@keyNumber%>" style="width:95%;" maxlength="32" value="<%PHONE_SHOWDATA(@keyNumber, SOFT_KEYS_LABEL)%>">
+                                </td>
+                                <td align="center" class="TdLeft">
+                                    <input type="text" name="SOFT_KEYS_PSK_LABEL<%@keyNumber%>" style="width:95%;" maxlength="32" disabled value="<%PHONE_SHOWDATA(@keyNumber, SOFT_KEYS_PSK_LABEL)%>"
+                                </td>
+                                <td align="center" class="TdRight">
+                                    <input type="checkbox" name="SOFT_KEYS_DELETE<%@keyNumber%>" value="1">
+                                </td>
+                            </tr>
+                        <%endfor%>
+                    </table> 
+                    </div>
+                </td>
+            </tr>  
+        </table>
+        <BR>
+        <%endif%>
+        
+        <%if @isNavigationKeysSettings==1%>
+        <table id="t5" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td>
+	                <table id="setupTable2" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                        <tr class="TRedit">
+                            <td  class="tdTitle">
+                                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <Td><A HREF="javascript:OpenCloseDiv('NavigationKeysSettingsBlock','Tr3')" style="text-decoration:none">
+                                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">Navigation Keys
+                                            </A>
+                                        </td>
+                                    </tr>
+                                </Table>
+                            </td>
+                        </tr>
+                    </table>           
+                    <div id="NavigationKeysSettingsBlock">
+                    <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                        <tr class="TRedit">
+                            <td class="TdTitleLeft" width="20%" align="center">
+                                <%HTMLPRINTTEXT(Key, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="65%" class="TdTitleLeft">
+                                <%HTMLPRINTTEXT(Function, Speed_Dial.txt)%>
+                            </td>
+                            <td align="center" width="15%" class="TdTitleRight">
+                                <%HTMLPRINTTEXT(Delete, Speed_Dial.txt)%>
+                            </td>
+                        </tr>       
+                        <%for @keyNumber=1;<=@navigationKeysCount;1%>                
+                            <tr class="TrTwo">
+                                <td width="25%" align="left" class="TdLeft">&nbsp;<%PHONE_SHOWDATA(@keyNumber, NAVIGATION_KEYS_NAME)%></td>
+                                <td width="60%"align="center" class="TdLeft">
+                                    <select size="1" name="NAVIGATION_KEYS_OPERATION<%@keyNumber%>" onchange="changeNavigationKeyOperation(<%@keyNumber%>)">
+                                        <%PHONE_SHOWDATA(@keyNumber, NAVIGATION_KEYS_OPERATION)%>
+                                    </select>
+                                </td>
+                                <td width="15%" align="center" class="TdRight">
+                                    <input type="checkbox" name="NAVIGATION_KEYS_DELETE<%@keyNumber%>" value="1">
+                                </td>
+                            </tr>
+                        <%endfor%>
+                    </table> 
+                    </div>
+                </td>
+            </tr>  
+        </table>
+        <%endif%>
+        
+     <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">                      
+                       <tr>
+                          <Td class="barSeparate"></td>
+                       </tr>
+                      <TR class="TRedit">
+                          <TD width="100%">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;Load and Save</Td>
+                                  </Tr>
+                              </Table>
+                          </td>
+                      </tr>
+                     <tr class="TRedit">
+                       <td class="TdEnd" align="right">
+                       <input type="button" value="Save Programmable Keys" class="LongSubBut" onClick="downloadLineKeys()">
+                       </td>
+                     </tr>
+                      <tr class="TRedit">
+                      <td class="TdEnd">
+                      <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                                      <td align="right">
+                                          <input type="hidden" name="TYPE" class="unnamed11" value="14">
+                                          <input type="file" name="upname" size="36">
+                                      </td>
+                                      <td align="right">
+                                          &nbsp;<input type="button" value="Load Programmable Keys" class="LongSubBut" onclick="checkLoadAndSubmit(document.LineKeys)">
+                                      </td>
+                      </tr>
+                      </table>
+                      </td>
+                      </tr>
+                 </table>
+                 &nbsp;
+               <input type="hidden" name="DEL_ALL_PROG_KEYS" id="DEL_ALL_PROG_KEYS" value="1"> 
+               </form>                
+
+  </DIV>
+
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                    
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td align="center" HEIGHT="47px">
+                        <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" onClick="Formsubmit()" class="SubBut" name="Submit" >
+                        &nbsp;
+                        <input type="button" value="<%HTMLPRINTTEXT(Delete_All, button.txt)%>" onClick="FormDeleteAll()" class="SubBut">                       
+                        </td>
+                        
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</body>
+</html>

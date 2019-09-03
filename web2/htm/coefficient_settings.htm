@@ -1,0 +1,237 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<%SYSTEMGetSubmit()%>
+<%Update_GETSUBMIT(COEFFICIENT)%>
+<%SYSBACKSUBMIT()%>
+<SCRIPT LANGUAGE="JavaScript">
+	
+  function checkLoad(obj)
+{
+	document.personalform.audiodevice.value= document.coefficient.AUDIO.value;
+	document.personalform.bandwidth.value= document.coefficient.BW.value;
+	document.personalform.direction.value= document.coefficient.DIRECTION.value;
+
+  if (obj.upname.value == '')
+      alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+  else
+      obj.submit();
+}
+  function Formsubmit(no)
+  {
+     switch(no){
+        case(1):
+		   document.coefficient.ACTION.value = "view";
+        break;
+        case 2:
+           document.coefficient.ACTION.value = "delete";
+		   break;
+		case 3:
+		   document.coefficient.ACTION.value = "deleteall";
+        break;
+     }
+	 document.coefficient.submit();
+  }
+
+function loadcheck()
+{
+   
+}
+
+function ShowAlert() {
+    <%SYS_SHOWDATA(COEFFICIENT_REBOOT_CHECK)%>
+}
+
+function Reboot()
+{
+       document.rebootform.submit();
+       document.rebootform.action="../mainform.cgi/Coefficient_Settings.htm";
+}
+</SCRIPT>
+
+<%SYS_SHOWDATA(REDIRECT)%>
+
+<body onload="loadcheck();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">
+                                        Coefficient Settings
+                                    </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+  
+  <DIV id="div_content" class="Content_TYPE1" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  
+                  <!-- show detail-->
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0" >
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td  Align="center">Coefficient Settings</td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+				<form name="coefficient" method="post" Align="center">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="language_sw">
+                              <table border="0" width="72%" cellpadding="0" cellspacing="0" Align="center">
+                                  <tr>
+                                      <input type="hidden" name="ACTION" value="6">
+                                      <td width="27%" Align="left">Audio:
+                                        <select name="AUDIO" onChange="Formsubmit(1)">
+											<%Update_SHOWDATA(COEFF_AUDIO)%>
+                                        </select>
+                                      </td>
+
+                                      <td width="23%">BandWidth:
+                                        <select name="BW" onChange="Formsubmit(1)">
+  											<%Update_SHOWDATA(COEFF_BW)%>
+                                        </select>
+                                      </td>
+
+                                      <td width="22%" Align="right">Direction:
+                                        <select name="DIRECTION" onChange="Formsubmit(1)">
+  											<%Update_SHOWDATA(COEFF_DIRECTION)%>
+                                        </select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+				</form>
+				<br>
+                  <form method="POST" enctype="multipart/form-data" align="center" action="../mainform.cgi/Coefficient_Settings.htm" name="personalform">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="72%" cellpadding="0" cellspacing="0" Align="center">
+                                  <tr>
+					                  <td width="70%" align="left">
+					                      <input type="hidden" name="TYPE" class="unnamed11" value="12">
+					                      <input type="hidden" name="audiodevice" size="1" value="0">
+					                      <input type="hidden" name="bandwidth" size="1" value="0">
+					                      <input type="hidden" name="direction" size="1" value="0">
+					                      <input type="file" name="upname" style="width:100%;">
+					                  </td>
+					                  <td width="10%" align="right">
+					                      <input type="button" value="Load"  onclick="checkLoad(document.personalform)">
+					                  </td>
+					                  <td width="10%" align="right">
+					                      <input type="button" value=" Delete "  onClick="Formsubmit(2)">
+					                  </td>
+					                  <td width="10%" align="right">
+					                      <input type="button" value="Delete All" onClick="Formsubmit(3)">
+					                  </td>
+	                  				</tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </form>
+
+            	<form method="POST" name="rebootform">
+                     <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="72%" cellpadding="0" cellspacing="0" Align="center">
+                                  <tr>
+                                      <td width="72%"><font color="#FF0000"><%SYS_SHOWDATA(REBOOT_WARN)%></font></td>
+                                  </tr>
+                                  <tr>
+                                      <td width="40%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Restart_system, Reboot.txt)%></td>
+                                      <td class="TdMid" >
+                                       <input type="button" value="<%HTMLPRINTTEXT(Restart, button.txt)%>" name="rebutton" class="unnamed11" onclick="Reboot()">
+                                       <input type="hidden" name="REBOOT" value="1">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </form>
+                  
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr height="270">
+                                      <td width="100%" class="TD_Item_First" Align="center">
+                                          <textarea rows="17" name="S1" style= "width:72%" wrap="OFF" readonly="readonly">
+<%Network_SHOWDATA(COEFFICIENT_FILE)%>
+                                          </textarea>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                  </table>
+                  
+              </div>   
+              <!--end-->    
+                  <br>
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        <tr>
+           <td colspan="3">
+		<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+         </tr>
+      </table>
+  </DIV>
+</body>
+</html>
+
+<%SYS_SHOWDATA(REBOOT)%>

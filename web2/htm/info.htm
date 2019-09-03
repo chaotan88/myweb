@@ -1,0 +1,69 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+      <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+      <span class="bar_home"><%HTMLPRINTTEXT(HOME_BRA, general.lang)%></span>
+      <span class="bar_menu">&nbsp;/&nbsp;<%HTMLPRINTTEXT(INFO_SYSTEM_INFOMATION, general.lang)%></span>
+  </DIV>
+  
+  <!-- <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV> -->
+  <div class="right-content">
+      <div class="item">
+          <span class="item-label"><%HTMLPRINTTEXT(INFO_MODEL_NAME, general.lang)%>:</span>
+          <span class="item-value"><%PHONE_SHOWDATA(PRODUCT)%></span>
+      </div>
+      <div class="item">
+        <span class="item-label"><%HTMLPRINTTEXT(AUTO_PROVISION_FIRMWARE_VERSION, general.lang)%>:</span>
+        <span class="item-value"><%SYS_SHOWDATA(VERSION)%></span>
+    </div>
+    <div class="item">
+        <span class="item-label"><%HTMLPRINTTEXT(INFO_RELEASE_DATE, general.lang)%>:</span>
+        <span class="item-value"><%SYS_SHOWDATA(TIMEVERSION)%></span>
+    </div>
+    <div class="item">
+        <span class="item-label"><%HTMLPRINTTEXT(SET_WAN_MAC_ADDRESS, general.lang)%>:</span>
+        <span class="item-value"><%SYS_SHOWDATA(MAC_ADDRESS)%></span>
+    </div>
+  </div>
+  
+  <!-- <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                            
+                            <IMG align="right" class="editImg" src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                            
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+    
+  </DIV> -->
+</body>
+</html>

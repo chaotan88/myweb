@@ -1,0 +1,434 @@
+ 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(SIP_LINE)%>
+
+<%int isVisibleLineModeField;%>
+<%@isVisibleLineModeField=PHONE_GETVAR(IS_VISIBLE_LINE_MODE_FIELD)%>
+
+<%int isVisibleExtensionDisplay;%>
+<%@isVisibleExtensionDisplay=PHONE_GETVAR(IS_VISIBLE_EXTENSION_DISPLAY)%>
+
+<%int max_line;%>
+<%int line_index;%>
+<%@max_line = SIP_GETVAR(MAX_LINE)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+var lines=new Array();
+var isLoaded = false;
+
+function getLine(lineIndex) 
+{ 
+    return parseFloat(document.getElementById("ssline"+String(lineIndex)).value);  
+}
+
+function getLineDesc(index) { 
+  var lineDesc = document.getElementsByName('SSLINE' + index).item(0).value.toString();
+  
+  <%if @isVisibleLineModeField==1%>
+      lineDesc = lineDesc + document.getElementById('LINEMODE' + index).selectedIndex.toString();
+  <%endif%>
+  
+  return lineDesc;
+}
+
+function init()
+{
+ for(var i = 1; i <= <%@max_line%>; i++)
+    lines[i] = getLineDesc(i);
+    
+  var wait = self.location.search.substring("wait");
+  if (wait) {
+    setTimeout("redirect()", 50000);
+    document.getElementById("wait_restart").style.display="";
+  }
+  isLoaded = true;
+}
+
+function redirect()
+{
+  document.location = "../mainform.cgi/info.htm";
+}
+
+function Formsubmit()
+{
+  if (!Chksubmit() || !isLoaded)
+      return;
+  if (document.sipdialing.SDLINE1.value == "") {
+  }
+
+ var change = false;
+  for(var i = 1; i <= <%@max_line%>; i++)
+    change = change || (lines[i] != getLineDesc(i)); 
+
+  if (change) {
+      if(confirm("<%HTMLPRINTTEXT(SIP_LINESETTING_RESTART_CONFIRM, error.lang)%>")) {
+          document.sipdialing.action="../mainform.cgi/sip_linesetting.htm?wait=1";
+          document.sipdialing.submit();
+
+          var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+    img.src="../../image/success.png";
+    p.appendChild(textNode);
+    var content = document.createElement("div");
+    content.setAttribute('class', 'success-info');
+    content.appendChild(img);
+    content.appendChild(p);
+    document.getElementsByTagName("body")[0].appendChild(content);
+    setTimeout(function () {
+        content.parentNode.removeChild(content);
+    },3000);
+      }
+  } else {
+      document.sipdialing.action="../mainform.cgi/sip_linesetting.htm";
+      document.sipdialing.submit();
+
+      var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+    img.src="../../image/success.png";
+    p.appendChild(textNode);
+    var content = document.createElement("div");
+    content.setAttribute('class', 'success-info');
+    content.appendChild(img);
+    content.appendChild(p);
+    document.getElementsByTagName("body")[0].appendChild(content);
+    setTimeout(function () {
+        content.parentNode.removeChild(content);
+    },3000);
+  }
+}
+
+function Chksubmit()
+{
+  for(var i = 1; i <= <%@max_line %>; i++)
+  {
+      if (getLine(i) && document.getElementById("SDLINE" + String(i)).value == "")
+      {     
+            alert("Line User ID can't be empty!");
+            document.sipdialing.LINEINDEX.value = i - 1;
+            lineIndexOnChange();            
+            document.getElementById("SDLINE" + String(i)).focus();	 
+            return false;
+      }
+  }
+  return true;
+}
+
+function wuisync(){
+  lineIndexOnChange();
+}
+
+function LineOnchange(index)
+{
+  var one = parseFloat(document.getElementById("ssline"+String(index)).value);
+  switch(one)
+  {
+      case 0:
+      if(index == 1)
+      {
+	    document.getElementById("ssline"+String(index)).value=1;
+	    alert("<%HTMLPRINTTEXT(QUICK_SETUP_LINE_CANT_DISABLE, error.lang)%>!");
+	  }
+	  else
+	  {
+	     document.getElementById("line_dname"+String(index)).style.display="none";
+         document.getElementById("line_id"+String(index)).style.display="none";
+         document.getElementById("line_name"+String(index)).style.display="none";
+         document.getElementById("line_passwd"+String(index)).style.display="none";
+         document.getElementById("line_sw"+String(index)).className="TDEnd";
+<%if @isVisibleLineModeField==1%>
+         document.getElementById("line_mode"+String(index)).style.display="none";
+<%endif%>
+<%if @isVisibleExtensionDisplay==1%>
+         document.getElementById("line_label"+String(index)).style.display="none";
+<%endif%>
+	  }
+	  break;
+      case 1:
+         document.getElementById("line_dname"+String(index)).style.display="";
+         document.getElementById("line_id"+String(index)).style.display="";
+         document.getElementById("line_name"+String(index)).style.display="";
+         document.getElementById("line_passwd"+String(index)).style.display="";
+         document.getElementById("line_sw"+String(index)).className="TDRow";
+<%if @isVisibleLineModeField==1%>
+         document.getElementById("line_mode"+String(index)).style.display="";
+<%endif%>
+<%if @isVisibleExtensionDisplay==1%>
+         document.getElementById("line_label"+String(index)).style.display="";
+<%endif%>
+      break;
+	  default :
+	  alert(one);
+         document.getElementById("line_id"+String(index)).style.display="";
+         document.getElementById("line_name"+String(index)).style.display="";
+         document.getElementById("line_passwd"+String(index)).style.display="";
+         document.getElementById("line_sw"+String(index)).className="TDRow";
+		
+      break;
+  }   
+  if(index > 1 && !getLine(index)) 
+  { 
+    var message = "";
+    for(var i = index+1; i <=  <%@max_line %>; i++)
+    {
+        if(getLine(i))
+        {
+            message = message + "<%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%>" + String(i)+ " ";
+            document.getElementById("ssline"+String(i)).value = 0;
+        }
+    } 
+    if(message.length > 0)
+  	    alert(message + " <%HTMLPRINTTEXT(QUICK_SETUP_LINE_WILL_DISABLE, error.lang)%>");
+  }
+  
+}
+
+function lineIndexOnChange()
+{
+  var one = parseFloat(document.sipdialing.LINEINDEX.value);
+  var lineIndex = one + 1;
+  
+  <%for @line_index=1;<=@max_line;1%>
+  document.getElementById("line_sw<%@line_index%>_show").style.display="none";
+  document.getElementById("line_dname<%@line_index%>").style.display="none";
+  document.getElementById("line_id<%@line_index%>").style.display="none";
+  document.getElementById("line_name<%@line_index%>").style.display="none";
+  document.getElementById("line_passwd<%@line_index%>").style.display="none";
+  <%if @isVisibleExtensionDisplay==1%>
+  document.getElementById("line_label<%@line_index%>").style.display="none";
+  document.getElementById("line_passwd<%@line_index%>_td").className="TDRow";
+  document.getElementById("line_label<%@line_index%>_td").className="TDEnd";
+  <%endif%>
+  <%if @isVisibleLineModeField==1%>
+  document.getElementById("line_mode<%@line_index%>").style.display="none";  
+  document.getElementById("line_passwd<%@line_index%>_td").className="TDRow";
+  var fieldLabel = document.getElementById("line_label<%@line_index%>_td");
+  if (fieldLabel != null)
+    fieldLabel.className="TDRow";
+  <%endif%>
+  <%endfor%>
+  
+  LineOnchange(lineIndex);
+  
+  for(var i = 1; i < lineIndex; i++)
+  {
+      var pl = parseFloat(document.getElementById("ssline" + String(i)).value);
+      if(pl == 0)
+      {
+		  	alert("<%HTMLPRINTTEXT(QUICK_SETUP_LINE_YOU_MUST_ENABLE_LINE, error.lang)%>" + String(i) + "<%HTMLPRINTTEXT(QUICK_SETUP_LINE_YOU_MUST_ENABLE_LINE2, error.lang)%>");
+			return;
+	  }
+  }
+  
+  document.getElementById("line_sw" + String(lineIndex) + "_show").style.display="";
+ 
+}
+
+function LineModeOnchange(index)
+{    
+     if(index > 0)
+    {
+        var otherSharedLineId = 0;       
+        var i = 1;
+        for(i = 1; i <= <%@max_line%>; i ++)
+        {
+            var selObj = document.getElementById('LINEMODE' + i);
+            if(i != index && selObj.selectedIndex > 0)
+            {
+                otherSharedLineId = i;
+                break;
+            }
+                         
+        }
+        
+        if(otherSharedLineId > 0)
+        {
+            if(confirm('<%HTMLPRINTTEXT(LINE_SHARE_MODE_COMFIRM_STR1, error.lang)%>'+ otherSharedLineId +'<%HTMLPRINTTEXT(LINE_SHARE_MODE_COMFIRM_STR2, error.lang)%>'))
+            {
+                for(i = 1; i <= <%@max_line%>; i ++)
+                {
+                    var selObj = document.getElementById('LINEMODE' + i);
+                    if(i != index && selObj.selectedIndex > 0)
+                        selObj.selectedIndex = 0;              
+                }                
+            }
+            else
+            {
+                // User dont confirm. Cancel changing line mode.
+                var selObj = document.getElementById('LINEMODE' + index);
+                selObj.selectedIndex = 0; 
+            }
+        }
+    }    
+}
+
+function ShowAlert()
+{
+   <%Network_SHOWDATA(ALERT)%>
+}
+
+
+</SCRIPT>
+
+<body onload="ShowAlert();wuisync();init();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+        <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+        <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+        <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%></span>
+        <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SIP_LINESETTING_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+		  <DIV class="Bar" align="center" style="display:none;color:red" id="wait_restart">
+			<%HTMLPRINTTEXT(SIP_LINESETTING_WAITING_RESTART, general.lang)%>
+		  </DIV>
+                  <form name="sipdialing" method="post">
+                  <div id="setupTable" class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                            <%HTMLPRINTTEXT(SIP_LINESETTING_TITLE, general.lang)%></A>
+                    </div>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+
+
+                       <tr class="TRedit">
+                          <td class="TDRow" id="line_index">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_NUMBER, general.lang)%></td>
+                                      <td class="TdMid" >
+                                        <select name="LINEINDEX" onchange="lineIndexOnChange()"><%SIP_SHOWDATA(LINE_INDEX)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  
+                      <%for @line_index=1;<=@max_line;1%>
+                      <tr class="TRedit" id="line_sw<%@line_index%>_show">
+                          <td class="TDRow" id="line_sw<%@line_index%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                        <select  name="SSLINE<%@line_index%>" id="ssline<%@line_index%>" onclick="LineOnchange(<%@line_index%>)"><%SIP_SHOWLINEDATA(@line_index, SSLINE)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="line_dname<%@line_index%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_DISPLAY_NAME, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SDNAME<%@line_index%>" size="37" maxlength="32" value="<%SIP_SHOWLINEDATA(@line_index, SDNAME)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+
+                      <tr class="TRedit" id="line_id<%@line_index%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_USER_ID, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SDLINE<%@line_index%>" id="SDLINE<%@line_index%>" size="37" maxlength="64" value="<%SIP_SHOWLINEDATA(@line_index, SDLINE)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+                      
+                      <tr class="TRedit" id="line_name<%@line_index%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_USERNAME, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="AUNM<%@line_index%>" size="37" maxlength="35" value="<%SIP_SHOWLINEDATA(@line_index, AUNM)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="line_passwd<%@line_index%>">
+                          <td class="TDEnd" id="line_passwd<%@line_index%>_td">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Line <%@line_index%>  <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_PASSWORD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="password" name="AUPW<%@line_index%>" size="37" maxlength="128" value="<%SIP_SHOWLINEDATA(@line_index, AUPW)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                  
+                      <%if @isVisibleExtensionDisplay==1%>
+                      <tr class="TRedit" id="line_label<%@line_index%>">
+                          <td class="TDRow" id="line_label<%@line_index%>_td">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Line <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_LABEL, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="LINE_LABEL<%@line_index%>" size="37" maxlength="35" value="<%SIP_SHOWLINEDATA(@line_index, LABEL)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%endif%>
+                      <%if @isVisibleLineModeField==1%>
+                      <tr class="TRedit" id="line_mode<%@line_index%>">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Line <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_MODE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="LINEMODE<%@line_index%>" id="LINEMODE<%@line_index%>" onchange="LineModeOnchange(<%@line_index%>)"><%SIP_SHOWLINEDATA(@line_index, MODE)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%endif%>
+                      <%endfor%>
+                  </table>
+                  </DIV>                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+</from>
+<DIV id="bottom" class="bottom">
+        <input type="button" align="right" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button">
+</DIV>
+</body>
+</html>

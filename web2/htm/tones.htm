@@ -1,0 +1,437 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int count;%>
+<%int doline;%>
+<%int wav_stat;%>
+<%int free_space;%>
+<%int free_time;%>
+<%int total;%>
+<%int max_lines;%>
+<%SYSBACKSUBMIT()%>
+<%PHONE_SHOWDATA(UPLOADWAV)%>
+<%PHONE_GETSUBMIT(RINGTONE)%>
+<%@free_space = PHONE_GETVAR(FREEDF)%>
+<%@free_time = PHONE_GETVAR(FREETIME)%>
+<%@wav_stat = PHONE_GETVAR(WAVSTAT)%>
+<%@max_lines=PHONE_GETVAR(MAXLINES)%>
+<%PHONE_GETSUBMIT(DISTINCTIVERING)%>
+<%@count = PHONE_GETVAR(RINGTONE)%>
+<%@total = PHONE_GETVAR(MAX_DISTINCRINGTYPES)%>
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(TONES)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit(serno)
+{
+  switch(serno) {
+     case(1):
+       document.AddPhoneForm.action="../mainform.cgi/tones.htm";
+       document.AddPhoneForm.submit();
+     break;  
+     case(2):
+       document.UploadForm.action="../mainform.cgi/tones.htm";
+       document.UploadForm.submit();
+     break;  
+     case(3):
+       document.DeleteForm.action="../mainform.cgi/tones.htm";
+       document.DeleteForm.submit();
+     break;
+    case(4):
+       document.ModDistincRing.action="../mainform.cgi/tones.htm";
+       document.ModDistincRing.submit();
+     break;  
+     case(5):
+       document.SetRingtoneForm.action="../mainform.cgi/tones.htm";
+       document.SetRingtoneForm.submit();
+     break;
+  }
+}
+
+function ShowAlert() {
+    <%SYSTEMBACKSHOW(UPLOADWAV)%>
+    <%SIP_SHOWDATA(HICOUNTRY)%>
+    <%SYSTEMBACKSHOW(DISTINCTIVERINGWARN)%>
+}
+
+function lineIndexOnChange()
+{
+  var lineIndex = parseFloat(document.SetRingtoneForm.LINENUMBER.value);  
+  for(var i = 0; i < <%@max_lines%>; ++i)
+  {
+    if (i == lineIndex)
+      document.getElementById("RINGLINE" + String(i)).style.display="";	
+	else
+      document.getElementById("RINGLINE" + String(i)).style.display="none";
+  }
+}
+
+</SCRIPT>
+
+<body onload="ShowAlert();lineIndexOnChange();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Tones</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+              <%if @wav_stat == 2%>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td width="100%">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td align="center"> 
+                                        <strong><font size="4">
+                                            Converting_file!_please_wait........
+                                        </font></strong>
+                                      </Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+              <%else%>
+                  <form method="POST" name="AddPhoneForm">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td width="100%">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;
+                                      
+                                      <%HTMLPRINTTEXT(Regional_Settings, Phone_Book.txt)%></A></Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  <div id="sip_general">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">                      
+                      <tr class="TRedit">
+                          <td class="TdRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Current_Location:, Phone_Book.txt)%></td>
+                                      <td class="TdMid" ><select name="COUNTRY" onclick="SilenceOnChange()"><%SIP_SHOWDATA(COUNTRY)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+                      <tr class="TRedit">
+                          <td class="TdRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" align="center" valign="center">
+                                      &nbsp;
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TdEnd" align="center" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="50%" align="right" valign="top">
+                                      <IMG border=0 src="../image/error.gif" width="32" height="32">
+                                      </td>
+                                      <td width="50%" align="left" valign="MIDDLE">
+                                         <b>Attention</b>
+                                      </td>
+                                  </tr>
+                              </table>
+                               <li>Changing the regional settings parameters requires a reboot</li>
+                               <br>
+    &nbsp;
+    </td>
+    
+                          </td>
+                      </tr>
+                      <tr>
+                        <td>
+
+                           <a href="JAVASCRIPT:Formsubmit(1)">
+                           <IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                           </a>                           
+                        </td>
+        	      </tr>
+        	  </table> 
+        	  </div>   
+        	  </form>
+        	  
+        	  <form method="POST" name="SetRingtoneForm">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td width="100%">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;
+                                        Ringing Settings
+                                        &nbsp;
+                                      </Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  <div>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">                      
+                      <tr class="TRedit">
+                          <td class="TdRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="left">Line Number:</td>
+                                      <td class="TdMid">
+                                          <select name="LINENUMBER" onchange="lineIndexOnChange()"><%SIP_SHOWDATA(ENABLED_LINE_INDEX_WITH_ALL_EXTENSION)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TdEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="left">Ring Tone:</td>
+                                      <td class="TdMid" >
+                                          <%for @doline=0;<@max_lines;1%>
+                                              <select name="RINGLINE<%@doline%>" id="RINGLINE<%@doline%>" style="display:none"><%PHONE_SHOWDATA(@doline, RINGTONELIST)%></select>
+                                          <%endfor%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td>
+
+                           <a href="JAVASCRIPT:Formsubmit(5)">
+                           <IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                           </a>                           
+                        </td>
+        	      </tr>
+        	  </table>
+        	  </div>
+	          </form>
+        	  
+        	  <form method="POST" enctype="multipart/form-data" name="UploadForm">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td width="100%">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;
+                                        <%HTMLPRINTTEXT(Upload_Ringing_Tone , Phone_Book.txt)%>
+                                        &nbsp;&nbsp;(Available space for Additional Ringing Tone WAV Files: <%@free_space%>KB)
+                                      </Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  <div>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">                      
+                      <tr class="TRedit">
+                          <td class="TdRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="left">Ringing Tone Name:</td>
+                                      <td class="TdMid">
+                                        <input type="text" name="upfilename" size="23" maxlength="23">
+		                        <input type="hidden" name="checkuploadringtone" size="1" value="1">
+		                        				
+		                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TdEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="left">File Location:</td>
+                                      <td class="TdMid" >
+                                        <input type="file" name="upname" size="24" class="unnamed11">
+                                        
+		                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td>
+
+                           <a href="JAVASCRIPT:Formsubmit(2)">
+                           <IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                           </a>                           
+                        </td>
+        	      </tr>
+        	  </table>
+        	  </div>
+        	  </form> 
+     	  
+        	  <form method="POST" name="DeleteForm">
+                  <div>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                         <td width="15%" align="center" class="TdTitleLeft">
+                             ID
+                         </td>
+                         <td width="65%" align="center" class="TdTitleLeft">
+                             Ringing Tone Name
+                         </td>
+                         <td width="15%" align="center" class="TdTitleRight">
+                             Delete
+                         </td>
+                      </tr>
+                      <%for @doline=1;<=@count;1%>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%@doline%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                             <%PHONE_SHOWDATA(@doline, UPVOICE)%>
+                         </td>
+                         <td align="center" class="TdRight">
+                            <%PHONE_SHOWDATA(@doline, UPVOICES)%>
+                         </td>
+                      </tr>
+                      <%endfor%>
+                      <tr>
+                        <td colspan="3">
+                           <a href="JAVASCRIPT:Formsubmit(3)">
+                           <IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                           </a>                           
+                        </td>
+        	      </tr>
+        	  </table>
+        	  </div>
+        	  </form> 
+
+		<form method="POST" name="ModDistincRing">
+			<table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td width="100%">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;
+                                      Distinctive Ringing Setting</A>
+                                      </Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  <div>
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                         <td width="15%" align="center" class="TdTitleLeft">
+                             ID
+                         </td>
+                         <td width="45%" align="center" class="TdTitleLeft">
+                             Ringing Tone Types
+                         </td>
+                         <td width="40%" align="center" class="TdTitleRight">
+                             Ringing Tone Name
+                         </td>
+                      </tr>
+                      <%for @doline=1;<=@total;1%>
+                      <tr class="TrTwo">
+                         <td align="center" class="TdLeft">
+                            <%@doline%>
+                         </td>
+                         <td align="center" class="TdLeft">
+                         <input type="input" name="DISTINCRINGTYPE<%@doline%>" value=<%PHONE_SHOWDATA(@doline, DISTINCRINGTYPES)%>>
+                         </td>
+                         <td align="center" class="TdRight">
+                            <select name="DISTINCRINGNAME<%@doline%>"><%PHONE_SHOWDATA(@doline, RINGTONENAME)%></select>
+                         </td>
+                      </tr>
+                      <%endfor%>
+                      <tr>
+                        <td colspan="4">
+                           <a href="JAVASCRIPT:Formsubmit(4)">
+                           <IMG align="right"  src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                           </a>
+                        </td>
+			</tr>
+		</table>
+		</div>
+	</form>
+
+        	  
+         <%endif%>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        <tr>
+           <td colspan="3">
+		<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+         </tr>
+      </table>
+  </DIV>
+</body>
+</html>

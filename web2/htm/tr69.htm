@@ -1,0 +1,290 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+	if(Chksubmit())
+	{
+		document.tr69management.action="../mainform.cgi/Tr69.htm";
+		document.tr69management.submit();
+        var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+	}
+}
+
+function Chksubmit()
+{
+	var one = parseFloat(document.tr69management.TR69SW.value);
+	switch(one) 
+	{
+		case(1):
+		{
+			if (document.tr69management.TR69ACSURL.value == "") 
+			{
+				alert("<%HTMLPRINTTEXT(TR069_ACS_URL_EMPTY, error.lang)%>");
+				document.tr69management.TR69ACSURL.focus();	 
+				return false;
+			}
+			break;
+		}
+	}
+	return true;
+}
+
+function tr69_informed_enable_disable()
+{
+	var one = parseFloat(document.tr69management.TR69SW.value);
+	var two = parseFloat(document.tr69management.TR69INFSW.value);
+	if (1 == one)
+	{
+		switch(two) 
+		{
+			case(0):
+			{
+				document.getElementById("tr69_inform_enabled_sw").style.className="TDEnd";
+				document.getElementById("tr69_inform_interval").style.display="none";
+				break;
+			}
+			case(1):
+			{
+				document.getElementById("tr69_inform_enabled_sw").style.className="TDRow";
+				document.getElementById("tr69_inform_interval").style.display="";
+				break;
+			}
+		}
+	}
+	return true;
+}
+
+function tr69_enable_disable()
+{
+	var one = parseFloat(document.tr69management.TR69SW.value);
+	switch(one) 
+	{
+		case(0):
+		{
+			document.getElementById("tr69_sw").className="TDEnd";
+			document.getElementById("tr69_key").style.display="none";
+			document.getElementById("tr69_acs_url").style.display="none";
+			document.getElementById("tr69_user").style.display="none";
+			document.getElementById("tr69_pass").style.display="none";
+			document.getElementById("tr69_req_con_user").style.display="none";
+			document.getElementById("tr69_req_con_pass").style.display="none";
+			document.getElementById("tr69_inform_enabled").style.display="none";
+			document.getElementById("tr69_inform_interval").style.display="none";
+			break;
+		}
+		case(1):
+		{
+			document.getElementById("tr69_sw").className="TDRow";
+			document.getElementById("tr69_key").style.display="";
+			document.getElementById("tr69_acs_url").style.display="";
+			document.getElementById("tr69_user").style.display="";
+			document.getElementById("tr69_pass").style.display="";
+			document.getElementById("tr69_req_con_user").style.display="";
+			document.getElementById("tr69_req_con_pass").style.display="";
+			document.getElementById("tr69_inform_enabled").style.display="";
+			break;
+		}
+	}
+	tr69_informed_enable_disable();
+	return true;
+}
+
+function wuisync()
+{
+	tr69_enable_disable();
+}
+
+<%SIP_GETSUBMIT(TR69_MANAGEMENT)%>
+
+</SCRIPT>
+
+<%SIP_READDATA(AC)%>
+ 
+<body onload="wuisync();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(MANAGEMENT, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_REMOTE_MANAGEMENT, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(TR069_TITLE, general.lang)%></span>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+		<tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></Td>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></Td>
+		</tr>
+   </table> -->
+</DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <%SIP_SHOWDATA(TR69_KEY_INVALID_KEY)%>
+                  <form name="tr69management" method="POST">
+                   <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('tr69_management','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1"><%HTMLPRINTTEXT(TR069_TITLE, general.lang)%></A>
+                    </div>   
+                   <DIV id="tr69_management">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="tr69_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                        <select name="TR69SW" onchange="tr69_enable_disable()"><%SIP_SHOWDATA(TR69SW)%></select>
+					  </td>
+				     </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_key">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(TR069_AVTVATION_KEY, general.lang)%>:</td>
+                                      <td class="TdMid" ><input type="text" name="TR69KEY" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69KEY)%>"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_acs_url" >
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(TR069_ACS_URL, general.lang)%>:</td>
+                                      <td class="TdMid" ><input type="text" name="TR69ACSURL" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69ACSURL)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_user">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SYSTEM_AUTH_USERNAME, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="TR69USER" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69USER)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_pass">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SYSTEM_AUTH_PASSWORD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="TR69PASS" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69PASS)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_req_con_user" >
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(TR069_REQUEST_CONNECTION_USER, general.lang)%>:</td>
+                                      <td class="TdMid" ><input type="text" name="TR69REQCONUSER" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69REQCONUSER)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_req_con_pass" >
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(TR069_REQUEST_CONNECTION_PASS, general.lang)%>:</td>
+                                      <td class="TdMid" ><input type="text" name="TR69REQCONPASS" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69REQCONPASS)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="tr69_inform_enabled">
+                          <td class="TDRow" id="tr69_inform_enabled_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(TR069_INFORM, general.lang)%>:</td>
+                                      <td class="TdMid" ><select name="TR69INFSW" onclick="tr69_informed_enable_disable()"><%SIP_SHOWDATA(TR69INFSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr  class="TRedit" id="tr69_inform_interval">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(TR069_INFORM_INTERVAL, general.lang)%>:</td>
+                                      <td class="TdMid" ><input type="text" name="TR69INFORMINTERVAL" size="45" maxlength="43" value="<%SIP_SHOWDATA(TR69INFORMINTERVAL)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+              </table>
+                  </div>
+                  </form>
+          </td>
+      </tr>
+  </table>
+  </DIV>
+
+  <DIV id="bottom" class="bottom">
+        <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
+  </DIV>
+</body>
+</html>

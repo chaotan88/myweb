@@ -1,0 +1,154 @@
+
+<html>
+<head>
+<title>AudioCodes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<%CrashDump_GETSUBMIT(DELETE_TOMB)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+
+function Download()
+{
+	var url='../../<%CrashDump_SHOWDATA(DOWNLOAD_TOMB)%>';
+
+	if('<%CrashDump_SHOWDATA(DOWNLOAD_TOMB)%>' == '')
+	{
+		return;
+	}
+	window.open(url,'Download');
+}
+
+function Delete(dowhat)
+{
+	document.autoform.DELETE_TOMB.value="1";
+	document.autoform.action="../mainform.cgi/Crash_Dump.htm";
+	document.autoform.submit();
+}
+
+function Refresh(dowhat)
+{
+    document.autoform.submit();
+}
+
+</SCRIPT>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Crash Dump</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+
+      <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+        <tr class="TRedit">
+            <td  class="tdTitle">
+                <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <Td>&nbsp;<%HTMLPRINTTEXT(Crash_Dump, Crash_Dump.txt)%></td>
+                    </tr>
+                </Table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDRow">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Total_Tombstones:, Crash_Dump.txt)%></td>
+                        <td class="TdMid" ><%CrashDump_SHOWDATA(TOTAL_TOMB)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="TRedit">
+            <td class="TDEnd">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(Last_Tombstone:, Crash_Dump.txt)%></td>
+                        <td class="TdMid" ><%CrashDump_SHOWDATA(LAST_TOMB)%></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+      </table>
+
+	<table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="10%" WIDTH="100%">
+		<tr>
+			<td align="center">
+				<form method="POST" name="autoform">
+				<input type="hidden" name="DOWNLOAD_TOMB" value="0" class="unnamed11">
+				<input type="button" value="<%HTMLPRINTTEXT(Download, button.txt)%>" onClick="Download()" name="apply" value="0" class="SubBut">
+				&nbsp;
+				<input type="hidden" name="DELETE_TOMB" value="0" class="unnamed11">
+				<input type="button" value="<%HTMLPRINTTEXT(Delete, button.txt)%>" onClick="Delete()" name="apply" value="0" class="SubBut">
+				&nbsp;
+				<input type="button" value="<%HTMLPRINTTEXT(Refresh, button.txt)%>" onClick="Refresh()" name="apply" value="0" class="SubBut">
+			</td>
+		</tr>
+	</table>
+
+   </DIV>
+
+
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" class="editImg" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit(2)">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+
+   </body>
+</html>

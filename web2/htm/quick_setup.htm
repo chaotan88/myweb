@@ -1,0 +1,889 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int maxlines;%>
+<%@maxlines=PHONE_GETVAR(MAXLINES)%>
+
+<%SIP_READDATA(AC)%>
+<%Network_READDATA(WAN)%>
+
+<%Network_GETSUBMIT(WAN)%>
+<%QUICK_SETUP_SUBMIT(QUICK_SETUP)%>
+
+<%int isVisibleLineModeField;%>
+<%@isVisibleLineModeField=PHONE_GETVAR(IS_VISIBLE_LINE_MODE_FIELD)%>
+
+<%int isVisibleExtensionDisplay;%>
+<%@isVisibleExtensionDisplay=PHONE_GETVAR(IS_VISIBLE_EXTENSION_DISPLAY)%>
+
+<%int max_line;%>
+<%int line_index;%>
+<%@max_line = SIP_GETVAR(MAX_LINE)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+var lines=new Array();
+var isLoaded = false;
+
+function getLineDesc(index) { 
+	var lineDesc = document.getElementsByName('SSLINE' + index).item(0).value.toString();
+  
+  <%if @isVisibleLineModeField==1%>
+      lineDesc = lineDesc + document.getElementById('LINEMODE' + index).selectedIndex.toString();
+  <%endif%>
+  
+	return lineDesc;
+}
+
+function getLine(lineIndex) 
+{ 
+    return parseFloat(document.getElementById("ssline"+String(lineIndex)).value);  
+}
+
+function init()
+{
+  for(var i = 1; i <= <%@max_line%>; i++)
+    lines[i] = getLineDesc(i);
+
+  var wait = self.location.search.substring("wait");
+  if (wait) {
+    setTimeout("redirect()", 55000);
+    document.getElementById("wait_restart").style.display="";
+  }
+  isLoaded = true;
+}
+
+function redirect()
+{
+  document.location = "../mainform.cgi/info.htm";
+}
+
+function Formsubmit()
+{
+  if(!Chksubmit() || !isLoaded)
+    return;
+
+  var change = false;
+  for(var i = 1; i <= <%@max_line%>; i++)
+    change = change || (lines[i] != getLineDesc(i));     
+    
+  if (change) {
+      if(confirm("<%HTMLPRINTTEXT(QUICK_SETUP_CHANGE_CONFIRM, general.lang)%>")) {
+          document.quicksetup.action="../mainform.cgi/Quick_setup.htm?wait=1";
+          document.quicksetup.submit();
+          var a = document.createElement("div"),
+                p = document.createElement("p"),
+                img = document.createElement("img"),
+            textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
+      }
+  } else {
+      document.quicksetup.action="../mainform.cgi/Quick_setup.htm";
+      document.quicksetup.submit();
+      var a = document.createElement("div"),
+        p = document.createElement("p"),
+        img = document.createElement("img"),
+        textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+    img.src="../../image/success.png";
+    p.appendChild(textNode);
+    var content = document.createElement("div");
+    content.setAttribute('class', 'success-info');
+    content.appendChild(img);
+    content.appendChild(p);
+    document.getElementsByTagName("body")[0].appendChild(content);
+    setTimeout(function () {
+        content.parentNode.removeChild(content);
+    },3000);
+  }
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+
+function validateKey(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function checkAddr(field, msg)
+{
+   if ( validateKey(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,223) ) {
+      alert(msg+' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE1, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE2, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE3, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE4, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   return true;
+}
+
+function Chksubmit()
+{
+  for(var i = 1; i <= <%@max_line %>; i++)
+  {
+      if (getLine(i) && document.getElementById("SDLINE" + String(i)).value == "")
+      {     
+            alert("<%HTMLPRINTTEXT(LINE_CHECK_ID, error.lang)%>");
+             document.quicksetup.LINEINDEX.value = i - 1;
+            lineIndexOnChange();            
+            document.getElementById("SDLINE" + String(i)).focus();	 
+            return false;
+      }
+  }
+  if (document.quicksetup.PROXYIP.value == "") {
+       alert("<%HTMLPRINTTEXT(PROXY_SERVER_CHECK_NULL, error.lang)%>");
+ 	document.quicksetup.PROXYIP.focus();	 
+     return false;
+  }
+  if (document.quicksetup.REGIP.value == "") {
+     alert("<%HTMLPRINTTEXT(REG_SERVER_CHECK_NULL, error.lang)%>");
+     document.quicksetup.REGIP.focus();	 
+     return false;
+  }
+
+  if( document.quicksetup.IPTYPE[0].checked)
+     {
+       if (document.quicksetup.IP.value=="") 
+       {
+	      alert("<%HTMLPRINTTEXT(IP_ADDR_CHECK_NULL, error.lang)%>");
+	      document.quicksetup.IP.focus();
+	      return false;
+       }
+       if ( checkAddr(document.quicksetup.IP, '<%HTMLPRINTTEXT(IP_ADDR_CHECK_GENERAL, error.lang)%>') == false )
+	      return false;
+    }
+  return true;
+}
+
+function pppEnabled()
+{
+ 
+
+}
+function pppDisabled()
+{
+
+}
+
+function LanFixedIP()
+{
+
+     document.quicksetup.IP.disabled = false;
+     document.quicksetup.MASK.disabled = false;
+     document.quicksetup.GW.disabled = false;
+     document.quicksetup.DNS1.disabled = false;
+     document.quicksetup.DNS2.disabled = false;
+     pppDisabled();
+}
+function LanAutoIP()
+{
+     document.quicksetup.IP.disabled = true;
+     document.quicksetup.MASK.disabled = true;
+     document.quicksetup.GW.disabled = true;
+     document.quicksetup.DNS1.disabled = true;
+     document.quicksetup.DNS2.disabled = true;
+     pppDisabled();
+}
+
+function loadcheck()
+{
+   if (document.quicksetup.IPTYPE[0].checked)
+      LanFixedIP();
+   else if (document.quicksetup.IPTYPE[1].checked)
+      LanAutoIP();
+   else
+      pppEnabled();
+}
+
+function ProxyOnchange(aa)
+{
+  
+  var one = parseFloat(document.quicksetup.PROXYSW.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("proxy_ip").style.display="none";
+         document.getElementById("proxy_port").style.display="none";
+         document.getElementById("proxy_srg").style.display="none";
+         //document.getElementById("proxy_max").style.display="none";
+         if (aa ==1) document.quicksetup.REGPROXYSW.value ='0';
+       break;
+      case 1:
+         document.getElementById("proxy_ip").style.display="";
+         document.getElementById("proxy_port").style.display="";
+         document.getElementById("proxy_srg").style.display="";
+         if (document.quicksetup.REGSW.value == '0')
+            if (aa ==1) document.quicksetup.REGPROXYSW.value ='1';
+      break;
+  }
+  proxtreg();
+  
+}
+
+function proxtreg() {
+   if (document.quicksetup.REGPROXYSW.value == '1') {
+      if (document.quicksetup.REGSW.value == '1') {
+         document.quicksetup.REGSW.value = '0';
+         tigSIPREGI();
+      }
+   }
+
+}
+
+function tigSIPREGI() {
+   if (document.quicksetup.REGSW.value == '1') {
+      document.getElementById("RG1").style.display="";
+      document.getElementById("RG2").style.display="";
+      //document.getElementById("RG3").style.display="";
+      document.getElementById("proxy_rg").className="TDRow";
+      document.quicksetup.REGPROXYSW.value ='0';
+   }
+   else {
+      document.getElementById("RG1").style.display="none";
+      document.getElementById("RG2").style.display="none";
+      //document.getElementById("RG3").style.display="none";
+         document.getElementById("proxy_rg").className="TDEnd";
+      
+   }
+
+}
+
+function LineOnchange(index)
+{
+  var one = parseFloat(document.getElementById("ssline"+String(index)).value);
+  switch(one)
+  {
+      case 0:
+      if(index == 1)
+      {
+	    document.getElementById("ssline"+String(index)).value=1;
+	    alert("<%HTMLPRINTTEXT(QUICK_SETUP_LINE_CANT_DISABLE, error.lang)%>");
+	  }
+	  else
+	  {
+	     document.getElementById("line_dname"+String(index)).style.display="none";
+         document.getElementById("line_id"+String(index)).style.display="none";
+         document.getElementById("line_name"+String(index)).style.display="none";
+         document.getElementById("line_passwd"+String(index)).style.display="none";
+         document.getElementById("line_sw"+String(index)).className="TDEnd";
+<%if @isVisibleLineModeField==1%>
+         document.getElementById("line_mode"+String(index)).style.display="none";
+<%endif%>  
+<%if @isVisibleExtensionDisplay==1%>
+         document.getElementById("line_label"+String(index)).style.display="none";       
+<%endif%>
+	  }
+	  break;
+      case 1:
+         document.getElementById("line_dname"+String(index)).style.display="";
+         document.getElementById("line_id"+String(index)).style.display="";
+         document.getElementById("line_name"+String(index)).style.display="";
+         document.getElementById("line_passwd"+String(index)).style.display="";
+         document.getElementById("line_sw"+String(index)).className="TDRow";
+<%if @isVisibleLineModeField==1%>
+         document.getElementById("line_mode"+String(index)).style.display="";
+<%endif%>
+<%if @isVisibleExtensionDisplay==1%>
+         document.getElementById("line_label"+String(index)).style.display="";
+<%endif%>
+      break;
+	  default :
+	  alert(one);
+         document.getElementById("line_id"+String(index)).style.display="";
+         document.getElementById("line_name"+String(index)).style.display="";
+         document.getElementById("line_passwd"+String(index)).style.display="";
+         document.getElementById("line_sw"+String(index)).className="TDRow";
+		
+      break;
+  }   
+  if(index > 1 && !getLine(index)) 
+  { 
+    var message = "";
+    for(var i = index+1; i <=  <%@max_line %>; i++)
+    {
+        if(getLine(i))
+        {
+            message = message + "<%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%>" + String(i)+ " ";
+            document.getElementById("ssline"+String(i)).value = 0;
+        }
+    } 
+    if(message.length > 0)
+  	    alert(message + "<%HTMLPRINTTEXT(QUICK_SETUP_LINE_WILL_DISABLE, error.lang)%>");
+  }
+  
+}
+
+function lineIndexOnChange()
+{
+  var one = parseFloat(document.quicksetup.LINEINDEX.value);
+  var lineIndex = one + 1;
+  
+  <%for @line_index=1;<=@max_line;1%>
+  document.getElementById("line_sw<%@line_index%>_show").style.display="none";
+  document.getElementById("line_dname<%@line_index%>").style.display="none";
+  document.getElementById("line_id<%@line_index%>").style.display="none";
+  document.getElementById("line_name<%@line_index%>").style.display="none";
+  document.getElementById("line_passwd<%@line_index%>").style.display="none";
+  <%if @isVisibleExtensionDisplay==1%>
+  document.getElementById("line_label<%@line_index%>").style.display="none";
+  document.getElementById("line_passwd<%@line_index%>_td").className="TDRow";
+  document.getElementById("line_label<%@line_index%>_td").className="TDEnd";
+  <%endif%>
+  <%if @isVisibleLineModeField==1%>
+  document.getElementById("line_mode<%@line_index%>").style.display="none";
+  document.getElementById("line_passwd<%@line_index%>_td").className="TDRow";
+  var fieldLabel = document.getElementById("line_label<%@line_index%>_td");
+  if (fieldLabel != null)
+    fieldLabel.className="TDRow";
+  <%endif%>
+  
+  
+  
+  <%endfor%>
+  
+  LineOnchange(lineIndex);
+  
+  for(var i = 1; i < lineIndex; i++)
+  {
+      var pl = parseFloat(document.getElementById("ssline" + String(i)).value);
+      if(pl == 0)
+      {
+		  	alert("<%HTMLPRINTTEXT(QUICK_SETUP_LINE_YOU_MUST_ENABLE_LINE, error.lang)%>" + String(i) + "<%HTMLPRINTTEXT(QUICK_SETUP_LINE_YOU_MUST_ENABLE_LINE2, error.lang)%>");
+			return;
+	  }
+  }
+  
+  document.getElementById("line_sw" + String(lineIndex) + "_show").style.display="";
+ 
+}
+
+function LineModeOnchange(index)
+{   
+    if(index > 0)
+    {
+        var otherSharedLineId = 0;       
+        var i = 1;
+        for( i = 1; i<=<%@max_line%>; i++ )
+        {
+            var selObj = document.getElementById('LINEMODE' + i);
+            if(i != index && selObj.selectedIndex > 0)
+            {
+                otherSharedLineId = i;
+                break;
+            }                         
+        }
+        
+        if(otherSharedLineId > 0)
+        {
+            if(confirm('<%HTMLPRINTTEXT(LINE_SHARE_MODE_COMFIRM_STR1, error.lang)%>'+ otherSharedLineId +'<%HTMLPRINTTEXT(LINE_SHARE_MODE_COMFIRM_STR2, error.lang)%>'))
+            {
+                for( i=1; i<=<%@max_line%>; i++ )
+                {
+                    var selObj = document.getElementById('LINEMODE' + i);
+                    if(i != index && selObj.selectedIndex > 0)
+                    {
+                        selObj.selectedIndex = 0;              
+                    }    
+                }                
+            }
+            else
+            {
+                 var selObj = document.getElementById('LINEMODE' + index);
+                selObj.selectedIndex = 0; 
+            }
+        }
+    } 
+}
+
+
+function ShowAlert()
+{
+   <%Network_SHOWDATA(ALERT)%>
+}
+
+</SCRIPT>
+
+
+
+
+<body onload="ShowAlert();loadcheck();ProxyOnchange(0);lineIndexOnChange();tigSIPREGI();init();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+ <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px"><%HTMLPRINTTEXT(QUICK_SETUP_TITLE, general.lang)%></span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(QUICK_SETUP_TITLE, general.lang)%></span>
+    <span class="bar_menu">&nbsp;/&nbsp;<%HTMLPRINTTEXT(QUICK_SETUP_TITLE, general.lang)%></span>
+  </DIV>
+  
+
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+		  <DIV class="Bar" align="center" style="display:none;color:red" id="wait_restart">
+			Please wait while restarting, you will be automatically redirected to home page...
+		  </DIV>
+                  <form name="quicksetup" method="post">
+                      <div id="setupTable" class="SetupTable collspan-line">
+                            <A HREF="javascript:OpenCloseDiv('sip_general','Tr1')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                            <%HTMLPRINTTEXT(QUICK_SETUP_LAN_SETUP, general.lang)%></A>
+                      </div>
+                   <DIV id="sip_general">
+                   <table id="setupTable1" align="center" class="SetupTable form-table" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <input type="radio" name="IPTYPE" class="radio_class" value="1" onClick="LanFixedIP()" id="fp3" <%Network_SHOWDATA(IPTYPE0)%>> 		   
+	                                 <label for="fp3"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE_STATIC, general.lang)%></label>&nbsp;
+	                                 <input type="radio" name="IPTYPE" class="radio_class" value="0" onClick="LanAutoIP()"  id="fp4" <%Network_SHOWDATA(IPTYPE2)%>>		   
+	                                 <label for="fp4"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE_DHCP, general.lang)%>&nbsp;</label>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_IP_ADDR, general.lang)%></td>
+                                      <td class="TdMid" >
+                                      <input type="text" name="IP" size="20" maxlength="15" value="<%Network_SHOWDATA(IP)%>" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SUBNET, general.lang)%></td>
+                                      <td class="TdMid" >
+                                      <input type="text" name="MASK" size="20" maxlength="15" value="<%Network_SHOWDATA(MASK)%>" class="unnamed11">   
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_DEFAULT_GATEWAY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="GW" size="20" maxlength="15" value="<%Network_SHOWDATA(GW)%>"   	            class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_PRIMARY_DNS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DNS1" size="20" maxlength="15" value="<%Network_SHOWDATA(DNS1)%>"    	     class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SECONDARY_DNS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DNS2" size="20" maxlength="15" value="<%Network_SHOWDATA(DNS2)%>"             class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                  <br>
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('sip_register','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_PROXY_REG, general.lang)%></A>
+                    </div>   
+                   <DIV id="sip_register">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="proxy_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_USE_SIP_PROXY, general.lang)%></td>
+                                      <td class="TdMid" >
+                                        <select name="PROXYSW" onclick="ProxyOnchange(1)"><%SIP_SHOWDATA(PROXYSW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="proxy_ip">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_PROXY_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PROXYIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(PROXYIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="proxy_port">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_PROXY_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PROXYPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(PROXYPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <!--
+                      <tr class="TRedit" id="proxy_max">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Maximum Number of Authentication Retries:</td>
+                                      <td class="TdMid" ><input type="text" name="MNAR" size="5" maxlength="2" value="<%SIP_SHOWDATA(MNAR)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      -->
+                      <tr class="TRedit" id="proxy_srg">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_USE_SIP_REG_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><select name="REGPROXYSW" onchange="proxtreg()"><%SIP_SHOWDATA(REGPROXYSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="proxy_rg">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_USE_REG_TO_PROXY_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><select name="REGSW" onchange="tigSIPREGI()"><%SIP_SHOWDATA(REGSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RG1" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_REG_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(REGIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RG2" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_REG_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(REGPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <!--
+                      <tr id="RG3" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Registration Expires:</td>
+                                      <td class="TdMid" ><input type="text" name="REGEXPIR" size="5" maxlength="5" value="<%SIP_SHOWDATA(REGEXPIR)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      -->
+                      
+                      <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+                      
+                      
+                      <!--
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Use SIP Proxy IP and Port for Registration:</td>
+                                      <td class="TdMid" ><select name="REGPROXYSW"><%SIP_SHOWDATA(REGPROXYSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Use SIP Outbound Proxy:</td>
+                                      <td class="TdMid" ><select name="OPROXTSW"><%SIP_SHOWDATA(OPROXTSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Outbound Proxy IP:</td>
+                                      <td class="TdMid" ><input type="text" name="OPROXTIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(OPROXTIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Maximum Number of Authentication Retries:</td>
+                                      <td class="TdMid" ><select name="MNAR"><%SIP_SHOWDATA(MNAR)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Outbound Proxy Port:</td>
+                                      <td class="TdMid" ><input type="text" name="OPROXTPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(OPROXTPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      -->
+                  </table>
+                  </div>
+                  
+                  <br>
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('sip_timer','Tr3')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                        <%HTMLPRINTTEXT(QUICK_SETUP_LINE_SETTINGS, general.lang)%></A>
+                    </div>   
+                   <DIV id="sip_timer">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" id="line_index">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_NUMBER, general.lang)%></td>
+                                      <td class="TdMid" >
+                                        <select name="LINEINDEX" onchange="lineIndexOnChange()"><%SIP_SHOWDATA(LINE_INDEX)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%for @line_index=1;<=@max_line;1%>
+                      <tr class="TRedit" id="line_sw<%@line_index%>_show">
+                          <td class="TDRow" id="line_sw<%@line_index%>">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                        <select  name="SSLINE<%@line_index%>" id="ssline<%@line_index%>" onclick="LineOnchange(<%@line_index%>)"><%SIP_SHOWLINEDATA(@line_index, SSLINE)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="line_dname<%@line_index%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_DISPLAY_NAME, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SDNAME<%@line_index%>" size="37" maxlength="32" value="<%SIP_SHOWLINEDATA(@line_index, SDNAME)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+
+                      <tr class="TRedit" id="line_id<%@line_index%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_USER_ID, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SDLINE<%@line_index%>" id="SDLINE<%@line_index%>" size="37" maxlength="64" value="<%SIP_SHOWLINEDATA(@line_index, SDLINE)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                      
+                      
+                      <tr class="TRedit" id="line_name<%@line_index%>">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_USERNAME, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="AUNM<%@line_index%>" size="37" maxlength="128" value="<%SIP_SHOWLINEDATA(@line_index, AUNM)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="line_passwd<%@line_index%>">
+                          <td class="TDEnd" id="line_passwd<%@line_index%>_td">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_PASSWORD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="password" name="AUPW<%@line_index%>" size="37" maxlength="128" value="<%SIP_SHOWLINEDATA(@line_index, AUPW)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%if @isVisibleExtensionDisplay==1%>
+                      <tr class="TRedit" id="line_label<%@line_index%>">
+                          <td class="TDRow" id="line_label<%@line_index%>_td">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_LABEL, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="LINE_LABEL<%@line_index%>" size="37" maxlength="35" value="<%SIP_SHOWLINEDATA(@line_index, LABEL)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%endif%>
+                      <%if @isVisibleLineModeField==1%>
+                      <tr class="TRedit" id="line_mode<%@line_index%>">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_STRING, general.lang)%> <%@line_index%> <%HTMLPRINTTEXT(QUICK_SETUP_LINE_MODE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="LINEMODE<%@line_index%>" id="LINEMODE<%@line_index%>" onchange="LineModeOnchange(<%@line_index%>)"><%SIP_SHOWLINEDATA(@line_index, MODE)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>     
+                      <%endif%>
+                      <%endfor%>
+                  </table>
+                  </div>                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  <DIV id="bottom" class="bottom">
+        <input type="button" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()">
+  </DIV>
+
+</body>
+</html>

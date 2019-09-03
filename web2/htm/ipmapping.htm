@@ -1,0 +1,379 @@
+<!--[if IE 7]>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml2/DTD/xhtml1-strict.dtd">
+<![endif]-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>HL-20X IP PHONE</title>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/menu.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int pass;%>
+<%int doline;%>
+<%int max_num;%>
+<%int count;%>
+<%int edit_num;%>
+<%@edit_num = GET3THDATA()%>
+<%@pass = GETCGIPASSWORD()%>
+<%Network_READDATA(IPMAPPING)%>
+<%Network_GETSUBMIT(IPMAPPING)%>
+<%@max_num = NETWORK_GETVAR(MAPMAX)%>
+<%@count = NETWORK_GETVAR(MAPCOUNT)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+function showform()
+{
+   var editnum = <%@edit_num%>;
+   var count = <%@count%>;
+   var maxcount = <%@max_num%>;
+
+   if(count == maxcount && editnum == 0)
+   {
+      document.getElementById("modify").style.display="none";
+   }
+}
+</SCRIPT>
+
+<body onload="showform();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="800" height="452" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td height="95" colspan="2"><img src="../image/TEK-top.jpg" width="800" height="98"></td>
+  </tr>
+  <tr>
+      <td width="150" valign="top" bgcolor="D0D4DB"><table width="148" border="0" align="center" cellpadding="0" cellspacing="0">
+          <tr>
+            <td><div align="right"><img src="../image/arrow1.gif" width="26" height="38" hspace="10" vspace="5"></div></td>
+          </tr>
+          <tr>
+            <td><img src="../image/line.gif" width="148" height="3" vspace="5"></td>
+          </tr>
+      </table>
+	  <table width="100" border="0" align="center" cellpadding="0" cellspacing="0">
+	  <tr>
+            <td width="179" valign="top"><%SHOWWEBLEFT()%></td>
+	 </tr>
+	 <tr>
+           <td>&nbsp;</td>
+         </tr>
+	 <tr>
+           <td>&nbsp;</td>
+         </tr>
+	 <tr>
+           <td>&nbsp;</td>
+         </tr>
+	 </table>
+      <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td><div align="right"></div>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><img src="../image/line.gif" width="148" height="3" vspace="5"></td>
+        </tr>
+      </table></td>
+    <td width="650" valign="top" bgcolor="#FFFFFF">
+      <table width="85%" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><span class="unnamed-title1"><b><%HTMLPRINTTEXT(IP_Mapping, Ip_Mapping.txt)%></b></span></td>
+        </tr>
+        <tr>
+          <td height="30" class="unnamed12"><%HTMLPRINTTEXT(You_could_set_ip_mapping_for_hostnames_in_this_page., Ip_Mapping.txt)%></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="unnamed12"><form method="POST" name="IpMappingForm">
+              <table width="100%" border="0" cellpadding="3" cellspacing="1" id="table3">
+                <tr bgcolor="8792A4"> 
+                  <td align="center" width="10%">
+                    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(No., Ip_Mapping.txt)%></font></b>
+                  </td>
+                  <td align="center" width="55%">
+                    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(Hostname, Ip_Mapping.txt)%></font></b>
+                  </td>
+                  <td align="center" width="25%">
+		    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(IP, Ip_Mapping.txt)%></font></b>
+		  </td>
+                  <td align="center" width="10%">
+		    <b><font face="Arial" size="2" color="#FFFFFF"><%HTMLPRINTTEXT(Select, Ip_Mapping.txt)%></font></b>
+		  </td>
+                </tr>
+                <%for @doline=1;<=@count;1%>
+                <tr bgcolor="#FFFFDD" class="unnamed-bg">
+                  <td align="center">
+                     <a href="JAVASCRIPT:Editlink(<%@doline%>)"><%@doline%></a>
+		  </td>
+                  <td align="center">
+                     <%Network_SHOWDATA(@doline, INPUTHOST)%>
+                  </td>
+                  <td align="center">
+                     <%Network_SHOWDATA(@doline, INPUTIP)%>
+                  </td>
+                  <td align="center">
+		    <p align="center">
+                     <%Network_SHOWDATA(@doline, MAPSELECT)%>
+                    </font>
+		  </td>
+                </tr>
+                <%endfor%>
+              </table>
+              <p align="center">
+	        <font face="Arial">
+                  <input type="button" value="<%HTMLPRINTTEXT(Delete_Selected, button.txt)%>" name="DelSelected" onClick="Formsubmit(1)" class="unnamed11">
+                  &nbsp; 
+                  <input type="submit" value="<%HTMLPRINTTEXT(Delete_All, button.txt)%>" onClick="return deleteAllClick()" name="DELALL" class="unnamed11">
+                </font>
+	      </p>
+            </form>
+          </td>
+        </tr>
+        <tr> 
+          <td>&nbsp;</td>
+        </tr>
+        <tr id="modify">
+          <td><form method="POST" name="ModifyForm">
+              <table border="0">
+              <%if @edit_num == 0%>
+              <tr>
+                 <td class="unnamed12"><b>Add</b></td>
+              </tr>
+              <%else%>
+              <tr>
+                 <td class="unnamed12"><b>Edit</b></td>
+              </tr>
+              <%endif%>
+                <tr>
+                  <td width="99" align="right" class="unnamed11">Hostname:</td>
+                  <td>
+                    <%Network_SHOWDATA(@edit_num, INPUTHOST_E)%>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="99" align="right" class="unnamed11">IP:</td>
+                  <td>
+                    <%Network_SHOWDATA(@edit_num, INPUTIP_E)%>
+                  </td>
+                </tr>
+                <input type="hidden" name="EDITNUM" value="<%@edit_num%>">
+              </table>
+              <p align="center" style="margin-top: 20px">
+                <input type="button" value="<%HTMLPRINTTEXT(Submit, button.txt)%>" name="ADD" onClick="Formsubmit(0)" class="unnamed11">
+                &nbsp;
+                <input type="reset" value="<%HTMLPRINTTEXT(Reset, button.txt)%>" name="B4" style="margin-top: 0; margin-bottom: 0" class="unnamed11">
+                &nbsp;
+                <%if @edit_num > 0 %>
+                <input type="button" value="<%HTMLPRINTTEXT(Cancel, button.txt)%>" name="CANCEL" onClick="Hreflink('Ip_Mapping.htm')" class="unnamed11">
+                <%endif%>
+              </p>
+              <%if @count == @max_num%>
+              <tr>
+                 <td align="center"><%HTMLPRINTTEXT(Note:The_ip_mapping_is_full_you_can't_add_a_new_one_any_more!!, Ip_Mapping.txt)%></td>
+              </tr>
+              <%endif%>
+             </form>
+            </td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
+
+<SCRIPT LANGUAGE="JavaScript">
+function Formsubmit(dowhat)
+{
+   switch(dowhat)
+   {
+     case 0:
+       if(checksubmit())
+       {
+           document.ModifyForm.action="../mainform.cgi/Ip_Mapping.htm;<%@pass%>;<%OUTRAND()%>?";
+           document.ModifyForm.submit();
+       }
+     break;
+     case 1:
+       if(checkdelete())
+       {
+           document.IpMappingForm.action="../mainform.cgi/Ip_Mapping.htm;<%@pass%>;<%OUTRAND()%>?";
+           document.IpMappingForm.submit();
+       }
+     break;
+   }
+}
+function deleteAllClick()
+{
+   if (!confirm('<%HTMLPRINTTEXT(Do_you_really_want_to_delete_all_the_ip_mapping?, Ip_Mapping.txt)%>'))
+      return false;
+   else
+      return true;
+}
+
+function valid_domain(s)
+{
+   for(var i=0; i<s.length; i++)
+   {
+       if ((s.charAt(i) >= 'a' && s.charAt(i) <= 'z') || (s.charAt(i) >= 'A' && s.charAt(i) <= 'Z') || (s.charAt(i) >= '0' && s.charAt(i) <= '9') || s.charAt(i) == '_' || s.charAt(i) == '-' || s.charAt(i) == ':'|| s.charAt(i) == '@' || s.charAt(i) == '.')
+	   continue;
+       else
+	   return 0;
+   }
+
+   return 1;
+}
+
+function chkChkbox(object) {
+   var i, chkid;
+   chkid = 0;
+   for(i=0;i<object.length;i++) {
+      if (object[i].checked == 1) {
+         chkid++;
+      }
+   }
+   return(chkid);
+}
+
+function checksubmit()
+{
+   if(document.ModifyForm.HOSTNAME.value == '')
+   {
+       alert("<%HTMLPRINTTEXT(Hostname_value_can't_be_empty!, Ip_Mapping.txt)%>");
+       document.ModifyForm.HOSTNAME.focus();
+       return false;
+   }
+   if(document.ModifyForm.IP.value == '')
+   {
+       alert("<%HTMLPRINTTEXT(IP_Address_value_can't_be_empty!, Ip_Mapping.txt)%>");
+       document.ModifyForm.IP.focus();
+       return false;
+   }
+   if(valid_domain(document.ModifyForm.HOSTNAME.value) == 0)
+   {
+        alert('<%HTMLPRINTTEXT(Hostname_value_is_invalid!, Ip_Mapping.txt)%>');
+        document.ModifyForm.HOSTNAME.focus();
+        return false;
+   }
+   if(checkIpAddr(document.ModifyForm.IP, '<%HTMLPRINTTEXT(Invalid_IP_Address!, Ip_Mapping.txt)%>') == false)
+   {
+        //alert('IP value is invalid!!');
+        document.ModifyForm.IP.focus();
+        return false;
+   }
+   return true;
+}
+
+function checkdelete()
+{
+   var chkid;
+   chkid = chkChkbox(document.IpMappingForm);
+
+   if(chkid == 0)
+   {
+      alert("<%HTMLPRINTTEXT(No_data_to_delete!, Ip_Mapping.txt)%>")
+      return false;
+   }
+   return true;
+}
+
+function Editlink(gopage)
+{
+   top.location.href="../mainform.cgi/Ip_Mapping.htm;<%@pass%>;<%OUTRAND()%>;"+gopage+"?"
+}
+
+function Hreflink(htm_name)
+{
+   top.location.href="../mainform.cgi/"+htm_name+";<%@pass%>;<%OUTRAND()%>?"
+}
+
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+
+function valid_IP(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function checkIpAddr(field, msg)
+{
+   if ( valid_IP(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(value._It_should_be_a_decimal_number_(0-9)!, Ip_Mapping.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,255) ) {
+      alert(msg+' <%HTMLPRINTTEXT(range_in_the_1st_number._It_should_be_0-255!, Ip_Mapping.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_2nd_number._It_should_be_0-255!, Ip_Mapping.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_3rd_number._It_should_be_0-255!, Ip_Mapping.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(range_in_the_4th_number._It_should_be_1-254!, Ip_Mapping.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   return true;
+}
+
+</SCRIPT>
+
+

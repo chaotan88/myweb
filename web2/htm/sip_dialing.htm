@@ -1,0 +1,652 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function tigdck() {
+  var one = parseFloat(document.sipdialing.EDCK.value);
+  if (one == 0) {
+     document.getElementById("dckt").style.display="none";
+  }
+  else {
+     document.getElementById("dckt").style.display="";     
+  }      
+
+}
+
+function tigrnswec() {
+  var one = parseFloat(document.sipdialing.ERNSWEC.value);
+  if (one == 0) {
+     ;
+  }
+  else {
+     ;     
+  }      
+
+}
+function tigeadt() {
+  var one = parseFloat(document.sipdialing.EADT.value);
+  if (one == 0) {
+     document.getElementById("eadt1").style.display="none";
+     document.getElementById("eadt2").style.display="none";
+     document.getElementById("dial_sw").className="TDEnd";
+  }
+  else {
+     document.getElementById("eadt1").style.display="";
+     document.getElementById("eadt2").style.display="";
+     document.getElementById("dial_sw").className="TDRow";     
+  }
+}
+
+function tigsdt() {
+  var one = parseFloat(document.sipdialing.ESDT.value);
+  if (one == 0) {
+     document.getElementById("sdt").style.display="none";
+  }
+  else {
+     document.getElementById("sdt").style.display="";     
+  }      
+
+}
+
+function tigear()
+{
+  var one = parseFloat(document.sipdialing.EAROB.value);
+  if (one == 0)
+  {
+     document.getElementById("ear").style.display="none";
+     document.getElementById("dial_ar").className="TDEnd";
+  }
+  else
+  {
+     document.getElementById("ear").style.display="";
+     document.getElementById("dial_ar").className="TDRow";     
+  }
+}
+
+function wuisync(){
+   tigdck();
+   tigeadt();
+   tigsdt();
+   tigear();
+}
+
+function Formsubmit()
+{
+  if(Chksubmit())
+  {
+    document.sipdialing.action="../mainform.cgi/sip_dialing.htm";
+    document.sipdialing.submit();
+    var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+  }
+  
+}
+
+function Chksubmit()
+{
+  var one = parseFloat(document.sipdialing.DITO.value);
+  if (one <= 0) 
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_DIALING_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+  
+  if(document.sipdialing.PNS.value == "" || isNumeric(document.sipdialing.PNS.value,3,32) == 0 || document.sipdialing.PNS.value == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_PHONE_NMUBER_SIZE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.CDK.value == "")
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_COMPLETE_DIAL_KEY_RANGE, error.lang)%>");
+     return false;
+  }
+  else if(document.sipdialing.CDK.value != "")
+  {
+    if(document.sipdialing.CDK.value != "*" && document.sipdialing.CDK.value != "#")
+    {
+        if(isNumeric(document.sipdialing.CDK.value,0,9) == 0)
+        {
+          alert("<%HTMLPRINTTEXT(SIP_DIALING_COMPLETE_DIAL_KEY_RANGE, error.lang)%>");
+          return false;
+        }
+    }
+  }
+  var one = parseFloat(document.sipdialing.DTT.value);
+  if (one <= 0) 
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_DIAL_TONE_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.RTT.value == "" || isNumeric(document.sipdialing.RTT.value,1,65535) == 0 || document.sipdialing.RTT.value == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_REORDER_TONE_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.UCT.value == "" || isNumeric(document.sipdialing.UCT.value,1,65535) == 0 || document.sipdialing.RTT.value == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_NO_ANSWER_TONE_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.HTT.value == "" || isNumeric(document.sipdialing.HTT.value,1,65535) == 0 || document.sipdialing.RTT.value == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_HOWLER_TONE_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.TADT.value == "" || isNumeric(document.sipdialing.TADT.value,0,65535) == 0)
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_AUTO_DIAL_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+  if(document.sipdialing.EAROB.value != 0 && (document.sipdialing.TAROB.value == "" || isNumeric(document.sipdialing.TAROB.value,15,120) == 0))
+  {
+     alert("<%HTMLPRINTTEXT(SIP_DIALING_AUTO_REDIAL_TIMEOUT_RANGE, error.lang)%>");
+     return false;
+  }
+ return true;
+}
+
+</SCRIPT>
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(SIP_DIALING)%>
+
+<body onload="wuisync()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+        <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+        <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+        <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%></span>
+        <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SIP_DIAL_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="sipdialing" method="post">
+                  <div id="setupTable" class="SetupTable collspan-line">
+                      <!-- <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1"><%HTMLPRINTTEXT(SIP_DIALING_DIALING_PARAMETERS, general.lang)%></A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr> -->
+                      <A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                            <%HTMLPRINTTEXT(SIP_DIALING_DIALING_PARAMETERS, general.lang)%>
+                        </A>
+                    </div>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_DIALING_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DITO" size="5" maxlength="3" value="<%SIP_SHOWDATA(DITO)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_PHONE_NUMBER_LENGTH, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PNS" size="5" maxlength="2" value="<%SIP_SHOWDATA(PNS)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_DIALING_DIGITS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_ENABLE_DIALING_COMPLETE_KEY, general.lang)%></td>
+                                      <td class="TdMid" ><select name="EDCK" onchange="tigdck()"><%SIP_SHOWDATA(EDCK)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="dckt" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_DIALING_COMPLETE_KEY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="CDK" size="5" maxlength="1" value="<%SIP_SHOWDATA(CDK)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_ENABLE_REPLACE_NUMBER, general.lang)%></td>
+                                      <td class="TdMid" ><select name="ERNSWEC" onchange="tigrnswec()"><%SIP_SHOWDATA(ERNSWEC)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_DIAL_TONE_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DTT" size="5" maxlength="3" value="<%SIP_SHOWDATA(DTT)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_REORDER_TONE_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="RTT" size="5" maxlength="5" value="<%SIP_SHOWDATA(RTT)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_NO_ANSWER_CALL_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="UCT" size="5" maxlength="5" value="<%SIP_SHOWDATA(UCT)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="ALIVETIME"  class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_HOWLER_TONE_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="HTT" size="5" maxlength="5" value="<%SIP_SHOWDATA(HTT)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_SECONDARY_DIAL_TONE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="ESDT" onchange="tigsdt()"><%SIP_SHOWDATA(ESDT)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="sdt" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_SECONDARY_DIAL_TONE_KEY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SDTK" size="5" maxlength="1" value="<%SIP_SHOWDATA(SDTK)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_DTMF_TRANS_MODE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="DFTM"><%SIP_SHOWDATA(DFTM)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="ALIVETIME"  class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_DIGIT_MAP, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DIM" size="32" maxlength="254" value="<%SIP_SHOWDATA(DIM)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_DIAL_PLAN, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DIP" size="32" maxlength="254" value="<%SIP_SHOWDATA(DIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                  </table>
+                  </DIV>
+                  <br>
+				  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2"><%HTMLPRINTTEXT(SIP_DIALING_RELAY1, general.lang)%></A>
+                    </div>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_REMOTE_TRIGGER_KEY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DD1" size="2" maxlength="2" value="<%SIP_SHOWDATA(DD1)%>" class="unnamed11">&nbsp;&nbsp;</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+					      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_TRIGGER_DURA, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DKT1" size="5" maxlength="5" value="<%SIP_SHOWDATA(DKT1)%>" class="unnamed11">&nbsp;&nbsp;(1-99 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%>)</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>	                              
+                  </table>
+				  </DIV>
+				  
+				  <br>
+				  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                        <%HTMLPRINTTEXT(SIP_DIALING_RELAY2, general.lang)%></A>
+                    </div>   
+				   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                       <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_REMOTE_TRIGGER_KEY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DD2" size="2" maxlength="2" value="<%SIP_SHOWDATA(DD2)%>" class="unnamed11">&nbsp;&nbsp;</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>					  
+					  <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_TRIGGER_DURA, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DKT2" size="5" maxlength="5" value="<%SIP_SHOWDATA(DKT2)%>" class="unnamed11">&nbsp;&nbsp;(1-99 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%>)</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>	 					                               
+                  </table>				  
+                  </DIV>
+				  
+				  <br>
+				  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                            <%HTMLPRINTTEXT(SIP_DIALING_AUTO_ANSWER, general.lang)%></A>
+                </div>   
+				   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                       <tr class="TRedit">
+                          <td class="TDRow" id="dial_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%>:</td>
+                                      <td class="TdMid" ><select name="AAE" onchange="tigeadt()"><%SIP_SHOWDATA(AAE)%></select>&nbsp;&nbsp;</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>				  
+					  <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="AATO" size="5" maxlength="5" value="<%SIP_SHOWDATA(AATO)%>" class="unnamed11">&nbsp;&nbsp;(1-99 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%>)</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                        <td class="TDRow">
+                            <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="3%" class="TdMid">&nbsp;</td>
+                                    <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_AUTO_ANSWER_BEEP, general.lang)%>:</td>
+                                    <td class="TdMid" ><select name="AABE"> <%SIP_SHOWDATA(AABE)%></select>&nbsp;&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class="TRedit">
+                        <td class="TDEnd">
+                            <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="3%" class="TdMid">&nbsp;</td>
+                                    <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_REMOTE_DISCONNECT_WARNNING, general.lang)%>:</td>
+                                    <td class="TdMid" ><select name="AARDWE"> <%SIP_SHOWDATA(AARDWE)%></select>&nbsp;&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr> 					                               
+                  </table>				  
+                  </DIV>
+				  
+				  <br>
+				  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                            <%HTMLPRINTTEXT(SIP_DIALING_CYCLE_DIALING, general.lang)%></A>
+                    </div>   
+				   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+					  <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_CYCLE_DIALING_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="CDBT" size="5" maxlength="5" value="<%SIP_SHOWDATA(CDBT)%>" class="unnamed11">&nbsp;&nbsp;(0-999 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%>)</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>	 					                               
+                  </table>				  
+                  </DIV>
+				  
+				  <br>
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                                <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                                  <%HTMLPRINTTEXT(SIP_DIALING_AUTO_DIAL, general.lang)%></A>
+                    </div>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="dial_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="EADT" onchange="tigeadt()"><%SIP_SHOWDATA(EADT)%></select>&nbsp;&nbsp;</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="eadt1" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="TADT" size="5" maxlength="5" value="<%SIP_SHOWDATA(TADT)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="eadt2" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_AUTO_DIALING_NUMBER, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DTADD" size="32" maxlength="255" value="<%SIP_SHOWDATA(DTADD)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                        
+                  </table>
+                  </div>
+                  
+                  <br>
+				  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                        <%HTMLPRINTTEXT(SIP_DIALING_DIALING_ALERT, general.lang)%></A>
+                    </div>   
+				   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+					  <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_CYCLE_DIALING_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DAKT" size="5" maxlength="5" value="<%SIP_SHOWDATA(DAKT)%>" class="unnamed11">&nbsp;&nbsp;(1-300 <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%>)</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>	 					                               
+                  </table>				  
+                  </DIV>
+				  
+                  <br>
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('DefaultAD','Tr3')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                            <%HTMLPRINTTEXT(SIP_DIALING_DEFAULT_AUDIO_DEVICE, general.lang)%></A>
+                        </div>   
+                   <DIV id="DefaultAD">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="default_ad">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_AUDIO_DEVICE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="DAD" ><%SIP_SHOWDATA(DAD)%></select>&nbsp;&nbsp;</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <br>
+                  <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Redial','Tr4')" style="text-decoration:none">
+                                <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">
+                                  <%HTMLPRINTTEXT(SIP_DIALING_REDIAL_ON_BUSY, general.lang)%></A>
+                    </div>   
+                   <DIV id="Redial">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+                      <tr class="TRedit">
+                          <td class="TDRow" id="dial_ar">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="EAROB" onchange="tigear()"><%SIP_SHOWDATA(EAROB)%></select>&nbsp;&nbsp;</td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="ear" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_DIALING_TIMEOUT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="TAROB" size="5" maxlength="5" value="<%SIP_SHOWDATA(TAROB)%>" class="unnamed11">&nbsp;&nbsp;<%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                        
+                  </table>
+                  </div>
+                  </div>
+                  
+                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+</from>
+<DIV id="bottom" class="bottom">
+        <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" name="Submit" BORDER="0" onClick="Formsubmit()" class="submit-button">
+  </DIV>
+</body>
+</html>

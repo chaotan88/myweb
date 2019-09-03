@@ -1,0 +1,305 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="../css/style.css" rel="stylesheet" type="text/css">
+
+<%int pass;%>
+<%@pass = GETCGIPASSWORD()%>
+
+<SCRIPT>
+var GstrTreeStructor="";
+var GintBranchCount=0;
+var GintItemCount=0; 
+
+var GstrBookClose="../image/folder_close.gif";
+var GstrBookOpen="../image/folder_open.gif";
+var GstrPage="../image/doc.gif";
+
+function objItem(n,k) {
+ this.name=n;
+ this.link=k;
+}//end of objItem()
+
+
+function menuExpend(id) {
+ top.focus();
+ var img=eval("document.all.img"+id);
+ var tab=eval("document.all.tab"+id);
+ if(tab.style.display=="none") {
+  tab.style.display="block";
+  img.src=GstrBookOpen; }
+ else {
+  tab.style.display="none";
+  img.src=GstrBookClose; }
+}// end of menuExpend()
+
+function treeBuild(obj,pos) {
+ if(pos=="end" && obj.constructor!=Array)
+  GstrTreeStructor+="<tr><td style='padding-top:5; padding-bottom:8;'>";
+ else
+  GstrTreeStructor+="<tr><td style='padding-top:5;'>";
+
+ if(obj.constructor==Array) {
+  GintBranchCount++;
+
+  var tabID="tab"+GintBranchCount;
+  var imgID="img"+GintBranchCount;
+
+  GstrTreeStructor+=
+  "<a href='exp:" + imgID + "' target=_self" +
+  " onclick=\"javascript: menuExpend(" + GintBranchCount + "); return false;\">" +
+  "<img align=absMiddle border=0 id=" + imgID +
+  " src=" + GstrBookClose + " valign=middle>" +
+  "</a>" +
+  obj[0] +
+  "<table id=" + tabID + " border=0 cellpadding=0 cellspacing=0" +
+  " style=\"position:relative; left:18; display:none;\">" ;
+
+  for(var i=1; i<obj.length; i++)
+   if(i==(obj.length-1)) treeBuild(obj[i],"end");
+   else treeBuild(obj[i],"mid");
+
+  GstrTreeStructor+="</table>";
+  }
+
+ else {
+    var pass=<%@pass%>;
+    GintItemCount++;
+    GstrTreeStructor+=
+    "<img align=absMiddle border=0 src=" + GstrPage + ">" +
+    "<a style=text-decoration:none;color:black id=lnk" + GintItemCount + " href=./mainform.cgi/" + obj.link + ";"+pass+";654535970? target=subFrame>" + obj.name + "</a>";
+  }
+
+ GstrTreeStructor+="</td></tr>";
+
+}
+
+ 
+
+function configTreeCreate() {
+
+ var arTree=new Array();
+
+ //Root
+ var i=-1;
+
+ i++;
+ arTree[i]="My Papers";
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(CALL_LOG_TITLE, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(CALL_LOG_TITLE, general.lang)%>","Call_Log.htm");
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="Directory";
+ arTree[i][1]=new objItem("Directory","Phone_Book.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="Phone Settings";
+ arTree[i][1]=new objItem("Call Forward","Call_Forward.htm");
+ arTree[i][2]=new objItem("Speed Dial","Speed_Dial.htm");
+ arTree[i][3]=new objItem("Ring Tone","Set_Melody.htm");
+ arTree[i][4]=new objItem("Dial Plan","Dial_Plan.htm");
+ arTree[i][5]=new objItem("Voice Setting","Set_Voice.htm");
+
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="<%HTMLPRINTTEXT(AUTO_CONFIG_TITLE, general.lang)%>";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(ALARM_CLOCK, general.lang)%>","Alarm.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="System Settings";
+ arTree[i][1]=new objItem("<%HTMLPRINTTEXT(AUTO_CONFIG_TITLE, general.lang)%>","Auto_Config.htm");
+ arTree[i][2]=new objItem("System Auth.","System_Auth.htm");
+ arTree[i][3]=new objItem("Reboot","Reboot.htm");
+
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="Global SIP Settings";
+ arTree[i][1]=new objItem("Port Settings","Set_Port.htm");
+ arTree[i][2]=new objItem("Codec Settings","Set_Codec.htm");
+ arTree[i][3]=new objItem("Other Settings","Set_Others.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="SIP Account";
+ arTree[i][1]=new objItem("SIP Account","Service_Domain.htm");
+ 
+ i++;
+ arTree[i]=new Array();
+ arTree[i][0]="Network";
+ arTree[i][1]=new objItem("Status","Network_Status.htm");
+ arTree[i][2]=new objItem("Wan Settings","Set_WAN.htm");
+ arTree[i][3]=new objItem("Lan Settings","Set_LAN.htm");
+ arTree[i][4]=new objItem("NTP & Time Settings","Set_Sntp.htm");
+ arTree[i][5]=new objItem("IP Mapping","Ip_Mapping.htm");
+ arTree[i][6]=new objItem("Routing Table","Routing_Table.htm");
+ 
+ GstrTreeStructor="<table id=tabTree border=0 cellspacing=0 cellpadding=0";
+ GstrTreeStructor+=" style=\"position:relative; left:6; visibility=hidden;\" >";
+
+ for(i=1; i<arTree.length-1; i++) treeBuild(arTree[i],"mid");
+ treeBuild(arTree[arTree.length-1],"end");
+
+ GstrTreeStructor+="</table>";
+ document.write(GstrTreeStructor);
+ document.all.img1.click();
+ document.all.tabTree.style.visibility="visible";
+
+}
+</SCRIPT>
+
+<SCRIPT>
+  function deviceActionDrop()
+  {
+    if(document.getElementById("deviceActionDropTBL").style.visibility=="visible")
+    {
+      document.getElementById("deviceActionDropTBL").style.visibility="hidden"
+      document.getElementById("DeviceActionImg").src="../image/device_down.gif"
+    }
+    else
+    {
+      document.getElementById("deviceActionDropTBL").style.visibility="visible"
+      document.getElementById("DeviceActionImg").src="../image/device_up.gif"
+    }
+  }
+  
+  function deviceActionSelect(inOut,row)
+  {
+    if(inOut=="out")
+      document.getElementById(row).style.backgroundColor="#F0EFEF"
+    else
+      document.getElementById(row).style.backgroundColor="#4294F9"	
+  }
+  
+  function resize()
+  { 
+    var x=screen.width,y=screen.height;
+    if(y==768)
+    {
+      document.getElementById('tree_tab').style.height=y-440;
+      document.getElementById('configTree').style.height=y-440;
+      document.getElementById('menuTd').style.height=y-429;
+    }
+    if(y==1024)
+    {
+      document.getElementById('tree_tab').style.height=y-490;
+      document.getElementById('configTree').style.height=y-490;
+      document.getElementById('menuTd').style.height=y-479;
+      document.getElementById('subFrame').style.height='720px';
+    }
+
+    document.getElementById('header1').style.width=x-4;
+    document.getElementById('subFrame').style.width=x-300;
+  }
+</SCRIPT>
+
+<title>AudioCodes</title>
+</head>
+
+<body onload="resize();">
+  <DIV id="topBar">
+    <Table id="header1" style="position:absolute;left:0px;top:0px;HEIGHT:47px;" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+        <Tr id="1">
+            <Td WIDTH="247" style="background:url(../image/toolbar_L.gif);HEIGHT:47px">
+                <IMG style="MARGIN-LEFT:10px" HEIGHT=30 src="../image/logo" WIDTH="141" ALIGN=left>
+            </TD>
+            <Td style="background:url(../image/toolbar_M.gif)">
+            <Td style="background:url(../image/toolbar_M.gif)">
+                <font face="arial" color="#646464" style="position:relative;top:-20px"><B>3xxHD</B></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <A HREF="javascript:deviceActionDrop()"><IMG HEIGHT=47 id="DeviceActionImg" src="../image/device_down.gif" BORDER=0></A>&nbsp;&nbsp;&nbsp;
+                <A HREF="javascript:HomePage()" onmousemove="return WinStatus()"><IMG SRC="../image/home.gif" id="home" BORDER="0"></A>&nbsp;
+                <A onclick="getHelp()" href="#"><IMG SRC="../image/logoff_reg.gif" NAME="Off" BORDER="0"></A></TD>
+            <Td WIDTH="5" style="BACKGROUND:url(../image/toolbar_R.gif)"></TD>
+      </TR>
+    </TABLE>
+  </DIV>
+  <DIV id="deviceActionDropTBL">
+    <Table WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="2">
+        <TR>
+            <Td id="LCF" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','LCF')" onmouseover="deviceActionSelect('','LCF')" onclick="deviceActionDrop(),DeviceFrameSrc('ConfigurationFile')">
+              Load Configuration File
+            </TD>
+        </TR>
+        <TR>
+            <Td id="SCF" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','SCF')" onmouseover="deviceActionSelect('','SCF')" onclick="deviceActionDrop(),DeviceFrameSrc('ConfigurationFile')">
+              Save Configuration File
+            </TD>
+        </TR>
+        <TR>
+            <Td id="R" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','R')" onmouseover="deviceActionSelect('','R')" onclick="deviceActionDrop(),DeviceFrameSrc('ResetBoard')">
+              Reset
+            </TD>
+        </TR>
+        <TR>
+            <Td id="SU" class="deviceActionSoftUpdt" style="CURSOR:pointer" onmouseout="deviceActionSelect('out','SU')" onmouseover="deviceActionSelect('','SU')" onclick="deviceActionDrop(),DeviceFrameSrc('SoftwareWizard')">
+              Software Upgrade Wizard
+            </TD>
+        </TR>
+    </TABLE>
+  </DIV>
+
+  <DIV id="menuFrame" style="height: 400px;">
+      <TABLE WIDTH="282" CELLPADDING="4" CELLSPACING="0" BORDER="0" style="BACKGROUND:url(../image/background.gif) repeat-x;position: absolute;top: 50px;">
+          <TR>
+              <Td>
+                  <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+                      <TR>
+                          <Td WIDTH="9" style="BACKGROUND:url(../image/tabs_L.gif)">&nbsp;</TD>
+                          <Td style="BACKGROUND:url(../image/tabs_M.gif);HEIGHT:75px" WIDTH="252">
+                              <TABLE CELLPADDING=1 CELLSPACING=0>
+                                  <TR>
+                                      <TD><A HREF="javascript:ScenConfApp();ChangeView(fullView);"><IMG SRC="../image/configuration_reg.gif" BORDER="0" style="display:" NAME="configuration"></A></TD>
+                                      <TD><A HREF="javascript:ScenManfApp();ChangeView(fullView);"><IMG SRC="../image/management_reg.gif" BORDER="0" style="display:" NAME="management"></A></TD>
+                                      <TD><A HREF="javascript:ScenStatfApp();ChangeView(fullView);"><IMG SRC="../image/status_reg.gif" BORDER="0" style="display:" NAME="status"></A></TD>
+                                  </TR>
+                              </TABLE> 
+                          </TD>
+                          <Td WIDTH="9" style="BACKGROUND:url(../image/tabs_R.gif)">&nbsp;</TD>
+                      </TR>
+                  </TABLE>
+                  <DIV id="div_config">
+                      <TABLE BORDER="0" style="WIDTH:270px;BORDER-BOTTOM:gray 1px solid" CELLPADDING="0" CELLSPACING="0">
+                          <TR>
+                              <Td style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"><BR></TD>
+                              <Td style="WIDTH:264px">
+                                  <TABLE BORDER="0" style="WIDTH:264px" CELLPADDING="0" CELLSPACING="0">
+                                      <TR>
+                                          <TD id="menuTd" HEIGHT="341"></TD>
+                                      </TR>
+                                  </TABLE>
+                              </TD>
+                              <Td style="BACKGROUND-IMAGE:url(../image/page_R.gif);WIDTH:3px"><BR></TD>
+                          </TR>
+                      </TABLE>
+                  </DIV>
+              </TD>
+          </TR>
+      </TABLE>
+  </DIV>
+  <DIV id="configTree" style="overflow-x: hidden;overflow-y: auto;height: 330px;width:230;position: absolute;top: 140px;left:30px">
+      <TABLE CELLSPACING="0" id="tree_tab" CELLPADDING="2" BORDER="1" width="230" bgcolor="#edf3fe" ALIGN=center style="HEIGHT:330px">
+          <tr VALIGN=top id="SeCont">
+              <TD>
+                  <script language="javascript">configTreeCreate();</script>
+              </TD>
+          </TR>
+      </TABLE>
+  </DIV>
+  <div id="viewFrame" class="viewFrame">
+      <table border="0" cellSpacing="0" cellpadding="0">
+          <tr>
+              <td>
+                  <IFRAME id="subFrame" name="subFrame" src="./mainform.cgi/info.htm;<%@pass%>;<%OUTRAND()%>?" scrolling="no" frameBorder="no" style="WIDTH:720px;HEIGHT:440px"></IFRAME>
+              </td>
+          </tr>
+      </table>
+  </div>
+ </body>
+</html>
+

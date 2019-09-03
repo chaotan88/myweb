@@ -1,0 +1,412 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<%int dynamic_fg;%>
+<%Network_READDATA(AUTO_ST)%>
+<%Network_GETSUBMIT(AUTO_ST)%>
+<%@dynamic_fg = NETWORK_GETVAR(DYNAMIC_FG)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+
+function validateKey(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+
+function checkIpAddr(field, msg)
+{
+   if ( validateKey(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(value._This_field_should_be_decimal_number_(0-9)!!, Set_WAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,255) ) {
+      alert(msg+' <%HTMLPRINTTEXT(Range_in_the_1st_number._It_should_b_0-255!!, Set_WAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(Range_in_the_2nd_number._It_should_b_0-255!!, Set_WAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(Range_in_the_3rd_number._It_should_b_0-255!!, Set_WAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(Range_in_the_4th_number._It_should_b_1-254!!, Set_WAN.txt)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   return true;
+}
+function Formsubmit(dowhat){
+ var dynamic_fg = <%@dynamic_fg%>;
+     switch(document.tftpform.ASU_METHOD.value) {
+         case('0') :  //disable
+            if (dowhat == 2)
+               document.tftpform.CHECK_NOW.value = "1";
+         break;
+         case('1'):
+            if (dynamic_fg== 0 &&document.tftpform.ASU_URLS.value == "") {
+               alert("Please enter URL address!");
+               return;
+            }
+            if (document.tftpform.ASU_URLS.value.indexOf("tftp://", 0) == -1 && document.tftpform.ASU_URLS.value.indexOf("ftp://", 0) == -1
+                && document.tftpform.ASU_URLS.value.indexOf("http://", 0) == -1 && document.tftpform.ASU_URLS.value.indexOf("https://", 0) == -1) {
+               alert("Auto Configuration Update only support tftp, ftp, http or https\n");
+               return;
+            }
+            if (dowhat == 2)
+               document.tftpform.CHECK_NOW.value = "1";
+         break;
+         case('2'):
+	  
+        break;
+      }
+
+     document.tftpform.action="../mainform.cgi/Auto_Setting_Upgrade.htm";
+     document.tftpform.submit();
+
+}
+
+function ShowAlert() {
+    <%Network_SHOWDATA(AUTOST_CHECK)%>
+}
+
+function check_show() {
+ var dynamic_fg = <%@dynamic_fg%>;
+ if (document.tftpform.ASU_METHOD.value == '1') {
+	  if(dynamic_fg ==1)
+	  {
+	  	document.getElementById("urls").style.display="none";
+	  }
+	  else
+	  {
+	  	document.getElementById("urls").style.display="";
+	  }
+   //      document.getElementById("tftp_adr").style.display="none";
+   //      document.getElementById("cfgfilename").style.display="none";
+   }
+   else {
+      
+      document.getElementById("urls").style.display="none";
+      if (document.tftpform.ASU_METHOD.value == '0') {
+         document.getElementById("per0").className="TDEnd";
+         document.getElementById("per1").style.display="none";
+         document.getElementById("per2").style.display="none";
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      //   document.getElementById("tftp_adr").style.display="none";
+      //   document.getElementById("cfgfilename").style.display="none";
+         return;
+      }
+      if (document.tftpform.ASU_METHOD.value == '2') {
+         document.getElementById("per0").className="TDEnd";
+         document.getElementById("per1").style.display="none";
+         document.getElementById("per2").style.display="none";
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+        // document.getElementById("tftp_adr").style.display="";
+       //  document.getElementById("cfgfilename").style.display="";
+		return;
+      }
+   }
+   document.getElementById("per1").style.display="";
+   document.getElementById("per0").className="TDRow";
+   document.getElementById("per2").style.display="";
+   switch(document.tftpform.ASU_PERIOD.value) {
+      case('0'):
+         document.getElementById("per_add_0").style.display="";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+      case('1'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+      case('2'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="";
+      break;
+      case('3'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+   }
+}
+</SCRIPT>
+
+
+
+<body onload="check_show();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                      <span id="title" style="position:relative;left:10px">
+                                          <%HTMLPRINTTEXT(Automatic_Configuration_Update, System_Auth.txt)%>
+                                      </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">
+                                      &nbsp;
+                                  </td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <form method="POST" name="tftpform">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td>&nbsp;</td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td id="per0" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;<%HTMLPRINTTEXT(Check_Method:__, System_Auth.txt)%>&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                          <select name="ASU_METHOD" onchange="check_show()">
+                                           <%Network_SHOWDATA(ASU_METHOD)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+                                  <tr id="urls">
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;<%HTMLPRINTTEXT(URL:__, System_Auth.txt)%>&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <input type="text" name="ASU_URLS" size="48" maxlength="128" value="<%Network_SHOWDATA(ASU_URL)%>" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="per1">
+                          <td id="period" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;<%HTMLPRINTTEXT(Check_Period:__, System_Auth.txt)%>&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <select name="ASU_PERIOD" onchange="check_show()">
+                                           <%Network_SHOWDATA(ASU_PERIOD)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+                                  
+                                  <tr id="per_add_0">
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;<%HTMLPRINTTEXT(Every, System_Auth.txt)%>&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <input type="text" name="ASU_HOURS" size="3" maxlength="3" value="<%Network_SHOWDATA(ASU_HOURS)%>" class="unnamed11"> hours
+                                      </td>
+                                  </tr>
+                                  <tr id="per_add_1">
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;<%HTMLPRINTTEXT(Every_day_at_:__, System_Auth.txt)%>&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <select name="ASU_EDTIME">
+                                           <%Network_SHOWDATA(ASU_EDTIME)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+                                  <tr id="per_add_2">
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;<%HTMLPRINTTEXT(Every, System_Auth.txt)%>&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <select name="ASU_EDWDAY">
+                                           <%Network_SHOWDATA(ASU_EDWDAY)%>
+                                         </select>
+                                         &nbsp;<%HTMLPRINTTEXT(at, System_Auth.txt)%>&nbsp;
+                                         <select name="ASU_EDWTIME">
+                                           <%Network_SHOWDATA(ASU_EDWTIME)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="per2">
+                          <td id="period" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          &nbsp;
+                                      </td>
+                                      <td class="TdMid"  Align="left">
+                                         <input type="hidden" name="CHECK_NOW" value="0" class="unnamed11">
+                                         <input type="button" value="<%HTMLPRINTTEXT(Check_Now, button.txt)%>" name="apply" onClick="Formsubmit(2)">  
+                                      </td>
+                                  </tr>
+
+                              </table>
+                          </td>
+                      </tr>
+<!-- 
+ 											<tr id="tftp_adr"class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          <%HTMLPRINTTEXT(TFTP_Server_IP:, Auto_Config.txt)%>&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid" >
+                                          &nbsp;<input type="text" name="SERVER" value="<%Network_SHOWDATA(TFTPSERVER)%>" size="30" maxlength="63">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                       </tr>
+                       <tr id="cfgfilename"class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="20%" class="TD_Item_First" Align="right">
+                                          <%HTMLPRINTTEXT(Configuration_File:, Auto_Config.txt)%>&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                      <td class="TdMid" >
+                                          &nbsp;<input type="text" name="CFGFILE" value="<%Network_SHOWDATA(CFGFILE)%>" size="30" maxlength="63">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                       </tr>
+-->
+                 </table>
+              </td>
+          </tr>  
+      </table>
+  </form>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                            <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit(1)">    
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+    
+  </DIV>
+</body>
+</html>

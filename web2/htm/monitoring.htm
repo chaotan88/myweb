@@ -1,0 +1,261 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+var textReq = null;
+var timerId = null;
+var progressCount = 0;
+var currentCmd;
+
+
+function ping()
+{
+    if (timerId != null)
+        clearTimeout(timerId);
+    if (textReq != null)
+        textReq.abort();
+    currentCmd = "ping";
+    var pingNum = parseInt(getCmdElement("Num").value);
+    var destination = getCmdElement("Destination").value;
+    if (destination == "") {
+        alert("Empty destination");
+        return;
+    }
+    var req;
+    if (pingNum == 0) {
+        req = "ping " + destination;
+    } else {
+        req = "ping -c " + pingNum + " " + destination;
+    }
+    sendRequest(req);
+}
+
+function traceroute()
+{
+    if (timerId != null)
+        clearTimeout(timerId);
+    if (textReq != null)
+        textReq.abort();
+    currentCmd = "traceroute";
+    var destination = getCmdElement("Destination").value;
+    if (destination == "") {
+        alert("Empty destination");
+        return;
+    }
+    sendRequest("traceroute " + destination);
+}
+
+function getCmdElement(id) {
+    return document.getElementById(currentCmd+id);
+}
+
+function sendRequest(req) {
+    var outputTitle = getCmdElement("OutputTitle");
+    var output = getCmdElement("OutputText");
+    var title = "Output of '" + req + "':";
+    output.innerHTML = "&nbsp;";
+    outputTitle.innerText   = title;
+    outputTitle.textContent = title;
+    getCmdElement("Output").style.display = "";
+    progressCount = 0;
+
+    textReq = createHttpRequest();
+    textReq.open("GET", encodeURI("/command.cgi?"+req), true);
+    textReq.onreadystatechange = updatePage;
+    textReq.send(null);
+    refreshPagePeriodic();
+}
+
+function refreshPagePeriodic() {
+    var output   = getCmdElement("OutputText");
+    var progress = getCmdElement("Progress");
+    <!-- interactive reading does not work in IE -->
+    var text = " ";
+    if (navigator.appName != 'Microsoft Internet Explorer' &&
+        textReq.responseText != null) {
+        text = textReq.responseText;
+    }
+    output.textContent = text;
+    output.innerText   = text;
+    progress.innerHTML = "Working";
+    for (var i = 0; i < progressCount%4; i++)
+        progress.innerHTML += ".";
+    progressCount++;
+    timerId = setTimeout('refreshPagePeriodic()', 1000);
+}
+
+function updatePage() {
+    if (textReq.readyState != 4) {
+        return;
+    }
+    if (timerId != null)
+        clearTimeout(timerId);
+    timerId = null;
+
+    var output = getCmdElement("OutputText");
+    var progress = getCmdElement("Progress");
+    if (textReq.status == 200) {
+        output.textContent = textReq.responseText;
+        output.innerText   = textReq.responseText;
+    }
+    progress.innerHTML = "Done";
+    textReq = null;
+}
+</SCRIPT>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV class="Bar">
+    <table CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span style="position:relative;left:10px">Monitoring</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+            <td valign="top">
+              <table align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                <tr class="TRedit">
+                  <td  class="tdTitle">Ping (ICMP Echo)</td>
+                </tr>
+                <tr class="TRedit">
+                  <td class="TDRow">
+                    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left">Destination:</td>
+                        <td width="40%" class="TdMid">
+                          <input type="text" id="pingDestination" size="64"/>
+                        </td>
+                        <td width="20%" class="TdMid">
+                          <input type="button" class="SubBut" value="Go" onclick="ping()"/>
+                        </td>
+                        <td width="10%" class="TdMid" id="pingProgress">
+                          &nbsp;
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr class="TRedit">
+                  <td class="TDEnd">
+                    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left">Number of pings:</td>
+                        <td width="50%" class="TdMid">
+                          <input type="text" id="pingNum" size="4" value="4">
+                        </td>
+                        <td width="20%" class="TdMid">
+                          &nbsp;
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <br/>
+              <table style="display: none" id="pingOutput" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                <tr class="TRedit">
+                  <td class="tdTitle" id="pingOutputTitle"></td>
+                </tr>
+                <tr class="TRedit">
+                  <td class="TDEnd" ><pre id="pingOutputText">&nbsp;</pre></td>
+                </tr>
+              </table>
+              <br/>
+              <table align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                <tr class="TRedit">
+                  <td  class="tdTitle">Traceroute</td>
+                </tr>
+                <tr class="TRedit">
+                  <td class="TDEnd">
+                    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="3%" class="TdMid">&nbsp;</td>
+                        <td width="27%" class="TD_Item_First" Align="left">Destination:</td>
+                        <td width="40%" class="TdMid">
+                          <input type="text" id="tracerouteDestination" size="64"/>
+                        </td>
+                        <td width="20%" class="TdMid">
+                          <input type="button" class="SubBut" value="Go" onclick="traceroute()"/>
+                        </td>
+                        <td width="10%" class="TdMid" id="tracerouteProgress">
+                          &nbsp;
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                </table>
+              <br/>
+              <table style="display: none" id="tracerouteOutput" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                <tr class="TRedit">
+                  <td class="tdTitle" id="tracerouteOutputTitle"></td>
+                </tr>
+                <tr class="TRedit">
+                  <td class="TDEnd" ><pre id="tracerouteOutputText">&nbsp;</pre></td>
+                </tr>
+              </table>
+            </td>
+          </tr>  
+      </table>
+  </DIV>
+  <DIV class="bottom">
+    <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+      <TR>
+        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+        <td>
+          <input type="image" align="right" class="editImg" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+        </td>
+        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+      </tr>
+      <tr>
+        <td colspan="3">
+		  <Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+			  <Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+			  <Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+			  <Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+			</tr>
+		  </table>
+        </td>
+      </tr>
+    </table>
+  </DIV>
+</body>
+</html>

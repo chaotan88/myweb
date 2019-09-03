@@ -1,0 +1,227 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+var textReq = null;
+var currentCmd;
+
+function refresh()
+{
+	var output = document.getElementById("output_text");
+	output.textContent = "";
+	output.innerText   = "";
+
+    if (textReq != null)
+        textReq.abort();
+    currentCmd = document.getElementById("mem_command");
+    var req = currentCmd.value;
+
+    sendRequest(req);
+}
+
+function sendRequest(req) {
+    textReq = createHttpRequest();
+    textReq.open("GET", encodeURI("/command.cgi?"+req), true);
+    textReq.onreadystatechange = updatePage;
+    textReq.send(null);
+}
+
+function updatePage() {
+    if (textReq.readyState != 4) {
+        return;
+    }
+
+    var output = document.getElementById("output_text");
+    if (textReq.status == 200) {
+        output.textContent = textReq.responseText;
+        output.innerText   = textReq.responseText;
+    }
+
+    textReq = null;
+}
+
+function down(){
+	var url='../../<%Network_SHOWDATA(COMMAND_OUTPUT_FILE_NAME)%>';
+    window.open(url,'Download');
+}
+
+function show_command_output(){
+	var url='../mainform.cgi/show_command_output.htm';
+    window.open(url);
+}
+
+function Formsubmit(no)
+{
+ switch(no){
+    case(2):
+	   break;
+ }   
+}
+
+function ShowAlert() {
+}
+</SCRIPT>
+
+<body onload="ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">
+                                        <%HTMLPRINTTEXT(MEMORY_STATUS_TITLE, general.lang)%>
+                                    </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(DIAGNOSTICS, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MEMORY_STATUS_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content_TYPE1" style="overflow-x:hidden;overflow-y:auto;top:70px;">
+
+      <form name="command_setting" method="post">
+
+       <div class="SetupTable collspan-line">
+            <A HREF="javascript:OpenCloseDiv('setting','Tr2')" style="text-decoration:none">
+            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                <%HTMLPRINTTEXT(MEMORY_STATUS_COMMAND_SELECT, general.lang)%>:</A>
+          <!-- <tr class="TRedit">
+              <td>
+                  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                          <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('setting','Tr2')" style="text-decoration:none">
+                          <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                            <%HTMLPRINTTEXT(MEMORY_STATUS_COMMAND_SELECT, general.lang)%>:</A></Td>
+                      </tr>
+                  </table>
+              </td>
+          </tr> -->
+        </div>   
+
+       <DIV id="setting">
+       <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+          <tr class="TRedit" id="command">
+              <td class="TDEnd">
+                  <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding: 20px 0;">
+                      <tr>
+                          <td width="3%" class="TdMid">&nbsp;</td>
+                          <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(MEMORY_STATUS_COMMAND_STRING, general.lang)%>: </td>
+                          <td class="TdMid" > 
+							<select id="mem_command" onchange="">
+                             <%SIP_SHOWDATA(COMMAND)%>
+                           </select>
+                          </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+      </table>
+      </div>
+     
+      </form>
+
+
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <!-- show detail-->
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0" >
+                      <tr class="TRedit">
+                          <td  class="">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td  Align="center"><%HTMLPRINTTEXT(MEMORY_STATUS_COMMAND_OUTPUT, general.lang)%></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                     
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding: 20px 0;">
+                                  <tr height="270">
+                                      <td width="100%" class="TD_Item_First" Align="center">
+                                          <textarea id="output_text" rows="21" name="S1" cols="89" wrap="OFF" style="FONT-SIZE: 14px" readonly="readonly">
+
+                                          </textarea>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td Align="center">
+                           <form method="POST" name="autoform">
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(MEMORY_STATUS_OUTPUT_SAVE, general.lang)%>" name="apply" onClick="javascript:down()">
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(MANU_CONFIG_REFRESH, general.lang)%>" name="apply" onClick="refresh()">
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(MEMORY_STATUS_MAXIMIZE, general.lang)%>" name="apply" onClick="javascript:show_command_output()">
+                           </form>
+                        </td>
+        	         </tr>
+                  </table>
+              </div>   
+              <!--end-->    
+                  <br>
+              </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+        <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" src="../image/<%HTMLPRINTTEXT(GENERAL_PAGE_SUBMIT_PIC, general.lang)%>" name="Submit">
+    <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/<%HTMLPRINTTEXT(GENERAL_PAGE_SUBMIT_PIC, general.lang)%>" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        <tr>
+           <td colspan="3">
+		<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+         </tr>
+      </table> -->
+  </DIV>
+</body>
+</html>

@@ -1,0 +1,231 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<%SCHEDULE_READDATA(ALARM)%>
+<%SCHEDULE_GETSUBMIT(ALARM)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+function Formsubmit(dowhat)
+{
+   switch(dowhat)
+   {
+       case 1:
+       if(checksubmit(1))
+       {
+            document.AlarmForm.action="../mainform.cgi/Alarm.htm";
+            document.AlarmForm.submit();
+       }
+       break;
+   }
+}
+function checksubmit(num)
+{
+   var chkid;
+   if(num == 2)
+   {
+      chkid = chkChkbox(document.AlarmForm);
+      if(chkid == 0)
+      {
+         alert("<%HTMLPRINTTEXT(ALARM_DELETE_ERROR, error.lang)%>")
+         return false;
+      }
+   }
+   if(!checkvalue(document.AlarmForm.ALARMHOUR,'<%HTMLPRINTTEXT(ALARM_HOUR_ERROR, error.lang)%>'))
+      return false;
+   if(!checkvalue(document.AlarmForm.ALARMMIN,'<%HTMLPRINTTEXT(ALARM_MINUTE_ERROR, error.lang)%>'))
+      return false;
+   if(parseFloat(document.AlarmForm.ALARMHOUR.value) < 1 || parseFloat(document.AlarmForm.ALARMHOUR.value) > 24)
+   {
+      alert("<%HTMLPRINTTEXT(ALARM_HOUR_RANGE, error.lang)%>");
+      return false;
+   }
+   if(parseFloat(document.AlarmForm.ALARMMIN.value) < 0 || parseFloat(document.AlarmForm.ALARMMIN.value) > 59)
+   {
+      alert("<%HTMLPRINTTEXT(ALARM_MINUTE_RANGE, error.lang)%>");
+      return false;
+   }
+   return true;
+}
+function chkChkbox(object) {
+   var i, chkid;
+   chkid = 0;
+   for(i=0;i<object.length;i++) {
+      if (object[i].checked == 1) {
+         chkid++;
+      }
+   }
+   return(chkid);
+}
+function checkvalue(field,msg)
+{
+   if(field.value != '' && isNaN(field.value))
+   {
+       alert(""+msg+" <%HTMLPRINTTEXT(ALARM_VALUE_CHECK, error.lang)%>");
+       field.focus();
+       return false;
+   }
+   return true;
+}
+function toggle()
+{
+   var sel = parseFloat(document.AlarmForm.ALARMACT.value);
+
+   if(sel == 0)
+   {
+      document.AlarmForm.ALARMHOUR.disabled = true;
+      document.AlarmForm.ALARMMIN.disabled = true;
+      document.AlarmForm.ALARMREPEAT.disabled = true;
+      document.AlarmForm.ALARMREPEAT.value = 0;
+   }
+   if(sel == 1)
+   {
+      document.AlarmForm.ALARMHOUR.disabled = false;
+      document.AlarmForm.ALARMMIN.disabled = false;
+      document.AlarmForm.ALARMREPEAT.disabled = false;
+   }
+}
+
+</SCRIPT>
+
+
+
+<body onload="toggle();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px"><%HTMLPRINTTEXT(ALARM_CLOCK, general.lang)%></span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="AlarmForm" method="post">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1"><%HTMLPRINTTEXT(ALARM_CLOCK, general.lang)%></A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(ALARM_ACTIVATE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <select size="1" name="ALARMACT" class="unnamed11" onchange="toggle()">
+                                            <%SCHEDULE_SHOWDATA(ALARMACT)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(ALARM_TIME, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <input type="text" name="ALARMHOUR" size="2" maxlength="2" value="<%SCHEDULE_SHOWDATA(ALARMHOUR)%>">
+                                         :
+                                         <input type="text" name="ALARMMIN" size="2" maxlength="2" value="<%SCHEDULE_SHOWDATA(ALARMMIN)%>">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(ALARM_REPEAT, general.lang)%></td>
+                                      <td class="TdMid" >
+                                         <select size="1" name="ALARMREPEAT" class="unnamed11">
+                                            <%SCHEDULE_SHOWDATA(ALARMREPEAT)%>
+                                         </select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit(1)">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>

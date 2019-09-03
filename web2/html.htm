@@ -1,0 +1,262 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<%Network_READDATA(VOICETEST)%>
+<%Network_GETSUBMIT(VOICETEST)%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit(dowhat){
+	if(dowhat == 1)
+	{
+		document.testform.VOICE_TEST_START.value = "0";
+	}
+	if(dowhat == 2)
+	{  
+		document.testform.VOICE_TEST_START.value = "1";
+	}
+
+     document.testform.action="../mainform.cgi/sip_test.htm";
+     document.testform.submit();
+}
+
+function ShowAlert() {
+    //<%Network_SHOWDATA(VOICETEST)%>
+}
+
+function check_show() {
+	switch(document.testform.VOICE_TEST_ENABLE.value) 
+  {
+  	case('1'):
+  	break;
+  	case('0'):
+			document.getElementById("rconfig").style.display="none";
+	       document.getElementById("per_add_0").style.display="none";
+	       document.getElementById("per_add_1").style.display="none";
+	       document.getElementById("per_add_2").style.display="none";
+  	return;
+  	break;
+  }
+ 
+		document.getElementById("rconfig").style.display="";
+   switch(document.testform.VOICE_TEST_PERIOD.value) {
+      case('0'):
+         document.getElementById("per_add_0").style.display="";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+      case('1'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+      case('2'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="";
+      break;
+      case('3'):
+         document.getElementById("per_add_0").style.display="none";
+         document.getElementById("per_add_1").style.display="none";
+         document.getElementById("per_add_2").style.display="none";
+      break;
+   }
+}
+
+</SCRIPT>
+
+
+
+<body onload="check_show();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                      <span id="title" style="position:relative;left:10px">
+                                          <%HTMLPRINTTEXT(SIP_VOICE_TEST_TITLE, general.lang)%>
+                                      </span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">
+                                      &nbsp;
+                                  </td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <form method="POST" name="testform">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+			<tr>
+				<td valign="top">
+					<table id="setupTable" align="center"   class="SetupTable"  border="0" cellpadding="1" cellspacing="0">
+						<tr class="TRedit">
+							<td  class="tdTitle">
+								<Table border="0" width="100%" cellpadding="0" cellspacing="0">
+									<tr>
+										<Td>&nbsp;</td>
+									</tr>
+								</Table>
+							</td>
+						</tr>
+                     
+						<tr >
+							<td id="dstatus"  class="TDRow">
+								<table border="0" width="100%"  cellpadding="0" cellspacing="0">
+									<tr >
+										<td width="27%"  class="TD_Item_First" Align="left" >
+											&nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_STATUS, general.lang)%> :&nbsp;&nbsp;
+										</td>
+										<td   class="TD_Item_First" height="30" colspan="2" Align="left">
+											&nbsp;&nbsp;<%Network_SHOWDATA(VOICE_TEST_STATUS)%>
+										</td>
+									</tr>
+									<tr >
+										<td width="27%"  class="TD_Item_First" Align="left">
+											&nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_DETAIL, general.lang)%> :&nbsp;&nbsp;
+										</td>
+										<td  class="TdMid" colspan="2" Align="left">
+											&nbsp;&nbsp;<%Network_SHOWDATA(VOICE_TEST_DETAIL)%>
+										</td>
+									</tr> 
+									 <tr >
+										 <td width="27%"  class="TD_Item_First" Align="left">
+											  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_TIME, general.lang)%> :&nbsp;&nbsp;
+										  </td>
+										  <td  class="TdMid"  colspan="2" Align="left">
+											  &nbsp;&nbsp;<%Network_SHOWDATA(VOICE_TEST_TIME)%>
+										  </td>
+									 </tr> 
+									 <tr id="dbutton" class="TDRow">
+										<td width="27%" class="TD_Item_First" Align="left">
+											  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_ENABLE, general.lang)%> :&nbsp;&nbsp;
+										 </td>
+										 <td class="TdMid"  Align="left">
+												  <select name="VOICE_TEST_ENABLE" onchange="check_show()">
+												   <%Network_SHOWDATA(VOICE_TEST_ENABLE)%>
+												 </select>
+										 </td>
+										 <td class="TdMid"  Align="center">
+														 <input type="hidden" name="VOICE_TEST_START" value="0" class="unnamed11">
+														 <input type="button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(2)">  
+										</td>
+									</tr>
+									<tr id="rconfig" >
+										<td colspan="3">
+											<table border="0" width="100%" cellpadding="0" cellspacing="0">
+												<tr>
+													<td width="27%" class="TD_Item_First" Align="left">
+													  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_CHECK_PERIOD, general.lang)%> :&nbsp;&nbsp;
+													</td>
+													 <td class="TdMid"  Align="left">
+														 <select name="VOICE_TEST_PERIOD" onchange="check_show()">
+														   <%Network_SHOWDATA(VOICE_TEST_PERIOD)%>
+														 </select>
+													  </td>
+												</tr>
+                                  
+												<tr id="per_add_0">
+													<td width="27%" class="TD_Item_First" Align="left">
+													  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_STR, general.lang)%> :&nbsp;&nbsp;
+													</td>
+													<td class="TdMid"  Align="left">
+													 <input type="text" name="VOICE_TEST_HOURS" size="3" maxlength="3" value="<%Network_SHOWDATA(VOICE_TEST_HOURS)%>" class="unnamed11"> <%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_HOUR_STR, general.lang)%>
+													</td>
+												</tr>
+
+												<tr id="per_add_1">
+													<td width="27%" class="TD_Item_First" Align="left">
+													  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_DAY_AT, general.lang)%> :&nbsp;&nbsp;
+													</td>
+													 <td class="TdMid"  Align="left">
+														 <select name="VOICE_TEST_EDTIME">
+														   <%Network_SHOWDATA(VOICE_TEST_EDTIME)%>
+														 </select>
+													 </td>
+												</tr>
+
+												<tr id="per_add_2">
+													<td width="27%" class="TD_Item_First" Align="left">
+														  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_EVERY_STR, general.lang)%>:&nbsp;&nbsp;
+													</td>
+													<td class="TdMid"  Align="left">
+														 <select name="VOICE_TEST_EDWDAY">
+														   <%Network_SHOWDATA(VOICE_TEST_EDWDAY)%>
+														 </select>
+														 &nbsp;<%HTMLPRINTTEXT(AUTO_PROVISION_AT, general.lang)%>&nbsp;
+														 <select name="VOICE_TEST_EDWTIME">
+														   <%Network_SHOWDATA(VOICE_TEST_EDWTIME)%>
+														 </select>
+													 </td>
+												</tr>
+
+											</table>
+										</td>
+									</tr>
+									<tr id="last_line" height="2px" width="100%">
+										<td colspan="3"   class="TdEnd" />
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+
+						</tr>
+					</table>
+				</td>
+			</tr>  
+		</table>
+  </form>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                            <input type="image" align="right" src="../image/<%HTMLPRINTTEXT(GENERAL_PAGE_SUBMIT_PIC, general.lang)%>" name="Submit" BORDER="0" onClick="Formsubmit(1)">    
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+    
+  </DIV>
+</body>
+</html>

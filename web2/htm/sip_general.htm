@@ -1,0 +1,1043 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%SIP_READDATA(AC)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+
+
+/* AlexChen 20101125 VI89926: re-register by option message */
+function regkachange() {
+  var one = parseFloat(document.sipservice.REGKASW.value);
+  if (one == 0) {
+     document.getElementById("REGKAT").style.display="none";
+  }
+  else {
+     document.getElementById("REGKAT").style.display="";     
+  }      
+}
+
+function klivechange() {
+  var one = parseFloat(document.sipservice.KALIVE.value);
+  if (one == 0) {
+     document.getElementById("ALIVETIME").style.display="none";
+  }
+  else {
+     document.getElementById("ALIVETIME").style.display="";     
+  }      
+}
+
+function protocalchange() {
+  var one = parseFloat(document.sipservice.SIPTP.value);
+  if (one == 3) {
+     document.getElementById("TLSPORT").style.display="";
+  }
+  else {
+     document.getElementById("TLSPORT").style.display="none";
+  }      
+}
+
+function proxtswitch(aa) {
+   if (document.sipservice.PROXYSW.value == '1') {
+      document.getElementById("PX1").style.display="";
+      document.getElementById("PX2").style.display="";
+      document.getElementById("PX3").style.display="";
+      document.getElementById("proxy_srg").style.display="";
+	  document.getElementById("registrar_ka").style.display="";
+      if (aa == 1) document.sipservice.REGPROXYSW.value ='1';
+	  regkachange();
+    }
+   else {
+      document.getElementById("PX1").style.display="none";
+      document.getElementById("PX2").style.display="none";
+      document.getElementById("PX3").style.display="none";
+      document.getElementById("proxy_srg").style.display="none";
+	  document.getElementById("registrar_ka").style.display="none";
+	  document.getElementById("REGKAT").style.display="none";
+      if (aa ==1) document.sipservice.REGPROXYSW.value ='0';
+   }
+   proxtreg();
+   
+}
+
+function proxtreg() {
+   if (document.sipservice.REGPROXYSW.value == '1') {
+      if (document.sipservice.REGSW.value == '1') {
+         document.sipservice.REGSW.value = '0';
+         
+      }
+   }
+   tigSIPREGI();
+
+}
+
+function tigSIPREGI() {
+   if (document.sipservice.REGSW.value == '1') {
+      document.getElementById("RG1").style.display="";
+      document.getElementById("RG2").style.display="";
+      document.getElementById("RG3").style.display="";
+      document.getElementById("RG4").style.display="";
+      document.sipservice.REGPROXYSW.value ='0';
+   }
+   else {
+      document.getElementById("RG1").style.display="none";
+      document.getElementById("RG2").style.display="none";
+      if (document.sipservice.REGPROXYSW.value == '0'){
+        document.getElementById("RG3").style.display="none";
+	document.getElementById("RG4").style.display="none";
+      }
+      else{
+        document.getElementById("RG3").style.display="";
+	document.getElementById("RG4").style.display=""; 
+      }
+   }
+}
+
+function tigoproxy() {
+   if (document.sipservice.OPROXTSW.value == '1') {
+      document.getElementById("OPX1").style.display="";
+      document.getElementById("OPX2").style.display="";
+    }
+   else {
+      document.getElementById("OPX1").style.display="none";
+      document.getElementById("OPX2").style.display="none";
+      
+      document.sipservice.selectROPEnable.value = "0";
+      changeVisibilityRedundantOutboundProxyParams();
+   }
+}
+
+
+function changeVisibilityRedundantOutboundProxyParams()
+{   
+    if( document.sipservice.selectROPEnable.value=="1" )
+    {
+        if( document.sipservice.OPROXTSW.value=="1")
+        {
+            document.getElementById("trROPAddress").style.display         = "";
+            document.getElementById("trROPPort").style.display            = "";
+            document.getElementById("trROPKeepAlivePeriod").style.display = "";
+            document.getElementById("trROPSymmetricMode").style.display   = "";
+        
+            document.sipservice.RDPMODE.value = "0";
+            tigrdproxy();
+        }
+        else
+        {
+            document.sipservice.selectROPEnable.value = "0";
+        }
+    }
+    else
+    {
+        document.getElementById("trROPAddress").style.display         = "none";
+        document.getElementById("trROPPort").style.display            = "none";
+        document.getElementById("trROPKeepAlivePeriod").style.display = "none";
+        document.getElementById("trROPSymmetricMode").style.display   = "none";
+    }
+}
+
+
+function tigrdproxy() {
+   if (document.sipservice.RDPMODE.value == '1')
+   {
+        if( document.sipservice.selectROPEnable.value=="0" )
+        {
+            document.getElementById("RDPA").style.display="";
+            document.getElementById("RDPP").style.display="";
+	        document.getElementById("RDPKAP").style.display="";
+	        document.getElementById("RDPSYMM").style.display="";            
+            document.getElementById("SPA").style.display="none";
+            document.getElementById("SPP").style.display="none";
+            document.getElementById("rdp_sw").className="TDRow";
+        } 
+        else
+        {
+            document.sipservice.RDPMODE.value = "0";
+        }        
+   }
+   else if (document.sipservice.RDPMODE.value == '2')
+   {
+        if( document.sipservice.selectROPEnable.value=="0" )
+        {
+            document.getElementById("SPA").style.display="";
+            document.getElementById("SPP").style.display=""; 
+            document.getElementById("RDPA").style.display="none";
+            document.getElementById("RDPP").style.display="none";
+	        document.getElementById("RDPKAP").style.display="none";
+	        document.getElementById("RDPSYMM").style.display="none";
+            document.getElementById("rdp_sw").className="TDRow";
+        } 
+        else
+        {
+            document.sipservice.RDPMODE.value = "0";
+        }    
+   }
+   else
+   {
+        document.getElementById("RDPA").style.display="none";
+        document.getElementById("RDPP").style.display="none";
+	    document.getElementById("RDPKAP").style.display="none";
+	    document.getElementById("RDPSYMM").style.display="none";
+	    document.getElementById("SPA").style.display="none";
+	    document.getElementById("SPP").style.display="none";
+        document.getElementById("rdp_sw").className="TDEnd";
+   }
+}
+
+
+function wuisync(){
+   protocalchange();
+   klivechange();
+   regkachange();
+   proxtswitch(0);
+   tigSIPREGI();
+   tigoproxy();
+   changeVisibilityRedundantOutboundProxyParams();
+   tigrdproxy();
+}
+
+function Formsubmit()
+{
+  if(Chksubmit())
+  {
+    document.sipservice.action="../mainform.cgi/sip_general.htm";
+    document.sipservice.submit();
+    var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
+  }
+}
+
+function Chksubmit()
+{
+  if(document.sipservice.SLPORT.value == "" || !isNumeric(document.sipservice.SLPORT.value,0,65535))
+  {
+     alert("<%HTMLPRINTTEXT(SIP_GENERAL_LOCAL_PORT_RANGE, error.lang)%>");
+     return false;
+  }
+
+  if (document.sipservice.SIPTP.value == '3')
+  {
+    if (document.sipservice.TLSPT.value == document.sipservice.SLPORT.value)
+    {
+	  alert("<%HTMLPRINTTEXT(SIP_GENERAL_TLS_LOCAL_PORT_SAME, error.lang)%>");
+      return false;
+    }
+  }
+  
+  if (document.sipservice.KALIVE.value == '1')
+  {
+    if (document.sipservice.KLIVEP.value == "" || !isNumeric(document.sipservice.KLIVEP.value,0,65535))
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_KEEP_ALIVE_VALUE_RANGE, error.lang)%>");
+      return false;
+    }
+  }
+  
+  if (document.sipservice.PROXYSW.value == '1')
+  {
+    if (document.sipservice.PROXYIP.value == "")
+    {
+      alert("<%HTMLPRINTTEXT(PROXY_SERVER_CHECK_NULL, error.lang)%>");
+        	  //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+      document.sipservice.PROXYIP.focus();
+      return false;
+    }
+
+    if (document.sipservice.REGKASW.value == '1')
+    {
+      /* AlexChen 20101201 VI89926: ka timeout validation check */
+      if (document.sipservice.REGKAP.value == "" || !isNumeric(document.sipservice.REGKAP.value,40,65535))
+      {
+        alert("<%HTMLPRINTTEXT(SIP_GENERAL_ERROR_RRKA, error.lang)%>");
+  	  document.sipservice.REGKAP.focus();
+        return false;
+      }
+      //else if ( checkIpAddr(document.sipservice.PROXYIP, 'Proxy IP address Invalid IP address') == false )
+        //return false;
+    }
+
+    if (document.sipservice.PROXYPORT.value == "" || !isNumeric(document.sipservice.PROXYPORT.value,0,65535))
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_PROXY_PORT_RANGE, error.lang)%>");
+      return false;
+    }
+  }
+  
+  if ((document.sipservice.PROXYSW.value == '1' && document.sipservice.REGPROXYSW.value == '1') ||
+    document.sipservice.REGSW.value == '1')
+  {
+    if (document.sipservice.REGEXPIR.value == "" || !isNumeric(document.sipservice.REGEXPIR.value,10,86400))
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_REGISTER_EXPIRE_RANGE, error.lang)%>");
+      return false;
+    }
+
+    if (document.sipservice.REGFAILEDEXPIR.value == "" || !isNumeric(document.sipservice.REGFAILEDEXPIR.value,1,86400))
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_REGISTER_FAIL_EXPIRE_RANGE, error.lang)%>");
+      return false;
+    }
+  }
+
+  if (document.sipservice.REGSW.value == '1')
+  {
+    if (document.sipservice.REGIP.value == "")
+    {
+      alert("Registrar IP Address or Host Name can't be empty!");
+        	  //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+      document.sipservice.REGIP.focus();
+      return false;
+    }
+    //else if ( checkIpAddr(document.sipservice.REGIP, 'Registrar Address Invalid IP address') == false )
+      //return false;
+
+    if (document.sipservice.REGPORT.value == "" || !isNumeric(document.sipservice.REGPORT.value,0,65535))
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_REGISTER_PORT_RANGE, error.lang)%>");
+      return false;
+    }
+  }
+
+  if (document.sipservice.OPROXTSW.value == '1')
+  {
+    if (document.sipservice.OPROXTIP.value == "")
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_OUTBOUND_PROXY_EMPTY, error.lang)%>");
+        	  //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+      document.sipservice.OPROXTIP.focus();
+      return false;
+    }
+
+    if (document.sipservice.OPROXTPORT.value == "" || !isNumeric(document.sipservice.OPROXTPORT.value,0,65535))
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_OUTBOUND_PORT_RANGE, error.lang)%>");
+      return false;
+    }
+  }
+
+  if (document.sipservice.selectROPEnable.value == '1')
+  {
+    //checking Redundant Outbound Proxy Parameters
+    if( document.sipservice.inputROPAddress.value=="" )
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_PROXY_EMPTY, error.lang)%>");
+      return false;
+    }
+    if( document.sipservice.inputROPPort.value=="" || !isNumeric(document.sipservice.inputROPPort.value,0,65535))  
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_PORT_RANGE, error.lang)%>");
+      return false;
+    }
+    if( document.sipservice.inputROPKeepAlivePeriod.value=="" || !isNumeric(document.sipservice.inputROPKeepAlivePeriod.value,0,65535))   
+    {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_KEEP_ALIVE_RANGE, error.lang)%>");
+      return false;
+    }
+  }
+  
+  if( document.sipservice.selectROPEnable.value=="1" && document.sipservice.OPROXTSW.value=="0" )
+  {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_CANT_ENABLE_ALONE, error.lang)%>");
+      return false;
+  }
+  if( document.sipservice.selectROPEnable.value=="1" && document.sipservice.RDPMODE.value=="1" )
+  {
+      alert("<%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_CANT_ENABLE_WITH_RE_PROXY, error.lang)%>");
+      return false;
+  }
+  
+  
+  if (document.sipservice.SIPT1.value == "" || !isNumeric(document.sipservice.SIPT1.value,0,65535))
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TIMER_T1_RANGE, error.lang)%>");
+    return false;
+  }
+  if (document.sipservice.SIPT2.value == "" || !isNumeric(document.sipservice.SIPT2.value,0,65535))
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TIMER_T2_RANGE, error.lang)%>");
+    return false;
+  }
+  if (document.sipservice.SIPT4.value == "" || !isNumeric(document.sipservice.SIPT4.value,0,65535))
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TIMER_T4_RANGE, error.lang)%>");
+    return false;
+  }
+  if (document.sipservice.SIPIT.value == "" || !isNumeric(document.sipservice.SIPIT.value,0,65535))
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TIMER_INVITE_RANGE, error.lang)%>");
+    return false;
+  }
+  if (document.sipservice.SIPSE.value == "" || !isNumeric(document.sipservice.SIPSE.value,0,65535))
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TIMER_SESSION_RANGE, error.lang)%>");
+    return false;
+  }
+  if (document.sipservice.SIPMSE.value == "" || !isNumeric(document.sipservice.SIPMSE.value,0,65535))
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TIMER_MIN_SESSION_RANGE, error.lang)%>");
+    return false;
+  }  
+  if(document.sipservice.SIPTOS.value == "")
+  {
+    alert("<%HTMLPRINTTEXT(SIP_GENERAL_TOS_EMPTY, error.lang)%>");
+     return false;
+  }
+  else if(document.sipservice.SIPTOS.value != "")
+  {
+     //if(chkisithexNumber(document.sipdialing.SIPTOS.value) == false)
+     //{
+       //alert("type of service range must in range 0x00 ~ 0xFF");
+       //return false;
+     //}
+  }
+
+
+ return true;
+}
+
+function ShowAlert() {
+}
+
+</SCRIPT>
+
+<%SIP_GETSUBMIT(SIP_GENERAL)%>
+
+<body onload="wuisync();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SIP_GENERAL_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="sipservice" method="post">
+                  <div id="setupTable1" class="SetupTable collspan-line">
+                      <!-- <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('sip_general','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                                      <%HTMLPRINTTEXT(SIP_GENERAL_SIP_GENERAL, general.lang)%></A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr> -->
+                      <A HREF="javascript:OpenCloseDiv('sip_general','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                        <%HTMLPRINTTEXT(SIP_GENERAL_SIP_GENERAL, general.lang)%></A>
+                    </div>   
+                   <DIV id="sip_general">
+                   <table id="setupTable2" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0" style="margin-bottom: 0;">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_TRANSPORT_PROTOCOL, general.lang)%></td>
+                                      <td class="TdMid" ><select name="SIPTP" onchange="protocalchange();"><%SIP_SHOWDATA(SIPTP)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="TLSPORT" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_TLS_PORT, general.lang)%></td>
+                                       <td class="TdMid" ><input type="text" name="TLSPT" size="5" maxlength="5" value="<%SIP_SHOWDATA(TLSPT)%>" class="unnamed11"></td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   <table id="setupTable3" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_LOCAL_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SLPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(SLPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_GATEWAY_NAME, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="GWNAME" size="32" maxlength="255" value="<%SIP_SHOWDATA(GWNAME)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_PRACK_MODE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="PRACK"><%SIP_SHOWDATA(PRACK)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_ENABLE_RPORT, general.lang)%></td>
+                                      <td class="TdMid" ><select name="SRPORT"><%SIP_SHOWDATA(SRPORT)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_PTIME_IN_SDP, general.lang)%></td>
+                                      <td class="TdMid" ><select name="PTIME"><%SIP_SHOWDATA(PTIME)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_ENABLE_OPTION_KA, general.lang)%></td>
+                                      <td class="TdMid" ><select name="KALIVE"  onchange="klivechange();"><%SIP_SHOWDATA(KALIVE)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="ALIVETIME"  class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_KEEP_ALIVE_PERIOD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="KLIVEP" size="8" maxlength="8" value="<%SIP_SHOWDATA(KLIVEP)%>"> <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_CONNECT_MEDIA_ON_180, general.lang)%></td>
+                                      <td class="TdMid" ><select name="C180"><%SIP_SHOWDATA(C180)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_ANOYMOUS_OUTGOING, general.lang)%></td>
+                                      <td class="TdMid" ><select name="BCID"><%SIP_SHOWDATA(BCID)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_BLOCK_ANOYMOUS_INCOMING, general.lang)%></td>
+                                      <td class="TdMid" ><select name="IACB"><%SIP_SHOWDATA(IACB)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   </DIV>
+                   <br>
+                   <div id="setupTable4" class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('sip_register','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2"><%HTMLPRINTTEXT(SIP_GENERAL_PROXY_AND_REGISTER_STR, general.lang)%></A>
+                      <!-- <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('sip_register','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2"><%HTMLPRINTTEXT(SIP_GENERAL_PROXY_AND_REGISTER_STR, general.lang)%></A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr> -->
+                    </div>   
+                   <DIV id="sip_register">
+                   <table id="setupTable5" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_USE_SIP_PROXY, general.lang)%></td>
+                                      <td class="TdMid" ><select name="PROXYSW" onchange="proxtswitch(1)"><%SIP_SHOWDATA(PROXYSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="PX1" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_PROXY_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PROXYIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(PROXYIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="PX2" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_PROXY_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PROXYPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(PROXYPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="registrar_ka">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_ENABLE_KEEP_ALIVE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="REGKASW" onchange="regkachange()"><%SIP_SHOWDATA(REGKASW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="REGKAT" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_KEEP_ALIVE_PERIOD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGKAP" size="5" maxlength="5" value="<%SIP_SHOWDATA(REGKAP)%>" class="unnamed11"> <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="PX3" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_MAX_AUTH_RETRIES, general.lang)%></td>
+                                      <td class="TdMid" >
+                                      <input type="text" name="MNAR" size="5" maxlength="2" value="<%SIP_SHOWDATA(MNAR)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="proxy_srg">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_USE_REG_TO_PROXY_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><select name="REGPROXYSW" onchange="proxtreg()"><%SIP_SHOWDATA(REGPROXYSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_USE_SIP_REG_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><select name="REGSW" onchange="tigSIPREGI()"><%SIP_SHOWDATA(REGSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RG1" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_REG_ADDR, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(REGIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RG2" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SIP_REG_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(REGPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RG3" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_REGISTER_EXPIRES, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGEXPIR" size="5" maxlength="5" value="<%SIP_SHOWDATA(REGEXPIR)%>" class="unnamed11"> <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RG4" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_REGISTER_FAILED_EXPIRES, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REGFAILEDEXPIR" size="5" maxlength="5" value="<%SIP_SHOWDATA(REGFAILEDEXPIR)%>" class="unnamed11"> <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="op_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_USE_OUTBOUND_PROXY, general.lang)%></td>
+                                      <td class="TdMid" ><select name="OPROXTSW" onchange="tigoproxy()"><%SIP_SHOWDATA(OPROXTSW)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="OPX1" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_OUTBOUND_PROXY_ADDRESS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="OPROXTIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(OPROXTIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="OPX2" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_OUTBOUND_PROXY_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="OPROXTPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(OPROXTPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <!--Layout of Redundant Outbound Proxy parameter -->
+                      <tr class="TRedit">
+                          <td class="TDRow" id="tdROPEnable">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_USE_RE_OUTBOUND_PROXY, general.lang)%></td>
+                                      <td class="TdMid" ><select name="selectROPEnable" onchange="changeVisibilityRedundantOutboundProxyParams()"><%SIP_SHOWDATA(selectROPEnable)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="trROPAddress" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_PROXY_ADDRESS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="inputROPAddress" size="32" maxlength="255" value="<%SIP_SHOWDATA(inputROPAddress)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="trROPPort" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_PROXY_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="inputROPPort" size="5" maxlength="5" value="<%SIP_SHOWDATA(inputROPPort)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>    
+                      <tr id="trROPKeepAlivePeriod" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_PROXY_KA_PERIOD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="inputROPKeepAlivePeriod" size="5" maxlength="5" value="<%SIP_SHOWDATA(inputROPKeepAlivePeriod)%>" class="unnamed11"> <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="trROPSymmetricMode" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_OUTBOUND_PROXY_SYM_MODE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="selectROPSymmetricMode"><%SIP_SHOWDATA(selectROPSymmetricMode)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <!-- Layout Redundant Proxy Parameters -->
+                      <tr class="TRedit">
+                          <td class="TDRow" id="rdp_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_PROXY_MODE, general.lang)%></td>
+                                      <td class="TdMid" ><select name="RDPMODE" onchange="tigrdproxy()"><%SIP_SHOWDATA(RDPMODE)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RDPA" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_PROXY_ADDRESS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="RDPIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(RDPIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                     
+                      <tr id="SPA" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SECONDARY_PROXY_ADDRESS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SECONDARY_PROXY_ADDR" size="32" maxlength="255" value="<%SIP_SHOWDATA(SECONDARY_PROXY_ADDR)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="SPP" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SECONDARY_PROXY_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SECONDARY_PROXY_PORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(SECONDARY_PROXY_PORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RDPP" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_PORXY_PORT, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="RDPPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(RDPPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>    
+                      <tr id="RDPKAP" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_RE_PROXY_KA_PERIOD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="RDPKA" size="5" maxlength="5" value="<%SIP_SHOWDATA(RDPKA)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="RDPSYMM" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SWITCH_BACK, general.lang)%></td>
+                                      <td class="TdMid" ><select name="RDPSYM"><%SIP_SHOWDATA(RDPSYM)%></select></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                  
+                  <br>
+                  <div id="setupTable6" class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('sip_timer','Tr3')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                            <%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_STR, general.lang)%></A>
+                      <!-- <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                     <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('sip_timer','Tr3')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                                      <%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_STR, general.lang)%></A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr> -->
+                    </div>   
+                   <DIV id="sip_timer">
+                   <table id="setupTable7" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_T1, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPT1" size="5" maxlength="5" value="<%SIP_SHOWDATA(SIPT1)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_T2, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPT2" size="5" maxlength="5" value="<%SIP_SHOWDATA(SIPT2)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_T4, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPT4" size="5" maxlength="5" value="<%SIP_SHOWDATA(SIPT4)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_INVITE, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPIT" size="5" maxlength="5" value="<%SIP_SHOWDATA(SIPIT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_SESSION, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPSE" size="5" maxlength="5" value="<%SIP_SHOWDATA(SIPSE)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TIMER_MIN_SESSION, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPMSE" size="5" maxlength="5" value="<%SIP_SHOWDATA(SIPMSE)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                            
+                  </table>
+                  </DIV>
+                  <br>
+                  <div id="setupTable8" class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('Automatic','Tr4')" style="text-decoration:none">
+                                <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_QOS, general.lang)%></A>
+                      <!-- <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('Automatic','Tr4')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_QOS, general.lang)%></A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr> -->
+                    </div>
+                   <DIV id="Automatic">
+                   <table id="setupTable9" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SIP_GENERAL_SIP_TOS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="SIPTOS" size="5" maxlength="4" value="<%SIP_SHOWDATA(SIPTOS)%>" class="unnamed11"> <%HTMLPRINTTEXT(SIP_GENERAL_HEX_STRING, general.lang)%></td>
+                                 </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+</from>
+<DIV id="bottom" class="bottom">
+    <input type="button" align="right" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button">
+</DIV>
+</body>
+</html>

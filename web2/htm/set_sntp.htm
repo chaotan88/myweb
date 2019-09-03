@@ -1,0 +1,449 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%SYS_READDATA(SNTP)%>
+<%SYSTEMGetSubmit()%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+function Formsubmit(){
+        document.sntpform.action="../mainform.cgi/Set_Sntp.htm";
+        document.sntpform.submit();
+
+        var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+
+}
+
+
+function DaylightOnchange()
+{
+  var one = parseFloat(document.sntpform.DLSW.value);
+  switch(one)
+  {
+	 case 0:
+  	  document.getElementById("dst_format").style.display="none";
+  	  document.getElementById("start_date").style.display="none";
+  	  document.getElementById("end_date").style.display="none";
+  	  document.getElementById("dl_offset").style.display="none";
+      document.getElementById("daylight_td").className="TDEnd";
+  	  break;
+   case 1:
+  	  document.getElementById("dst_format").style.display="";
+  	  document.getElementById("start_date").style.display="";
+  	  document.getElementById("end_date").style.display="";
+  	  document.getElementById("dl_offset").style.display="";
+      document.getElementById("daylight_td").className="TDRow";
+  break;
+  }
+}
+function ServerSelected1()
+{
+	if( document.sntpform.TS1.value =='defined')
+	{
+		document.getElementById("input_srv1").style.display="";
+
+	}else
+	{
+		document.getElementById("input_srv1").style.display="none";
+
+
+	}
+}
+function ServerSelected2()
+{
+	if( document.sntpform.TS2.value =='defined')
+	{
+		document.getElementById("input_srv2").style.display="";
+
+	}else
+	{
+		document.getElementById("input_srv2").style.display="none";
+
+
+	}
+}
+
+function NtpOnchange()
+{
+
+  var one = parseFloat(document.sntpform.NTPSW.value);
+  switch(one)
+  {
+	 case 0:
+  	  document.getElementById("daylight").style.display="none";
+  	  document.getElementById("daylight_title").style.display="none";
+  	  document.getElementById("DHCP_offset").style.display="none";
+  	  document.getElementById("first_srv").style.display="none";
+  	  document.getElementById("second_srv").style.display="none";
+  	  document.getElementById("ntp_interval").style.display="none";
+  	  document.getElementById("system_time").style.display="";
+  	  document.getElementById("tz_srv").style.display = "none";
+  	  document.getElementById("daylight").style.display="none";
+  	  document.getElementById("daylight_title").style.display="none";
+
+  	  break;
+   case 1:
+  	  document.getElementById("daylight").style.display="";
+  	  document.getElementById("daylight_title").style.display="";
+  	  document.getElementById("DHCP_offset").style.display="";
+  	  document.getElementById("first_srv").style.display="";
+  	  document.getElementById("second_srv").style.display="";
+  	  document.getElementById("ntp_interval").style.display="";
+ 	  document.getElementById("system_time").style.display="none";
+      document.getElementById("interval").className="TDRow";
+  	  OnDhcpTimeZone();
+  break;
+  }
+
+}
+
+function DaylightFormatOnChange()
+{
+    var fmt = document.sntpform.DST_DATEFORMAT.value;
+    if (fmt == 0) { // fixed format
+        document.sntpform.SDATEWEEK.style.display    = "none";
+        document.sntpform.SDATEWEEKDAY.style.display = "none";
+        document.sntpform.EDATEWEEK.style.display    = "none";
+        document.sntpform.EDATEWEEKDAY.style.display = "none";
+        document.sntpform.SDATEDAY.style.display     = "";
+        document.sntpform.EDATEDAY.style.display     = "";
+    } else { // day of week
+        document.sntpform.SDATEWEEK.style.display    = "";
+        document.sntpform.SDATEWEEKDAY.style.display = "";
+        document.sntpform.EDATEWEEK.style.display    = "";
+        document.sntpform.EDATEWEEKDAY.style.display = "";
+        document.sntpform.SDATEDAY.style.display     = "none";
+        document.sntpform.EDATEDAY.style.display     = "none";
+    }
+}
+
+function OnDhcpTimeZone() {
+    var useDhcpTimeZone = parseInt(document.sntpform.DHCP_GMT_OFFSET.value);
+    var style = "";
+    if (useDhcpTimeZone)
+        style = "none";
+    document.getElementById("tz_srv").style.display = style;
+//    document.getElementById("daylight").style.display=style;
+//    document.getElementById("daylight_title").style.display=style;
+}
+
+function init() {
+    OnDhcpTimeZone();
+    NtpOnchange();
+    DaylightOnchange();
+    DaylightFormatOnChange();
+    ServerSelected1();
+    ServerSelected2();
+}
+
+</SCRIPT>
+
+
+
+<body onload="init()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_ADVANCED_APPLICATION, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SET_SNTP_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+ 
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+   <form name="sntpform" method="post">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <DIV id="daylight_title">
+                  <div id="setupTable" class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('daylight','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                            <%HTMLPRINTTEXT(SET_SNTP_DAYLIGHT_SAVING_TIME, general.lang)%></A>
+                        </div>
+                   </DIV>
+                   <DIV id="daylight">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit" >
+                          <td class="TDRow" id="daylight_td">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left" class="unnamed11"><%HTMLPRINTTEXT(ALARM_ACTIVATE, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                         <select name="DLSW" onclick="DaylightOnchange()" class="unnamed11"><%SYS_SHOWDATA(DLSW)%></select>
+                                     </td>
+
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="dst_format">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_DAYLIGHT_DATE_FORMAT, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                        <select name="DST_DATEFORMAT" onclick="DaylightFormatOnChange()" class="unnamed11"><%SYS_SHOWDATA(DST_DATEFORMAT)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="start_date">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_DAYLIGHT_START_TIME, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                        <select name="SDATEMONTH" class="unnamed11"><%SYS_SHOWDATA(SDATEMONTH)%></select>
+                                        <select name="SDATEDAY"class="unnamed11"><%SYS_SHOWDATA(SDATEDAY)%></select>
+                                        <select name="SDATEWEEK"class="unnamed11"><%SYS_SHOWDATA(SDATEWEEK)%></select>
+                                        <select name="SDATEWEEKDAY"class="unnamed11"><%SYS_SHOWDATA(SDATEWEEKDAY)%></select>
+                                         <input type="text" name="SDATEHOUR" size="2" maxlength="2" Align="right" value="<%SYS_SHOWDATA(SDATEHOUR)%>" class="unnamed11">
+                              					:
+                              					<input type="text" name="SDATEMINU" size="2" maxlength="2" Align="right" value="<%SYS_SHOWDATA(SDATEMINU)%>" class="unnamed11">
+
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="end_date">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_DAYLIGHT_END_TIME, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                        <select name="EDATEMONTH" class="unnamed11"><%SYS_SHOWDATA(EDATEMONTH)%></select>
+                                        <select name="EDATEDAY" class="unnamed11"><%SYS_SHOWDATA(EDATEDAY)%></select>
+                                        <select name="EDATEWEEK"class="unnamed11"><%SYS_SHOWDATA(EDATEWEEK)%></select>
+                                        <select name="EDATEWEEKDAY"class="unnamed11"><%SYS_SHOWDATA(EDATEWEEKDAY)%></select>
+                                         <input type="text" name="EDATEHOUR" size="2" maxlength="2" Align="right" value="<%SYS_SHOWDATA(EDATEHOUR)%>" class="unnamed11">
+                              					:
+                              					<input type="text" name="EDATEMINU" size="2" maxlength="2" Align="right" value="<%SYS_SHOWDATA(EDATEMINU)%>" class="unnamed11">
+
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="dl_offset">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_DAYLIGHT_OFFSET, general.lang)%>:</td>
+                                      <td class="TdMid" >
+           
+                              					<input type="text" name="TOFFSET" size="3" maxlength="3" value="<%SYS_SHOWDATA(TOFFSET)%>" class="unnamed11">
+                                         <%HTMLPRINTTEXT(GENERAL_UNITS_MINUTES, general.lang)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>                  
+                </td>
+          </tr>  
+      </table>
+      <br>
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                 <div id="setupTable" class="SetupTable collspan-line">
+                    <A HREF="javascript:OpenCloseDiv('dialing','Tr2')" style="text-decoration:none">
+                    <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                        <%HTMLPRINTTEXT(SET_SNTP_NTP_TIME_SETTINGS, general.lang)%></A>
+                </div>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left" class="unnamed11"><%HTMLPRINTTEXT(ALARM_ACTIVATE, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                         <select name="NTPSW" onclick="NtpOnchange()" class="unnamed11"><%SYS_SHOWDATA(NTPSW)%></select>
+                                     </td>
+
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+	                  <tr class="TRedit" id="DHCP_offset">
+	                      <td class="TDRow">
+	                          <table border="0" width="100%" cellpadding="0" cellspacing="0">
+	                              <tr>
+	                                  <td width="3%" class="TdMid">&nbsp;</td>
+	                                  <td width="30%" class="TdMid" Align="left"><%HTMLPRINTTEXT(SET_SNTP_DHCP_TIME, general.lang)%>:</td>
+	                                  <td class="TMid" >
+	       	                            <select  name="DHCP_GMT_OFFSET" class="unnamed11" onchange="OnDhcpTimeZone()">
+	                                         <%SYS_SHOWDATA(DHCP_GMT_OFFSET)%>
+	                                    </select>
+	                                   
+	                                  </td>
+	                              </tr>
+	                          </table>
+	                      </td>
+	                  </tr>
+		              
+                      <tr class="TRedit" id="tz_srv">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TdMid" Align="left"><%HTMLPRINTTEXT(SET_SNTP_TIMEZONE, general.lang)%>:</td>
+                                      <td class="TMid" >
+           	                            <select  name="TIMEZONE" class="unnamed11">
+                                             <%SYS_SHOWDATA(TIMEZONE)%>
+                                        </select>
+                                       
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+
+                      <tr class="TRedit" id="first_srv">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TdMid" Align="left"><%HTMLPRINTTEXT(SET_SNTP_NTP_PRIMARY_SERVER, general.lang)%>:</td>
+                                      <td class="TdMid" >
+           	                         <select size="1" name="TS1" class="unnamed11" onChange="ServerSelected1()">
+                                             <%SYS_SHOWDATA(TS1)%>
+                                         </select>
+                                         <input  id="input_srv1" type="text" name="SERV0" size="20" maxlength="64" value="<%SYS_SHOWDATA(SERV0)%>" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="second_srv">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TDMid" Align="left"><%HTMLPRINTTEXT(SET_SNTP_NTP_SECONDARY_SERVER, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                         <select size="1" name="TS2" class="unnamed11" onChange="ServerSelected2()">
+                                          <%SYS_SHOWDATA(TS2)%>
+                                         </select>
+                                          <input  id="input_srv2" type="text" name="SERV1" size="20" maxlength="64" value="<%SYS_SHOWDATA(SERV1)%>" class="unnamed11">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="ntp_interval">
+                          <td class="TDRow" id="interval">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_NTP_UPDATE_INTERVAL, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                         <input type="text" name="ADT0" size="3" maxlength="2" value="<%SYS_SHOWDATA(ADT0)%>" class="unnamed11" align="center">
+                                         :
+                                         <input type="text" name="ADT1" size="3" maxlength="2" value="<%SYS_SHOWDATA(ADT1)%>" class="unnamed11">
+                                         <%HTMLPRINTTEXT(SET_SNTP_NTP_DAY_HOURS, general.lang)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="system_time" >
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_TIME_SET_TIME, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                         <input type="text" name="SDT0" size="3" maxlength="4" value="<%SYS_SHOWDATA(SDT0)%>" class="unnamed11">
+                                         - 
+                                        <input type="text" name="SDT1" size="3" maxlength="2" value="<%SYS_SHOWDATA(SDT1)%>" class="unnamed11">
+                                         - 
+                                        <input type="text" name="SDT2" size="3" maxlength="2" value="<%SYS_SHOWDATA(SDT2)%>" class="unnamed11">
+                                        <input type="text" name="SDT3" size="3" maxlength="2" value="<%SYS_SHOWDATA(SDT3)%>" class="unnamed11">
+		                                    : 
+                                        <input type="text" name="SDT4" size="3" maxlength="2" value="<%SYS_SHOWDATA(SDT4)%>" class="unnamed11">
+                                        <%HTMLPRINTTEXT(SET_SNTP_TIME_FORMAT, general.lang)%>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="time_display_format">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_TIME_DISPLAY_FORMAT, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                        <select name="NTPTDF" class="unnamed11"><%SYS_SHOWDATA(NTPTDF)%></select>
+                                       </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="date_display_format">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="30%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_SNTP_DATE_DISPLAY_FORMAT, general.lang)%>:</td>
+                                      <td class="TdMid" >
+                                        <select name="NTPDDF" class="unnamed11"><%SYS_SHOWDATA(NTPDDF)%></select>
+                                       </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>                  
+                </td>
+          </tr>  
+      </table>
+	</form>
+  </DIV>
+</body>
+<DIV id="bottom" class="bottom">
+        <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()">
+  </DIV>
+</html>

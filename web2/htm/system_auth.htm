@@ -1,0 +1,334 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<%SYS_READDATA(AUTH)%>
+<%SYSTEMGetSubmit()%>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+function FormAdminSubmit(){
+    if(CheckSubmit(document.adminForm.NADMIN, document.adminForm.NPASS, document.adminForm.NCPASS) &&
+       confirm("<%HTMLPRINTTEXT(SYSTEM_AUTH_MODIFY_CONFIRM, error.lang)%>")) {
+        document.adminForm.action="../mainform.cgi/System_Auth.htm";
+        document.adminForm.submit();
+
+        var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+    }
+}
+
+function FormUserSubmit(){
+    if(CheckSubmit(document.userForm.NUSER, document.userForm.NPASS, document.userForm.NCPASS) &&
+       confirm("<%HTMLPRINTTEXT(SYSTEM_AUTH_MODIFY_CONFIRM, error.lang)%>")) {
+        document.userForm.action="../mainform.cgi/System_Auth.htm";
+        document.userForm.submit();
+
+        var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+    }
+}
+
+function includeSpace(str)
+{ 
+   for(var i=0; i<str.length; i++) 
+      {
+  	   if ( str.charAt(i) == ' ' )
+	      return true;
+      }
+   return false;
+}
+
+function CheckSubmit(user, password, checkPassword)
+{
+    if ( user.value.length == 0 ) 
+    {
+	    alert('<%HTMLPRINTTEXT(SYSTEM_AUTH_USERNAME_EMPTY, error.lang)%> ');
+        user.focus();
+	    return false;	
+    }
+    if ( password.value.length == 0 ) 
+    {
+	    alert('<%HTMLPRINTTEXT(SYSTEM_AUTH_PASSWORD_EMPTY, error.lang)%> ');
+        password.focus();
+	    return false;	
+    }
+
+    if ( password.value != checkPassword.value) 
+    {
+	    alert("<%HTMLPRINTTEXT(SYSTEM_AUTH_PASSWORD_MISMATCH, error.lang)%>");
+	    password.value="";
+	    checkPassword.value="";
+	    password.focus();
+	    return false;
+    }
+    if ( includeSpace(user.value)) 
+    {
+	    alert('<%HTMLPRINTTEXT(SYSTEM_AUTH_SPACE_NOT_ALLOW, error.lang)%>');
+	    user.focus();
+	    return false;
+    }
+
+    if ( includeSpace(password.value)) 
+    {
+	    alert('<%HTMLPRINTTEXT(SYSTEM_AUTH_SPACE_NOT_ALLOW, error.lang)%>');
+	    password.focus();
+	    return false;
+    }
+    return true;
+}
+
+function initStyle() {
+    window.alert = alert;
+    function alert(data) {
+        var a = document.createElement("div"),//创建最外围标签
+        p = document.createElement("p"),//创建显示内容的p标签
+        btn = document.createElement("div"),//创建按钮标签
+        textNode = document.createTextNode(data),//创建一个文字节点
+        btnText = document.createTextNode("确定");//创建文字节点
+        p.appendChild(textNode);//将需要显示的内容节点插入p标签内
+        btn.appendChild(btnText);//将按钮文字插入按钮标签
+        a.setAttribute('class', 'alert_css');
+        var content = document.createElement("div");
+        content.setAttribute('class', 'alert-content');
+        content.appendChild(p);//将p标签插入外围div
+        content.appendChild(btn);//将按钮插入外围div
+        // a.appendChild(content);
+        document.getElementsByTagName("body")[0].appendChild(a);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        btn.onclick = function() {
+            a.parentNode.removeChild(a);
+            content.parentNode.removeChild(content);
+        }
+    }
+  }
+
+</SCRIPT>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="initStyle();">
+  <DIV id="div_bar" class="Bar">
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                      
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">
+                                      &nbsp;
+                                  </td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table> -->
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(MANAGEMENT, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_ADMINISTRATION, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <form method="POST" name="adminForm">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                    <Td><%HTMLPRINTTEXT(SYSTEM_AUTH_ADMINISTRATOR_ACCOUNT, general.lang)%></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_USERNAME, general.lang)%>
+                                      </td>
+                                      <td class="TdMid">
+                                          <input type=text size=30 maxlength=32 name=NADMIN value="<%SYS_SHOWDATA(NADMIN)%>">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_PASSWORD, general.lang)%>
+                                      </td>
+                                      <td class="TdMid" >
+                                          <input type=password size=30 maxlength=32 name=NPASS>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_CONFIRM_PASSWORD, general.lang)%>
+                                      </td>
+                                      <td class="TdMid" >
+                                         <input type=password size=30 maxlength=32 name=NCPASS>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td align="right">
+                          <a href="javascript:FormAdminSubmit()" class="submit-button"><%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%></a>
+                        </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>  
+      </table>
+  </form>
+  <form method="POST" name="userForm">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><%HTMLPRINTTEXT(SYSTEM_AUTH_USER_ACCOUNT, general.lang)%></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_USERNAME, general.lang)%>
+                                      </td>
+                                      <td class="TdMid">
+                                          <input type=text size=30 maxlength=32 name=NUSER value="<%SYS_SHOWDATA(NUSER)%>">
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_PASSWORD, general.lang)%>
+                                      </td>
+                                      <td class="TdMid" >
+                                          <input type=password size=30 maxlength=32 name=NPASS>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="40%" class="TD_Item_First" Align="left">
+                                          &nbsp;<%HTMLPRINTTEXT(SYSTEM_AUTH_CONFIRM_PASSWORD, general.lang)%>
+                                      </td>
+                                      <td class="TdMid" >
+                                         <input type=password size=30 maxlength=32 name=NCPASS>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr>
+                        <td align="right">
+                          <a href="javascript:FormUserSubmit()" class="submit-button"><%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%></a>
+                        </td>
+                  </table>
+              </td>
+          </tr>
+      </table>
+  </form>
+  </DIV>
+  
+  <DIV id="bottom" class="bottom">
+    <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table> -->
+    
+  </DIV>
+</body>
+</html>

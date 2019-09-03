@@ -1,0 +1,107 @@
+
+<html>
+<head>
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+var textReq = null;
+var currentCmd;
+
+function refresh()
+{
+	var output = document.getElementById("output_text");
+	output.textContent = "";
+	output.innerText   = "";
+
+    if (textReq != null)
+        textReq.abort();
+    currentCmd = document.getElementById("mem_command");
+    var req = currentCmd.value;
+
+    sendRequest(req);
+}
+
+function sendRequest(req) {
+    textReq = createHttpRequest();
+    textReq.open("GET", encodeURI("/command.cgi?"+req), true);
+    textReq.onreadystatechange = updatePage;
+    textReq.send(null);
+}
+
+function updatePage() {
+    if (textReq.readyState != 4) {
+        return;
+    }
+
+    var output = document.getElementById("output_text");
+    if (textReq.status == 200) {
+        output.textContent = textReq.responseText;
+        output.innerText   = textReq.responseText;
+    }
+
+    textReq = null;
+}
+function down(){
+	var url='../../<%Network_SHOWDATA(COMMAND_OUTPUT_FILE_NAME)%>';
+    window.open(url,'Download'); 
+}
+
+function Formsubmit()
+{
+	document.autoform.submit();
+}
+
+function loadcommand()
+{
+}
+</SCRIPT>
+
+<body onload="loadcommand()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<DIV style="overflow-x: auto; overflow-y: auto; height: 100%; width:100%;">
+       <table id="setupTable1" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%" height="0" style="padding: 20px;">
+          <tr class="TRedit" id="command">
+              <td class="TDRow">
+                  <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                          <td width="47%" class="TD_Item_First" Align="right"><%HTMLPRINTTEXT(MEMORY_STATUS_COMMAND_STRING, general.lang)%>: &nbsp;</td>
+                          <td class="TdMid" > 
+							<select id="mem_command" onchange="">
+                             <%SIP_SHOWDATA(COMMAND)%>
+                           </select>
+                          </td>
+                      </tr>
+                  </table>
+              </td>
+          </tr>
+      </table>
+
+	<table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%" height="0">
+		<tr>
+			<td valign="top">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+					<tr>
+						<td width="100%"  Align="center">
+							<textarea id="output_text" style="width:100%;word-break:break-all;overflow:auto;FONT-SIZE: 14px" rows=30  name=s1  wrap="OFF">
+								<%SIP_SHOWDATA(COMMAND_OUTPUT)%>
+							</textarea>
+						</td>
+					</tr>
+				</table>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td Align="center">
+				<form method="POST" name="autoform">
+					<input type="button" class="submit-button" value="<%HTMLPRINTTEXT(MEMORY_STATUS_OUTPUT_SAVE, general.lang)%>" name="apply" onClick="javascript:down()">
+					<input type="button" class="submit-button" value="<%HTMLPRINTTEXT(MANU_CONFIG_REFRESH, general.lang)%>" name="apply" onClick="refresh()">
+				</form>
+			</td>
+		</tr>
+	</table>
+  </DIV>
+</body>
+</html>

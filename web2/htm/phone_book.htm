@@ -1,0 +1,679 @@
+
+<html>
+<head>
+<title>AQ-20X IP PHONE</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int c_doline;%>
+<%int c_index;%>
+<%int cmax_num;%>
+<%int cbegin_num;%>
+<%int cpage_num;%>
+<%int cpb_count;%>
+<%int c_count;%>
+<%int pass;%>
+<%int doline;%>
+<%int max_num;%>
+<%int begin_num;%>
+<%int page_num;%>
+<%int edit_num;%>
+<%int pb_count;%>
+<%int pb_maxcount;%>
+<%int count;%>
+<%int ldap_enabled;%>
+<%@ldap_enabled = 0%>
+<%@ldap_enabled = PHONE_GETVAR(LDAPENABLE)%>
+<%SYSBACKSUBMIT()%>
+<%PHONE_GETSUBMIT(PB)%>
+<%PHONE_READDATA(CONTACT)%>
+<%@edit_num = PHONE_GETVAR(SET_EDITNUM)%>
+<%@begin_num = PHONE_GETVAR(@edit_num, PHONEBEGIN)%>
+<%@page_num = PHONE_GETVAR(PBPAGENUM)%>
+<%@cpage_num = PHONE_GETVAR(CORP_PAGENUM)%>
+
+<%@max_num = PHONE_GETVAR(PB)%>
+<%@pb_count = PHONE_GETVAR(PBCOUNT)%>
+<%@pb_maxcount = PHONE_GETVAR(PBMAX)%>
+<%PHONE_READDATA(CORP_CONTACT)%>
+<%@cbegin_num = PHONE_GETVAR(CORPPHONEBEGIN)%>
+<%@cmax_num = PHONE_GETVAR(CORP_PB)%>
+<%@cpb_count = PHONE_GETVAR(CORP_PBCOUNT)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+function checkLoad(obj)
+{
+  if (obj.upname.value == '')
+      alert("<<%HTMLPRINTTEXT(AUTO_CONFIG_FILE_CHECK, error.lang)%>");
+  else
+      obj.submit();
+}
+function downPersonal(){
+	var url='../../contact.cfg';  
+        window.open(url,'Download'); 
+}
+function downCorporate(){
+	var url='../../corporate.cfg';  
+        window.open(url,'Download'); 
+}
+function showform()
+{
+   var editnum = <%@edit_num%>;
+   var pbcount = <%@pb_count%>;
+   var maxcount = <%@pb_maxcount%>;
+
+ 
+   if(pbcount == maxcount && editnum == 0)
+   {
+      document.getElementById("modify").style.display="none";
+   }
+    document.AddPhoneForm.SubmitTimestamp.value = Math.round(new Date().getTime() / 1000);
+  }
+
+function Formsubmit(dowhat)
+{
+
+   switch(dowhat)
+   {
+     case 0:
+       if(checksubmit())
+       {
+           document.PhoneBookForm.action="../mainform.cgi/Phone_Book.htm";
+           document.PhoneBookForm.submit();
+        }
+     break;
+     case 1:
+
+        if(CheckAddPhone())
+        {
+           document.AddPhoneForm.action="../mainform.cgi/Phone_Book.htm";
+           document.AddPhoneForm.submit();
+        }
+
+     break;
+     case 2:
+        document.SelectBookForm.action="../mainform.cgi/Phone_Book.htm";
+        document.SelectBookForm.submit();
+     break;
+     case 3:
+
+        document.AddPhoneForm.action="../mainform.cgi/Phone_Book.htm";
+        document.AddPhoneForm.submit();
+     break;
+  <%if @ldap_enabled == 0 %>
+     case 4:
+        document.CorpSelectBookForm.action="../mainform.cgi/Phone_Book.htm";
+        document.CorpSelectBookForm.submit();
+     break;
+  <%endif%>
+   }
+
+}
+
+function deleteAllClick()
+{
+   if (!confirm('<%HTMLPRINTTEXT(PHONE_BOOK_DELETE_CONFIRM, error.lang)%>'))
+      return false;
+   else
+      return true;
+}
+function resetAllClick()
+{
+   if (!confirm('<%HTMLPRINTTEXT(PHONE_BOOK_DELETE_CONFIRM, error.lang)%>') )
+      return false;
+   else
+      return true;
+}
+
+function stripSpaces(str)
+{
+    return str.replace(/ /g,'');
+}
+
+function CheckAddPhone()
+{
+	var i;
+	var len = document.AddPhoneForm.ADDNAME.value.length;
+	var word = document.AddPhoneForm.ADDNAME.value;
+
+	if(i == 0)
+	{
+		if(word.charAt(i) == ' ' || word.charAt(len-1) == ' ')
+		{
+			alert("<%HTMLPRINTTEXT(PHONE_BOOK_PHONE_NAME_INVALID, error.lang)%>");
+			word.focus;
+			return false;
+		}
+	}
+
+	if(document.AddPhoneForm.ADDNAME.value=="")
+	{
+		alert("<%HTMLPRINTTEXT(PHONE_BOOK_CONTACT_NAME_EMPTY, error.lang)%>")
+		document.AddPhoneForm.ADDNAME.focus();
+		return false;
+	}
+	else if(stripSpaces(document.AddPhoneForm.ADDOFFICE.value) == "" &&
+		stripSpaces(document.AddPhoneForm.ADDHOME.value) == "" &&
+		stripSpaces(document.AddPhoneForm.ADDMOBILE.value) == "" &&
+		stripSpaces(document.AddPhoneForm.ADDSIPURI.value) == "")
+	{
+		alert(" <%HTMLPRINTTEXT(PHONE_BOOK_CONTACT_NUMBER_EMPTY, error.lang)%> ")
+		document.AddPhoneForm.ADDOFFICE.focus();
+		return false;
+	}
+	return true;
+}
+
+function checkphonename()
+{
+   var phone_count = <%@pb_count%>;
+   var NAME = new Array;
+   var i,j;
+   var len = document.AddPhoneForm.ADDNAME.value.length;
+   var word = document.AddPhoneForm.ADDNAME.value;
+   //var len2 = document.AddPhoneForm.ADDDOMAIN.value.length;
+   //var doword = document.AddPhoneForm.ADDDOMAIN.value;  
+   
+   <%for @count=1;<=@pb_count;1%>
+       NAME[<%@count%>] = "<%PHONE_SHOWDATA(@count, PHONENAME)%>";
+   <%endfor%>
+   
+   for(i=1;i<=phone_count;i++)
+   {
+      for(j=0;j<len;j++)
+      {
+         if(word.charAt(j) != NAME[i].charAt(j))
+            break;
+      }
+      if(j == len)
+      {
+         alert(" <%HTMLPRINTTEXT(PHONE_BOOK_CONTACT_NAME_DUP, error.lang)%>");
+         return false;
+      }
+   }
+   return true;
+}
+
+/*function validateKey(s)
+{
+   var j = s.length;
+   var k = 0;
+   j--;
+
+   if(s.charAt(0) == '.' || s.charAt(j) == '.' || s.charAt(j) == ':') return 2;
+   if(isNaN(s.charAt(0)))
+   {
+     for(var i=0; i<s.length; i++) {
+         if ((s.charAt(i) >= 'a' && s.charAt(i) <= 'z') || (s.charAt(i) >= 'A' && s.charAt(i) <= 'Z') || s.charAt(i) >= '0' && s.charAt(i) <= '9' || s.charAt(i) =='_' || s.charAt(i) =='-' || s.charAt(i) ==':')
+	        continue;
+	 else if(s.charAt(i) == '.')
+          {
+             k++;
+             continue;
+          }
+         else
+	     return 0;
+     }
+     if(k==0) return 2;
+   }
+   else
+     {
+       for (var i=0; i<s.length; i++) {
+          if (s.charAt(i) >= '0' && s.charAt(i) <= '9' || s.charAt(i) == ':')
+	     continue;
+          else if(s.charAt(i) == '.')
+          {
+             k++;
+             continue;
+          }
+          else
+	     return 0;
+       }
+       if(k!=3) return 2;
+     }
+
+   return 1;
+}*/
+
+function check_number_value(field)
+{
+   var i;
+   var len = field.value.length;
+   if(field.value != '')
+   {
+      for(i=0;i<len;i++)
+      {
+         if((field.value.charAt(i) >= '0' && field.value.charAt(i) <= '9') || (field.value.charAt(i) >= 'A' && field.value.charAt(i) <= 'Z') || (field.value.charAt(i) >= 'a' && field.value.charAt(i) <= 'z') || field.value.charAt(i) == '*' || field.value.charAt(i) == '.')
+            continue;
+         return false;
+      }
+   }
+   return true;
+}
+
+function chkChkbox(object) {
+   var i, chkid;
+   chkid = 0;
+   for(i=0;i<object.length;i++) {
+      if (object[i].checked == 1) {
+         chkid++;
+      }
+   }
+   return(chkid);
+}
+
+function checksubmit()
+{
+   var chkid;
+   chkid = chkChkbox(document.PhoneBookForm);
+
+   if(chkid == 0)
+   {
+      alert("<%HTMLPRINTTEXT(PHONE_BOOK_NO_DATA_DEL, error.lang)%>")
+      return false;
+   }
+   return true;
+}
+
+
+function Editlink(gopage)
+{
+   document.editForm.SET_EDITNUM.value = gopage;
+   document.editForm.submit();
+}
+
+function Hreflink(htm_name)
+{
+   self.location.href="../mainform.cgi/"+htm_name+"?"
+}
+
+function DialNumber(num)
+{
+    var dialForm = document.getElementById("dialNumber").contentWindow.document.DIAL;
+    dialForm.number.value = num;
+    dialForm.submit();
+}
+
+</SCRIPT>
+
+
+
+<body onload="showform();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+        <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+        <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+        <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_PERSONAL_SETTINGS, general.lang)%></span>
+        <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(PHONE_BOOK_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+  <%if @ldap_enabled == 0 %>
+        	  <div class="SetupTable" style="height: auto;">                      
+        	  <form method="POST" name="CorpSelectBookForm">
+                      <TR class="TRedit">
+                            <div class="tdTitle">&nbsp;<%HTMLPRINTTEXT(PHONE_BOOK_CORP_DIR, general.lang)%></div>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TdEnd">
+                            <table border="0" width="100%" cellpadding="0" cellspacing="0">&nbsp;
+				<font face="Arial">
+                                   <%HTMLPRINTTEXT(PHONE_BOOK_PAGE, general.lang)%>
+				<select size="1" name="CORP_PAGENUM" onchange="Formsubmit(4)" class="unnamed11">
+				   <%PHONE_SHOWDATA( CORPPHONEPAGENUM)%>
+				</select>
+				<input name="PAGENUM" style="display:none" value="<%@page_num%>">
+				</font>
+                            </table>
+                         </td>
+                       </tr>                 
+                 </form>
+               <%if @cmax_num > 0%>
+                   <form method="POST">
+                     <tr class="TRedit">
+                       <td class="TdEnd" align="right">
+                       <input type="button" value="Save Corporate Directory" class="submit-button" onClick="downCorporate()">
+                       </td>
+                     </tr>
+                   </form>
+               <%endif%>
+                      <tr class="TRedit">
+                      <td class="TdEnd">
+                      <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                      <form method="POST" enctype="multipart/form-data" align="right" action="../mainform.cgi/Phone_Book.htm" name="corporateform">
+                        <td align="right">
+                            &nbsp;<input type="hidden" name="TYPE" class="unnamed11" value="8">
+                            <input type="file" name="upname" size="36" class="upload-file">
+                        </td>
+                        <td align="right">
+                            &nbsp;<input type="button" value="<%HTMLPRINTTEXT(PHONE_BOOK_BUTTON_LOAD_CORP_DIR, general.lang)%>" class="submit-button" onclick="checkLoad(document.corporateform)">
+                        </td>
+                      </form>
+                      </tr>
+                      </table>
+                      </td>
+                      </tr>
+                       <tr>
+                          <Td class="barSeparate"></td>
+                       </tr>
+                    </div>
+                 <form method="POST" name="CorpPhoneBookForm">
+                 <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0" style="padding-left: 0;">
+                     <tr class="TRedit">
+                       <td width="5%" align="center"  class="TdTitleLeft">
+                            <%HTMLPRINTTEXT(PHONE_BOOK_NUNMBER, general.lang)%>
+                         </td>
+                           <td width="20%" align="center" class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_NAME, general.lang)%>
+                         </td>
+                        <td width="20%" align="center"   class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_OFFICE, general.lang)%>
+                         </td>
+                         <td width="20%" align="center"  class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_HOME, general.lang)%>
+                         </td>
+                         <td width="20%" align="center"   class="TdTitleRight">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_MOBILE, general.lang)%>
+                         </td>
+                     </tr>
+                      <%for @c_doline=@cbegin_num;<=@cmax_num;1%>
+                     <tr class="TrTwo">
+                           <td align="center" class="TdLeft">
+                             <%@c_doline%>
+                           </td>
+                           <td align="left" class="TdLeft">
+                              &nbsp;<%PHONE_SHOWDATA(@c_doline, CORP_PHONENAME)%>
+                           </td>
+                           <td align="center" class="TdLeft"><%PHONE_SHOWDATA(@c_doline, CORP_PHONEOFFICE)%></td>
+                           <td align="center" class="TdLeft"><%PHONE_SHOWDATA(@c_doline, CORP_PHONEHOME)%></td>
+                           <td align="center" class="TdRight"><%PHONE_SHOWDATA(@c_doline, CORP_PHONEMOBILE)%></td>
+                     </tr>
+		     <%endfor%>
+                 </table>                 
+                </form>  
+                       <tr>
+                          <Td class="barSeparate"></td>
+                       </tr>
+  <%endif%>
+                  <form method="POST" name="AddPhoneForm">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0" style="padding-left: 0;">
+                      <%if @edit_num == 0 %>
+                      <tr class="TRedit" style="background-color: #eee;">
+                          <td width="100%" style="background: #eee;">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td >&nbsp;
+                                      <A HREF="javascript:OpenCloseDiv('sip_general','Tr1')" style="text-decoration:none;">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                                      <%HTMLPRINTTEXT(PHONE_BOOK_ADD_CONTACT, general.lang)%></A></Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%else%>
+                      <tr class="TRedit">
+                          <td width="100%">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="tdTitle">&nbsp;<%HTMLPRINTTEXT(PHONE_BOOK_EDIT_PHONE, general.lang)%></Td>
+                                  </Tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <%endif%>
+                  </table>
+                  <div id="sip_general">
+                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PHONE_BOOK_NAME, general.lang)%></td>
+                                      <td class="TdMid" ><%PHONE_SHOWDATA(@edit_num, INPUTNAME)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PHONE_BOOK_OFFICE, general.lang)%></td>
+                                      <td class="TdMid" ><%PHONE_SHOWDATA(@edit_num, INPUTOFFICE)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PHONE_BOOK_HOME, general.lang)%></td>
+                                      <td class="TdMid" ><%PHONE_SHOWDATA(@edit_num, INPUTHOME)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PHONE_BOOK_MOBILE, general.lang)%></td>
+                                      <td class="TdMid" ><%PHONE_SHOWDATA(@edit_num, INPUTMOBILE)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+<!--
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(User_defined_1:, general.lang)%></td>
+                                      <td class="TdMid" ><%PHONE_SHOWDATA(@edit_num, INPUTUSER1)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(User_defined_2:, general.lang)%></td>
+                                      <td class="TdMid" ><%PHONE_SHOWDATA(@edit_num, INPUTUSER2)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+-->
+                     <tr>
+                        <td style="background-color: #fff;">
+                           <%if @edit_num == 0 %>
+                           <a href="JAVASCRIPT:Formsubmit(1)" class="submit-button" style="text-align: center;">
+                               Sumbit
+                           </a>                           
+                           <%else%>
+                           <input type="hidden" value="<%@edit_num%>" name="EDITNUM"> 
+                           <a href="JAVASCRIPT:Formsubmit(3)">
+                           <IMG align="right"  src="../image/<%HTMLPRINTTEXT(GENERAL_PAGE_SUBMIT_PIC, general.lang)%>" name="Sub" HEIGHT="47px" BORDER="0">
+                           </a>
+                           <%endif%>
+                        </td>
+        	      </tr>
+        	  </table> 
+        	  </div>   
+                  <input name="SubmitTimestamp" type="hidden">
+                  <input name="CORP_PAGENUM" style="display:none" value="<%@cpage_num%>">
+                  <input name="PAGENUM" style="display:none" value="<%@page_num%>">
+        	  </form>
+        	  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0" style="padding-left: 0;">                      
+        	  <form method="POST" name="SelectBookForm">
+                      <TR class="TRedit">
+                          <TD width="100%">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <Tr>
+                                      <Td class="">&nbsp;<%HTMLPRINTTEXT(PHONE_BOOK_PERSONAL_DIR, general.lang)%></Td>
+                                  </Tr>
+                              </Table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TdEnd">
+                            <table border="0" width="100%" cellpadding="0" cellspacing="0">&nbsp;
+				<font face="Arial">
+                                   <%HTMLPRINTTEXT(PHONE_BOOK_PAGE, general.lang)%>
+				<select size="1" name="PAGENUM" onchange="Formsubmit(2)" class="unnamed11">
+				   <%PHONE_SHOWDATA(@edit_num, PHONEPAGENUM)%>
+				</select>
+                    <input name="CORP_PAGENUM" style="display:none" value="<%@cpage_num%>">
+				</font>
+                            </table>
+                         </td>
+                       </tr>                 
+                 </form>
+               <%if @pb_count > 0%>
+                   <form method="POST">
+                     <tr class="TRedit">
+                       <td class="TdEnd" align="right">
+                       <input type="button" value="Save Personal Directory" class="submit-button" onClick="downPersonal()">
+                       </td>
+                     </tr>
+                   </form>
+               <%endif%>
+                      <tr class="TRedit">
+                      <td class="TdEnd">
+                      <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                      <form method="POST" enctype="multipart/form-data" align="right" action="../mainform.cgi/Phone_Book.htm" name="personalform">
+                                      <td align="right">
+                                          <div class="upload-file-container">
+                                                <i class="el-icon-plus"></i>
+                                                &nbsp;<input type="hidden" name="TYPE" class="unnamed11" value="7">
+                                                <input type="file" name="upname" size="36" class="upload-file">
+                                          </div>
+                                      </td>
+                                      <td align="right">
+                                          &nbsp;<input type="button" value="<%HTMLPRINTTEXT(PHONE_BOOK_BUTTON_LOAD_PERS_DIR, general.lang)%>" class="submit-button" onclick="checkLoad(document.personalform)">
+                                      </td>
+                      </form>
+                      </tr>
+                      </table>
+                      </td>
+                      </tr>
+                       <tr>
+                          <Td class="barSeparate"></td>
+                       </tr>
+                 </table>
+                 
+
+                 <form method="POST" name="PhoneBookForm">
+                 <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                     <tr class="TRedit">
+                       <td width="5%" align="center"  class="TdTitleLeft">
+                            <%HTMLPRINTTEXT(PHONE_BOOK_NUNMBER, general.lang)%>
+                         </td>
+                           <td width="20%" align="center" class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_NAME, general.lang)%>
+                         </td>
+                        <td width="20%" align="center"   class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_OFFICE, general.lang)%>
+                         </td>
+                         <td width="20%" align="center"  class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_HOME, general.lang)%>
+                         </td>
+                         <td width="20%" align="center"   class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_MOBILE, general.lang)%>
+                         </td>
+<!--
+				<td width="13%" align="center" class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(User_defined_1, general.lang)%>
+                         </td>
+                         <td width="13%" align="center" class="TdTitleLeft">
+                             <%HTMLPRINTTEXT(User_defined_2, general.lang)%>
+                         </td>
+-->
+                       <td width="5%" align="center"   class="TdTitleRight">
+                             <%HTMLPRINTTEXT(PHONE_BOOK_SELECT, general.lang)%>
+                         </td>
+                     </tr>
+                      <%for @doline=@begin_num;<=@max_num;1%>
+                     <tr class="TrTwo">
+                           <td align="center" class="TdLeft">
+                             <a href="JAVASCRIPT:Editlink(<%@doline%>)"><%@doline%></a>
+                           </td>
+                           <td align="left" class="TdLeft">
+                              &nbsp;<%PHONE_SHOWDATA(@doline, PHONENAME)%>
+                           </td>
+                           <td align="center" class="TdLeft"><%PHONE_SHOWDATA(@doline, PHONEOFFICE)%></td>
+                           <td align="center" class="TdLeft"><%PHONE_SHOWDATA(@doline, PHONEHOME)%></td>
+                           <td align="center" class="TdLeft"><%PHONE_SHOWDATA(@doline, PHONEMOBILE)%></td>
+<!--                            <td align="left" class="TdLeft">
+                             <%PHONE_SHOWDATA(@doline, PHONEUSER1)%>
+                           </td>
+                           <td align="left" class="TdLeft">
+                             <%PHONE_SHOWDATA(@doline, PHONEUSER2)%>
+                           </td>
+-->
+                          <td align="center" class="TdRight">
+                             <%PHONE_SHOWDATA(@doline, PHONESELECT)%>
+                           </td>
+                     </tr>
+		     <%endfor%>
+                 </table>                 
+                 
+               </td>
+          </tr>  
+      </table>
+</div>
+
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                  <TR>  
+                        <td align="center" HEIGHT="47px">
+                           <%if @pb_count > 0%>
+                              <input type="button" value="<%HTMLPRINTTEXT(CALL_LOG_DELE, general.lang)%>" name="DelSelected" onClick="Formsubmit(0)" class="submit-button">
+                              &nbsp;                
+                              <input type="submit" value="<%HTMLPRINTTEXT(CALL_LOG_DELA, general.lang)%>" name="RESET" onClick="return resetAllClick()" class="submit-button">
+                            <%else%>
+                              <IMG align="right" class="editImg" src="../image/<%HTMLPRINTTEXT(GENERAL_PAGE_SUBMIT_PIC, general.lang)%>" name="Sub" HEIGHT="47px" BORDER="0"> 
+                            <%endif%>
+                        </td>
+        	  </tr>
+      </table>
+  </DIV>
+</form>
+
+<form name="editForm" method="post" style="display:none" action="../mainform.cgi/Phone_Book.htm">
+    <input name="CORP_PAGENUM" style="display:none" value="<%@cpage_num%>">
+    <input name="SET_EDITNUM">
+</form>
+
+<iframe id="dialNumber" src="Dial.htm" width="1" height="1" frameborder="0" marginwidth="0" marginheight="0" >
+</iframe>
+
+</body>
+</html>
+

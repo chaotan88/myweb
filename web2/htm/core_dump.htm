@@ -1,0 +1,210 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+<%SIP_GETSUBMIT(DUMPS)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+	document.coredump.action="../mainform.cgi/core_dump.htm";
+	document.coredump.submit();
+}
+
+function ShowAlert()
+{
+	<%SIP_SHOWDATA(COREDUMPSWALERT)%>
+}
+
+function Refresh(dowhat)
+{
+    window.location.href=window.location.href
+    //document.coredump.submit();
+}
+
+function DeleteDump(file, is_archive)
+{
+    var deleteForm = document.getElementById("detele_dump");
+    deleteForm.action = "../mainform.cgi/core_dump.htm";
+    if(is_archive == 1)
+        deleteForm.DELETE_ARCHIVE_FILE.value = file;
+    else    
+        deleteForm.DELETE_FILE.value = file;
+    deleteForm.submit();
+}
+
+</SCRIPT>
+ 
+<body onload="ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+  <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Core Dump</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+		<tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></Td>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></Td>
+		</tr>
+   </table>
+</DIV>
+  
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="coredump" method="POST">
+                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                    <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('coredump_management','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">Core Dump</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="coredump_management">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="coredump_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Activate:</td>
+                                      <td class="TdMid" >
+                                        <select name="COREDUMPSW" ><%SIP_SHOWDATA(COREDUMPSW)%></select>
+					  </td>
+				     </tr>
+                              </table>
+                          </td>
+                      </tr>
+			<tr>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+			</tr>
+              </table>
+                  </div>
+                  </form>
+          </td>
+      </tr>
+           <!-- form with downloads start -->
+     	 <td valign="top">
+                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                    <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('coredump_download','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Download Core Dump</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="coredump_download">
+                   <table id="downloadTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="coredump_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <div><%CoreDump_SHOWDATA(DOWNLOAD_CORE_DUMP)%></div>
+                              </table>
+                          </td>
+                      </tr>  					
+              </table>
+              </div>
+              <br>
+              <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                    <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('coredump_download','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Download Core Dump Archive</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="coredump_download">
+                   <table id="downloadTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDEnd" id="coredump_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <%CoreDump_SHOWDATA(DOWNLOAD_CORE_DUMP_ARCHIVE)%>
+                              </table>
+                          </td>
+                      </tr>
+					<tr>
+						<td align="center">
+							<input type="button" value="Refresh" onClick="Refresh()" name="apply" value="0" class="SubBut">
+						</td>
+					</tr>
+              </table>
+              </div>
+          </td>
+         <!-- form with downloads end -->
+  </table>
+  </DIV>
+
+  <DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                            <IMG align="right" class="editImg" src="../image/submit2_reg.gif" name="Sub" HEIGHT="47px" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+  <!-- Delete dump file -->
+  <div style="display:none">
+  <form method="POST" name="detele_dump" id="detele_dump">
+		<input name="DELETE_FILE" type="text" size="64" value="" type="hidden">
+        <input name="DELETE_ARCHIVE_FILE" type="text" size="64" value="" type="hidden">
+  </form>
+  </div>
+</body>
+</html>

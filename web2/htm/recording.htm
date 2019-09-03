@@ -1,0 +1,296 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(SIP_RECORDING)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+    if(Chksubmit())
+    {
+      document.systemrecording.action="../mainform.cgi/Recording.htm";
+      document.systemrecording.submit();
+    }
+}
+  
+function Chksubmit()
+{
+
+  if (document.systemrecording.RECOIP.value == "") {
+     alert("acket Recording Remote IP Address or Host Name can't be empty!");
+     document.systemrecording.RECOIP.focus();	 
+     return false;
+  }
+  if (document.systemrecording.RECOPORT.value == "" ||isNumeric(document.systemrecording.RECOPORT.value ,0,65535) == 0){
+      alert("Packet Recording Port value must be in range of 0-65535!");
+ 	    document.systemrecording.RECOPORT.focus();	 
+      return false;
+  } 
+  return true;
+}
+
+function packet_recording_enable_disable()
+{
+      if (document.systemrecording.RECOSW.value == '0')
+       {
+       	document.getElementById("rtp_recording_sw").style.display="none";
+      }
+      else
+      	{
+         document.getElementById("rtp_recording_sw").style.display="";
+        }
+}
+function rtp_tdm_recording_enable_disable()
+{
+      if ((document.systemrecording.TDMRESW.value == '1')||(document.systemrecording.NETRESW.value == '1'))
+      {
+       	document.getElementById("force_coder_output_record_sw").style.display="";
+		document.getElementById("tdm_recording_sw").className = "TDRow";
+		document.getElementById("force_coder_output_record_sw").className = "TDEnd";
+      }
+      else
+      {
+        document.getElementById("force_coder_output_record_sw").style.display="none";
+		document.getElementById("tdm_recording_sw").className = "TDEnd";
+       }
+}
+
+function wuisync()
+{
+	  packet_recording_enable_disable();
+	  rtp_tdm_recording_enable_disable();
+}
+
+function ShowAlert()
+{
+<%SIP_SHOWDATA(ALERT)%>
+
+}
+
+</SCRIPT>
+
+<%SIP_GETSUBMIT(SIP_RECORDING)%>
+ 
+<body onload="ShowAlert();wuisync()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Recording</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="systemrecording" method="post">
+
+                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                      <tr class="TRedit">
+                          <td>
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td class="tdTitle"><A HREF="javascript:OpenCloseDiv('recording','Tr2')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">Recording</A></Td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="recording">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit" id="recording_ip">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Remote IP Address or Host Name:</td>
+                                      <td class="TdMid" ><input type="text" name="RECOIP" size="32" maxlength="255" value="<%SIP_SHOWDATA(RECOIP)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="recording_port" >
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Remote Port:</td>
+                                      <td class="TdMid" ><input type="text" name="RECOPORT" size="5" maxlength="5" value="<%SIP_SHOWDATA(RECOPORT)%>" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="packet_recording_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable DSP Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="RECOSW" onclick="packet_recording_enable_disable()"><%SIP_SHOWDATA(RECOSW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="rtp_recording_sw">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable RTP Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="RTPRESW" ><%SIP_SHOWDATA(RTPRESW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="ec_debug_recording_sw">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable EC Debug Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="ECDRESW" ><%SIP_SHOWDATA(ECDRESW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="cng_debug_recording_sw">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Generic CNG Debug Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="CNGDRESW" ><%SIP_SHOWDATA(CNGDRESW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="nr_debug_recording_sw">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Noise Reduction Debug Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="NRDRESW" ><%SIP_SHOWDATA(NRDRESW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="network_recording_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable Network Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="NETRESW" onclick="rtp_tdm_recording_enable_disable()"><%SIP_SHOWDATA(NETRESW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="tdm_recording_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Enable TDM Recording:</td>
+                                      <td class="TdMid" >
+                                        <select name="TDMRESW" onclick="rtp_tdm_recording_enable_disable()"><%SIP_SHOWDATA(TDMRESW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="force_coder_output_record_sw">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left">Force Coder Output Record:</td>
+                                      <td class="TdMid" >
+                                        <select name="FORCORSW" ><%SIP_SHOWDATA(FORCORSW)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                 </table>
+                  </div>
+                 
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0" onClick="Formsubmit()">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</body>
+</html>

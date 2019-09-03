@@ -1,0 +1,982 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+<%Network_READDATA(WAN)%>
+
+<%Network_GETSUBMIT(WAN)%>
+
+function Formsubmit(){
+   if(checksubmit())
+      {
+        document.wanform.action="../mainform.cgi/Set_WAN.htm";
+        document.wanform.submit();
+        var a = document.createElement("div"),
+            p = document.createElement("p"),
+            img = document.createElement("img"),
+            textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
+      }
+}
+function validateKey(s)
+{
+   for (var i=0; i<s.length; i++) {
+    if ( (s.charAt(i) >= '0' && s.charAt(i) <= '9') ||
+    		(s.charAt(i) == '.' ) )
+			continue;
+	return 0;
+  }
+  return 1;
+}
+function getDigit(s, num)
+{
+  i=1;
+  if ( num != 1 ) {
+  	while (i!=num && s.length!=0) {
+		if ( s.charAt(0) == '.' ) {
+			i++;
+		}
+		s = s.substring(1);
+  	}
+  	if ( i!=num )
+  		return -1;
+  }
+  for (i=0; i< s.length; i++) {
+  	if ( s.charAt(i) == '.' ) {
+		  s = s.substring(0, i);
+		break;
+	}
+  }
+  if ( s.length == 0)
+  	return -1;
+  d = parseInt(s, 10);
+  return d;
+}
+function checkDigitRange(s, num, min, max)
+{
+  d = getDigit(s,num);
+  if ( d > max || d < min )
+      	return false;
+  return true;
+}
+function isNumeric(str,min,max)
+{  
+      if (!isNaN(str) && str >= min && str <= max){
+        return true
+      }
+      return false
+}
+
+function checkMask(s, num)
+{
+  d = getDigit(s,num);
+  if( !(d==0 || d==128 || d==192 || d==224 || d==240 || d==248 || d==252 || d==254 || d==255 ))
+  	return false;
+  return true;
+}
+
+function checkSubnet(ip, mask, client)
+{
+  ip_d = getDigit(ip, 1);
+  mask_d = getDigit(mask, 1);
+  client_d = getDigit(client, 1);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 2);
+  mask_d = getDigit(mask, 2);
+  client_d = getDigit(client, 2);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 3);
+  mask_d = getDigit(mask, 3);
+  client_d = getDigit(client, 3);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  ip_d = getDigit(ip, 4);
+  mask_d = getDigit(mask, 4);
+  client_d = getDigit(client, 4);
+  if ( (ip_d & mask_d) != (client_d & mask_d ) )
+	return false;
+
+  return true;
+}
+
+function checkIpAddr(field, msg)
+{
+   if ( validateKey(field.value) == 0) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,1,0,223) ) {
+      alert(msg+' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE1, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,2,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE2, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,3,0,255) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE3, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   if ( !checkDigitRange(field.value,4,1,254) ) {
+      alert(msg + ' <%HTMLPRINTTEXT(IP_ADDR_CHECK_RANGE4, error.lang)%>');
+      //field.value = field.defaultValue;
+      field.focus();
+      return false;
+   }
+   return true;
+}
+
+
+function checksubmit()
+{
+  //var str = document.wanform.WANMAC.value;
+  var i;
+
+  //if(str.length == 0)
+  //{
+    //  alert("<%HTMLPRINTTEXT(MAC_address_can't_be_empty!!, general.lang)%>");
+      //document.wanform.WANMAC.focus();
+      //return false;
+  //}
+  //else if(str.length < 17)
+  //{
+    //  alert("<%HTMLPRINTTEXT(MAC_address_should_be_17_characters_in_all!!, general.lang)%>");
+      //document.wanform.WANMAC.focus();
+      //return false;
+  //}
+  //if(str.charAt(0) != '0' || str.charAt(1) != '0')
+  //{
+    //  alert("<%HTMLPRINTTEXT(MAC_address_should_begin_with_\"00\"_!!, general.lang)%>");
+//      document.wanform.WANMAC.focus();
+  //    return false;
+  //}
+  //if(str.charAt(2) != ':' || str.charAt(5) != ':' || str.charAt(8) != ':' || str.charAt(11) != ':' || str.charAt(14) != ':')
+  //{//
+    //  alert("<%HTMLPRINTTEXT(MAC_address_format_error!_it_should_separate_with_\":\"_!!, general.lang)%>");
+//      document.wanform.WANMAC.focus();
+  //    return false;
+  //}
+  /*
+  for (i=0; i<str.length; i++)
+  {
+      if(i==2 || i==5 || i==8 || i==11 || i==14)
+         continue;
+      if ( (str.charAt(i) >= '0' && str.charAt(i) <= '9') ||
+	   (str.charAt(i) >= 'a' && str.charAt(i) <= 'f') ||
+	   (str.charAt(i) >= 'A' && str.charAt(i) <= 'F') )
+	    continue;
+      else
+      {
+         alert("<%HTMLPRINTTEXT(Invalid_MAC_address._It_should_be_in_hex_format_(0-9_or_a-f_or_A-F)!, general.lang)%>");
+         document.wanform.WANMAC.focus();
+         return false;
+      }
+  }
+  */
+  /*
+  if( document.wanform.IPTYPE[2].checked)
+   {     
+     if (document.wanform.USERNAME.value=="")
+     {
+       alert('<%HTMLPRINTTEXT(The_username_of_PPPoE_could_not_be_empty!, general.lang)%>');
+       document.wanform.USERNAME.focus();
+       return false;
+     }
+     if (document.wanform.PASSWORD.value=="")
+     {
+       alert('<%HTMLPRINTTEXT(The_password_of_PPPoE_could_not_be_empty!, general.lang)%>');
+       document.wanform.PASSWORD.focus();
+       return false;
+     }
+   }*/
+      if( document.wanform.DOMAIN_FIX.checked)
+     {
+         //TODO: check length of each label of domain  <= 63
+     }
+	  
+     if( document.wanform.IP_FIX.checked)
+     {
+       if (document.wanform.IP.value=="") 
+       {
+	      alert("<%HTMLPRINTTEXT(IP_ADDR_CHECK_NULL, error.lang)%>");
+	      //document.wanform.IP.value = document.wanform.IP.defaultValue;
+	      document.wanform.IP.focus();
+	      return false;
+       }
+       if ( checkIpAddr(document.wanform.IP, 'Invalid IP address') == false )
+	       return false;
+     }
+
+      if( document.wanform.NETMASK_FIX.checked)
+     {
+       if (document.wanform.MASK.value=="") 
+       {
+      	  alert("<%HTMLPRINTTEXT(SUBNET_MASK_CHECK_NULL, error.lang)%>");
+	      //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+	      document.wanform.MASK.focus();
+	      return false;
+       }
+       if ( validateKey( document.wanform.MASK.value ) == 0 ) 
+       {
+      	  alert("<%HTMLPRINTTEXT(SUBNET_MASK_CHECK_VALUE, error.lang)%>");
+      	  //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+	      document.wanform.MASK.focus();
+	      return false;
+       }
+       if ( !checkMask(document.wanform.MASK.value,1) ) 
+       {
+      	  alert('<%HTMLPRINTTEXT(SUBNET_MASK_CHECK_1, error.lang)%>');
+	      //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+	      document.wanform.MASK.focus();
+	      return false;
+       }
+       if ( !checkMask(document.wanform.MASK.value,2) ) 
+       {
+      	  alert('<%HTMLPRINTTEXT(SUBNET_MASK_CHECK_2, error.lang)%>');
+	      //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+	      document.wanform.MASK.focus();
+	      return false;
+       }
+       if ( !checkMask(document.wanform.MASK.value,3) ) 
+       {
+      	  alert('<%HTMLPRINTTEXT(SUBNET_MASK_CHECK_3, error.lang)%>');
+	      //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+	      document.wanform.MASK.focus();
+	      return false;
+       }
+       if ( !checkMask(document.wanform.MASK.value,4) ) 
+       {
+      	  alert('<%HTMLPRINTTEXT(SUBNET_MASK_CHECK_4, error.lang)%>');
+	      //document.wanform.MASK.value = document.wanform.MASK.defaultValue;
+	      document.wanform.MASK.focus();
+	      return false;
+       }
+     }
+     if( document.wanform.GATEWAY_FIX.checked)
+     {
+       if ( validateKey( document.wanform.GW.value ) == 0 ) 
+       {
+	      alert("<%HTMLPRINTTEXT(DEFAULT_GATEWAY_CHECK, error.lang)%>");
+	      //document.wanform.GW.value = document.wanform.GW.defaultValue;
+ 	      document.wanform.GW.focus();
+	      return false;
+       }
+       if ( document.wanform.GW.value=="")
+	      document.wanform.GW.value = '0.0.0.0';
+       else 
+       {
+	      if ( !checkDigitRange(document.wanform.GW.value,1,0,255) ) 
+	      {
+   	 	     alert('<%HTMLPRINTTEXT(DEFAULT_GATEWAY_VALUE_CHECK_1, error.lang)%>');
+		       //document.wanform.GW.value = document.wanform.GW.defaultValue;
+		       document.wanform.GW.focus();
+		       return false;
+   	      }
+	      if ( !checkDigitRange(document.wanform.GW.value,2,0,255) ) 
+	      {
+   	   	   alert('<%HTMLPRINTTEXT(DEFAULT_GATEWAY_VALUE_CHECK_2, error.lang)%>');
+		       //document.wanform.GW.value = document.wanform.GW.defaultValue;
+		       document.wanform.GW.focus();
+		       return false;
+	      }
+   	      if ( !checkDigitRange(document.wanform.GW.value,3,0,255) ) 
+   	      {
+	  	     alert('<%HTMLPRINTTEXT(DEFAULT_GATEWAY_VALUE_CHECK_3, error.lang)%>');
+		       //document.wanform.GW.value = document.wanform.GW.defaultValue;
+		       document.wanform.GW.focus();
+		       return false;
+	      }
+   	      if ( !checkDigitRange(document.wanform.GW.value,4,0,254) ) 
+   	      {
+       		   alert('<%HTMLPRINTTEXT(DEFAULT_GATEWAY_VALUE_CHECK_4, error.lang)%>');
+		       //document.wanform.GW.value = document.wanform.GW.defaultValue;
+		       document.wanform.GW.focus();
+		       return false;
+	      }
+       }
+       if (document.wanform.GW.value!="0.0.0.0" ) 
+       {
+          if ( !checkSubnet(document.wanform.IP.value,document.wanform.MASK.value,document.wanform.GW.value)) 
+          {
+	         alert('<%HTMLPRINTTEXT(DEFAULT_GATEWAY_SUBNET_NOT_SAME, error.lang)%>');
+	         //document.wanform.GW.value = document.wanform.GW.defaultValue;
+	         document.wanform.GW.focus();
+	         return false;
+          }
+       }
+    }
+	 
+    if (document.wanform.DNS1.value=="")
+        document.wanform.DNS1.value="0.0.0.0";
+    if (document.wanform.DNS2.value=="")
+        document.wanform.DNS2.value="0.0.0.0";
+    if (document.wanform.DNS1.value!="0.0.0.0") 
+    {
+     if ( checkIpAddr(document.wanform.DNS1, '<%HTMLPRINTTEXT(DNS_VLAUE_CHECK_INVALID1, error.lang)%>') == false )
+	      return false;
+    }
+    if (document.wanform.DNS2.value!="0.0.0.0")
+    {
+     if ( checkIpAddr(document.wanform.DNS2, '<%HTMLPRINTTEXT(DNS_VLAUE_CHECK_INVALID2, error.lang)%>') == false )
+	      return false;
+    }
+        if(document.wanform.VDMOD.value == 1)
+	{
+         if (isNumeric(document.wanform.VID.value,0,4094) == 0)
+         {
+            alert("<%HTMLPRINTTEXT(VLAN_VLAUE_CHECK_INVALID, error.lang)%>");
+            document.wanform.VID.focus();
+            return false;
+         }
+         if (isNumeric(document.wanform.VPRI.value,0,7) == 0)
+         {
+            alert("<%HTMLPRINTTEXT(VLAN_VALUE_CHECK_PRIORITY_INVALID, error.lang)%>");
+            document.wanform.VPRI.focus();
+            return false;
+         }
+    	}
+	if(document.wanform.VDMOD.value > 1)
+	{
+		if (isNumeric(document.wanform.VPERIOD.value,15,65535) == 0)
+	         {
+	            alert("<%HTMLPRINTTEXT(VLAN_VALUE_CHECK_PERIOD, error.lang)%>");
+	            document.wanform.VPERIOD.focus();
+	            return false;
+	         }
+	}
+    return true;
+}
+
+function pppEnabled()
+{
+/*     document.wanform.USERNAME.disabled = false;
+     document.wanform.PASSWORD.disabled = false;
+     document.wanform.KAMODE.disabled = false;
+     document.wanform.REIP.disabled = false;
+     document.wanform.IP.disabled = true;
+     document.wanform.MASK.disabled = true;
+     document.wanform.GW.disabled = true;
+     document.wanform.DNS1.disabled = true;
+     document.wanform.DNS2.disabled = true;
+  */
+}
+function pppDisabled()
+{
+  /*
+     document.wanform.USERNAME.disabled = true;
+     document.wanform.PASSWORD.disabled = true;
+     document.wanform.KAMODE.disabled = true;
+     document.wanform.REIP.disabled = true;
+  */
+}
+
+function LoadStaticCfg()
+{
+	document.wanform.DOMAIN.value = "<%Network_SHOWDATA(DOMAIN)%>";
+	document.wanform.IP.value = "<%Network_SHOWDATA(IP)%>";
+	document.wanform.MASK.value = "<%Network_SHOWDATA(MASK)%>";
+	document.wanform.GW.value = "<%Network_SHOWDATA(GW)%>";
+	document.wanform.DNS1.value = "<%Network_SHOWDATA(DNS1)%>";
+	document.wanform.DNS2.value = "<%Network_SHOWDATA(DNS2)%>";
+}
+
+function LoadDhcpCfg()
+{
+	document.wanform.DOMAIN.value = "<%Network_SHOWDATA(DHCP_DOMAIN)%>";
+	document.wanform.IP.value = "<%Network_SHOWDATA(DHCP_IP)%>";
+	document.wanform.MASK.value = "<%Network_SHOWDATA(DHCP_MASK)%>";
+	document.wanform.GW.value = "<%Network_SHOWDATA(DHCP_GW)%>";
+	document.wanform.DNS1.value = "<%Network_SHOWDATA(DHCP_DNS1)%>";
+	document.wanform.DNS2.value = "<%Network_SHOWDATA(DHCP_DNS2)%>";
+}
+
+function LoadManualMode()
+{
+	document.wanform.DOMAIN_FIX.checked = <%Network_SHOWDATA(DOMAIN_FIX)%>;
+	document.wanform.IP_FIX.checked = <%Network_SHOWDATA(IP_FIX)%>;
+	document.wanform.NETMASK_FIX.checked = <%Network_SHOWDATA(NETMASK_FIX)%>;
+     	document.wanform.GATEWAY_FIX.checked = <%Network_SHOWDATA(GATEWAY_FIX)%>;
+	document.wanform.DNS0_FIX.checked = <%Network_SHOWDATA(DNS0_FIX)%>;
+	document.wanform.DNS1_FIX.checked = <%Network_SHOWDATA(DNS1_FIX)%>;	 	
+}
+
+function SetManualMode(fix_ip)
+{
+	if(fix_ip)
+	{
+		//Fix IP is all manual mode and can not change to non-manual mode
+	    	document.wanform.DOMAIN_FIX.checked = 1;
+		document.wanform.IP_FIX.checked = 1;
+		document.wanform.NETMASK_FIX.checked = 1;
+     		document.wanform.GATEWAY_FIX.checked = 1;
+		document.wanform.DNS0_FIX.checked = 1;
+		document.wanform.DNS1_FIX.checked = 1;	 
+
+		document.wanform.DOMAIN_FIX.disabled = 1;
+		document.wanform.IP_FIX.disabled = 1;
+		document.wanform.NETMASK_FIX.disabled = 1;
+     		document.wanform.GATEWAY_FIX.disabled = 1;
+		document.wanform.DNS0_FIX.disabled = 1;
+		document.wanform.DNS1_FIX.disabled = 1;	 
+	}
+	else
+	{
+	       LoadManualMode();
+
+		document.wanform.DOMAIN_FIX.disabled = 0;
+		document.wanform.IP_FIX.disabled = 0;
+		document.wanform.NETMASK_FIX.disabled = 0;
+     		document.wanform.GATEWAY_FIX.disabled = 0;
+		document.wanform.DNS0_FIX.disabled = 0;
+		document.wanform.DNS1_FIX.disabled = 0;
+	}
+}
+
+function ManualModeChanged(id)
+{
+	var disabled = ! document.getElementById(id).checked;
+	
+	switch(id)
+	{
+		case "chk_domain":
+			document.wanform.DOMAIN.disabled = disabled;
+			break;
+		case "chk_ip":
+			document.wanform.IP.disabled = disabled;
+			break;
+		case "chk_netmask":
+			document.wanform.MASK.disabled = disabled;
+			break;
+		case "chk_gateway":
+			document.wanform.GW.disabled = disabled;
+			break;
+		case "chk_dns0":
+			document.wanform.DNS1.disabled = disabled;
+			break;
+		case "chk_dns1":
+			document.wanform.DNS2.disabled = disabled;
+			break;
+	}
+}
+
+function LanFixedIP()
+{
+
+     document.wanform.IP.disabled = false;
+     document.wanform.MASK.disabled = false;
+     document.wanform.GW.disabled = false;
+     document.wanform.DNS1.disabled = false;
+     document.wanform.DNS2.disabled = false;
+     //document.wanform.USERNAME.disabled = true;
+     //document.wanform.PASSWORD.disabled = true;
+     pppDisabled();
+     document.wanform.DOMAIN.disabled = false;
+
+     SetManualMode(1);
+}
+
+function LanAutoIP()
+{
+     //document.wanform.IP.disabled = true;
+     //document.wanform.MASK.disabled = true;
+     //document.wanform.GW.disabled = true;
+     //document.wanform.DNS1.disabled = true;
+     //document.wanform.DNS2.disabled = true;
+     //document.wanform.USERNAME.disabled = true;
+     //document.wanform.PASSWORD.disabled = true;
+     pppDisabled();
+
+     //document.wanform.DOMAIN.disabled = true;
+     SetManualMode(0);
+     ManualModeChanged("chk_domain");
+     ManualModeChanged("chk_ip");
+     ManualModeChanged("chk_netmask");
+     ManualModeChanged("chk_gateway");
+     ManualModeChanged("chk_dns0");
+     ManualModeChanged("chk_dns1");
+}
+
+function IPTypeChanged(type)
+{
+    if(type == 0) /* static ip */
+    {
+        LanFixedIP();
+        LoadStaticCfg();
+    }
+    else /* DHCP */
+    {
+       LanAutoIP();
+       LoadDhcpCfg();
+    }
+}
+
+function loadcheck()
+{
+   if (document.wanform.IPTYPE[0].checked)
+   {
+      LanFixedIP();
+      LoadStaticCfg();
+   }
+   else if (document.wanform.IPTYPE[1].checked)
+   {
+      LanAutoIP();
+      LoadDhcpCfg();
+   }
+
+   VlanOnchange();
+   PCVlanOnchange();
+   /*else
+      pppEnabled();*/
+
+}
+
+function VlanOnchange() {
+   if(document.wanform.VDMOD.value == '0' )
+   {
+      document.getElementById("vlanid").style.display="none";
+      document.getElementById("vlanpri").style.display="none";   
+      document.getElementById("vlanperiod").style.display="none";
+      //document.getElementById("vdmode").className="TdEnd";
+   }
+   else if(document.wanform.VDMOD.value == '1')
+   {
+      document.getElementById("vlanid").style.display="";
+      document.getElementById("vlanpri").style.display="";
+      document.getElementById("vlanperiod").style.display="none";	  
+      //document.getElementById("vdmode").className="TdRow";
+   }else
+   {
+      document.getElementById("vlanid").style.display="none";
+      document.getElementById("vlanpri").style.display="none";
+      document.getElementById("vlanperiod").style.display="";	
+      //document.getElementById("vdmode").className="TdRow";
+   }
+}
+
+function PCVlanOnchange() {
+   if(document.wanform.PCVDACT.value == '0' )
+   {
+      document.getElementById("pcvlanid").style.display="none";
+      document.getElementById("pcvlanpri").style.display="none";
+      document.getElementById("pcvlanactive").className="TdEnd";
+   }
+   else if(document.wanform.PCVDACT.value == '1')
+   {
+      document.getElementById("pcvlanid").style.display="";
+      document.getElementById("pcvlanpri").style.display="";
+      document.getElementById("pcvlanactive").className="TdRow";
+   }else
+   {
+      document.getElementById("pcvlanid").style.display="none";
+      document.getElementById("pcvlanpri").style.display="none";
+      document.getElementById("pcvlanactive").className="TdRow";
+   }
+}
+
+function ShowAlert()
+{
+   <%Network_SHOWDATA(ALERT)%>
+}
+
+function AliveOnchange()
+{
+/*
+  var one = parseFloat(document.wanform.KAMODE.value);
+  switch(one)
+  {
+      case 0:
+         document.getElementById("alive_ip").style.display="none";
+         document.getElementById("alive_sw").className="TDEnd";
+      break;
+      case 1:
+         document.getElementById("alive_ip").style.display="";
+         document.getElementById("alive_sw").className="TDRow";
+      break;
+  }
+  */
+}
+
+</SCRIPT>
+
+
+
+
+
+<body onload="loadcheck();ShowAlert();AliveOnchange();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+        <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+        <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+        <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_NETWORK_CONNECTIONS, general.lang)%></span>
+        <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SET_WAN_TITLE, general.lang)%></span>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="wanform" method="post">
+                  <div id="setupTable" class="SetupTable collspan-line">
+                    <A HREF="javascript:OpenCloseDiv('dialing','Tr1')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1"><%HTMLPRINTTEXT(SET_WAN_TITLE, general.lang)%></A>
+                    </div>   
+                   <DIV id="dialing">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE, general.lang)%></td>
+                                      <td class="TdMid" >
+                                     <input class="radio_class" type="radio" name="IPTYPE" value="1" onClick="IPTypeChanged(0)" id="fp3" <%Network_SHOWDATA(IPTYPE0)%>> 		   
+	                                 <label for="fp3"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE_STATIC, general.lang)%></label>&nbsp;
+	                                 <input class="radio_class" type="radio" name="IPTYPE" value="0" onClick="IPTypeChanged(1)"  id="fp4" <%Network_SHOWDATA(IPTYPE2)%>>		   
+	                                 <label for="fp4"><%HTMLPRINTTEXT(QUICK_SETUP_IP_TYPE_DHCP, general.lang)%>&nbsp;</label>
+	                                 <!--
+	                                 <input type="radio" name="IPTYPE" value="1" onClick="pppEnabled()" id="fp5" <%Network_SHOWDATA(IPTYPE1)%>>
+	                                 <label for="fp5"><%HTMLPRINTTEXT(PPPoE, general.lang)%></label>
+                                         !-->
+	                              </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_DOMAIN_NAME, general.lang)%></td>
+                                      <td class="TdMid" >
+                                          <input type="text" name="DOMAIN" size="20" maxlength="253"  class="unnamed11">&nbsp;
+                                          <input type="checkbox" class="checkbox_css" name="DOMAIN_FIX" id="chk_domain" value="0" onClick="ManualModeChanged(this.id)" >		   
+	                                 <label ><%HTMLPRINTTEXT(SET_WAN_MANUAL_SET, general.lang)%>&nbsp;</label>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                                            
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_IP_ADDR, general.lang)%></td>
+                                      <td class="TdMid" >
+                                          <input type="text" name="IP" size="20" maxlength="15"  class="unnamed11">&nbsp;
+                                          <input type="checkbox" class="checkbox_css" name="IP_FIX" id="chk_ip" value="0" onClick="ManualModeChanged(this.id)" >		   
+	                                 <label ><%HTMLPRINTTEXT(SET_WAN_MANUAL_SET, general.lang)%>&nbsp;</label>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SUBNET, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="MASK" size="20" maxlength="15"  class="unnamed11">&nbsp;
+                                          <input type="checkbox" class="checkbox_css" name="NETMASK_FIX" id="chk_netmask" value="0" onClick="ManualModeChanged(this.id)" >		   
+	                                 <label ><%HTMLPRINTTEXT(SET_WAN_MANUAL_SET, general.lang)%>&nbsp;</label>
+	                                 </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_DEFAULT_GATEWAY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="GW" size="20" maxlength="15"    	            class="unnamed11">&nbsp;
+                                          <input type="checkbox" class="checkbox_css" name="GATEWAY_FIX" id="chk_gateway" value="0" onClick="ManualModeChanged(this.id)" >		   
+	                                 <label ><%HTMLPRINTTEXT(SET_WAN_MANUAL_SET, general.lang)%>&nbsp;</label></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_PRIMARY_DNS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DNS1" size="20" maxlength="15"     	     class="unnamed11">&nbsp;
+                                          <input type="checkbox" class="checkbox_css" name="DNS0_FIX" id="chk_dns0" value="0" onClick="ManualModeChanged(this.id)"  >		   
+	                                 <label ><%HTMLPRINTTEXT(SET_WAN_MANUAL_SET, general.lang)%>&nbsp;</label></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_SECONDARY_DNS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="DNS2" size="20" maxlength="15"              class="unnamed11">&nbsp;
+                                          <input type="checkbox" class="checkbox_css" name="DNS1_FIX" id="chk_dns1" value="0" onClick="ManualModeChanged(this.id)" >		   
+	                                 <label ><%HTMLPRINTTEXT(SET_WAN_MANUAL_SET, general.lang)%>&nbsp;</label></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_MAC_ADDRESS, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="WANMAC" size="20" maxlength="17" disabled="true" value="<%Network_SHOWDATA(WANMAC)%>"     class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit" id="LANPORTMODE">
+                           <td class="TDRow">
+                               <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                   <tr>
+                                       <td width="3%" class="TdMid">&nbsp;</td>
+                                       <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_LAN_MODE, general.lang)%></td>
+                                       <td class="TdMid" >
+                                         <select name="LANPORTMODE"><%Network_SHOWDATA(LANPORTMODE)%></select>
+                                        </td>
+                                   </tr>
+                               </table>
+                           </td>
+                       </tr>
+
+                       <tr class="TRedit" id="PCPORTMODE">
+                           <td class="TDEnd">
+                               <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                   <tr>
+                                       <td width="3%" class="TdMid">&nbsp;</td>
+                                       <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_PC_MODE, general.lang)%></td>
+                                       <td class="TdMid" >
+                                         <select name="PCPORTMODE"><%Network_SHOWDATA(PCPORTMODE)%></select>
+                                        </td>
+                                   </tr>
+                               </table>
+                           </td>
+                       </tr>
+
+                      <!--
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PPPoE_Username:, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="USERNAME" value="<%Network_SHOWDATA(USERNAME)%>" size="20" maxlength="63" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PPPoE_Passowrd:, general.lang)%></td>
+                                      <td class="TdMid" ><input type="password" name="PASSWORD" value="<%Network_SHOWDATA(PASSWORD)%>" size="20" maxlength="63" autocomplete="off" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" id="alive_sw">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PPPoE_Keep_Alive_Mode:, general.lang)%></td>
+                                      <td class="TdMid">
+                                        <select size="1" name="KAMODE" onclick="AliveOnchange()"><%Network_SHOWDATA(KAMODE)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit" id="alive_ip">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(PPPoE_Keep_Alive_IP:, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="REIP" value="<%Network_SHOWDATA(REIP)%>" size="20" maxlength="15" class="unnamed11"></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+    !-->
+                  </table>
+                  </DIV>
+                  <br>
+                  <div class="SetupTable collspan-line">
+                    <A HREF="javascript:OpenCloseDiv('PortMirroring','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2"><%HTMLPRINTTEXT(SET_WAN_PORT_MIRRORING_STR, general.lang)%></A>
+                    </div>
+                   <DIV id="PortMirroring">
+                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
+                       <tr  class="TRedit">
+	                      <td  id="port_mirroring_sw" class="TDEnd">
+	                          <table  border="0" width="100%" cellpadding="0" cellspacing="0">
+	                              <tr>
+	                                  <td width="3%" class="TdMid">&nbsp;</td>
+	                                  <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(QUICK_SETUP_LINE_ACTIVATE, general.lang)%></td>
+	                                  <td class="TdMid" >
+	                                    <select name="PORTMIRRORINGSW" ><%Network_SHOWDATA(PORTMIRRORINGSW)%></select>
+	                                  </td>
+	                              </tr>
+	                          </table>
+	                      </td>
+	                  </tr>
+	              </table>
+	              </DIV>
+                  <br>
+                  <div class="SetupTable collspan-line">
+                    <A HREF="javascript:OpenCloseDiv('Automatic','Tr3')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3"><%HTMLPRINTTEXT(SET_WAN_VLAN_SETTINGS, general.lang)%></A>
+                        </div>   
+                   <DIV id="Automatic">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">              
+		               	  <tr  class="TRedit">
+	                      <td  id="vdmode" class="TDRow">
+	                          <table  border="0" width="100%" cellpadding="0" cellspacing="0">
+	                              <tr>
+	                                  <td width="3%" class="TdMid">&nbsp;</td>
+	                                  <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_VLAN_DISCOVERY_MODE, general.lang)%></td>
+	                                  <td class="TdMid" ><select name="VDMOD" onclick="VlanOnchange()"><%Network_SHOWDATA(VDMOD)%></select></td>
+	                              </tr>
+	                          </table>
+	                      </td>
+	                  </tr>
+                      <tr id="vlanid" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_VLAN_ID:, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="VID" value="<%Network_SHOWDATA(VID)%>" size="4" maxlength="4" class="unnamed11"><%HTMLPRINTTEXT((0-4094), general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr id="vlanperiod" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_VLAN_PERIOD, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="VPERIOD" value="<%Network_SHOWDATA(VPERIOD)%>" size="4" maxlength="5" class="unnamed11">&nbsp; <%HTMLPRINTTEXT(GENERAL_UNITS_SECONDS, general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>    
+                      <tr id="vlanpri" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_VLAN_PRIORITY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="VPRI" value="<%Network_SHOWDATA(VPRI)%>" size="4" maxlength="1" class="unnamed11"><%HTMLPRINTTEXT((0-7), general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>                                                                                             
+					  <tr  class="TRedit">
+	                      <td  id="pcvlanactive" class="TDRow">
+	                          <table  border="0" width="100%" cellpadding="0" cellspacing="0">
+	                              <tr>
+	                                  <td width="3%" class="TdMid">&nbsp;</td>
+	                                  <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_PC_VLAN_ACTIVATE, general.lang)%></td>
+	                                  <td class="TdMid" ><select name="PCVDACT" onclick="PCVlanOnchange()"><%Network_SHOWDATA(PCVDACT)%></select></td>
+	                              </tr>
+	                          </table>
+	                      </td>
+	                  </tr>
+                      <tr id="pcvlanid" class="TRedit">
+                          <td class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_PC_VLAN_ID, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PCVID" value="<%Network_SHOWDATA(PCVID)%>" size="4" maxlength="4" class="unnamed11"><%HTMLPRINTTEXT((0-4094), general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+					  <tr id="pcvlanpri" class="TRedit">
+                          <td class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(SET_WAN_PC_VLAN_PRIORITY, general.lang)%></td>
+                                      <td class="TdMid" ><input type="text" name="PCVPRI" value="<%Network_SHOWDATA(PCVPRI)%>" size="4" maxlength="1" class="unnamed11"><%HTMLPRINTTEXT((0-7), general.lang)%></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr> 
+                   </table>   
+                  </div>                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+
+</from>
+<DIV id="bottom" class="bottom">
+    <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" name="Submit" BORDER="0" onClick="Formsubmit()" class="submit-button">
+  </DIV>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%int ca_cert_status;%>
+<%int cert_status;%>
+<%int pkey_status;%>
+<%TLS_GETTLSFILE()%>
+<%TLS_GETSUBMIT(TLS_SECURITY)%>
+<%@ca_cert_status=PHONE_GETVAR(CA_CERT_STATUS)%>
+<%@cert_status=PHONE_GETVAR(CERT_STATUS)%>
+<%@pkey_status=PHONE_GETVAR(PKEY_STATUS)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+var SwDisplayCaCert = 1;
+var SwDisplayCert = 1;
+
+function checkLoadCaCertAndSubmit(form)
+{
+	var val = form.ca_cert.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('UPTLSCERT');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPTLSPKEY');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('DISPLAY_TLSCA_CERT_TAB');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDTLSCA_CERT").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadCertAndSubmit(form)
+{
+	var val = form.cert.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('UPTLSCA_CERT');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPTLSPKEY');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('DISPLAY_TLSCERT_TAB');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDTLSCERT").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function checkLoadPkeyAndSubmit(form)
+{
+	var val = form.pkey.value;
+	if (val == '')
+		alert("<%HTMLPRINTTEXT(Please_select_a_file_to_upload!, Backup.txt)%>");
+	else
+	{
+		var el = document.getElementById('UPTLSCA_CERT');
+		el.parentNode.removeChild(el);
+		el = document.getElementById('UPTLSCERT');
+		el.parentNode.removeChild(el);
+
+		document.getElementById("TDTLSPKEY").className="TDEnd";
+		form.encoding = "multipart/form-data";
+		form.submit();
+	}
+}
+
+function DelCaCert()
+{
+	var el = document.getElementById('DISPLAY_TLSCA_CERT_TAB');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.tls_security.DEL_TLSCA_CERT.value="1";
+	document.tls_security.action="../mainform.cgi/Security.htm";
+	document.tls_security.submit();
+}
+
+function DelCert()
+{
+	var el = document.getElementById('DISPLAY_TLSCA_CERT_TAB');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.tls_security.DEL_TLSCERT.value="1";
+	document.tls_security.action="../mainform.cgi/Security.htm";
+	document.tls_security.submit();
+}
+
+function DelPkey()
+{
+	var el = document.getElementById('DISPLAY_TLSCA_CERT_TAB');
+	el.parentNode.removeChild(el);
+	el = document.getElementById('DISPLAY_TLSCERT_TAB');
+	el.parentNode.removeChild(el);
+
+	document.tls_security.DEL_TLSPKEY.value="1";
+	document.tls_security.action="../mainform.cgi/Security.htm";
+	document.tls_security.submit();
+}
+
+function DisplayCaCert()
+{
+	if(SwDisplayCaCert == 1)
+	{
+		document.getElementById("DISPLAY_TLSCA_CERT_TAB").style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_TLSCA_CERT_TAB").style.display="none";
+	}
+
+	if(SwDisplayCaCert == 1)
+	{
+		SwDisplayCaCert = 0;
+	}
+	else
+	{
+		SwDisplayCaCert = 1;
+	}
+}
+
+function DisplayCert()
+{
+	if(SwDisplayCert == 1)
+	{
+		document.getElementById("DISPLAY_TLSCERT_TAB").style.display="";
+	}
+	else
+	{
+		document.getElementById("DISPLAY_TLSCERT_TAB").style.display="none";
+	}
+
+	if(SwDisplayCert == 1)
+	{
+		SwDisplayCert = 0;
+	}
+	else
+	{
+		SwDisplayCert = 1;
+	}
+}
+
+function DisplayPkey()
+{
+
+}
+
+
+function ShowAlert()
+{
+	<%TLS_SHOWDATA(TDTLSCA_CERT)%>
+	<%TLS_SHOWDATA(TDTLSCERT)%>
+	<%TLS_SHOWDATA(TDTLSPKEY)%>
+}
+
+function wuisync()
+{
+	document.getElementById("DISPLAY_TLSCA_CERT_TAB").style.display="none";
+	document.getElementById("DISPLAY_TLSCERT_TAB").style.display="none";
+
+	SwDisplayCaCert = 1;
+	SwDisplayCert = 1;
+}
+
+function redirect_security()
+{
+	document.location = "../mainform.cgi/Security.htm";
+}
+
+function doAction()
+{
+	window.setTimeout("redirect_security()",5);
+	window.status="OK";
+}
+</SCRIPT>
+
+
+<body onload="wuisync();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+        <tr>
+            <td>
+	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <Tr>
+                      <Td>
+                          <Table border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+                              <tr>
+                                  <td style="background:url(../image/page_header_R.gif);height:28" width="10">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_M.gif);">
+                                    <span id="title" style="position:relative;left:10px">Security</span>
+                                  </td>
+                                  <td style="background:url(../image/page_header_M.gif);" align="right">&nbsp;</td>
+                                  <td style="background:url(../image/page_header_L.gif);" width="11">&nbsp;</td>
+                              </tr>
+                          </Table>
+                      </Td>
+                  </Tr>
+               </table>
+            </td>
+        </tr>
+    </table>
+  </DIV>
+  
+  <DIV id="div_setup" class="Setup">
+      <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table>
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="tls_security" method="post">
+                  <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td  class="tdTitle">
+                              <Table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <Td><A HREF="javascript:OpenCloseDiv('Security','Tr1')" style="text-decoration:none">
+                                      <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr1">
+                                      Security (<span style="color:red">Changing the below parameters requires a reboot</span>)</A></td>
+                                  </tr>
+                              </Table>
+                          </td>
+                      </tr>
+                   </table>   
+                   <DIV id="Security">
+
+                   <table id="UPTLSCA_CERT" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCA_CERT" class="TRedit">
+                          <td id="TDTLSCA_CERT" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @ca_cert_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">CA Certificate:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">CA Certificate:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="10">
+                                          <input type="file" name="ca_cert" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCA_CERT" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_security)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCA_CERT" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCA_CERT" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert()">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCA_CERT_TAB" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_SHOWDATA(TLS_CA_CERT_FILE)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   <table id="UPTLSCERT" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSCERT" class="TRedit">
+                          <td id="TDTLSCERT" class="TDRow">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @cert_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Certificate:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="11">
+                                          <input type="file" name="cert" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCertAndSubmit(document.tls_security)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCert()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          <input type="hidden" name="DISPLAY_TLSCERT" value="0" class="unnamed11">
+                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCert()">
+                                      </td>
+                                  </tr>
+                              </table>
+							  <table id="DISPLAY_TLSCERT_TAB" border="0" width="100%" cellpadding="0" cellspacing="0">
+								  <tr height="270">
+									  <td width="100%" class="TdMid" Align="center">
+										  <textarea rows="17" name="S1" cols="69" wrap="OFF" readonly="readonly">
+<%TLS_SHOWDATA(TLS_CERT_FILE)%>
+										  </textarea>
+									  </td>
+								  </tr>
+							  </table>
+                          </td>
+                      </tr>
+                   </table>
+
+                   <table id="UPTLSPKEY" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr id="TLSPKEY" class="TRedit">
+                          <td id="TDTLSPKEY" class="TDEnd">
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                      <%if @pkey_status==1%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First"><b>(already loaded)</b></td>
+                                      <%else%>
+                                      <td width="12%" class="TD_Item_First" Align="left">Private Key:</td>
+                                      <td width="15%" class="TD_Item_First">&nbsp;</td>
+                                      <%endif%>
+                                      <td width="42%" class="TdMid" >
+                                          <input type="hidden" name="TYPE" size="36" class="unnamed11" value="13">
+                                          <input type="file" name="pkey" size="32" class="unnamed11">
+                                      </td>
+                                      <td width="10%" class="TdMid" >
+                                          <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadPkeyAndSubmit(document.tls_security)">
+                                      </td>
+                                      <td width="6%" class="TdMid" >
+                                          <input type="hidden" name="DEL_TLSPKEY" value="0" class="unnamed11">
+                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelPkey()">
+                                      </td>
+                                      <td width="12%" class="TdMid" >
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                   </table>
+                   </DIV>
+                  
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  
+<DIV id="bottom" class="bottom">
+    <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+                    <TR>
+                        <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
+                        <td>
+                           <input type="image" class="editImg" align="right" src="../image/submit2_reg.gif" name="Submit" BORDER="0">
+                        </td>
+                        <Td style="background:url(../image/page_R.gif);width:3px;height:30"></TD>
+        	  </tr>
+        	  <tr>
+        	  	<td colspan="3">
+				<Table border="0" style="height:11px;margin-top:0px;" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<Td style="background:url(../image/page_corner_L.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_bottom.gif);height:11px;">&nbsp;</Td>
+						<Td style="background:url(../image/page_corner_R.gif);background-repeat:no-repeat;width:12px;height:11px;">&nbsp;</Td>
+					</tr>
+				</table>
+        	  	</td>
+        	  </tr>
+    </table>
+  </DIV>
+</from>
+</body>
+</html>
+

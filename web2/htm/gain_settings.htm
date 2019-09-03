@@ -1,0 +1,619 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<link href="../css/right.css" rel="stylesheet" type="text/css">
+</head>
+
+<%SIP_READDATA(AC)%>
+<%SIP_GETSUBMIT(VOLUME_SETTING)%>
+
+<SCRIPT LANGUAGE="JavaScript" src="../htm/jsLib.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+function Formsubmit()
+{
+    if(Chksubmit())
+    {
+      document.systemrecording.action="../mainform.cgi/Gain_Settings.htm";
+      document.systemrecording.submit();
+
+      var a = document.createElement("div"),
+    p = document.createElement("p"),
+    img = document.createElement("img"),
+     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+img.src="../../image/success.png";
+p.appendChild(textNode);
+var content = document.createElement("div");
+content.setAttribute('class', 'success-info');
+content.appendChild(img);
+content.appendChild(p);
+document.getElementsByTagName("body")[0].appendChild(content);
+setTimeout(function () {
+	content.parentNode.removeChild(content);
+},3000);
+    }
+}
+  
+function Chksubmit()
+{
+  return true;
+}
+
+function packet_recording_enable_disable()
+{
+      if (document.systemrecording.RECOSW.value == '0')
+       {
+       	document.getElementById("recording_ip").style.display="none";
+        document.getElementById("recording_port").style.display="none";
+      }
+      else
+      	{
+         document.getElementById("recording_ip").style.display="";
+         document.getElementById("recording_port").style.display="";
+        }
+}
+
+
+
+</SCRIPT>
+
+ 
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+ <DIV id="div_bar" class="Bar">
+    <span class="bar_location"><%HTMLPRINTTEXT(CURRENT_LOCAION, general.lang)%>:</span>
+    <span class="bar_home"><%HTMLPRINTTEXT(CONFIGURATION, general.lang)%></span>
+    <span class="bar_home">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_VOICE_OVER_IP, general.lang)%></span>
+    <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(GAIN_SETTINGS_TITLE, general.lang)%></span>
+  </DIV>
+
+  <DIV id="div_setup" class="Setup">
+      <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
+          <tr>
+            <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
+            <td class="barSeparate">&nbsp;</td>
+            <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
+          </tr>
+      </table> -->
+  </DIV>
+
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+      <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
+          <tr>
+              <td valign="top">
+                  <form name="systemrecording" method="post">
+
+                   <div class="SetupTable collspan-line">
+                        <A HREF="javascript:OpenCloseDiv('general','Tr2')" style="text-decoration:none">
+                        <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr2">
+                            <%HTMLPRINTTEXT(GAIN_SETTINGS_TITLE, general.lang)%></A>
+                        </div>   
+                   <DIV id="general">
+                   <table id="setupTable1" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_TONE_VOLUME, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="TOVOL" onclick=""><%SIP_SHOWDATA(TOVOL)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_RINGER_VOLUME, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="RIVOL" onclick=""><%SIP_SHOWDATA(RIVOL)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      </table>
+                      </DIV>
+                      <br>
+	                   <div class="SetupTable collspan-line">
+                            <A HREF="javascript:OpenCloseDiv('handsfree','Tr3')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr3">
+                                <%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSFREE_SETTING, general.lang)%></A>
+                            </div>
+                      <DIV id="handsfree">
+                      <table id="setupTable2" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_NARROW_BAND, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_ADDITIONAL_SPEAKER_NB_VOLUME, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBADSVO" onclick=""><%SIP_SHOWDATA(NBADSVO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_NB_DIGITAL_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHFDO" onclick=""><%SIP_SHOWDATA(NBHFDO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_NB_DIGITAL_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHFDI" onclick=""><%SIP_SHOWDATA(NBHFDI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_NB_ANALOG_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHFAO" onclick=""><%SIP_SHOWDATA(NBHFAO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_NB_ANALOG_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHFAI" onclick=""><%SIP_SHOWDATA(NBHFAI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_WIDE_BAND, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_ADDITIONAL_SPEAKER_WB_VOLUME, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBADSVO" onclick=""><%SIP_SHOWDATA(WBADSVO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_WB_DIGITAL_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHFDO" onclick=""><%SIP_SHOWDATA(WBHFDO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_WB_DIGITAL_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHFDI" onclick=""><%SIP_SHOWDATA(WBHFDI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_WB_ANALOG_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHFAO" onclick=""><%SIP_SHOWDATA(WBHFAO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDEnd" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDS_FREE_WB_ANALOG_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHFAI" onclick=""><%SIP_SHOWDATA(WBHFAI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      </table>
+                      </DIV>
+                      <br>
+	                   <div class="SetupTable collspan-line">
+                            <A HREF="javascript:OpenCloseDiv('handset','Tr4')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr4">
+                                <%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_SETTING, general.lang)%></A>
+                            </div>
+                      <DIV id="handset">
+                      <table id="setupTable3" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0"  style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_GENERAL, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_ANALOG_SIDETONE_GAIN, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="HASDG" onclick=""><%SIP_SHOWDATA(HASDG)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_NARROW_BAND, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_NB_DIGITAL_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHSDO" onclick=""><%SIP_SHOWDATA(NBHSDO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_NB_DIGITAL_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHSDI" onclick=""><%SIP_SHOWDATA(NBHSDI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_NB_ANALOG_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHSAO" onclick=""><%SIP_SHOWDATA(NBHSAO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_NB_ANALOG_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHSAI" onclick=""><%SIP_SHOWDATA(NBHSAI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_WIDE_BAND, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_WB_DIGITAL_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHSDO" onclick=""><%SIP_SHOWDATA(WBHSDO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_WB_DIGITAL_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHSDI" onclick=""><%SIP_SHOWDATA(WBHSDI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_WB_ANALOG_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHSAO" onclick=""><%SIP_SHOWDATA(WBHSAO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDEnd" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HANDSET_WB_ANALOG_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHSAI" onclick=""><%SIP_SHOWDATA(WBHSAI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      </table>
+                      </DIV>
+                      <br>
+	                   <div class="SetupTable collspan-line">
+                            <A HREF="javascript:OpenCloseDiv('headset','Tr5')" style="text-decoration:none">
+                            <IMG status="1" src="../image/triangle_header_down1.png" BORDER="0" NAME="Tr5">
+                                <%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_SETTING, general.lang)%></A>
+                            </div>
+                      <DIV id="headset">
+
+                      <table id="setupTable4" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_GENERAL, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_ANALOG_SIDETONE_GAIN, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="HESDG" onclick=""><%SIP_SHOWDATA(HESDG)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_NARROW_BAND, general.lang)%>
+:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_NB_DIGITAL_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHESDO" onclick=""><%SIP_SHOWDATA(NBHESDO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_NB_DIGITAL_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHESDI" onclick=""><%SIP_SHOWDATA(NBHESDI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_NB_ANALOG_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHESAO" onclick=""><%SIP_SHOWDATA(NBHESAO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_NB_ANALOG_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="NBHESAI" onclick=""><%SIP_SHOWDATA(NBHESAI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0" style="padding-left: 20px;">
+                                  <tr>
+                                      <td width="47%" class="TD_Item_First" Align="left"><b><%HTMLPRINTTEXT(GAIN_SETTINGS_WIDE_BAND, general.lang)%>:</b></td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_WB_DIGITAL_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHESDO" onclick=""><%SIP_SHOWDATA(WBHESDO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_WB_DIGITAL_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHESDI" onclick=""><%SIP_SHOWDATA(WBHESDI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDRow" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_WB_ANALOG_OUTPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHESAO" onclick=""><%SIP_SHOWDATA(WBHESAO)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+
+                      <tr class="TRedit">
+                          <td class="TDEnd" >
+                              <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                                  <tr>
+                                      <td width="3%" class="TdMid">&nbsp;</td>
+                                      <td width="47%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(GAIN_SETTINGS_HEADSET_WB_ANALOG_INPUT, general.lang)%>:</td>
+                                      <td class="TdMid" > 
+                                      	<select style="width:80px" name="WBHESAI" onclick=""><%SIP_SHOWDATA(WBHESAI)%></select>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
+                      </tr>
+                  </table>
+                  </DIV>
+                 
+                  </form>
+                </td>
+          </tr>  
+      </table>
+  </DIV>
+  <DIV id="bottom" class="bottom">
+        <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" name="Submit" BORDER="0" onClick="Formsubmit()" class="submit-button">
+  </DIV>
+</body>
+</html>
