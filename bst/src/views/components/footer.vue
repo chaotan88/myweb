@@ -4,14 +4,14 @@
       <div class="title">为什么选择我们?</div>
       <div class="icons">
         <div class="safe">
-          <img src="../../../static/images/safe.png" />
+          <img :src="`${$config.rootPath}safe.png`" />
           <div class="desc">
             <div>安心的服务</div>
             <div>领先的服务标准 独创的保障体系</div>
           </div>
         </div>
         <div class="price">
-          <img src="../../../static/images/price.png" />
+          <img :src="`${$config.rootPath}price.png`" />
           <div class="desc">
             <div>透明的价格</div>
             <div>最优惠的价格 无任何隐形费用</div>
@@ -27,10 +27,10 @@
 				</div>
 			</div>
     </div>
-		<div class="right">
-			<img src="../../../static/images/concat-wechart.jpg"/>
+		<!-- <div class="right">
+			<img :src="`${$config.rootPath}concat-wechart.jpg`"/>
 			<div>扫描关注微信公众号</div>
-		</div>
+		</div> -->
   </div>
 </template>
 

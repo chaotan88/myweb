@@ -2,7 +2,7 @@
   <div class="carousel">
     <el-carousel indicator-position="outside">
       <el-carousel-item v-for="(item, index) in banner" :key="index">
-        <img :src="item.image"/>
+        <img :src="`${$config.rootPath}${item.image}`"/>
       </el-carousel-item>
     </el-carousel>
   </div>
@@ -19,8 +19,8 @@ export default {
     banner: {
         type: Array,
         default: () => [
-            {image: '../../static/images/baner1.png'},
-            {image: '../../static/images/banner2.png'}
+            {image: `baner1.png`},
+            {image: `baner2.png`}
         ]
     }
   },

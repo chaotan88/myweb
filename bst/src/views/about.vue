@@ -4,9 +4,9 @@
     <div class="company-info">
       <div>公司简介</div>
       <div class="company-desc">
-        <img src="../../static/images/company1.png"/>
+        <img :src="`${$config.rootPath}company1.png`"/>
         <div>
-          <h1>深圳贝斯特商务服务有限公司</h1>
+          <h1>{{$config.companyName}}</h1>
           <p>深圳市贝斯特国际商务服务有限公司成立于2019年，公司位于最具创新精神城市之一—深圳市。本公司是一家拥有全球顶级商务咨询资质的服务公司，致力于为全球商旅高端客户提供极致服务，特别对国际长途商务、头等舱机票、酒店等出行需求能做到全网价格最低、最具性价比。公司可为公司和个人客户提供全程一对一全球行程咨询和顾问服务。本公司在高端特价机票领域具有丰富的资源，与全球多家航空公司、高端酒店均有合作关系，同时拥有一支专业、高效服务团队。国际特价高端机票及酒店服务，您值得拥有！</p>
           <!-- <p>贝斯特商旅致力于成为国内乃至全球专业的出行管家。并拥有民用航空运输销售客运一、二类资格代理，是国际航协IATA成员。至今为止，万游商旅已经为全国上百家企业提供专业的差旅管理服务，其中有十多家中国百强企业在使用万游差旅管理。</p> -->
         </div>
@@ -21,10 +21,10 @@
               <p>企业价值观</p>
               <P>创新、专业、务实、诚信</P>
             </div>
-            <img src="../../static/images/company4.png"/>
+            <img :src="`${$config.rootPath}company4.png`"/>
           </div>
           <div class="card-2">
-            <img src="../../static/images/company1.png"/>
+            <img :src="`${$config.rootPath}company1.png`"/>
             <div>
               <p>企业愿景</p>
               <P>最专业的航空服务管家</P>
@@ -35,10 +35,10 @@
               <p>企业使命</p>
               <P>客户出行的第一时间,即享受一站式的顾问服务</P>
             </div>
-            <img src="../../static/images/company5.png"/>
+            <img :src="`${$config.rootPath}company5.png`"/>
           </div>
           <div class="card-4">
-            <img src="../../static/images/company3.png"/>
+            <img :src="`${$config.rootPath}company3.png`"/>
             <div>
               <p>服务理念</p>
               <P>先于客户所想，您有所愿，公司必竭尽所能</P>
@@ -52,23 +52,23 @@
       <div class="title">我们的优势</div>
       <div class="odds-cards">
         <div class="odds-item">
-          <img src="../../static/images/company10.png"/>
-          <img src="../../static/images/company6.png"/>
+          <img :src="`${$config.rootPath}company10.png`"/>
+          <img :src="`${$config.rootPath}company6.png`"/>
           <div>规模化</div>
         </div>
         <div class="odds-item">
-          <img src="../../static/images/company11.png"/>
-          <img src="../../static/images/company7.png"/>
+          <img :src="`${$config.rootPath}company11.png`"/>
+          <img :src="`${$config.rootPath}company7.png`"/>
           <div>品牌化</div>
         </div>
         <div class="odds-item">
-          <img src="../../static/images/company12.png"/>
-          <img src="../../static/images/company8.png"/>
+          <img :src="`${$config.rootPath}company12.png`"/>
+          <img :src="`${$config.rootPath}company8.png`"/>
           <div>专业化</div>
         </div>
         <div class="odds-item">
-          <img src="../../static/images/company13.png"/>
-          <img src="../../static/images/company9.png"/>
+          <img :src="`${$config.rootPath}company13.png`"/>
+          <img :src="`${$config.rootPath}company9.png`"/>
           <div>国际化</div>
         </div>
       </div>

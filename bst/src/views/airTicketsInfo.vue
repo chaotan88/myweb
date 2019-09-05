@@ -1,11 +1,11 @@
 <template>
   <div class="air-info">
     <div class="banner-container">
-      <img src="../../static/images/info1.png" class="info-banner" />
+      <img :src="`${$config.rootPath}info1.png`" class="info-banner" />
     </div>
     <div class="info-content">
       <div class="left">
-        <img src="../../static/images/info2.jpg"/>
+        <img :src="`${$config.rootPath}info2.jpg`"/>
         <div class="tabs">
           <p v-for="(item, index) in menus" :key="index" @click="changeTag(index)"
             :class="activeTag === index + '' ? 'tab-active' : ''">{{item}}</p>
@@ -39,34 +39,34 @@
             <span>更多</span>
           </div>
           <div>客服QQ：<span>
-            <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=3244707232&amp;site=qq&amp;menu=yes">
-              <img border="0" src="http://wpa.qq.com/pa?p=2:3244707232:51" alt="点击这里给我发消息" title="点击这里给我发消息">
+            <a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
+              <img border="0" :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51 alt='点击这里给我发消息' title='点击这里给我发消息'`">
             </a>
           </span></div>
-          <div>客服电话: 4006-888-888</div>
+          <div>客服电话: {{$config.phone}}</div>
         </div>
       </div>
       <div class="right">
         <div v-if="activeTag === '0'">
           <div class="title">美洲机票信息</div>
           <div>上海出发</div>
-          <img src="../../static/images/meizhou1.png"/>
+          <img :src="`${$config.rootPath}meizhou1.png`"/>
           <div>北京出发</div>
-          <img src="../../static/images/meizhou2.png"/>
+          <img :src="`${$config.rootPath}meizhou2.png`"/>
           <div>其他城市出发</div>
-          <img src="../../static/images/meizhou3.png"/>
+          <img :src="`${$config.rootPath}meizhou3.png`"/>
         </div>
         <div v-else-if="activeTag === '1'">
           <div class="title">欧洲机票信息</div>
           <div>上海出发</div>
-          <img src="../../static/images/ouzhou1.png"/>
+          <img :src="`${$config.rootPath}ouzhou1.png`"/>
           <div>其他城市出发</div>
-          <img src="../../static/images/ouzhou2.png"/>
+          <img :src="`${$config.rootPath}ouzhou2.png`"/>
         </div>
         <div v-else>
           <div class="title">澳洲机票信息</div>
           <div></div>
-          <img src="../../static/images/aozhou1.png"/>
+          <img :src="`${$config.rootPath}aozhou1.png`"/>
         </div>
       </div>
     </div>

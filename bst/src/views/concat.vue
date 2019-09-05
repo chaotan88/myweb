@@ -1,66 +1,59 @@
 <template>
   <div class="concat">
     <div class="banner-container">
-      <img src="../../static/images/concat-banner.png" class="concat-banner" />
+      <img :src="`${$config.rootPath}about_banner.jpg`" class="concat-banner" />
     </div>
     <div class="concat-map">
       <div class="title">联系我们</div>
-			<div id="allmap" class="allmap"></div>
+      <div id="allmap" class="allmap"></div>
     </div>
-		<div class="concat-icons">
-			<div class="icon-item">
-				<img src="../../static/images/concat-address.png"/>
-				<div class="label">公司地址</div>
-				<div class="val">{{conpanyInfo.address}}</div>
-			</div>
-			<div class="icon-item">
-				<img src="../../static/images/concat-phone.png"/>
-				<div class="label">客服热线</div>
-				<div class="val">{{conpanyInfo.tel}}</div>
-			</div>
-			<div class="icon-item">
-				<img src="../../static/images/concat-email.png"/>
-				<div class="label">公司邮箱</div>
-				<div class="val">{{conpanyInfo.email}}</div>
-			</div>
-			<div class="icon-item">
-				<img src="../../static/images/concat-user.png"/>
-				<div class="label">在线客服</div>
-				<div class="val">{{conpanyInfo.qq}}</div>
-			</div>
-		</div>
-		<div class="concat-wechart">
-			<div class="wechart-item">
-				<img src="../../static/images/concat-wechart.jpg"/>
-				<div>官方微信</div>
-			</div>
-			<div class="wechart-item">
-				<img src="../../static/images/concat-wechart.jpg"/>
-				<div>官方微博</div>
-			</div>
-		</div>
+    <div class="concat-icons">
+      <div class="icon-item">
+        <img :src="`${$config.rootPath}concat-address.png`" />
+        <div class="label">公司地址</div>
+        <div class="val">{{$config.address}}</div>
+      </div>
+      <div class="icon-item">
+        <img :src="`${$config.rootPath}concat-phone.png`" />
+        <div class="label">客服热线</div>
+        <div class="val">{{$config.phone}}</div>
+      </div>
+      <div class="icon-item">
+        <img :src="`${$config.rootPath}concat-email.png`" />
+        <div class="label">公司邮箱</div>
+        <div class="val">{{$config.email}}</div>
+      </div>
+      <div class="icon-item">
+        <img :src="`${$config.rootPath}concat-user.png`" />
+        <div class="label">在线客服</div>
+        <div class="val">{{$config.qq1}}</div>
+      </div>
+    </div>
+    <div class="concat-wechart">
+      <div class="wechart-item">
+        <img :src="`${$config.rootPath}concat-wechart1.jpg`" />
+        <div>官方微信1</div>
+      </div>
+      <div class="wechart-item">
+        <img :src="`${$config.rootPath}concat-wechart2.jpg`" />
+        <div>官方微信2</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {
-			conpanyInfo: {
-				address: '深圳市龙岗区龙岗街道新生社区锦城星苑',
-				tel: '13538048630',
-				email: '294519179@qq.com',
-				qq: '294519179'
-			}
-		};
+    return {};
   },
   methods: {
     initMap() {
       let map = new BMap.Map("allmap");
-      let point = new BMap.Point(114.286397,22.751773);
+      let point = new BMap.Point(114.286397, 22.751773);
       map.centerAndZoom(point, 15);
 
-      let marker = new BMap.Marker(new BMap.Point(114.286397,22.751773)); // 创建点
+      let marker = new BMap.Marker(new BMap.Point(114.286397, 22.751773)); // 创建点
       //	marker.addEventListener("click",attribute);
       map.addOverlay(marker); //增加点
       map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
@@ -72,11 +65,11 @@ export default {
         width: 340, // 信息窗口宽度
         height: 100, // 信息窗口高度
         title: "深圳市贝斯特国际商务服务有限公司", // 信息窗口标题
-        enableMessage: true, //设置允许信息窗发送短息
+        enableMessage: true //设置允许信息窗发送短息
       };
       let infoWindow = new BMap.InfoWindow(
         '<div style="margin:0;line-height:20px;padding:2px;line-height: 24px;font-size: 16px;color: #333333;">' +
-          "地址：深圳市龙岗区龙岗街道新生社区锦城星苑"+
+          "地址：深圳市龙岗区龙岗街道新生社区锦城星苑" +
           "</div>",
         opts
       ); // 创建信息窗口对象
@@ -84,9 +77,9 @@ export default {
     }
   },
   mounted() {
-		this.$nextTick((vm) => {
-			this.initMap();
-		})
+    this.$nextTick(vm => {
+      this.initMap();
+    });
   }
 };
 </script>
@@ -112,47 +105,47 @@ export default {
       border-right: 3px solid #cc3399;
       margin: 0 auto;
       margin-top: 40px;
-		}
-		.allmap {
-			width: 1200px;
-			height: 266px;
-			margin: 0 auto;
-			margin-top: 20px;
-			border-radius: 5px;
-		}
-	}
-	.concat-icons {
-		display: flex;
+    }
+    .allmap {
+      width: 1200px;
+      height: 266px;
+      margin: 0 auto;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+  }
+  .concat-icons {
+    display: flex;
     justify-content: space-around;
-		padding: 0 50px;
-		margin-top: 40px;
-		.icon-item {
-			width: 172px;
-			text-align: center;
-			.label {
-				font-size: 18px;
-				color: #555555;
-				margin-top: 25px;
-				margin-bottom: 10px;
-			}
-			.val {
-				line-height: 24px;
-				font-size: 14px;
-				color: #777777;
-			}
-		}
-	}
-	.concat-wechart {
-		background-color: #fafafa;
-		display: flex;
-		justify-content: space-evenly;
-		padding: 40px;
-		div {
-			text-align: center;
-			margin-top: 20px;
-			font-size: 18px;
-			color: #cc3399;
-		}
-	}
+    padding: 0 50px;
+    margin-top: 40px;
+    .icon-item {
+      width: 172px;
+      text-align: center;
+      .label {
+        font-size: 18px;
+        color: #555555;
+        margin-top: 25px;
+        margin-bottom: 10px;
+      }
+      .val {
+        line-height: 24px;
+        font-size: 14px;
+        color: #777777;
+      }
+    }
+  }
+  .concat-wechart {
+    background-color: #fafafa;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 40px;
+    div {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #cc3399;
+    }
+  }
 }
 </style>

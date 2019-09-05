@@ -1,7 +1,7 @@
 <template>
   <div class="air-detail">
     <div class="banner-container">
-      <img src="../../static/images/info1.png" class="detail-banner" />
+      <img :src="`${$config.rootPath}info1.png`" class="detail-banner" />
     </div>
     <div class="detail-content">
       <div class="left">
@@ -11,42 +11,47 @@
         </div>
         <div class="submit-form">
           <div class="title">
-            <span>在线表单提交</span>
-            <span>更多</span>
+            <span class="submit">在线表单提交</span>
+            <!-- <span>更多</span> -->
           </div>
           <div>如果您想要预订机票，请提交！</div>
           <div class="input-item">
-            <span>姓名：</span>
-            <el-input v-model="name"></el-input>
+            <span>姓名：<span class="required">*</span></span>
+            <el-input v-model="name" placeholder="您的姓名"></el-input>
+            <p class="not-allowed" v-if="noName">姓名不能为空</p>
           </div>
           <div class="input-item">
-            <span>电话：</span>
-            <el-input v-model="phone"></el-input>
+            <span>电话：<span class="required">*</span></span>
+            <el-input v-model="phone" placeholder="您的电话"></el-input>
+            <p class="not-allowed" v-if="noPhone">电话不能为空</p>
           </div>
           <div class="input-item">
-            <span>邮箱：</span>
-            <el-input v-model="email"></el-input>
+            <span>邮箱：<span class="required">*</span></span>
+            <el-input v-model="email" placeholder="您的邮箱"></el-input>
+            <p class="not-allowed" v-if="noEmail">邮箱不能为空</p>
           </div>
           <div class="input-item">
-            <span>微信/QQ：</span>
-            <el-input v-model="qq"></el-input>
+            <span>微信/QQ：<span class="required">*</span></span>
+            <el-input v-model="qq" placeholder="您的微信/QQ"></el-input>
+            <p class="not-allowed" v-if="noQQ">微信/QQ不能为空</p>
           </div>
+            <el-button type="primary" @click="submitForm">提交</el-button>
         </div>
         <div class="submit-form concat-me">
           <div class="title">
             <span>联系我们</span>
-            <span>更多</span>
+            <!-- <span>更多</span> -->
           </div>
           <div>
             客服QQ：
             <span>
               <a
                 target="_blank"
-                href="http://wpa.qq.com/msgrd?v=3&amp;uin=294519179&amp;site=qq&amp;menu=yes"
+                :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`"
               >
                 <img
                   border="0"
-                  src="http://wpa.qq.com/pa?p=2:294519179:51"
+                  :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51`"
                   alt="点击这里给我发消息"
                   title="点击这里给我发消息"
                 />
@@ -61,16 +66,16 @@
         <div class="details">
           <div class="left-img">
             <div class="pic-zoom">
-              <!-- <pic-zoom :scale="2" :url="`../../static/images/airImage/${airDetail.selectImg}.jpg`"
+              <!-- <pic-zoom :scale="2" :url="`${config.rootPath}airImage/${airDetail.selectImg}.jpg`"
 								v-if="airDetail.selectImg" :scroll="false"></pic-zoom>
-							<pic-zoom :scale="2" :url="`../../static/images/airImage/${airDetail.images[0]}.jpg`"
+							<pic-zoom :scale="2" :url="`${config.rootPath}airImage/${airDetail.images[0]}.jpg`"
               v-if="!airDetail.selectImg" :scroll="false"></pic-zoom>-->
               <img
-                :src="`../../static/images/airImage/${airDetail.selectImg}.jpg`"
+                :src="`${config.rootPath}airImage/${airDetail.selectImg}.jpg`"
                 v-if="airDetail.selectImg"
               />
               <img
-                :src="`../../static/images/airImage/${airDetail.images[0]}.jpg`"
+                :src="`${config.rootPath}airImage/${airDetail.images[0]}.jpg`"
                 v-if="!airDetail.selectImg"
               />
             </div>
@@ -79,7 +84,7 @@
                 v-for="(img, index) in airDetail.images"
                 :key="index"
                 @click="changeSelectImg(img)"
-                :src="`../../static/images/airImage/${img}.jpg`"
+                :src="`${$config.rootPath}airImage/${img}.jpg`"
               />
             </div>
           </div>
@@ -95,17 +100,17 @@
             </p>
             <div class="qq-and-wechat">
               <div class="qq">
-                <img src="../../static/images/qq.png" />
+                <img :src="`${$config.rootPath}qq.png`" />
                 <div class="qq-content">
                   <p>QQ</p>
                   <div>
                     <a
                       target="_blank"
-                      href="http://wpa.qq.com/msgrd?v=3&amp;uin=294519179&amp;site=qq&amp;menu=yes"
+                      :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`"
                     >
                       <img
                         border="0"
-                        src="http://wpa.qq.com/pa?p=2:294519179:51"
+                        :src="`http://wpa.qq.com/pa?p=2:${$config.rootPath}:51`"
                         alt="点击这里给我发消息"
                         title="点击这里给我发消息"
                       />
@@ -114,7 +119,7 @@
                 </div>
               </div>
               <div class="wechat" title="单击添加，并咨询客服" @click="showWechatQrCode">
-                <img src="../../static/images/wechart.png" />
+                <img :src="`${$config.rootPath}wechart.png`" />
                 <p>微信</p>
               </div>
             </div>
@@ -125,7 +130,7 @@
           <img
             v-for="(img, index) in airDetail.detais"
             :key="index"
-            :src="`../../static/images/airImage/${img}.jpg`"
+            :src="`${$config.rootPath}airImage/${img}.jpg`"
           />
         </div>
       </div>
@@ -138,7 +143,7 @@
       :modal="true"
       :modal-append-to-body="false"
     >
-      <img src="../../static/images/concat-wechart.jpg" />
+      <img :src="`${$config.rootPath}concat-wechart.jpg`" style="width: 200px; height: 200px;"/>
     </el-dialog>
   </div>
 </template>
@@ -154,6 +159,10 @@ export default {
       phone: "",
       email: "",
       qq: "",
+      noName: false,
+      noPhone: false,
+      noEmail: false,
+      noQQ: false,
       activeTag: "0",
       treeData: [],
       defaultProps: {
@@ -200,6 +209,36 @@ export default {
     },
     showWechatQrCode() {
       this.showCode = true;
+    },
+    submitForm() {
+      if (!this.name) {
+        this.noName = true;
+        return false;
+      } else {
+        this.noName = false;
+      }
+      if (!this.phone) {
+        this.noPhone = true;
+        return false;
+      } else {
+        this.noPhone = false;
+      }
+      if (!this.email) {
+        this.noEmail = true;
+        return false;
+      } else {
+        this.noEmail = false;
+      }
+      if (!this.qq) {
+        this.noQQ = true;
+        return false;
+      } else {
+        this.noQQ = false;
+      }
+      this.$message({
+        type: 'success',
+        message: '提交成功'
+      });
     }
   },
   mounted() {
@@ -281,6 +320,7 @@ export default {
         .input-item {
           display: flex;
           margin-top: 20px;
+          position: relative;
           .el-input {
             width: 200px;
           }
@@ -408,6 +448,25 @@ export default {
     img {
       margin-left: 90px;
     }
+  }
+  .el-button {
+    margin-top: 20px;
+    margin-left: 90px;
+  }
+  .required {
+    color: red;
+  }
+  .submit {
+      cursor: pointer;
+  }
+  .submit:hover {
+      color: blue;
+  }
+  .not-allowed {
+    position: absolute;
+    top: 40px;
+    left: 70px;
+    color: red;
   }
 }
 </style>

@@ -5,7 +5,7 @@
     </div>
     <div class="home-header">
       <div class="home-header-left">
-        <img src="../../static/images/logo.jpg">
+        <img :src="`${$config.rootPath}logo.png`">
         <div>我 为 您 旅 行 服 务 而 骄 傲！</div>
       </div>
       <div class="home-header-search">
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="home-header-right">
-        <img src="../../static/images/phone.png"/>
+        <img :src="`${$config.rootPath}phone.png`"/>
         <div class="phone-num">
           <div>24小时客户咨询</div>
           <div>13538048630</div>
@@ -164,6 +164,10 @@ export default {
       margin: auto;
       .home-header-left {
         display: inline-block;
+        img {
+          width: 195px;
+          height: 67px;
+        }
         div {
           color: #CCCCCC;
           font-size: 14px;

@@ -1,7 +1,7 @@
 <template>
   <div class="air-list">
     <div class="banner">
-      <img src="../../static/images/air1.png"/>
+      <img :src="`${$config.rootPath}air1.png`"/>
     </div>
     <div class="breac">
       <span v-for="(item, index) in itemList" :key="index">{{item}}<span v-if="index !== itemList.length - 1">>></span></span>
@@ -37,11 +37,11 @@
     </div>
     <div class="air-content">
       <div class="air-item" v-for="(item, index) in tableData" :key="index">
-        <img :src="`../../static/images/airImage/${item.selectImg}.jpg`" v-if="item.selectImg" class="big-img" @click="toDetail(item)"/>
-        <img :src="`../../static/images/airImage/${item.images[0]}.jpg`" v-if="!item.selectImg" class="big-img" @click="toDetail(item)"/>
+        <img :src="`${$config.rootPath}airImage/${item.selectImg}.jpg`" v-if="item.selectImg" class="big-img" @click="toDetail(item)"/>
+        <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`" v-if="!item.selectImg" class="big-img" @click="toDetail(item)"/>
         <div class="small-img">
           <img v-for="(img, imgIndex) in item.images" :key="imgIndex" @click="selectSmallImg(index, imgIndex)"
-           :src="`../../static/images/airImage/${img}.jpg`" v-if="imgIndex < 3"/>
+           :src="`${$config.rootPath}airImage/${img}.jpg`" v-if="imgIndex < 3"/>
         </div>
         <p class="price">&yen;{{item.offerPrice}}</p>
         <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>

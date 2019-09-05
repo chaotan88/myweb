@@ -1,7 +1,7 @@
 <template>
   <div class="news">
     <div class="news-banner">
-      <img src="../../static/images/news1.png"/>
+      <img :src="`${$config.rootPath}news1.png`"/>
     </div>
     <div class="breadcrumb">
       <div v-for="(me, index) in menus" :key="index">{{me}}<span v-if="index !== menus.length - 1">>></span></div>

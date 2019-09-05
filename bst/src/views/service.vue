@@ -1,13 +1,13 @@
 <template>
   <div class="service">
     <div class="service-container">
-      <img src="../../static/images/service1.png" class="service-banner" />
+      <img :src="`${$config.rootPath}service1.png`" class="service-banner" />
     </div>
     <div class="service-content">
       <div class="title">机票优势</div>
 			<div class="line1">
         <div class="line-item">
-          <img src="../../static/images/service2.png"/>
+          <img :src="`${$config.rootPath}service2.png`"/>
           <div>
             <p>协议价格谈判</p>
             <p>与各大航空公司保持良好合作关系
@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="line-item">
-          <img src="../../static/images/service3.png"/>
+          <img :src="`${$config.rootPath}service3.png`"/>
           <div>
             <p>包年特惠机票</p>
             <p>每年与各大航空公司签订包机协议
@@ -29,7 +29,7 @@
       </div>
       <div class="line2">
         <div class="line-item">
-          <img src="../../static/images/service4.png"/>
+          <img :src="`${$config.rootPath}service4.png`"/>
           <div>
             <p>临时特价机票申请</p>
             <p>每年协助各大航司完成大额销售指标
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div class="line-item">
-          <img src="../../static/images/service5.png"/>
+          <img :src="`${$config.rootPath}service5.png`"/>
           <div>
             <p>紧急机票预订</p>
             <p>航班超售加位申请,可协调调取机组位保证出行
@@ -56,9 +56,9 @@
       </p>
       <div class="bg-img">
         <div class="zengzhi">增值服务</div>
-        <img src="../../static/images/service9.png" class="ci-1"/>
-        <img src="../../static/images/service6.png" class="ci-vs"/>
-        <img src="../../static/images/service9.png" class="ci-2"/>
+        <img :src="`${$config.rootPath}service9.png`" class="ci-1"/>
+        <img :src="`${$config.rootPath}service6.png`" class="ci-vs"/>
+        <img :src="`${$config.rootPath}service9.png`" class="ci-2"/>
         <div class="text1">
           <p>创新模式</p>
           <p>订票服务：抢票、占坐、预选坐位；升舱</p>
@@ -86,10 +86,10 @@
       </div>
       <div class="title title3">服务团队   一对一服务保障</div>
       <div class="service-8">
-        <img src="../../static/images/service8.png"/>
+        <img :src="`${$config.rootPath}service8.png`"/>
       </div>
       <div class="service-10">
-        <img src="../../static/images/service10.jpg"/>
+        <img :src="`${$config.rootPath}service10.png`"/>
         <div class="service-10-right">
           <div class="title">
             服务方案

@@ -3,12 +3,12 @@
     <carousel></carousel>
     <div class="content">
       <div class="title">
-        <img src="../../static/images/home1.png"/>
+        <img :src="`${$config.rootPath}home1.png`"/>
         <span>限时优惠</span>
       </div>
       <div class="limited-time">
         <div class="item" v-for="(item, index) in hots" :key="index">
-          <img :src="`../../static/images/airImage/${item.images[0]}.jpg`">
+          <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`">
           <p @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</p>
           <div><span>&yen;{{item.offerPrice}}</span><span>&yen;{{item.price}}</span></div>
         </div>
@@ -16,7 +16,7 @@
       <div class="air-type-list">
         <div class="left1">
           <div class="title1">
-            <img src="../../static/images/index3.png"/>
+            <img :src="`${$config.rootPath}/index3.png`"/>
             <span>美洲机票</span>
           </div>
           <p class="title2">国际机票，天天享特价！</p>
@@ -31,8 +31,8 @@
           </div>
         </div>
         <div class="right">
-          <div v-for="(item, index) in meizhouAir" :key="index" class="right-item">
-            <img :src="`../../static/images/airImage/${item.images[0]}.jpg`"/>
+          <div v-for="(item, index) in meizhouAir" :key="index" class="right-item" v-if="index < 6">
+            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`"/>
             <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
@@ -41,7 +41,7 @@
       <div class="air-type-list">
         <div class="left2">
           <div class="title1">
-            <img src="../../static/images/index3.png"/>
+            <img :src="`${$config.rootPath}index3.png`"/>
             <span>欧洲机票</span>
           </div>
           <p class="title2">国际机票，天天享特价！</p>
@@ -56,8 +56,8 @@
           </div>
         </div>
         <div class="right">
-          <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item">
-            <img :src="`../../static/images/airImage/${item.images[0]}.jpg`"/>
+          <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item" v-if="index < 6">
+            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`"/>
             <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
@@ -66,7 +66,7 @@
       <div class="air-type-list">
         <div class="left3">
           <div class="title1">
-            <img src="../../static/images/index3.png"/>
+            <img :src="`${$config.rootPath}/index3.png`"/>
             <span>澳洲机票</span>
           </div>
           <p class="title2">国际机票，天天享特价！</p>
@@ -81,8 +81,8 @@
           </div>
         </div>
         <div class="right">
-          <div v-for="(item, index) in aozhouAir" :key="index" class="right-item">
-            <img :src="`../../static/images/airImage/${item.images[0]}.jpg`"/>
+          <div v-for="(item, index) in aozhouAir" :key="index" class="right-item" v-if="index < 6">
+            <img :src="`${$config.rootPath}/airImage/${item.images[0]}.jpg`"/>
             <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>

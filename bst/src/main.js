@@ -11,9 +11,11 @@ import '../static/css/base.css'
 // import 'swiper/dist/css/swiper.css'
 // Vue.use(vueSwiper)
 import carousel from '@/views/components/carousel.vue'
+import config from '@/views/datas/config';
 Vue.component('carousel', carousel)
 Vue.use(Elementui)
 Vue.config.productionTip = false
+Vue.prototype.$config = config
 
 /* eslint-disable no-new */
 new Vue({
