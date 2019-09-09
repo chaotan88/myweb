@@ -4,11 +4,9 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const webpack = require('webpack')
-
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
-
 module.exports = {
   entry: {
     app: ['babel-polyfill', './src/main.js']
@@ -84,3 +82,9 @@ module.exports = {
     })
    ]
 }
+const vuxLoader = require('vux-loader')
+const webpackConfig = module.exports 
+
+module.exports = vuxLoader.merge(webpackConfig, {
+  plugins: ['vux-ui']
+})

@@ -20,7 +20,7 @@ export default {
         type: Array,
         default: () => [
             {image: `baner1.png`},
-            {image: `baner2.png`}
+            {image: `banner2.png`}
         ]
     }
   },
