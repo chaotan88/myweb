@@ -24,7 +24,7 @@
           <img :src="`${$config.rootPath}baner1.png`">
         </swiper-item>
         <swiper-item class="banner1">
-          <img :src="`${$config.rootPath}banner2.png`">
+          <img :src="`${$config.rootPath}baner2.png`">
         </swiper-item>
       </swiper>
     </div>

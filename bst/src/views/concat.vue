@@ -147,5 +147,11 @@ export default {
       color: #cc3399;
     }
   }
+  .wechart-item {
+    img {
+      width: 300px;
+      height: 400px;
+    }
+  }
 }
 </style>

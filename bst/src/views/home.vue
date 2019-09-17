@@ -48,13 +48,15 @@
     <Footer></Footer>
     <div class="site-info">
       <div>服务热线：13538048630      公司地址：深圳市龙岗区龙岗街道新生社区锦城星苑</div>
-      <div>Copyright @ 2018    贝斯特国际商务</div>
+      <div>粤ICP备19115371号-1    贝斯特国际商务</div>
     </div>
   </div>
 </template>
 
 <script>
 import Footer from '@/views/components/footer.vue';
+import {airs} from '@/views/datas/airData';
+
 export default {
   data() {
     return {
@@ -99,24 +101,33 @@ export default {
   },
   methods: {
     querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      let restaurants = this.restaurants;
+      let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
+      if (results.length > 10) {
+        results = results.splice(0, 10)
+        results.forEach(da => {
+          da.value = da.name
+        })
+      }
       cb(results);
     },
     handleSelect(item) {
-      
+      sessionStorage.setItem('air_detail', JSON.stringify(item));
+      this.$router.push({ path: '/airDetail' });
     },
     createFilter(queryString) {
       return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return ((restaurant.to.indexOf(queryString.toLowerCase()) !== 0)
+        || (restaurant.from.indexOf(queryString.toLowerCase()) !== 0)
+        || (restaurant.name.indexOf(queryString.toLowerCase()) !== 0));
       };
     },
-    loadAll() {
-      return [
+    // loadAll() {
+    //   return [
        
-      ];
-    },
+    //   ];
+    // },
     menuSelect(key, keyPath) {
       console.log(key, keyPath);
       const links = [
@@ -140,10 +151,17 @@ export default {
     },
     toList() {
       this.$router.push({ path: `/airTicketsList/0` });
-    }
+    },
+    // executeSearch() {
+    //   if (!this.keyword) return false
+    //   let searchData = airs.filter(da => (da.from.indexOf(this.keyword) !== -1 || da.to.indexOf(this.keyword) !== -1))
+    //   if (searchData && searchData.length > 0) {
+    //     this.restaurants = searchData;
+    //   }
+    // }
   },
   mounted() {
-    this.restaurants = this.loadAll();
+    this.restaurants = airs
   },
   components: {
     Footer
@@ -203,6 +221,7 @@ export default {
           background: #2577e3;
           border-radius: 0 3px 3px 0;
           float: right;
+          cursor: pointer;
           .iconfont {
             font-size: 27px;
             color: #fff;

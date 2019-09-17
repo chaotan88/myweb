@@ -48,43 +48,15 @@
 </template>
 
 <script>
-import { hostNews } from "@/views/datas/data";
 export default {
   data() {
     return {
-      id: "",
-      breadcrumb: [{ name: "首页" }, { name: "新闻动态" }],
-      menus: ["公司新闻", "行业新闻", "常见问题"],
-      active: "0",
-      news: []
+      newsInfo: {}
     };
   },
-  methods: {
-    setBread() {
-      if (this.breadcrumb.length === 3) {
-        this.breadcrumb = this.breadcrumb.splice(0, this.breadcrumb.length - 1);
-      }
-      this.breadcrumb.push(this.menus[this.id]);
-    },
-    changeTag(index) {
-      this.active = `${index}`;
-      if (this.active === "0") {
-        this.news = hostNews.filter(ne => ne.type === "1");
-      } else if (this.active === "1") {
-        this.news = hostNews.filter(ne => ne.type === "2");
-      } else if (this.active === "2") {
-        this.news = hostNews.filter(ne => ne.type === "3");
-      }
-    },
-    toDetail(item) {
-      sessionStorage.setItem('news-info', JSON.stringify(item))
-      this.$router.push({ path: 'newsDetai' })
-    }
-  },
+  methods: {},
   mounted() {
-    this.id = this.$route.params.id;
-    this.setBread();
-    this.news = hostNews;
+    this.newsInfo = JSON.parse(sessionStorage.getItem('news-info'))
   }
 };
 </script>

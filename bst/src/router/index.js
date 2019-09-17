@@ -9,6 +9,7 @@ import News from '@/views/news.vue'
 import About from '@/views/about.vue'
 import Concat from '@/views/concat.vue'
 import AirDetail from '@/views/airDetail.vue'
+import NewsDetai from '@/views/newsDetai.vue'
 
 import MobileHome from '@/views/mobileHome.vue'
 Vue.use(Router)
@@ -67,6 +68,11 @@ export default new Router({
       path: '/moblie',
       name: 'mobile',
       component: MobileHome
+    },
+    {
+      path: '/newsDetai',
+      name: 'newsDetai',
+      component: NewsDetai
     }
   ]
 })

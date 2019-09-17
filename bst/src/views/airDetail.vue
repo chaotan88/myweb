@@ -45,17 +45,9 @@
           <div>
             客服QQ：
             <span>
-              <a
-                target="_blank"
-                :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`"
-              >
-                <img
-                  border="0"
-                  :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51`"
-                  alt="点击这里给我发消息"
-                  title="点击这里给我发消息"
-                />
-              </a>
+              <a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
+              <img border="0" :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51 alt='点击这里给我发消息' title='点击这里给我发消息'`">
+            </a>
             </span>
           </div>
           <div>客服电话: 4006-888-888</div>
@@ -71,11 +63,11 @@
 							<pic-zoom :scale="2" :url="`${config.rootPath}airImage/${airDetail.images[0]}.jpg`"
               v-if="!airDetail.selectImg" :scroll="false"></pic-zoom>-->
               <img
-                :src="`${config.rootPath}airImage/${airDetail.selectImg}.jpg`"
+                :src="`${$config.rootPath}airImage/${airDetail.selectImg}.jpg`"
                 v-if="airDetail.selectImg"
               />
               <img
-                :src="`${config.rootPath}airImage/${airDetail.images[0]}.jpg`"
+                :src="`${$config.rootPath}airImage/${airDetail.images[0]}.jpg`"
                 v-if="!airDetail.selectImg"
               />
             </div>
@@ -104,16 +96,8 @@
                 <div class="qq-content">
                   <p>QQ</p>
                   <div>
-                    <a
-                      target="_blank"
-                      :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`"
-                    >
-                      <img
-                        border="0"
-                        :src="`http://wpa.qq.com/pa?p=2:${$config.rootPath}:51`"
-                        alt="点击这里给我发消息"
-                        title="点击这里给我发消息"
-                      />
+                    <a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
+                      <img border="0" :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51 alt='点击这里给我发消息' title='点击这里给我发消息'`">
                     </a>
                   </div>
                 </div>
