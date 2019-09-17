@@ -132,7 +132,7 @@ function DialNumber(num)
     <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(CALL_LOG_TITLE, general.lang)%></span>
   </DIV>
   
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -140,9 +140,9 @@ function DialNumber(num)
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table> -->
-  </DIV>
-
-  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <!-- </DIV> -->
+  <div class="div_content-container">
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;height: auto;background: #fff;">
     <form method="POST" name="LogForm">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
@@ -233,10 +233,10 @@ function DialNumber(num)
       </table>
     </form>
   </DIV>
-  
-  <DIV id="bottom" class="bottom">
+</div>
+  <DIV id="bottom" class="bottom" style="top: 300px;">
         <INPUT TYPE="SUBMIT" NAME="Sub_Delete" VALUE="<%HTMLPRINTTEXT(CALL_LOG_DELE, general.lang)%>" class="delete-button" onclick="Formsubmit(2)">
-        <INPUT TYPE="SUBMIT" NAME="Sub_Delete_All" VALUE="<%HTMLPRINTTEXT(CALL_LOG_DELA, general.lang)%>" class="delete-button" onclick="Formsubmit(3)">
+        <INPUT TYPE="SUBMIT" NAME="Sub_Delete_All" style="margin-left: 0;" VALUE="<%HTMLPRINTTEXT(CALL_LOG_DELA, general.lang)%>" class="delete-button" onclick="Formsubmit(3)">
     <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
                   <TR>
                         <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>

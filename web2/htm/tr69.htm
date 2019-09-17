@@ -152,7 +152,7 @@ function wuisync()
     <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(TR069_TITLE, general.lang)%></span>
   </DIV>
 
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
 		<tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></Td>
@@ -160,8 +160,8 @@ function wuisync()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></Td>
 		</tr>
    </table> -->
-</DIV>
-  
+<!-- </DIV> -->
+<div class="div_content-container">
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
@@ -282,8 +282,8 @@ function wuisync()
       </tr>
   </table>
   </DIV>
-
-  <DIV id="bottom" class="bottom">
+</div>
+  <DIV id="bottom" class="bottom" style="top: 200px;left: -20px;">
         <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
   </DIV>
 </body>

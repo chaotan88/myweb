@@ -486,7 +486,7 @@ function ShowAlert()
   
 
   
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -494,9 +494,9 @@ function ShowAlert()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table> -->
-  </DIV>
-
-  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <!-- </DIV> -->
+  <div class="div_content-container">
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:hidden;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
               <td valign="top">
@@ -881,6 +881,7 @@ function ShowAlert()
           </tr>  
       </table>
   </DIV>
+</div>
   <DIV id="bottom" class="bottom">
         <input type="button" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()">
   </DIV>

@@ -42,22 +42,25 @@ div.Setup{
 }
 
 div.Content{
-  position: absolute;
+  /* position: absolute; */
   /* left: 40px; */
-  top: 50px;
+  /* top: 50px;
   WIDTH:80%;
   height:68%;
-  OVERFLOW: AUTO;
+  OVERFLOW: AUTO; */
+  background: #fff;
   padding: 20px;
 }
 
 div.Content_TYPE1{
-  position: absolute;
+  /* position: absolute;
   left: 40px;
   top: 50px;
   WIDTH:80%;
-  height:92%;
-  OVERFLOW: AUTO;
+  height:70%;
+  OVERFLOW: AUTO; */
+  background: #fff;
+  padding: 20px;
 }
 
 table.SetupTable
@@ -649,4 +652,9 @@ select::after {
 }
 .TD_Item_First:hover {
   background: #f5f7fa;
+}
+.div_content-container {
+  width: 96%;
+  height: calc(100% - 200px);
+  overflow: auto;
 }

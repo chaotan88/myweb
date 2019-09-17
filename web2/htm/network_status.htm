@@ -48,7 +48,7 @@ function Hreflink(htm_name){
     <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MENU_SYSTEM_STATUS, general.lang)%></span>
   </DIV>
 
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -56,9 +56,9 @@ function Hreflink(htm_name){
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table> -->
-  </DIV>
-
-  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <!-- </DIV> -->
+  <div class="div_content-container">
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:hidden;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
               <td valign="top">
@@ -340,6 +340,7 @@ function Hreflink(htm_name){
 		<%Network_SHOWDATA(DNS-SRV)%>
       </table>
   </DIV>
+</div>
 
 <DIV id="bottom" class="bottom">
         <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit(2)" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">

@@ -102,7 +102,7 @@ function loadcheck()
     <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(MANU_CONFIG_TILE, general.lang)%></span>
   </DIV>
   
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -110,8 +110,8 @@ function loadcheck()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table> -->
-  </DIV>
-  
+  <!-- </DIV> -->
+  <div class="div_content-container">
   <DIV id="div_content" class="Content_TYPE1" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
@@ -237,6 +237,7 @@ function loadcheck()
           </tr>  
       </table>
   </DIV>
+</div>
 </body>
 <DIV id="bottom" class="bottom">
         <input type="image" class="editImg" align="right" src="../image/<%HTMLPRINTTEXT(GENERAL_PAGE_SUBMIT_PIC, general.lang)%>" name="Submit" BORDER="0">

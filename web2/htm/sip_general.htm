@@ -429,10 +429,10 @@ function ShowAlert() {
     <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(SIP_GENERAL_TITLE, general.lang)%></span>
   </DIV>
   
-  <DIV id="div_setup" class="Setup">
-  </DIV>
-
-  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
+  <!-- <DIV id="div_setup" class="Setup">
+  </DIV> -->
+<div class="div_content-container">
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:hidden;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
               <td valign="top">
@@ -1035,6 +1035,7 @@ function ShowAlert() {
           </tr>  
       </table>
   </DIV>
+</div>
 </from>
 <DIV id="bottom" class="bottom">
     <input type="button" align="right" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button">

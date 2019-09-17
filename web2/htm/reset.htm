@@ -67,7 +67,7 @@ setTimeout(function () {
     </table> -->
   </DIV>
   
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -75,8 +75,8 @@ setTimeout(function () {
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table> -->
-  </DIV>
-  
+  <!-- </DIV> -->
+  <div class="div_content-container">
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
   <form method="POST" name="resetform">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
@@ -101,7 +101,7 @@ setTimeout(function () {
                                           &nbsp;<%HTMLPRINTTEXT(RESET_TO_FACTORY_DEFAULT, general.lang)%>
                                       </td>
                                       <td class="TdMid" >
-                                          &nbsp;<input class="submit-button only-one-posintion" type="button"
+                                          &nbsp;<input style="top: 220px;left: -20px;" class="submit-button only-one-posintion" type="button"
                                             value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" name="rebutton" onclick="Formsubmit()">
                                           <input type="hidden" name="CONFIG" size="1" value="1">
                                       </td>
@@ -115,7 +115,7 @@ setTimeout(function () {
       </table>
   </form>
   </DIV>
-  
+</div>
   <DIV id="bottom" class="bottom">
     <!-- <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
                     <TR>

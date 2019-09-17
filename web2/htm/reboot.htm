@@ -69,7 +69,7 @@ setTimeout(function () {
     <span class="bar_menu" id="title">&nbsp;/&nbsp;<%HTMLPRINTTEXT(REBOOT_TITLE, general.lang)%></span>
   </DIV>
 
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup"> -->
       <!-- <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -77,8 +77,8 @@ setTimeout(function () {
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table> -->
-  </DIV>
-  
+  <!-- </DIV> -->
+  <div class="div_content-container">
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
@@ -101,7 +101,7 @@ setTimeout(function () {
                                       <td width="3%" class="TdMid">&nbsp;</td>
                                       <td width="40%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(REBOOT_TITLE, general.lang)%></td>
                                       <td class="TdMid" >
-                                       <input type="button" class="submit-button only-one-posintion" value="<%HTMLPRINTTEXT(REBOOT_BUTTON_REBOOT, general.lang)%>" name="rebutton" class="unnamed11" onclick="Formsubmit()">
+                                       <input type="button" style="left: -20px;" class="submit-button only-one-posintion" value="<%HTMLPRINTTEXT(REBOOT_BUTTON_REBOOT, general.lang)%>" name="rebutton" class="unnamed11" onclick="Formsubmit()">
                                        <input type="hidden" name="REBOOT" value="1">
                                       </td>
                                   </tr>
@@ -114,7 +114,7 @@ setTimeout(function () {
           </tr>  
       </table>
   </DIV>
-
+</div>
   <!-- <DIV id="bottom" class="bottom">
         <input type="image" align="right" class="submit-button" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" name="Submit" BORDER="0" onClick="Formsubmit()">
   </DIV> -->
