@@ -654,7 +654,7 @@ select::after {
   background: #f5f7fa;
 }
 .div_content-container {
-  width: 96%;
+  width: calc(100% - 40px);
   height: calc(100% - 200px);
   overflow: auto;
 }

@@ -487,7 +487,7 @@ function statusTreeCreate() {
     //   document.getElementById('statusTree').style.height=y-440;
     document.getElementById('statusTree').style.height="100%";
       document.getElementById('statustree_tab').style.height=y-440;
-      document.getElementById('menuTd').style.height=y-429;
+    //   document.getElementById('menuTd').style.height=y-429;
     }
     if(y==1024)
     {
@@ -500,13 +500,13 @@ function statusTreeCreate() {
     //   document.getElementById('statusTree').style.height=y-490;
     document.getElementById('statusTree').style.height="100%";
       document.getElementById('statustree_tab').style.height=y-490;
-      document.getElementById('menuTd').style.height=y-479;
+    //   document.getElementById('menuTd').style.height=y-479;
     //   document.getElementById('subFrame').style.height='720px';
     document.getElementById('subFrame').style.height='100%';
     }
 
     document.getElementById('header1').style.width=x-4;
-    document.getElementById('subFrame').style.width=x-300;
+    // document.getElementById('subFrame').style.width=x-300;
   }
   
   function loadImage()
@@ -629,7 +629,7 @@ function statusTreeCreate() {
                               <Td style="WIDTH:264px">
                                   <TABLE BORDER="0" style="WIDTH:264px" CELLPADDING="0" CELLSPACING="0">
                                       <TR>
-                                          <TD id="menuTd" HEIGHT="341"></TD>
+                                          <TD id="menuTd" HEIGHT="1"></TD>
                                       </TR>
                                   </TABLE>
                               </TD>
@@ -669,10 +669,10 @@ function statusTreeCreate() {
       </TABLE>
   </DIV>
   <div id="viewFrame" class="viewFrame">
-      <table border="0" cellSpacing="0" cellpadding="0" height="100%">
+      <table border="0" cellSpacing="0" cellpadding="0" height="100%" width="100%">
           <tr>
               <td>
-                  <IFRAME id="subFrame" name="subFrame" src="../mainform.cgi/info.htm;?" scrolling="no" frameBorder="no" style="WIDTH:720px;HEIGHT:100%"></IFRAME>
+                  <IFRAME id="subFrame" name="subFrame" src="../mainform.cgi/info.htm;?" scrolling="no" frameBorder="no" style="WIDTH:100%;HEIGHT:100%"></IFRAME>
               </td>
           </tr>
       </table>
