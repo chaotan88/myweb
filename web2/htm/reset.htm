@@ -83,7 +83,7 @@ setTimeout(function () {
           <tr>
               <td valign="top">
                   <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
-                      <tr class="TRedit">
+                      <tr class="TRedit" style="height: 0;">
                           <td  class="">
                               <Table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
@@ -93,15 +93,15 @@ setTimeout(function () {
                           </td>
                       </tr>
                       <tr>
-                          <td class="TDEnd">
+                          <td class="TDEnd TDEnd-hover" style="background: #fff;">
                               <table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
-                                      <td width="3%" class="TdMid">&nbsp;</td>
-                                      <td width="40%" class="TD_Item_First" Align="left">
+                                      <!-- <td width="3%" class="TdMid">&nbsp;</td> -->
+                                      <td width="40%" class="TD_Item_First" Align="left" style="background: #fff;">
                                           &nbsp;<%HTMLPRINTTEXT(RESET_TO_FACTORY_DEFAULT, general.lang)%>
                                       </td>
-                                      <td class="TdMid" >
-                                          &nbsp;<input style="top: 220px;left: -20px;" class="submit-button only-one-posintion" type="button"
+                                      <td class="TdMid" style="background: #fff !important;">
+                                          &nbsp;<input style="margin: 0;" class="submit-button" type="button"
                                             value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" name="rebutton" onclick="Formsubmit()">
                                           <input type="hidden" name="CONFIG" size="1" value="1">
                                       </td>

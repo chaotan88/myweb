@@ -357,9 +357,9 @@ function DialNumber(num)
                       <table border="0" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                       <form method="POST" enctype="multipart/form-data" align="right" action="../mainform.cgi/Phone_Book.htm" name="corporateform">
-                        <td align="right">
+                        <td align="left">
                             &nbsp;<input type="hidden" name="TYPE" class="unnamed11" value="8">
-                            <input type="file" name="upname" size="36" class="upload-file">
+                            <input type="file" name="upname" size="36" class="upload-file" style="width:290px;">
                         </td>
                         <td align="right">
                             &nbsp;<input type="button" value="<%HTMLPRINTTEXT(PHONE_BOOK_BUTTON_LOAD_CORP_DIR, general.lang)%>" class="submit-button" onclick="checkLoad(document.corporateform)">
@@ -568,11 +568,11 @@ function DialNumber(num)
                       <table border="0" width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                       <form method="POST" enctype="multipart/form-data" align="right" action="../mainform.cgi/Phone_Book.htm" name="personalform">
-                                      <td align="right">
+                                      <td align="left">
                                           <div class="upload-file-container">
                                                 <i class="el-icon-plus"></i>
                                                 &nbsp;<input type="hidden" name="TYPE" class="unnamed11" value="7">
-                                                <input type="file" name="upname" size="36" class="upload-file">
+                                                <input type="file" name="upname" size="36" class="upload-file" style="width:290px;">
                                           </div>
                                       </td>
                                       <td align="right">
@@ -589,7 +589,7 @@ function DialNumber(num)
                  </table>
                  
 
-                 <form method="POST" name="PhoneBookForm">
+                 <form method="POST" name="PhoneBookForm" style="margin-bottom: -10px;">
                  <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
                      <tr class="TRedit">
                        <td width="5%" align="center"  class="TdTitleLeft">

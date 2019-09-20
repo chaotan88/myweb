@@ -102,7 +102,7 @@ function check_show() {
   <!-- </DIV> -->
   <div class="div_content-container">
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;height: auto;background: #fff;">
-  <form method="POST" name="testform">
+  <form method="POST" name="testform" style="margin-bottom: -10px;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
 			<tr>
 				<td valign="top">
@@ -145,17 +145,17 @@ function check_show() {
 										  </td>
 									 </tr> 
 									 <tr id="dbutton" class="TDRow">
-										<td width="27%" class="TD_Item_First" Align="left">
+										<td width="27%" class="TD_Item_First" Align="left" style="border-bottom: 0;">
 											  &nbsp;&nbsp;&nbsp;<%HTMLPRINTTEXT(SIP_VOICE_TEST_ENABLE, general.lang)%> :&nbsp;&nbsp;
 										 </td>
-										 <td class="TdMid"  Align="left">
+										 <td class="TdMid"  Align="left" style="border-bottom: 0;">
 												  <select name="VOICE_TEST_ENABLE" onchange="check_show()">
 												   <%Network_SHOWDATA(VOICE_TEST_ENABLE)%>
 												 </select>
 										 </td>
-										 <td class="TdMid"  Align="center">
-														 <input type="hidden" name="VOICE_TEST_START" value="0" class="unnamed11">
-														 <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(2)">  
+										 <td class="TdMid"  Align="center" style="border-bottom: 0;">
+														 <input type="hidden" style="margin-top: 20px;" name="VOICE_TEST_START" value="0" class="unnamed11">
+														 <input type="button" style="margin-top: 20px;" class="submit-button" value="<%HTMLPRINTTEXT(AUTO_PROVISION_BUTTON_CHECK_NOW, general.lang)%>" name="apply" onClick="Formsubmit(2)">  
 										</td>
 									</tr>
 									<tr id="rconfig" >
@@ -227,7 +227,7 @@ function check_show() {
   </DIV>
 </div>
 </body>
-<DIV id="bottom" class="bottom" style="top: 350px;">
+<DIV id="bottom" class="bottom" style="top: 330px;">
 		<input type="button" align="right" style="margin-left: 0;" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit(1)">    
   </DIV>
 </html>

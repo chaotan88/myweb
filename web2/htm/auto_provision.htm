@@ -244,9 +244,9 @@ function check_show() {
           </tr>
       </table> -->
   <!-- </DIV> -->
-  <div class="div_content-container">
-  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;height: auto;background: #fff;">
-  <form method="POST" name="tftpform">
+  <div class="div_content-container" style="height: calc(100% - 300px);">
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;height: auto;background: #fff;height: calc(100% - 40px);">
+  <form method="POST" name="tftpform" style="margin-bottom: -10px;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
           <tr>
               <td valign="top">
@@ -442,7 +442,7 @@ function check_show() {
   </form>
   </DIV>
 </div>
-  <DIV id="bottom" class="bottom" style="bottom: 130px;">
+  <DIV id="bottom" class="bottom" style="bottom: 180px;">
         <input type="button" align="right" style="margin-left: 0;" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit(1)">
   </DIV>
 </body>

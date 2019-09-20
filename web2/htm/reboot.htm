@@ -85,7 +85,7 @@ setTimeout(function () {
               <td valign="top">
             <form method=post name="rebootform">
             <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0">
-                      <tr class="TRedit">
+                      <tr class="TRedit" style="height: 0;">
                           <td  class="">
                               <Table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
@@ -94,14 +94,14 @@ setTimeout(function () {
                               </Table>
                           </td>
                       </tr>
-                     <tr class="TRedit">
-                          <td class="TDEnd" style="border: 0; padding-left: 10px;">
+                     <tr class="TRedit TDEnd-hover" style="background: #fff;">
+                          <td class="TDEnd TDEnd-hover" style="border: 0; padding-left: 10px;">
                               <table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
-                                      <td width="3%" class="TdMid">&nbsp;</td>
-                                      <td width="40%" class="TD_Item_First" Align="left"><%HTMLPRINTTEXT(REBOOT_TITLE, general.lang)%></td>
-                                      <td class="TdMid" >
-                                       <input type="button" style="left: -20px;" class="submit-button only-one-posintion" value="<%HTMLPRINTTEXT(REBOOT_BUTTON_REBOOT, general.lang)%>" name="rebutton" class="unnamed11" onclick="Formsubmit()">
+                                      <!-- <td width="3%" class="TdMid" style="background: #fff;">&nbsp;</td> -->
+                                      <td width="40%" class="TD_Item_First" Align="left" style="background: #fff;"><%HTMLPRINTTEXT(REBOOT_TITLE, general.lang)%></td>
+                                      <td class="TdMid" style="background: #fff !important;">
+                                       <input type="button" style="margin: 0;" class="submit-button" value="<%HTMLPRINTTEXT(REBOOT_BUTTON_REBOOT, general.lang)%>" name="rebutton" class="unnamed11" onclick="Formsubmit()">
                                        <input type="hidden" name="REBOOT" value="1">
                                       </td>
                                   </tr>

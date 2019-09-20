@@ -75,7 +75,8 @@ div.bottom {
   WIDTH:90%;
   height:30; */
   position: absolute;
-  /* bottom: 150; */
+  /* bottom: 150px; */
+  right: 40px;
   z-index: 99999;
 }
 
@@ -307,6 +308,7 @@ height:19px;
   padding: 0px 30px;
   line-height: 36px;
   border-radius: 4px;
+  margin-top: 10px;
 }
 .submit-button:hover {
   background: #4e8bc1;
@@ -326,6 +328,7 @@ height:19px;
   padding: 0px 30px;
   line-height: 36px;
   border-radius: 4px;
+  margin-top: 10px;
 }
 .delete-button:hover {
   background: #f78989;
@@ -657,4 +660,8 @@ select::after {
   width: calc(100% - 40px);
   height: calc(100% - 200px);
   overflow: auto;
+  border-radius: 3px;
+}
+.TDEnd-hover:hover {
+  background: #fff !important;
 }
