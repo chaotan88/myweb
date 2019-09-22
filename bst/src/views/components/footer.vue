@@ -91,7 +91,7 @@ export default {
 	display: flex;
 	margin-top: 20px;
 	padding: 0 120px;
-	justify-content: space-between;
+	justify-content: flex-start;
 	.left {
 		.title {
 			font-family: 微软雅黑;
@@ -131,6 +131,7 @@ export default {
 	}
 	.center {
 		display: flex;
+		margin-left: 400px;
 		.center-item {
 			width: 110px;
 			text-align: center;

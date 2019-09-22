@@ -62,17 +62,17 @@ export default new Router({
           path: '/airDetail',
           name: 'airDetail',
           component: AirDetail
+        },
+        {
+          path: '/newsDetail',
+          name: 'newsDetai',
+          component: NewsDetai
         }
       ]
     }, {
       path: '/moblie',
       name: 'mobile',
       component: MobileHome
-    },
-    {
-      path: '/newsDetai',
-      name: 'newsDetai',
-      component: NewsDetai
     }
   ]
 })

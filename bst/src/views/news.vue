@@ -78,7 +78,7 @@ export default {
     },
     toDetail(item) {
       sessionStorage.setItem('news-info', JSON.stringify(item))
-      this.$router.push({ path: 'newsDetai' })
+      this.$router.push({ path: '/newsDetail' })
     }
   },
   mounted() {

@@ -25,7 +25,7 @@
         <img :src="`${$config.rootPath}phone.png`"/>
         <div class="phone-num">
           <div>24小时客户咨询</div>
-          <div>13538048630</div>
+          <div>400-9010-870</div>
         </div>
       </div>
     </div>
@@ -47,7 +47,7 @@
     <router-view></router-view>
     <Footer></Footer>
     <div class="site-info">
-      <div>服务热线：13538048630      公司地址：深圳市龙岗区龙岗街道新生社区锦城星苑</div>
+      <div>服务热线：400-9010-870      公司地址：深圳市龙岗区龙岗街道新生社区锦城星苑</div>
       <div>粤ICP备19115371号-1    贝斯特国际商务</div>
     </div>
   </div>
