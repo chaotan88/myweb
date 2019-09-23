@@ -6,7 +6,7 @@
     <div class="home-header">
       <div class="home-header-left">
         <img :src="`${$config.rootPath}logo.png`">
-        <div>我 为 您 旅 行 服 务 而 骄 傲！</div>
+        <div>为您旅行服务，是我的不懈追求！</div>
       </div>
       <div class="home-header-search">
         <el-autocomplete
@@ -50,6 +50,22 @@
       <div>服务热线：400-9010-870      公司地址：深圳市龙岗区龙岗街道新生社区锦城星苑</div>
       <div>粤ICP备19115371号-1    贝斯特国际商务</div>
     </div>
+    <div class="concat-tips">
+      <div>
+        <img :src="`${$config.rootPath}/iconBack10.png`"/>
+        <img :src="`${$config.rootPath}/iconWord2.png`"/>
+        <a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
+          <img border="0" :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51 alt='点击这里给我发消息' title='点击这里给我发消息'`">
+        </a>
+      </div>
+    </div>
+    <!-- <el-dialog
+      title="在线客服"
+      :visible.sync="qqShow"
+      width="30%"
+      :modal="false">
+      <span>这是一段信息</span>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -84,7 +100,8 @@ export default {
         }, {
           title: '联系我们'
         }
-      ]
+      ],
+      qqShow: false
     }
   },
   created() {
@@ -152,6 +169,9 @@ export default {
     toList() {
       this.$router.push({ path: `/airTicketsList/0` });
     },
+    showConcat() {
+
+    }
     // executeSearch() {
     //   if (!this.keyword) return false
     //   let searchData = airs.filter(da => (da.from.indexOf(this.keyword) !== -1 || da.to.indexOf(this.keyword) !== -1))
@@ -316,6 +336,36 @@ export default {
         font-family: "Microsoft YaHei";
         word-spacing: -1.5px;
         color: rgb(127, 127, 127);
+      }
+    }
+  }
+  .concat-tips {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    width: 140px;
+    height: 50px;
+    margin-left: -68px;
+    margin-top: -25px;
+    background: #4587e8;
+    cursor: pointer;
+    border-radius: 3px;
+    div {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      position: relative;
+      img:nth-child(1) {
+        height: 50px;
+      }
+      img:nth-child(2) {
+        height: 30px;
+        margin-top: 10px;
+      }
+      a {
+        position: absolute;
+        opacity: 0;
+        z-index: 100;
       }
     }
   }

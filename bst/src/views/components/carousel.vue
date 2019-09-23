@@ -36,5 +36,9 @@ export default {
 <style lang="less" scoped>
 .carousel {
   margin-top: 5px;
+  img {
+    width: 100%;
+    height: 300px;
+  }
 }
 </style>

@@ -4,7 +4,7 @@
     <div class="content">
       <div class="title">
         <img :src="`${$config.rootPath}home1.png`"/>
-        <span>限时优惠</span>
+        <span>特惠行程动态</span>
       </div>
       <div class="limited-time">
         <div class="item" v-for="(item, index) in hots" :key="index">
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="right">
-          <div v-for="(item, index) in meizhouAir" :key="index" class="right-item" v-if="index < 6">
+          <div v-for="(item, index) in meizhouAir" :key="index" class="right-item" v-if="index < 8">
             <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`"/>
             <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
@@ -56,7 +56,7 @@
           </div>
         </div>
         <div class="right">
-          <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item" v-if="index < 6">
+          <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item" v-if="index < 8">
             <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`"/>
             <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="right">
-          <div v-for="(item, index) in aozhouAir" :key="index" class="right-item" v-if="index < 6">
+          <div v-for="(item, index) in aozhouAir" :key="index" class="right-item" v-if="index < 8">
             <img :src="`${$config.rootPath}/airImage/${item.images[0]}.jpg`"/>
             <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
@@ -278,7 +278,7 @@ export default {
           flex-wrap: wrap;
           height: 460px;
           .right-item {
-            width: 280px;
+            width: 25%;
             height: 250px;
             img {
               width: 220px;

@@ -73,6 +73,14 @@
         </div>
       </div>
     </div>
+    <div class="company-odds">
+      <div class="title">互动专区</div>
+      <div class="gou-tong">
+        <img :src="`${$config.rootPath}goutong1.png`"/>
+        <img :src="`${$config.rootPath}goutong2.png`"/>
+        <img :src="`${$config.rootPath}goutong2.png`"/>
+      </div>
+    </div>
   </div>
 </template>
 
