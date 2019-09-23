@@ -161,7 +161,7 @@ function wuisync()
 		</tr>
    </table> -->
 <!-- </DIV> -->
-<div class="div_content-container">
+<div class="div_content-container" style="height: calc(100% - 150px);">
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;border-radius: 3px;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%" style="margin-bottom: -10px;">
           <tr>
@@ -282,9 +282,9 @@ function wuisync()
       </tr>
   </table>
   </DIV>
+  <DIV id="bottom" class="bottom" style="top: 200px;left: -20px;position: unset;">
+    <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
+</DIV>
 </div>
-  <DIV id="bottom" class="bottom" style="top: 200px;left: -20px;">
-        <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
-  </DIV>
 </body>
 </html>

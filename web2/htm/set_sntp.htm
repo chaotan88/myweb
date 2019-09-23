@@ -176,7 +176,7 @@ function init() {
       </table> -->
   <!-- </DIV> -->
 
-  <div class="div_content-container">
+  <div class="div_content-container" style="height: calc(100% - 140px);">
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
    <form name="sntpform" method="post" style="margin-bottom: -10px;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
@@ -442,9 +442,9 @@ function init() {
       </table>
 	</form>
   </DIV>
+  <DIV id="bottom" class="bottom" style="position: unset; padding-top: 0px;">
+    <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()">
+</DIV>
 </div>
 </body>
-<DIV id="bottom" class="bottom">
-        <input type="button" align="right" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()">
-  </DIV>
 </html>

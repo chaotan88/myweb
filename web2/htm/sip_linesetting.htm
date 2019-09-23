@@ -299,8 +299,8 @@ function ShowAlert()
           </tr>
       </table> -->
   <!-- </DIV> -->
-  <div class="div_content-container" style="height: calc(100% - 330px);">
-  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;height:auto;background: #fff;height: calc(100% - 40px);">
+  <div class="div_content-container" style="height: calc(100% - 100px);">
+  <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;height:auto;background: #fff;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%" style="margin-bottom: -10px;">
           <tr>
               <td valign="top">
@@ -426,10 +426,10 @@ function ShowAlert()
           </tr>  
       </table>
   </DIV>
+  <DIV id="bottom" class="bottom" style="position: unset;">
+    <input type="button" align="right" name="Submit" BORDER="0" style="margin-left: 0;" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button">
+</DIV>
   </div>
 </from>
-<DIV id="bottom" class="bottom" style="bottom: 205px;">
-        <input type="button" align="right" name="Submit" BORDER="0" style="margin-left: 0;" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>" class="submit-button">
-</DIV>
 </body>
 </html>
