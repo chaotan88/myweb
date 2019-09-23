@@ -83,6 +83,12 @@
       </div>
       </div>
     </div>
+    <div class="bottom">
+      <img :src="`${$config.rootPath}/phone1.png`"/>
+      <img :src="`${$config.rootPath}/qq1.png`"/>
+      <img :src="`${$config.rootPath}/wx1.png`"/>
+      <img :src="`${$config.rootPath}/home1.png`"/>
+    </div>
   </div>
 </template>
 <script>
@@ -198,7 +204,7 @@ export default {
       }
   }
   .home-content {
-    height: ~'calc(100% - 65px)';
+    height: ~'calc(100% - 105px)';
     overflow: auto;
   }
   .container {
@@ -207,7 +213,7 @@ export default {
       input {
         height: 28px;
         border: 1px solid #ff6600;
-        width: 80%;
+        width: 70%;
       }
       span {
         background-color: #ff6600;
@@ -262,6 +268,9 @@ export default {
         width: 100%;
       }
     }
+  }
+  .today-price {
+    display: flex;
   }
   h1,
   h2,
@@ -554,6 +563,19 @@ export default {
         width: 30%;
         margin-bottom: 0.24rem;
       }
+    }
+  }
+  .bottom {
+    position: absolute;
+    bottom: 0;
+    height: 30px;
+    background: #eee;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    img {
+      height: 20px;
+      margin-top: 5px;
     }
   }
 }
