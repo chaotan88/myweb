@@ -1,7 +1,7 @@
 <template>
   <div class="air-detail">
     <div class="banner-container">
-      <img :src="`${$config.rootPath}info1.png`" class="detail-banner" />
+      <img :src="`${$config.rootPath}info1.png?version=${$config.version}`" class="detail-banner" />
     </div>
     <div class="detail-content">
       <div class="left">
@@ -9,10 +9,9 @@
           <p class="tree-title">国际机票</p>
           <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
         </div>
-        <div class="submit-form">
+        <!-- <div class="submit-form">
           <div class="title">
             <span class="submit">在线表单提交</span>
-            <!-- <span>更多</span> -->
           </div>
           <div>如果您想要预订机票，请提交！</div>
           <div class="input-item">
@@ -36,11 +35,13 @@
             <p class="not-allowed" v-if="noQQ">微信/QQ不能为空</p>
           </div>
             <el-button type="primary" @click="submitForm">提交</el-button>
+        </div> -->
+        <div class="wechart-img">
+          <img :src="`${$config.rootPath}concat-wechart1.jpg`"/>
         </div>
         <div class="submit-form concat-me">
           <div class="title">
             <span>联系我们</span>
-            <!-- <span>更多</span> -->
           </div>
           <div>
             客服QQ：
@@ -50,7 +51,7 @@
             </a>
             </span>
           </div>
-          <div>客服电话: 4006-888-888</div>
+          <div>客服电话: {{$config.phone}}</div>
         </div>
       </div>
       <div class="right" v-if="airDetail.name">
@@ -63,11 +64,11 @@
 							<pic-zoom :scale="2" :url="`${config.rootPath}airImage/${airDetail.images[0]}.jpg`"
               v-if="!airDetail.selectImg" :scroll="false"></pic-zoom>-->
               <img
-                :src="`${$config.rootPath}airImage/${airDetail.selectImg}.jpg`"
+                :src="`${$config.rootPath}airImage/${airDetail.selectImg}.jpg?version=${$config.version}`"
                 v-if="airDetail.selectImg"
               />
               <img
-                :src="`${$config.rootPath}airImage/${airDetail.images[0]}.jpg`"
+                :src="`${$config.rootPath}airImage/${airDetail.images[0]}.jpg?version=${$config.version}`"
                 v-if="!airDetail.selectImg"
               />
             </div>
@@ -76,7 +77,7 @@
                 v-for="(img, index) in airDetail.images"
                 :key="index"
                 @click="changeSelectImg(img)"
-                :src="`${$config.rootPath}airImage/${img}.jpg`"
+                :src="`${$config.rootPath}airImage/${img}.jpg?version=${$config.version}`"
               />
             </div>
           </div>
@@ -114,7 +115,11 @@
           <img
             v-for="(img, index) in airDetail.detais"
             :key="index"
-            :src="`${$config.rootPath}airImage/${img}.jpg`"
+            :src="`${$config.rootPath}airImage/${img}.jpg?version=${$config.version}`"
+          />
+          <img
+            v-for="(img, index) in detailImgList"
+            :src="`${$config.airDetailPath}/${index + 1}.jpg?version=${$config.version}`"
           />
         </div>
       </div>
@@ -156,6 +161,7 @@ export default {
       airDetail: {
         selectImg: 0
       },
+      detailImgList: ['','','','',''],
       showCode: false
     };
   },
@@ -451,6 +457,13 @@ export default {
     top: 40px;
     left: 70px;
     color: red;
+  }
+  .wechart-img {
+    padding: 20px;
+    width: calc(100% - 40px);
+    img {
+      width: 100%;
+    }
   }
 }
 </style>

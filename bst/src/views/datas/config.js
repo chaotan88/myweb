@@ -6,5 +6,9 @@ export default {
 	address: '深圳市龙岗区龙岗街道新生社区锦城星苑',
 	email: '294519179@qq.com',
 	site: 'www.bst321.com',
-	rootPath: 'http://112.74.203.16/static/images/'
+	rootPath: 'http://112.74.203.16/static/images/',
+	chartPath: 'http://112.74.203.16/chart/',
+	airDetailPath: 'http://112.74.203.16/airDetail/',
+	hotPath: 'http://112.74.203.16/hots/',
+	version: 1
 }

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { hostNews } from "@/views/datas/data";
+import { hostNews } from "@/views/datas/data.js";
 export default {
   data() {
     return {

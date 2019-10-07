@@ -90,7 +90,7 @@
         <img :src="`${$config.rootPath}service8.png`"/>
       </div>
       <div class="service-10">
-        <img :src="`${$config.rootPath}service10.png`"/>
+        <img :src="`${$config.rootPath}service10.jpg`"/>
         <div class="service-10-right">
           <div class="title">
             服务方案

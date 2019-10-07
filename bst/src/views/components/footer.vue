@@ -27,10 +27,10 @@
 				</div>
 			</div>
     </div>
-		<!-- <div class="right">
-			<img :src="`${$config.rootPath}concat-wechart.jpg`"/>
-			<div>扫描关注微信公众号</div>
-		</div> -->
+		<div class="right">
+			<img :src="`${$config.rootPath}weibo.png`"/>
+			<div>扫描关注微博</div>
+		</div>
   </div>
 </template>
 
@@ -91,7 +91,7 @@ export default {
 	display: flex;
 	margin-top: 20px;
 	padding: 0 120px;
-	justify-content: flex-start;
+	justify-content: space-between;
 	.left {
 		.title {
 			font-family: 微软雅黑;
@@ -131,7 +131,10 @@ export default {
 	}
 	.center {
 		display: flex;
-		margin-left: 400px;
+		// margin-left: 400px;
+		justify-content: space-between;
+		flex: 2;
+		padding: 0 100px;
 		.center-item {
 			width: 110px;
 			text-align: center;

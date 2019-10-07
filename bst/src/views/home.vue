@@ -25,7 +25,7 @@
         <img :src="`${$config.rootPath}phone.png`"/>
         <div class="phone-num">
           <div>24小时客户咨询</div>
-          <div>400-9010-870</div>
+          <div>{{$config.phone}}</div>
         </div>
       </div>
     </div>
@@ -47,25 +47,52 @@
     <router-view></router-view>
     <Footer></Footer>
     <div class="site-info">
-      <div>服务热线：400-9010-870      公司地址：深圳市龙岗区龙岗街道新生社区锦城星苑</div>
-      <div>粤ICP备19115371号-1    贝斯特国际商务</div>
+      <div>服务热线：{{$config.phone}}      公司地址：{{$config.address}}</div>
+      <div>粤ICP备19115371号-1    {{$config.companyName}}</div>
     </div>
     <div class="concat-tips">
-      <div>
+      <!-- <el-dialog
+        title="在线客服"
+        :visible.sync="qqShow"
+        width="30%"
+        :modal="false">
+        <span>这是一段信息</span>
+      </el-dialog> -->
+      <div @click="concatShow = true">
         <img :src="`${$config.rootPath}/iconBack10.png`"/>
         <img :src="`${$config.rootPath}/iconWord2.png`"/>
-        <a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
+        <!-- <a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
           <img border="0" :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51 alt='点击这里给我发消息' title='点击这里给我发消息'`">
-        </a>
+        </a> -->
       </div>
     </div>
-    <!-- <el-dialog
+    <el-dialog
       title="在线客服"
-      :visible.sync="qqShow"
-      width="30%"
+      :visible.sync="concatShow"
+      width="40%"
       :modal="false">
-      <span>这是一段信息</span>
-    </el-dialog> -->
+      <div class="concat-dialog">
+        <div class="first-line">
+          <div class="wechart-img">
+            <img :src="`${$config.rootPath}concat-wechart1.jpg`"/>
+            <div>官方微信1</div>
+          </div>
+          <div class="wechart-img">
+            <img :src="`${$config.rootPath}concat-wechart2.jpg`"/>
+            <div>官方微信2</div>
+          </div>
+        </div>
+        <div class="second-line">
+          <div><a target="_blank" :href="`http://wpa.qq.com/msgrd?v=3&amp;uin=${$config.qq1}&amp;site=qq&amp;menu=yes`">
+            <img border="0" :src="`http://wpa.qq.com/pa?p=2:${$config.qq1}:51 alt='点击这里给我发消息' title='点击这里给我发消息'`">
+          </a></div>
+          <div class="phone">
+            <span>联系电话: </span>
+            <span>{{$config.phone}}</span>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,10 +114,11 @@ export default {
           title: '国际机票',
           child: [{title: '美洲'}, {title: '欧洲'}, {title: '澳洲'}, {title: '亚洲'}]
         },
+        // {
+        //   title: '机票信息',
+        //   child: [{title: '美洲机票信息'}, {title: '欧洲机票信息'}, {title: '澳洲机票信息'}]
+        // },
         {
-          title: '机票信息',
-          child: [{title: '美洲机票信息'}, {title: '欧洲机票信息'}, {title: '澳洲机票信息'}]
-        }, {
           title: '服务优势'
         }, {
           title: '新闻动态',
@@ -101,7 +129,8 @@ export default {
           title: '联系我们'
         }
       ],
-      qqShow: false
+      qqShow: false,
+      concatShow: false
     }
   },
   created() {
@@ -114,7 +143,7 @@ export default {
       }    
       return flag;    
     }
-    if (!IsPC()) this.$router.push({path: 'moblie'});
+    // if (!IsPC()) this.$router.push({path: 'moblie'});
   },
   methods: {
     querySearch(queryString, cb) {
@@ -150,11 +179,11 @@ export default {
       const links = [
         {id: '0', path: '/index'},
         {id: '1', path: '/airTicketsList'},
-        {id: '2', path: '/airTicketsInfo'},
-        {id: '3', path: '/service'},
-        {id: '4', path: '/news'},
-        {id: '5', path: '/about'},
-        {id: '6', path: '/concat'}
+        // {id: '2', path: '/airTicketsInfo'},
+        {id: '2', path: '/service'},
+        {id: '3', path: '/news'},
+        {id: '4', path: '/about'},
+        {id: '5', path: '/concat'}
       ]
       if (key && key.indexOf('-') === -1) {
         let link = links.filter(lin => lin.id === key);
@@ -350,6 +379,7 @@ export default {
     background: #4587e8;
     cursor: pointer;
     border-radius: 3px;
+    z-index: 999;
     div {
       width: 100%;
       height: 100%;
@@ -366,6 +396,31 @@ export default {
         position: absolute;
         opacity: 0;
         z-index: 100;
+      }
+    }
+  }
+  .concat-dialog {
+    .first-line {
+      display: flex;
+      justify-content: space-around;
+    }
+    .second-line {
+      display: flex;
+      justify-content: flex-start;
+      padding: 0 20px;
+      .phone {
+        margin-left: 200px;
+      }
+    }
+    .wechart-img {
+      margin-right: 20px;
+      margin-bottom: 20px;
+      img {
+        width: 200px;
+        height: 200px;
+      }
+      div {
+        text-align: center;
       }
     }
   }

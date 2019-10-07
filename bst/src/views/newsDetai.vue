@@ -4,8 +4,7 @@
     <div class="title">{{newsInfo.title}}</div>
     <div class="date">时间：{{newsInfo.date}}&nbsp;&nbsp;作者：贝斯特商旅【原创】&nbsp;&nbsp;</div>
     <div class="tags"><p>国际机票预定公司</p><p>国际商务头等机票预定</p><P>国际机票预定</P></div>
-    <div class="content">
-      {{newsInfo.content}}
+    <div class="content" v-html="newsInfo.content">
     </div>
   </div>
 </template>

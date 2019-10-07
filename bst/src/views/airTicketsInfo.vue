@@ -50,23 +50,23 @@
         <div v-if="activeTag === '0'">
           <div class="title">美洲机票信息</div>
           <div>上海出发</div>
-          <img :src="`${$config.rootPath}meizhou1.png`"/>
+          <img :src="`${$config.rootPath}meizhou1.png?version=${$config.version}`"/>
           <div>北京出发</div>
-          <img :src="`${$config.rootPath}meizhou2.png`"/>
+          <img :src="`${$config.rootPath}meizhou2.png?version=${$config.version}`"/>
           <div>其他城市出发</div>
-          <img :src="`${$config.rootPath}meizhou3.png`"/>
+          <img :src="`${$config.rootPath}meizhou3.png?version=${$config.version}`"/>
         </div>
         <div v-else-if="activeTag === '1'">
           <div class="title">欧洲机票信息</div>
           <div>上海出发</div>
-          <img :src="`${$config.rootPath}ouzhou1.png`"/>
+          <img :src="`${$config.rootPath}ouzhou1.png?version=${$config.version}`"/>
           <div>其他城市出发</div>
-          <img :src="`${$config.rootPath}ouzhou2.png`"/>
+          <img :src="`${$config.rootPath}ouzhou2.png?version=${$config.version}`"/>
         </div>
         <div v-else>
           <div class="title">澳洲机票信息</div>
           <div></div>
-          <img :src="`${$config.rootPath}aozhou1.png`"/>
+          <img :src="`${$config.rootPath}aozhou1.png?version=${$config.version}`"/>
         </div>
       </div>
     </div>

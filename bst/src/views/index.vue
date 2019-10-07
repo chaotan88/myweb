@@ -7,10 +7,20 @@
         <span>特惠行程动态</span>
       </div>
       <div class="limited-time">
-        <div class="item" v-for="(item, index) in hots" :key="index">
+        <!-- <el-carousel :interval="4000" type="card" height="200px">
+          <el-carousel-item v-for="(item, index) in hots" :key="index">
+            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`">
+            <p @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</p>
+            <div><span>&yen;{{item.offerPrice}}</span><span>&yen;{{item.price}}</span></div>
+          </el-carousel-item>
+        </el-carousel> -->
+        <!-- <div class="item" v-for="(item, index) in hots" :key="index">
           <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`">
           <p @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</p>
           <div><span>&yen;{{item.offerPrice}}</span><span>&yen;{{item.price}}</span></div>
+        </div> -->
+        <div class="item" v-for="(item, index) in hots" :key="index" @click="toList('0')">
+          <img :src="`${$config.hotPath}/${item}.jpg?version=${$config.version}`">
         </div>
       </div>
       <div class="air-type-list">
@@ -89,6 +99,14 @@
         </div>
       </div>
     </div>
+    <div class="company-odds">
+      <div class="title">互动专区</div>
+      <div class="gou-tong">
+        <img :src="`${$config.chartPath}goutong1.png?version=${$config.version}`"/>
+        <img :src="`${$config.chartPath}goutong2.png?version=${$config.version}`"/>
+        <img :src="`${$config.chartPath}goutong3.png?version=${$config.version}`"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -103,12 +121,16 @@ export default {
       ouzhouCity: [],
       meizhouAir: [],
       aozhouAir: [],
-      ouzhouAir: []
+      ouzhouAir: [],
+      start: 0,
+      size: 3,
+      hotss: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
     }
   },
   methods: {
     groupData() {
-      this.hots = airs.filter(da => da.isHot);
+      // this.hots = airs.filter(da => da.isHot);
+      this.groupHotData()
       this.meizhouAir = airs.filter(da => (da.island === '美洲' && da.islandRecommend));
       this.aozhouAir = airs.filter(da => (da.island === '澳洲' && da.islandRecommend));
       this.ouzhouAir = airs.filter(da => (da.island === '欧洲' && da.islandRecommend));
@@ -146,10 +168,20 @@ export default {
     },
     toList(item) {
       this.$router.push({ path: `/airTicketsList/${item}` })
+    },
+    groupHotData() {
+      if ((this.start + 1) * this.size > this.hotss.length) {
+        this.start = 0;
+      }
+      this.hots = this.hotss.filter((da, index) => index > this.start * this.size && index <= (this.start + 1) * this.size)
+      this.start += 1
     }
   },
   mounted() {
     this.groupData();
+    // setInterval(() => {
+    //   this.groupHotData()
+    // }, 8000)
   }
 }
 </script>
@@ -169,15 +201,21 @@ export default {
       }
       .limited-time {
         margin-top: 20px;
+        transition: width 200ms;
+        transition: all 0.5s linear;
+        transform: translate3d(0, 0, 0);
+        // transform: translateX(205px) scale(1);
+        // transform: translateX(785.15px) scale(0.83);
         .item {
           display: inline-block;
-          width: 285px;
-          height: 290px;
+          // width: 285px;
+          // height: 290px;
           border: 1px solid #eee;
           margin-right: 10px;
+          cursor: pointer;
           img {
-            width: 269px;
-            height: 192px;
+            width: 359px;
+            height: 397px;
             margin-left: 8px;
           }
           p {
@@ -303,6 +341,56 @@ export default {
             }
           }
         }
+      }
+    }
+    .company-odds {
+      width: 1200px;
+      margin: auto;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      .title {
+        font-size: 26px;
+        color: #333;
+        width: 1200px;
+        margin: 0 auto;
+        // border-left: 3px solid #39ABFF;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        position: relative;
+      }
+      .title:before {
+        content: '';
+        width: 5px;
+        height: 30px;
+        background: #39ABFF;
+        position: absolute;
+        top: 5px;
+        left: -10px;
+      }
+      .odds-cards {
+        display: flex;
+        .odds-item {
+          position: relative;
+          margin-right: 20px;
+          img:nth-child(2) {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            margin-left: -40px;
+          }
+          div {
+            position: absolute;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 400;
+            bottom: 20px;
+            left: 50%;
+            margin-left: -28px;
+          }
+        }
+      }
+      .gou-tong {
+        display: flex;
       }
     }
   }
