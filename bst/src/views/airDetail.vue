@@ -132,7 +132,7 @@
       :modal="true"
       :modal-append-to-body="false"
     >
-      <img :src="`${$config.rootPath}concat-wechart.jpg`" style="width: 200px; height: 200px;"/>
+      <img :src="`${$config.rootPath}concat-wechart1.jpg`" style="width: 200px; height: 200px;"/>
     </el-dialog>
   </div>
 </template>
@@ -161,7 +161,7 @@ export default {
       airDetail: {
         selectImg: 0
       },
-      detailImgList: ['','','','',''],
+      detailImgList: ['','','',''],
       showCode: false
     };
   },

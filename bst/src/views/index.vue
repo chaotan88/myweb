@@ -19,9 +19,10 @@
           <p @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</p>
           <div><span>&yen;{{item.offerPrice}}</span><span>&yen;{{item.price}}</span></div>
         </div> -->
-        <div class="item" v-for="(item, index) in hots" :key="index" @click="toList('0')">
+        <!-- <div class="item" v-for="(item, index) in hots" :key="index" @click="toList('0')">
           <img :src="`${$config.hotPath}/${item}.jpg?version=${$config.version}`">
-        </div>
+        </div> -->
+        <scorllList :lists="hotss" @itemClick="toList('0')"></scorllList>
       </div>
       <div class="air-type-list">
         <div class="left1">
@@ -42,8 +43,8 @@
         </div>
         <div class="right">
           <div v-for="(item, index) in meizhouAir" :key="index" class="right-item" v-if="index < 8">
-            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`"/>
-            <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
+            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg?version=${$config.version}`"/>
+            <div class="name" @click="toDetail(item)" :title="`${item.from}-${item.to} ${item.name}`">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
         </div>
@@ -67,8 +68,8 @@
         </div>
         <div class="right">
           <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item" v-if="index < 8">
-            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg`"/>
-            <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
+            <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg?version=${$config.version}`"/>
+            <div class="name" @click="toDetail(item)" :title="`${item.from}-${item.to} ${item.name}`">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
         </div>
@@ -92,8 +93,8 @@
         </div>
         <div class="right">
           <div v-for="(item, index) in aozhouAir" :key="index" class="right-item" v-if="index < 8">
-            <img :src="`${$config.rootPath}/airImage/${item.images[0]}.jpg`"/>
-            <div class="name" @click="toDetail(item)">{{item.from}}-{{item.to}} {{item.name}}</div>
+            <img :src="`${$config.rootPath}/airImage/${item.images[0]}.jpg?version=${$config.version}`"/>
+            <div class="name" @click="toDetail(item)" :title="`${item.from}-${item.to} ${item.name}`">{{item.from}}-{{item.to}} {{item.name}}</div>
             <div class="price">&yen;{{item.price}}</div>
           </div>
         </div>
@@ -111,7 +112,8 @@
 </template>
 
 <script>
-import {airs, citys} from '@/views/datas/airData';
+import {airs, citys} from '@/views/datas/airData?version=1'
+import scorllList from '@/views/components/scorllList.vue';
 export default {
   data() {
     return {
@@ -126,6 +128,9 @@ export default {
       size: 3,
       hotss: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
     }
+  },
+  components: {
+    scorllList
   },
   methods: {
     groupData() {

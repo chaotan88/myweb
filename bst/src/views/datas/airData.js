@@ -5,10 +5,10 @@ const airs = [
         to: '纽约', // 到达城市
         price: 15000, // 原价
         offerPrice: 13900, // 优惠价
-        name: '东航特惠 商务舱 头等 机票 直飞自由行 接送机服务', // 机票名称
-        images: ['1', '2', '3', '4'], // 轮播图 1代表 1.jpg 图片目录在/static/images/airImage下面,如果不配置, 默认用['1', '2', '3', '4']
+        name: '东航特惠 商务舱 头等 机票 直飞自由行  ', // 机票名称
+        images: ['1', '2', '4'], // 轮播图 1代表 1.jpg 图片目录在/static/images/airImage下面,如果不配置, 默认用['1', '2', '3', '4']
         // 详情图 1代表 1.jpg 图片目录在/static/images/airImage下面,如果不配置，默认用['5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
-        detais: ['5', '6', '7', '8', '9', '10', '11', '13'],
+        detais: ['niuyue'],
         isHot: true, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -18,9 +18,9 @@ const airs = [
         to: '纽约', // 到达城市
         price: 15000, // 原价
         offerPrice: 13900, // 优惠价
-        name: '东航特惠 商务舱 头等 机票 直飞自由行 接送机服务', // 机票名称
+        name: '东航特惠 商务舱 头等 机票 直飞自由行  ', // 机票名称
         images: ['15', '16', '17', '18'], // 轮播图 1代表 1.jpg 图片目录在/static/images/airImage下面 注意每个数字唯一
-        detais: ['23', '24', '25', '26'], // 详情图 1代表 1.jpg 图片目录在/static/images/airImage下面
+        detais: ['niuyue'], // 详情图 1代表 1.jpg 图片目录在/static/images/airImage下面
         isHot: true, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -32,7 +32,7 @@ const airs = [
         offerPrice: 12200, // 优惠价
         name: '奥克兰往返 商务特惠 自由行', // 机票名称
         images: ['31', '32', '33'], // 轮播图 1代表 1.jpg 图片目录在/static/images/airImage下面
-        detais: ['34', '35', '36', '37', '38', '39'], // 详情图 1代表 1.jpg 图片目录在/static/images/airImage下面
+        detais: ['moerben', 'xini'], // 详情图 1代表 1.jpg 图片目录在/static/images/airImage下面
         isHot: true, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -54,8 +54,9 @@ const airs = [
         to: '纽约', // 到达城市
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
-        name: '美联航 全球航司直飞中转单程往返商务舱自由行接送机', // 机票名称
+        name: '美联航 全球航司直飞中转单程往返商务舱自由行  ', // 机票名称
         images: ['49'],
+        detais: ['niuyue'],
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -66,7 +67,8 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['50'],
-        name: '东方航空特惠直飞商务舱 自由行 接送机服务', // 机票名称
+        detais: ['jiujinshan'],
+        name: '东方航空特惠直飞商务舱 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -77,7 +79,8 @@ const airs = [
         price: 15600, // 原价
         offerPrice: 15600, // 优惠价
         images: ['51'],
-        name: ' 南方航空 商务舱 直飞 自由行 接送机 尊贵旅行', // 机票名称
+        detais: ['luoshanji'],
+        name: ' 南方航空 商务舱 直飞 自由行    尊贵旅行', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -88,6 +91,7 @@ const airs = [
         price: 19000, // 原价
         offerPrice: 19000, // 优惠价
         images: ['52'],
+        detais: ['niuyue'],
         name: '美联航 联合航空 直飞 往返 商务头等舱 自由行',
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
@@ -99,7 +103,8 @@ const airs = [
         price: 15500, // 原价
         offerPrice: 15500, // 优惠价
         images: ['53'],
-        name: '美联航直飞 机票 中转 往返 商务头等舱预定 接送机', // 机票名称
+        detais: ['duolunduo'],
+        name: '美联航直飞 机票 中转 往返 商务头等舱预定   ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -110,7 +115,8 @@ const airs = [
         price: 19800, // 原价
         offerPrice: 19800, // 优惠价
         images: ['54'],
-        name: '海南航空特惠 直飞 商务舱 自由行 接送机服务', // 机票名称
+        detais: ['boshidun'],
+        name: '海南航空特惠 直飞 商务舱 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -132,7 +138,7 @@ const airs = [
         price: 19500, // 原价
         offerPrice: 19500, // 优惠价
         images: ['56'],
-        name: '达美航空特惠 商务舱自由行 接送机服务', // 机票名称
+        name: '达美航空特惠 商务舱自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -143,6 +149,7 @@ const airs = [
         price: 12000, // 原价
         offerPrice: 12000, // 优惠价
         images: ['57'],
+        detais: ['moerben', 'xini'],
         name: '奥克兰往返 商务特惠 自由行', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
@@ -154,7 +161,8 @@ const airs = [
         price: 12000, // 原价
         offerPrice: 12000, // 优惠价
         images: ['58'],
-        name: '东方航空 直飞 商务舱 自由行 接送机服务 尊贵体验', // 机票名称
+        detais: ['xini'],
+        name: '东方航空 直飞 商务舱 自由行   尊贵体验', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -165,7 +173,7 @@ const airs = [
         price: 12200, // 原价
         offerPrice: 12200, // 优惠价
         images: ['59'],
-        name: '南方航空直飞 特惠商务舱 高端出行 接送机', // 机票名称
+        name: '南方航空直飞 特惠商务舱 高端出行   ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -176,6 +184,7 @@ const airs = [
         price: 13500, // 原价
         offerPrice: 13500, // 优惠价
         images: ['60'],
+        detais: ['aokelan'],
         name: '贝斯特商旅 新西兰航空自由行 单程 往返 商务舱', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
@@ -198,7 +207,8 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['62'],
-        name: '澳航 往返 自由行 国际机票 直飞中转商务舱 接送机服务', // 机票名称
+        detais: ['xini'],
+        name: '澳航 往返 自由行 国际机票 直飞中转商务舱  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -220,7 +230,8 @@ const airs = [
         price: 12200, // 原价
         offerPrice: 12000, // 优惠价
         images: ['64'],
-        name: '东方航空 直飞 商务舱 自由行 尊贵接送机服务', // 机票名称
+        detais: ['xini'],
+        name: '东方航空 直飞 商务舱 自由行 尊贵 ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -231,7 +242,7 @@ const airs = [
         price: 8000, // 原价
         offerPrice: 8000, // 优惠价
         images: ['65'],
-        name: '东方航空 直飞商务舱自由行 接送机服务 尊贵旅行', // 机票名称
+        name: '东方航空 直飞商务舱自由行   尊贵旅行', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -242,7 +253,8 @@ const airs = [
         price: 14000, // 原价
         offerPrice: 14000, // 优惠价
         images: ['66'],
-        name: ' 东方航空高端 商务舱 直飞 自由行 接送机服务', // 机票名称
+        detais: ['madeli'],
+        name: ' 东方航空高端 商务舱 直飞 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -252,8 +264,9 @@ const airs = [
         to: '慕尼黑', // 到达城市
         price: 19500, // 原价
         offerPrice: 19500, // 优惠价
-        images: ['67'],
-        name: '汉莎航空 直飞 商务舱 高端 自由行 接送机服务', // 机票名称
+        images: ['59'],
+        detais: ['munihei'],
+        name: '汉莎航空 直飞 商务舱 高端 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -263,8 +276,9 @@ const airs = [
         to: '慕尼黑', // 到达城市
         price: 19700, // 原价
         offerPrice: 19700, // 优惠价
-        images: ['68'],
-        name: '汉莎航空 直飞高端商务舱 自由行 接送机服务', // 机票名称
+        images: ['56'],
+        detais: ['munihei'],
+        name: '汉莎航空 直飞高端商务舱 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -275,7 +289,8 @@ const airs = [
         price: 17000, // 原价
         offerPrice: 17000, // 优惠价
         images: ['69'],
-        name: '汉莎航空 直飞 自由行 商务舱 接送机', // 机票名称
+        detais: ['falankefu'],
+        name: '汉莎航空 直飞 自由行 商务舱   ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -286,7 +301,8 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['70'],
-        name: '国际机票汉莎航空 直飞 往返商务舱自由行 接送机', // 机票名称
+        detais: ['falankefu'],
+        name: '国际机票汉莎航空 直飞 往返商务舱自由行   ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -297,7 +313,8 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['71'],
-        name: '东方航空 直飞商务舱自由行 接送机服务 尊贵旅行体验', // 机票名称
+        detais: ['bali'],
+        name: '东方航空 直飞商务舱自由行   尊贵旅行体验', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -308,7 +325,8 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['72'],
-        name: '阿联酋航空 往返直飞 商务舱 自由行 接送机服务', // 机票名称
+        detais: ['dibai'],
+        name: '阿联酋航空 往返直飞 商务舱 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -319,7 +337,7 @@ const airs = [
         price: 19800, // 原价
         offerPrice: 19800, // 优惠价
         images: ['73'],
-        name: '汉莎航空 直飞商务舱自由行 接送机服务', // 机票名称
+        name: '汉莎航空 直飞商务舱自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -330,7 +348,7 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['74'],
-        name: '南方航空 直飞 商务舱 高端自由行 接送机服务', // 机票名称
+        name: '南方航空 直飞 商务舱 高端自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -341,7 +359,8 @@ const airs = [
         price: 15888, // 原价
         offerPrice: 15888, // 优惠价
         images: ['75'],
-        name: '南方航空 直飞商务舱自由行 尊贵接送机服务', // 机票名称
+        detais: ['lundun'],
+        name: '南方航空 直飞商务舱自由行 尊贵 ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -352,7 +371,7 @@ const airs = [
         price: 11000, // 原价
         offerPrice: 11000, // 优惠价
         images: ['76'],
-        name: '南方航空 特惠 直飞 商务舱 自由行 接送机服务', // 机票名称
+        name: '南方航空 特惠 直飞 商务舱 自由行  ', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中
     },
@@ -396,6 +415,7 @@ const airs = [
         price: 4980, // 原价
         offerPrice: 4980, // 优惠价
         images: ['80'],
+        detais: ['dongjing'],
         name: '东方航空往返商务舱 自由行', // 机票名称
         isHot: false, // 是否为热门, 若为true 则展示在首页限时优惠栏目,
         islandRecommend: true // 是否所属洲推荐产品,若为true 则展示在对应洲的首页栏目中

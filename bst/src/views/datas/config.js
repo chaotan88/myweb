@@ -10,5 +10,5 @@ export default {
 	chartPath: 'http://112.74.203.16/chart/',
 	airDetailPath: 'http://112.74.203.16/airDetail/',
 	hotPath: 'http://112.74.203.16/hots/',
-	version: 1
+	version: 6
 }
