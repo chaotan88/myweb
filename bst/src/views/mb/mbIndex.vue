@@ -1,30 +1,85 @@
 <template>
-  <div class="mobile-home">
-    <div class="header">
-      <div class="home-header-left">
-        <img :src="`${$config.rootPath}logo.png`">
-        <div>
-          <p>贝斯特国际商务服务有限公司</p>
-          <P>我 为 您 旅 行 服 务 而 骄 傲！</P>
+  <div class="mobile-index">
+    <div class="index-content">
+      <div>
+        <div class="banner">
+          <swiper
+            loop
+            auto
+            dots-class="swiper-dots"
+            dots-position="center"
+            height="50vw"
+            :interval="5000"
+          >
+            <swiper-item class="banner1">
+              <img :src="`${$config.rootPath}baner1.png`">
+            </swiper-item>
+            <swiper-item class="banner1">
+              <img :src="`${$config.rootPath}baner2.png`">
+            </swiper-item>
+          </swiper>
+        </div>
+        <div class="products container">
+          <div class="search-input">
+            <input v-model="value" placeholder="更多机票信息请点击咨询"/>
+            <span>搜索</span>
+          </div>
+          <div class="content2">
+            <div class="wrap" @click="toService(0)">
+              <img src="../../assets/images/icon1.png">
+              <h4>国际机票</h4>
+            </div>
+            <div class="wrap" @click="toService(1)">
+              <img src="../../assets/images/icon2.png">
+              <h4>服务优势</h4>
+            </div>
+            <div class="wrap" @click="toService(2)">
+              <img src="../../assets/images/icon3.png">
+              <h4>机票信息</h4>
+            </div>
+            <div class="wrap" @click="toService(3)">
+              <img src="../../assets/images/icon4.png">
+              <h4>新闻咨询</h4>
+            </div>
+            <div class="wrap" @click="toService(3)">
+              <img src="../../assets/images/icon5.png">
+              <h4>关于我们</h4>
+            </div>
+            <div class="wrap" @click="toService(3)">
+              <img src="../../assets/images/icon6.png">
+              <h4>联系我们</h4>
+            </div>
+            <div class="wrap" @click="toService(3)">
+              <img src="../../assets/images/icon7.png">
+              <h4>感恩节特供</h4>
+            </div>
+          </div>
+        </div>
+        <div class="title"><span>热门购票</span><span @click="toOtherRoute('/allAirTickets')">更多</span></div>
+        <div class="hot-product">
+          <mbList :lists="hotList"></mbList>
+          <!-- <div class="banner1" v-for="item in hotList" @click="toDetail(item)">
+            <img :src="`${$config.rootPath}airImage/${item.images[1]}.jpg`" v-if="item.images">
+            <img :src="`${$config.rootPath}airImage/1.jpg`" v-else>
+            <div class="price">{{item.to}} - &yen;{{item.offerPrice}}</div>
+          </div> -->
+      </div>
+      <div class="title"><span>新闻咨询</span><span>更多</span></div>
+      <div>
+        <div v-for="(iten, index) in newsList" :key="index">
+          <span></span>
         </div>
       </div>
+      <!-- <div class="today-price">
+        <div v-for="item in hotList">
+          <img :src="`${$config.rootPath}airImage/${item.images[1]}.jpg`" v-if="item.images">
+          <img :src="`${$config.rootPath}airImage/1.jpg`" v-else>
+          <div>{{item.from}} - {{item.to}}</div>
+          <div class="item-remark">{{item.remark}}</div>
+        </div>
+      </div> -->
+      </div>
     </div>
-    <router-view></router-view>
-    <div class="bottom">
-      <img :src="`${$config.rootPath}/phone1.png`" @click="callTel"/>
-      <img :src="`${$config.rootPath}/qq1.png`" @click="toQQ"/>
-      <img :src="`${$config.rootPath}/wx1.png`" @click="showWechart = true"/>
-      <img :src="`${$config.rootPath}/home1.png`" @click="toHome()"/>
-    </div>
-    <el-dialog
-      title="长按保存二维码"
-      :visible.sync="showWechart"
-      width="80%"
-      :modal="false"
-      :before-close="handleClose"
-      class="wechart-dialog">
-      <img :src="`${$config.rootPath}concat-wechart1.jpg`"/>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -149,36 +204,10 @@ export default {
 };
 </script>
 <style rel="stylesheet/less" lang="less">
-.mobile-home {
+.mobile-index {
   background-color: #ffffff;
   height: 100%;
-  .header {
-    display: flex;
-    position: absolute;
-    top: 0;
-    height: 65px;
-    width: 100%;
-    padding: 5px;
-    .home-header-left {
-        display: inline-block;
-        img {
-          width: 120px;
-          height: 55px;
-        }
-        div {
-          float: right;
-          p:nth-child(1) {
-            color: #000;
-            font-size: 16px;
-          }
-          p:nth-child(2) {
-            color: #999;
-            font-size: 12px;
-          }
-        }
-      }
-  }
-  .home-content {
+  .index-content {
     height: ~'calc(100% - 115px)';
     overflow: auto;
     margin-top: 75px;
@@ -403,7 +432,7 @@ export default {
   }
 
   .solution {
-    background-image: url(../assets/images/index-soultion-bg.jpg);
+    background-image: url(../../assets/images/index-soultion-bg.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     h1 {
@@ -535,27 +564,6 @@ export default {
         width: 30%;
         margin-bottom: 0.24rem;
       }
-    }
-  }
-  .bottom {
-    position: absolute;
-    bottom: 0;
-    height: 40px;
-    background: #eee;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    img {
-      height: 20px;
-      margin-top: 10px;
-    }
-  }
-  .wechart-dialog {
-    .el-dialog__title {
-      font-size: 12px;
-    }
-    img {
-      width: calc(100% - 40px);
     }
   }
 }

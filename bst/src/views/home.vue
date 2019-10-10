@@ -143,7 +143,7 @@ export default {
       }    
       return flag;    
     }
-    // if (!IsPC()) this.$router.push({path: 'moblie'});
+    if (!IsPC()) this.$router.push({path: '/moblie'});
   },
   methods: {
     querySearch(queryString, cb) {

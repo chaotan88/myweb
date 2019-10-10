@@ -12,6 +12,8 @@ import AirDetail from '@/views/airDetail.vue'
 import NewsDetai from '@/views/newsDetai.vue'
 
 import MobileHome from '@/views/mobileHome.vue'
+import MbIndex from '@/views/mb/mbIndex.vue'
+import AllAirTickets from '@/views/mb/allAirTickets.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -72,7 +74,20 @@ export default new Router({
     }, {
       path: '/moblie',
       name: 'mobile',
-      component: MobileHome
+      component: MobileHome,
+      redirect: '/mbIndex',
+      children: [
+        {
+          path: '/mbIndex',
+          name: 'mbIndex',
+          component: MbIndex
+        },
+        {
+          path: '/allAirTickets',
+          name: 'allAirTickets',
+          component: AllAirTickets
+        }
+      ]
     }
   ]
 })

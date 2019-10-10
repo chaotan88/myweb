@@ -45,7 +45,7 @@
           <div v-for="(item, index) in meizhouAir" :key="index" class="right-item" v-if="index < 8">
             <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg?version=${$config.version}`"/>
             <div class="name" @click="toDetail(item)" :title="`${item.from}-${item.to} ${item.name}`">{{item.from}}-{{item.to}} {{item.name}}</div>
-            <div class="price">&yen;{{item.price}}</div>
+            <div class="price">&yen;{{item.offerPrice}}</div>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
           <div v-for="(item, index) in ouzhouAir" :key="index" class="right-item" v-if="index < 8">
             <img :src="`${$config.rootPath}airImage/${item.images[0]}.jpg?version=${$config.version}`"/>
             <div class="name" @click="toDetail(item)" :title="`${item.from}-${item.to} ${item.name}`">{{item.from}}-{{item.to}} {{item.name}}</div>
-            <div class="price">&yen;{{item.price}}</div>
+            <div class="price">&yen;{{item.offerPrice}}</div>
           </div>
         </div>
       </div>
@@ -95,18 +95,19 @@
           <div v-for="(item, index) in aozhouAir" :key="index" class="right-item" v-if="index < 8">
             <img :src="`${$config.rootPath}/airImage/${item.images[0]}.jpg?version=${$config.version}`"/>
             <div class="name" @click="toDetail(item)" :title="`${item.from}-${item.to} ${item.name}`">{{item.from}}-{{item.to}} {{item.name}}</div>
-            <div class="price">&yen;{{item.price}}</div>
+            <div class="price">&yen;{{item.offerPrice}}</div>
           </div>
         </div>
       </div>
     </div>
     <div class="company-odds">
       <div class="title">互动专区</div>
-      <div class="gou-tong">
+      <oddList></oddList>
+      <!-- <div class="gou-tong">
         <img :src="`${$config.chartPath}goutong1.png?version=${$config.version}`"/>
         <img :src="`${$config.chartPath}goutong2.png?version=${$config.version}`"/>
         <img :src="`${$config.chartPath}goutong3.png?version=${$config.version}`"/>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -114,6 +115,7 @@
 <script>
 import {airs, citys} from '@/views/datas/airData?version=1'
 import scorllList from '@/views/components/scorllList.vue';
+import oddList from '@/views/components/oddList.vue';
 export default {
   data() {
     return {
@@ -130,7 +132,8 @@ export default {
     }
   },
   components: {
-    scorllList
+    scorllList,
+    oddList
   },
   methods: {
     groupData() {
@@ -372,31 +375,31 @@ export default {
         top: 5px;
         left: -10px;
       }
-      .odds-cards {
-        display: flex;
-        .odds-item {
-          position: relative;
-          margin-right: 20px;
-          img:nth-child(2) {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            margin-left: -40px;
-          }
-          div {
-            position: absolute;
-            font-size: 18px;
-            color: #fff;
-            font-weight: 400;
-            bottom: 20px;
-            left: 50%;
-            margin-left: -28px;
-          }
-        }
-      }
-      .gou-tong {
-        display: flex;
-      }
+      // .odds-cards {
+      //   display: flex;
+      //   .odds-item {
+      //     position: relative;
+      //     margin-right: 20px;
+      //     img:nth-child(2) {
+      //       position: absolute;
+      //       top: 30px;
+      //       left: 50%;
+      //       margin-left: -40px;
+      //     }
+      //     div {
+      //       position: absolute;
+      //       font-size: 18px;
+      //       color: #fff;
+      //       font-weight: 400;
+      //       bottom: 20px;
+      //       left: 50%;
+      //       margin-left: -28px;
+      //     }
+      //   }
+      // }
+      // .gou-tong {
+      //   display: flex;
+      // }
     }
   }
 </style>

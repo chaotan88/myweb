@@ -85,7 +85,9 @@
             <p class="name">【包邮】{{airDetail.from}} - {{airDetail.to}} {{airDetail.name}}</p>
             <p class="price">
               价格
+              <span class="rel-price">{{airDetail.price}}元</span>
               <span>{{airDetail.offerPrice}}</span> 元
+              
             </p>
             <p class="city">
               <span>城市</span>
@@ -377,11 +379,17 @@ export default {
             font-size: 12px;
             background: #eee;
             padding-left: 20px;
+            line-height: 30px;
             span {
               color: #e53a3e;
               font-style: normal;
               font-size: 24px;
               margin-left: 30px;
+            }
+            .rel-price {
+              color: #999999;
+              font-size: 14px;
+              text-decoration: line-through;
             }
           }
           .city {
@@ -389,6 +397,7 @@ export default {
             font-family: Arial, "微软雅黑", "宋体";
             font-size: 12px;
             margin-left: 20px;
+            margin-top: 10px;
             span {
               margin-right: 30px;
               margin-top: 20px;
