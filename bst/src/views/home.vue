@@ -232,8 +232,8 @@ export default {
 </style>
 <style lang="less" scoped>
   .home {
-    overflow: auto;
     height: 100%;
+    min-width: 1300px;
     .set-site {
       height: 30px;
       background: #f5f5f5;

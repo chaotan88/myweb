@@ -141,8 +141,11 @@ function doAction()
 
 <body onload="wuisync();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
- <DIV id="div_bar" class="Bar">
-    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+ <DIV id="div_bar" class="Bar" style="margin-top: 20px;">
+        <span id="title" style="position:relative;left:10px">
+                Root CA Certificate
+            </span>
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
         <tr>
             <td>
 	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -163,10 +166,10 @@ function doAction()
                </table>
             </td>
         </tr>
-    </table>
+    </table> -->
   </DIV>
   
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup">
       <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -174,7 +177,7 @@ function doAction()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table>
-  </DIV>
+  </DIV> -->
 
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
@@ -215,15 +218,15 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCA_CERT0" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 0)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 0)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_TLSCA_CERT0" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(0)">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelCaCert(0)">
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_TLSCA_CERT0" value="0" class="unnamed11">
-                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(0)">
+                                          <input type="button" value="Display" class="submit-button" onClick="DisplayCaCert(0)">
                                       </td>
                                   </tr>
                               </table>
@@ -258,15 +261,15 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCA_CERT1" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 1)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 1)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_TLSCA_CERT1" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(1)">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelCaCert(1)">
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_TLSCA_CERT1" value="0" class="unnamed11">
-                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(1)">
+                                          <input type="button" value="Display" class="submit-button" onClick="DisplayCaCert(1)">
                                       </td>
                                   </tr>
                               </table>
@@ -301,15 +304,15 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCA_CERT2" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 2)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 2)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_TLSCA_CERT2" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(2)">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelCaCert(2)">
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_TLSCA_CERT2" value="0" class="unnamed11">
-                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(2)">
+                                          <input type="button" value="Display" class="submit-button" onClick="DisplayCaCert(2)">
                                       </td>
                                   </tr>
                               </table>
@@ -344,15 +347,15 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCA_CERT3" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 3)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 3)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_TLSCA_CERT3" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(3)">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelCaCert(3)">
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_TLSCA_CERT3" value="0" class="unnamed11">
-                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(3)">
+                                          <input type="button" value="Display" class="submit-button" onClick="DisplayCaCert(3)">
                                       </td>
                                   </tr>
                               </table>
@@ -387,15 +390,15 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCA_CERT4" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 4)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadCaCertAndSubmit(document.tls_ca_certificate, 4)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_TLSCA_CERT4" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelCaCert(4)">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelCaCert(4)">
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_TLSCA_CERT4" value="0" class="unnamed11">
-                                          <input type="button" value="Display" class="ShortSubBut" onClick="DisplayCaCert(4)">
+                                          <input type="button" value="Display" class="submit-button" onClick="DisplayCaCert(4)">
                                       </td>
                                   </tr>
                               </table>
@@ -420,7 +423,7 @@ function doAction()
       </table>
   </DIV>
   
-<DIV id="bottom" class="bottom">
+<!-- <DIV id="bottom" class="bottom">
     <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
                     <TR>
                         <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
@@ -441,7 +444,7 @@ function doAction()
         	  	</td>
         	  </tr>
     </table>
-  </DIV>
+  </DIV> -->
 </from>
 </body>
 </html>

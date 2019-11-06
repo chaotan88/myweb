@@ -20,54 +20,55 @@
           </swiper>
         </div>
         <div class="products container">
-          <div class="search-input">
+          <!-- <div class="search-input">
             <input v-model="value" placeholder="更多机票信息请点击咨询"/>
             <span>搜索</span>
-          </div>
+          </div> -->
           <div class="content2">
-            <div class="wrap" @click="toService(0)">
+            <div class="wrap" @click="toOtherRoute('/allAirTickets')">
               <img src="../../assets/images/icon1.png">
               <h4>国际机票</h4>
             </div>
-            <div class="wrap" @click="toService(1)">
-              <img src="../../assets/images/icon2.png">
-              <h4>服务优势</h4>
-            </div>
-            <div class="wrap" @click="toService(2)">
+            <div class="wrap" @click="toOtherRoute('/allAirTickets')">
               <img src="../../assets/images/icon3.png">
               <h4>机票信息</h4>
             </div>
-            <div class="wrap" @click="toService(3)">
+            <div class="wrap" @click="toOtherRoute('/mbNews')">
               <img src="../../assets/images/icon4.png">
               <h4>新闻咨询</h4>
             </div>
-            <div class="wrap" @click="toService(3)">
+            <div class="wrap" @click="toOtherRoute('/mbAboutMe')">
               <img src="../../assets/images/icon5.png">
               <h4>关于我们</h4>
             </div>
-            <div class="wrap" @click="toService(3)">
+            <div class="wrap" @click="toOtherRoute('/mbConcatMe')">
               <img src="../../assets/images/icon6.png">
               <h4>联系我们</h4>
             </div>
-            <div class="wrap" @click="toService(3)">
+            <div class="wrap">
+              <img src="../../assets/images/icon2.png">
+              <h4>更多优惠请咨询客服</h4>
+            </div>
+            <div class="wrap">
               <img src="../../assets/images/icon7.png">
-              <h4>感恩节特供</h4>
+              <h4>PC可查看完整版..</h4>
             </div>
           </div>
         </div>
         <div class="title"><span>热门购票</span><span @click="toOtherRoute('/allAirTickets')">更多</span></div>
         <div class="hot-product">
-          <mbList :lists="hotList"></mbList>
+          <mbList :lists="hotList" @itemClick="itemClick"></mbList>
           <!-- <div class="banner1" v-for="item in hotList" @click="toDetail(item)">
             <img :src="`${$config.rootPath}airImage/${item.images[1]}.jpg`" v-if="item.images">
             <img :src="`${$config.rootPath}airImage/1.jpg`" v-else>
             <div class="price">{{item.to}} - &yen;{{item.offerPrice}}</div>
           </div> -->
       </div>
-      <div class="title"><span>新闻咨询</span><span>更多</span></div>
-      <div>
-        <div v-for="(iten, index) in newsList" :key="index">
-          <span></span>
+      <div class="title"><span>新闻咨询</span><span @click="toOtherRoute('/mbNews')">更多</span></div>
+      <div class="new-list">
+        <div v-for="(item, index) in newsList" :key="index" @click="toNewsDetail(item)">
+          <p>{{item.title}}</p>
+          <p>{{item.date}}</p>
         </div>
       </div>
       <!-- <div class="today-price">
@@ -86,6 +87,7 @@
 import { Swiper, SwiperItem } from "vux";
 import { airs } from '@/views/datas/airData';
 import mbList from '@/views/mb/mbList.vue';
+import { hostNews } from "@/views/datas/data.js";
 function getResult (val) {
   let rs = []
   for (let i = 0; i < 20; i++) {
@@ -116,55 +118,24 @@ export default {
     this.hotList = airs;
   },
   methods: {
-    toDetail(item) {},
     toNews() {
       this.$router.push("/news");
-    },
-    toPartner() {
-      this.$router.push("/partner");
-    },
-    toService(v) {
-      if (v == 0) {
-        this.$router.push("/pinkong");
-      } else if (v == 1) {
-        this.$router.push("/jianguan");
-      } else if (v == 2) {
-        this.$router.push("/yunying");
-      } else if (v == 3) {
-        this.$router.push("/dashuju");
-      }
-    },
-    toProducts(v) {
-      if (v == 0) {
-        this.$router.push("/yunpeitong");
-      } else if (v == 1) {
-        this.$router.push("/yishitang");
-      }
-    },
-    toSolution(v) {
-      if (v == 0) {
-        this.$router.push("/quanwang");
-      } else if (v == 1) {
-        this.$router.push("/tuancan");
-      } else if (v == 2) {
-        this.$router.push("/shipin");
-      } else if (v == 3) {
-        this.$router.push("/fupin");
-      } else if (v == 4) {
-        this.$router.push("/nongye");
-      }
-    },
-    onIndexChange(index) {
-      this.newsIndex = index;
-    },
-    onImgError(item, $event) {
-      console.log(item, $event);
     },
     /**
      *  新闻列表
      */
     getNewsList() {
-
+      this.newsList = hostNews;
+    },
+    toNewsDetail(item) {
+      sessionStorage.setItem('mb-news-detail', JSON.stringify(item));
+      this.toOtherRoute('/mbNewsDetail');
+    },
+    itemClick(item) {
+      sessionStorage.setItem('mbAirInfo', JSON.stringify(item));
+      this.$router.push({
+        path: '/mbAirDetail'
+      });
     },
     callTel() {
       window.location.href = `tel:${this.$config.phone}`;
@@ -207,6 +178,7 @@ export default {
 .mobile-index {
   background-color: #ffffff;
   height: 100%;
+  overflow: hidden;
   .index-content {
     height: ~'calc(100% - 115px)';
     overflow: auto;
@@ -235,6 +207,7 @@ export default {
   }
   .title {
     padding: 0 10px;
+    margin: 20px 0;
     span:nth-child(1) {
       color: #555555;
       font-size: 18px;
@@ -270,7 +243,27 @@ export default {
         line-height: 30px;
         bottom: 0px;
         left: -5px;
-        width: calc(100% - 30px);
+        width: ~'calc(100% - 30px)';
+      }
+    }
+  }
+  .new-list {
+    font-size: 14px;
+    color: #666;
+    padding: 0 10px;
+    div {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      text-decoration: underline;
+      p:nth-child(1) {
+        flex: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      p:nth-child(2) {
+        flex: 1;
       }
     }
   }

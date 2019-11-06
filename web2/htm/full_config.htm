@@ -48,8 +48,11 @@ function loadcheck()
 
 <body onload="loadcheck();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
-  <DIV id="div_bar" class="Bar">
-    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+  <DIV id="div_bar" class="Bar" style="margin-top: 20px;">
+        <span id="title" style="position:relative;left:10px">
+                <%HTMLPRINTTEXT(Full_Configuration_File, Auto_Config.txt)%>
+            </span>
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
         <tr>
             <td>
 	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -72,9 +75,9 @@ function loadcheck()
                </table>
             </td>
         </tr>
-    </table>
+    </table> -->
   </DIV>
-  
+<!--   
   <DIV id="div_setup" class="Setup">
       <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
@@ -83,7 +86,7 @@ function loadcheck()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table>
-  </DIV>
+  </DIV> -->
   
   <DIV id="div_content" class="Content_TYPE1" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
@@ -92,8 +95,8 @@ function loadcheck()
                   <%if @status==0%>
                   <!-- show detail-->
                   <table id="setupTable" align="center" class="SetupTable" border="0" cellpadding="1" cellspacing="0" >
-                      <tr class="TRedit">
-                          <td  class="tdTitle">
+                      <tr class="" style="height: 50px;">
+                          <td  class="">
                               <Table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
                                       <Td  Align="center"><%HTMLPRINTTEXT(Full_Configuration_File, Auto_Config.txt)%></td>
@@ -118,9 +121,9 @@ function loadcheck()
                       <tr>
                         <td Align="center">
                            <form method="POST" name="autoform">
-                           <input type="button" value="<%HTMLPRINTTEXT(Loading_new_Configuration_File, button.txt)%>" name="apply" onClick="upload()">
-                           <input type="button" value="<%HTMLPRINTTEXT(Save_Current_Configuration_File, button.txt)%>" name="apply" onClick="javascript:down()">
-                           <input type="button" value="<%HTMLPRINTTEXT(Refresh, button.txt)%>" name="apply" onClick="Formsubmit(2)">
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(Loading_new_Configuration_File, button.txt)%>" name="apply" onClick="upload()">
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(Save_Current_Configuration_File, button.txt)%>" name="apply" onClick="javascript:down()">
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(Refresh, button.txt)%>" name="apply" onClick="Formsubmit(2)">
                            </form>
                         </td>
         	         </tr>
@@ -129,8 +132,8 @@ function loadcheck()
                   <%if @status==1%>
                   <!-- show reboot-->
                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
-                      <tr class="TRedit">
-                          <td  class="tdTitle">
+                      <tr class="" style="height: 50px;">
+                          <td  class="tdTitle1">
                               <Table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
                                       <Td  Align="center"><%HTMLPRINTTEXT(Upload_Ok_system_reboot...., Auto_Config.txt)%></td>
@@ -181,8 +184,8 @@ function loadcheck()
                <%if @status==2%>
                   <!-- show upgrade success without reboot-->
                   <table align="center" class="SetupTable" border="0" cellpadding="0" cellspacing="0">
-                      <tr class="TRedit">
-                          <td  class="tdTitle">
+                      <tr class="" style="height: 50px;">
+                          <td  class="">
                               <Table border="0" width="100%" cellpadding="0" cellspacing="0">
                                   <tr>
                                       <Td  Align="center"><%HTMLPRINTTEXT(Upgrade_Success...., Auto_Config.txt)%></td>
@@ -194,7 +197,7 @@ function loadcheck()
                   <tr>
                         <td Align="center">
                         	<form method="POST" name="loginform">
-                           <input type="button" value="<%HTMLPRINTTEXT(OK, button.txt)%>" name="okp" onClick="Formsubmit(3)">   
+                           <input type="button" class="submit-button" value="<%HTMLPRINTTEXT(OK, button.txt)%>" name="okp" onClick="Formsubmit(3)">   
                            </form>
                         </td>
         	      </tr>
@@ -207,7 +210,7 @@ function loadcheck()
       </table>
   </DIV>
   
-  <DIV id="bottom" class="bottom">
+  <!-- <DIV id="bottom" class="bottom">
     <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
                     <TR>
                         <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
@@ -228,7 +231,7 @@ function loadcheck()
         	  	</td>
          </tr>
       </table>
-  </DIV>
+  </DIV> -->
 </body>
 </html>
 <%Update_READDATA(REBOOT)%>

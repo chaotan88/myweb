@@ -14,6 +14,11 @@ import NewsDetai from '@/views/newsDetai.vue'
 import MobileHome from '@/views/mobileHome.vue'
 import MbIndex from '@/views/mb/mbIndex.vue'
 import AllAirTickets from '@/views/mb/allAirTickets.vue'
+import MbAirDetail from '@/views/mb/mbAirDetail.vue'
+import MbConcatMe from '@/views/mb/mbConcatMe.vue'
+import MbAboutMe from '@/views/mb/mbAboutMe.vue'
+import MbNews from '@/views/mb/mbNews.vue'
+import MbNewsDetail from '@/views/mb/mbNewsDetail.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -86,6 +91,31 @@ export default new Router({
           path: '/allAirTickets',
           name: 'allAirTickets',
           component: AllAirTickets
+        },
+        {
+          path: '/mbAirDetail',
+          name: 'mbAirDetail',
+          component: MbAirDetail
+        },
+        {
+          path: '/mbConcatMe',
+          name: 'mbConcatMe',
+          component: MbConcatMe
+        },
+        {
+          path: '/mbAboutMe',
+          name: 'mbAboutMe',
+          component: MbAboutMe
+        },
+        {
+          path: '/mbNews',
+          name: 'mbNews',
+          component: MbNews
+        },
+        {
+          path: '/mbNewsDetail',
+          name: 'mbNewsDetail',
+          component: MbNewsDetail
         }
       ]
     }

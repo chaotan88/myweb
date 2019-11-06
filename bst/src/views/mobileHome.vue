@@ -555,7 +555,8 @@ export default {
       font-size: 12px;
     }
     img {
-      width: calc(100% - 40px);
+      width: ~'calc(100% - 40px)';
+      margin-left: 20px;
     }
   }
 }

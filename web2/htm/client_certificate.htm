@@ -497,8 +497,11 @@ function doAction()
 
 <body onload="wuisync();ShowAlert();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
- <DIV id="div_bar" class="Bar">
-    <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
+ <DIV id="div_bar" class="Bar" style="margin-top: 20px;">
+        <span id="title" style="position:relative;left:10px">
+                Client Certificate
+            </span>
+    <!-- <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
         <tr>
             <td>
 	       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -519,10 +522,10 @@ function doAction()
                </table>
             </td>
         </tr>
-    </table>
+    </table> -->
   </DIV>
   
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup">
       <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -530,7 +533,7 @@ function doAction()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table>
-  </DIV>
+  </DIV> -->
 
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
@@ -571,11 +574,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadDot1xCertAndSubmit(document.tls_security_dot1x)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadDot1xCertAndSubmit(document.tls_security_dot1x)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_DOT1X_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelDot1xCert()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelDot1xCert()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_DOT1X_TLSCERT" value="0" class="unnamed11">
@@ -614,11 +617,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadDot1xPkeyAndSubmit(document.tls_security_dot1x)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadDot1xPkeyAndSubmit(document.tls_security_dot1x)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_DOT1X_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelDot1xPkey()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelDot1xPkey()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -673,11 +676,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadSipCertAndSubmit(document.tls_security_sip)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadSipCertAndSubmit(document.tls_security_sip)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_SIP_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelSipCert()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelSipCert()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_SIP_TLSCERT" value="0" class="unnamed11">
@@ -716,11 +719,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadSipPkeyAndSubmit(document.tls_security_sip)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadSipPkeyAndSubmit(document.tls_security_sip)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_SIP_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelSipPkey()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelSipPkey()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -775,11 +778,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadAutoUpdateCertAndSubmit(document.tls_security_auto_update)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadAutoUpdateCertAndSubmit(document.tls_security_auto_update)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_AUTOUPDATE_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelAutoUpdateCert()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelAutoUpdateCert()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_AUTOUPDATE_TLSCERT" value="0" class="unnamed11">
@@ -818,11 +821,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadAutoUpdatePkeyAndSubmit(document.tls_security_auto_update)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadAutoUpdatePkeyAndSubmit(document.tls_security_auto_update)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_AUTOUPDATE_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelAutoUpdatePkey()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelAutoUpdatePkey()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -876,11 +879,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadLdapsCertAndSubmit(document.tls_security_ldaps)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadLdapsCertAndSubmit(document.tls_security_ldaps)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_LDAPS_TLSCERT" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelLdapsCert()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelLdapsCert()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           <input type="hidden" name="DISPLAY_LDAPS_TLSCERT" value="0" class="unnamed11">
@@ -919,11 +922,11 @@ function doAction()
                                       </td>
                                       <td width="10%" class="TdMid" >
                                           <input type="hidden" name="LOAD_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Load" class="ShortSubBut" onClick="checkLoadLdapsPkeyAndSubmit(document.tls_security_ldaps)">
+                                          <input type="button" value="Load" class="submit-button" onClick="checkLoadLdapsPkeyAndSubmit(document.tls_security_ldaps)">
                                       </td>
-                                      <td width="6%" class="TdMid" >
+                                      <td width="10%" class="TdMid" >
                                           <input type="hidden" name="DEL_LDAPS_TLSPKEY" value="0" class="unnamed11">
-                                          <input type="button" value="Del" class="ShortSubBut" onClick="DelLdapsPkey()">
+                                          <input type="button" value="Del" class="submit-button" onClick="DelLdapsPkey()">
                                       </td>
                                       <td width="12%" class="TdMid" >
                                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -941,7 +944,7 @@ function doAction()
       
   </DIV>
 
-<DIV id="bottom" class="bottom">
+<!-- <DIV id="bottom" class="bottom">
     <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
                     <TR>
                         <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
@@ -962,7 +965,7 @@ function doAction()
         	  	</td>
         	  </tr>
     </table>
-  </DIV>
+  </DIV> -->
 </from>
 </body>
 </html>

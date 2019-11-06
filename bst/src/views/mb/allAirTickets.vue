@@ -19,15 +19,21 @@ export default {
   },
   mounted() {
     this.list = airs;
+    console.log(this.list);
   },
   methods: {
-    toDetail(item) {},
+    toDetail(item) {
+      sessionStorage.setItem('mbAirInfo', JSON.stringify(item));
+      this.$router.push({
+        path: '/mbAirDetail'
+      });
+    },
   }
 };
 </script>
 <style rel="stylesheet/less" lang="less">
     .all-list {
-      height: calc(100% - 115px);
+      height: ~'calc(100% - 115px)';
       margin-top: 75px;
       overflow-y: auto;
       .all-content {

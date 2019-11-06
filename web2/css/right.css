@@ -665,3 +665,9 @@ select::after {
 .TDEnd-hover:hover {
   background: #fff !important;
 }
+iframe[src$="Manu_Firmware_Upgrade.htm"] > .Setup {
+  display: none;
+}
+iframe[src$="Manu_Firmware_Upgrade.htm"] > .bottom {
+  display: none;
+}

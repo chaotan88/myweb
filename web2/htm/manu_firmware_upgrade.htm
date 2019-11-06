@@ -26,19 +26,19 @@
         document.configform.submit();
 
         var a = document.createElement("div"),
-    p = document.createElement("p"),
-    img = document.createElement("img"),
-     textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
-img.src="../../image/success.png";
-p.appendChild(textNode);
-var content = document.createElement("div");
-content.setAttribute('class', 'success-info');
-content.appendChild(img);
-content.appendChild(p);
-document.getElementsByTagName("body")[0].appendChild(content);
-setTimeout(function () {
-	content.parentNode.removeChild(content);
-},3000);
+        p = document.createElement("p"),
+        img = document.createElement("img"),
+        textNode = document.createTextNode('<%HTMLPRINTTEXT(SUCCESS, general.lang)%>');
+        img.src="../../image/success.png";
+        p.appendChild(textNode);
+        var content = document.createElement("div");
+        content.setAttribute('class', 'success-info');
+        content.appendChild(img);
+        content.appendChild(p);
+        document.getElementsByTagName("body")[0].appendChild(content);
+        setTimeout(function () {
+            content.parentNode.removeChild(content);
+        },3000);
 
         break;
      }
