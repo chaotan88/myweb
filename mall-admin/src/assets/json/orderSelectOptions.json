@@ -1,0 +1,32 @@
+{
+  "orderStatus": [{
+    "value": "1",
+    "label": "待付款"
+  }, {
+    "value": "2",
+    "label": "待发货"
+  }, {
+    "value": "3",
+    "label": "待收货"
+  }, {
+    "value": "5",
+    "label": "完成"
+  }, {
+    "value": "7",
+    "label": "已取消"
+  }],
+  "payStatus": [{
+    "value": "2",
+    "label": "已支付"
+  }, {
+    "value": "1",
+    "label": "未支付"
+  }],
+  "payMethods": [{
+    "value": "1",
+    "label": "微信支付"
+  }, {
+    "value": "2",
+    "label": "支付宝支付"
+  }]
+}

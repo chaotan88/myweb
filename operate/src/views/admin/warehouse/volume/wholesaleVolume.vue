@@ -1,0 +1,273 @@
+<!-- 批发卷管理 -->
+<template>
+  <common-tpl class="wholesale-volume-wrap" :footer="false">
+
+    <!-- 统计 -->
+    <template slot="main">
+      <div class="statistics-cen">
+        <dl class="ta-c fl-l">
+          <h3>
+            <span v-if="statisticsData.purchaseCouponTotal">{{statisticsData.purchaseCouponTotal | filterEmpty}}</span>
+            <template v-else>--</template>
+          </h3>
+          <h4>总批发券</h4>
+        </dl>
+        <dl class="ta-c fl-l">
+          <h3>{{statisticsData.purchaseCoupon || 0}}</h3>
+          <h4>未使用批发券</h4>
+        </dl>
+        <dl class="ta-c fl-l">
+          <h3>{{statisticsData.purchaseCouponHas || 0}}</h3>
+          <h4>已使用批发券</h4>
+        </dl>
+      </div>
+      <!-- 高级搜索组件 -->
+      <high-search @search="searchHandle" :textVisible = "false">
+        <div class="pos-r" slot="search">
+          <el-input placeholder="输入会员姓名/手机号" v-model.trim="formData.phone" @keyup.enter.native="searchHandle"></el-input>
+          <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
+        </div>
+        <template slot="edit">
+          <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
+        </template>
+      </high-search>
+
+      <!-- 列表 -->
+      <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
+        <el-table-column fixed prop="cardName" label="会员手机号">
+          <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="address" label="抢购总金额（元）" min-width="150">
+          <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="address" label="批发总金额（元）" min-width="150">
+          <template slot-scope="scope">{{scope.row.purchaseAmount | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="address" label="抢购次数" min-width="150">
+          <template slot-scope="scope">{{scope.row.grabNum | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="address" label="批发券总数" min-width="150">
+          <template slot-scope="scope">{{scope.row.purchaseCouponTotal | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="address" label="已使用批发券" min-width="150">
+          <template slot-scope="scope">{{scope.row.purchaseCouponHas | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="address" label="批发次数" min-width="150">
+          <template slot-scope="scope">{{scope.row.purchaseNum | filterEmpty}}</template>
+        </el-table-column>
+         <el-table-column prop="address" label="剩余批发券" min-width="150">
+          <template slot-scope="scope">{{scope.row.purchaseCoupon | filterEmpty}}</template>
+        </el-table-column>
+        <!-- 暂无数据 -->
+        <div slot="empty">
+          <no-data></no-data>
+        </div>
+      </el-table>
+
+      <!-- 分页 -->
+      <el-pagination background layout="prev, pager, next" :current-page="pageData.currentPage" :page-size="pageData.pageSize" :total="pageData.total" @current-change="pageChange" v-if="pageData.total">
+      </el-pagination>
+    </template>
+  </common-tpl>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      loading: false,  // loading
+      formData: {
+        phone: '' // 会员姓名/手机号
+      },
+      statisticsData: {},   // 统计数据
+      tableData: [],   // 列表数据
+      pageData: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      },
+      userInfo: {}     // 用户信息
+    }
+  },
+  mounted () {
+    this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
+    this.pageData.currentPage = parseInt(this.$route.query.page) || 1
+    // 判断是否同一模块，带出搜索记录
+    this.$Utils.filterSearchData('/admin/vip/center/', (res) => {
+      this.formData = res
+    })
+    this.getStatisticsData()    // 统计数据
+    this.getListData()
+  },
+  methods: {
+    /**
+     * 获取统计数据
+     */
+    getStatisticsData () {
+      this.$http.get('@ROOT_API/grab/getPurchaseCoupon', {}).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        this.statisticsData = resData.data
+      })
+    },
+
+    /**
+     * 获取列表数据
+     */
+    getListData (type) {
+      let url = ''
+      if (!type) {
+        url = '@ROOT_API/grab/getPurchaseCouponList'
+      } else {
+        url = 'grab/exportPurchaseCoupon'
+      }
+      let data = {
+        params: {
+          start: this.pageData.currentPage,
+          pageSize: this.pageData.pageSize,
+          phone: this.formData.phone
+        }
+      }
+      if (!type) {
+        this.loading = true
+        this.$http.get(url, data).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            this.pageData.total = 0
+            this.tableData = []
+            return false
+          }
+          this.pageData.total = resData.data.total
+          resData.data.list.forEach((row) => {
+            let regionArr = []
+            if (row.province) regionArr.push(row.province)
+            if (row.city) regionArr.push(row.city)
+            if (row.zone) regionArr.push(row.zone)
+            row.region = regionArr.join(', ')
+          })
+          this.tableData = resData.data.list
+        }).finally(() => {
+          this.loading = false
+        })
+      } else {
+        let filterParams = []
+        for (let key in data.params) {
+          filterParams.push(key + '=' + data.params[key])
+        }
+        window.open(this.$dm.ROOT_API + url + this.$global.PARAMS + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+      }
+    },
+
+    /**
+     * 搜索
+     */
+    searchHandle () {
+      this.pageChange(1)
+    },
+
+    /**
+     * 分页操作
+     */
+    pageChange (page) {
+      localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
+      if (this.pageData.currentPage === page) {
+        this.getListData()
+      } else {
+        this.pageData.currentPage = page
+        this.$router.push({query: {page: this.pageData.currentPage}})
+      }
+    },
+
+    /**
+     * 查看详情
+     */
+    viewDetailsHandle (row) {
+      if (!row) return false
+      localStorage.setItem(this.$global.SYSTEM + 'VipDetails', JSON.stringify(row))
+      setTimeout(() => {
+        this.$router.push('/admin/vip/center/details')
+      }, 200)
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.wholesale-volume-wrap{
+
+  .vip-search-wrap{
+    width: 20%;
+    padding-bottom: 20px;
+  }
+
+  .common-table-wrap{
+    padding: 0;
+    .el-table{
+      border: 1px solid #ebeef5;
+      border-bottom: none;
+    }
+  }
+}
+</style>
+<style lang="less">
+.wholesale-volume-wrap{
+  .search-head-wrap{
+    padding: 0 30px 20px 30px !important;
+  }
+  .statistics-cen{
+    display: flex;
+    justify-content: space-between;
+
+
+    dl{
+      width: 33.33%;
+      height: 140px;
+      padding-top: 40px;
+      margin-right: 20px;
+      margin-bottom: 20px;
+   /*   background: #c2e0fe url(/img/product-statistics-basic-bg.jpg) ;*/
+      background: #c2e0fe;
+      border-radius: 5px;
+      margin-right: 20px;
+      box-sizing: border-box;
+    }
+
+    h3,h4{
+      color: #666;
+      font-weight: inherit;
+    }
+  }
+
+  /*-----------搜索框----------*/
+  .vip-search-wrap{
+    width: 25%;
+    padding-bottom: 20px;
+
+    .el-input__inner{
+      border-radius: 30px;
+    }
+
+    span{
+      right: 20px;
+      top: 12px;
+      cursor:pointer
+    }
+
+    span:hover{
+      color: #409EFF;
+    }
+  }
+}
+</style>

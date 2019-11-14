@@ -1,0 +1,1663 @@
+<!-- sku -->
+<template>
+  <div class="sku-wrap">
+    <el-form :model="formData" :rules="rules" ref="sku-form" label-width="180px">
+      <template v-for="(item, index) in specList">
+        <el-form-item :label="item.standardName + '：'" class="pos-r checkbox-item">
+          <span class="el-icon-circle-close-outline cursor-p pos-a remove-btn" @click.prevent.stop="handleRemoveSpec(item, index)"></span>
+          <el-checkbox-group class="d-ib" v-model="specSelectList[index].goodsStandarValList">
+            <template v-for="(list, i) in item.goodsStandarValList">
+              <el-checkbox class="va-t" :label="list" border :title="specDisabled && !specSelectList[index].goodsStandarValList.length ? '只允许选择两种规格属性组成SKU' : ''" :disabled="specDisabled && !specSelectList[index].goodsStandarValList.length" @change="specChange">{{list.standardValName}}
+                <span class="el-icon-circle-close-outline pos-a close-btn" @click.prevent.stop="handleRemoveSpecVal(item.goodsStandarValList, list.id, i), handleRemoveSelectSpec(index, list.id)"></span>
+              </el-checkbox>
+            </template>
+            <el-input style="width: 260px" maxlength="30" placeholder="新增规格值(限30个字符)" class="va-t" v-model="item.addValue">
+              <template slot="append">
+                <span class="cursor-p" @click="handleAddSpec(item)">添加</span>
+              </template>
+            </el-input>
+          </el-checkbox-group>
+        </el-form-item>
+      </template>
+      <el-form-item prop="skuLen" label-width="120px">
+        <el-button type="primary" @click="handleCreateAttributeBefore(2)">添加规格</el-button>
+        <el-input v-model="formData.skuLen" class="d-n"></el-input>
+      </el-form-item>
+      <el-form-item label-width="100px">
+        <!--<el-table :data="formData.specTableData" style="width: 100%"  border>
+          <el-table-column label="默认规格" prop="date" width="80px">
+            <template slot-scope="scope">
+              <el-form-item prop="defaultSkuId" :rules="{required: true, message: '不能为空', trigger: 'change'}">
+                <el-radio class="none-radio-label" v-model="formData.defaultSkuId" :label="scope.$index" :disabled="parseInt(scope.row.disStatus) === 1" @change="defaultSkuChange($event, formData.specTableData, scope.$index)" :title="parseInt(scope.row.disStatus) === 1 ? '已被禁用，不能勾选' : ''"></el-radio>
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column v-for="(item, index) in skuTitle">
+            <template slot="header" slot-scope="slot">
+              {{item}}
+            </template>
+            <template slot-scope="scope">
+              <template v-if="typeof scope.row.standardValName !== 'string'">
+                <span>{{scope.row.standardValName[index]}}</span>
+              </template>
+              <template v-else>
+                <span v-if="scope.row.standardValName">{{scope.row.standardValName}}</span>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column label="条形码" min-width="140px">
+            <template slot-scope="scope">
+              <el-row type="flex">
+                <el-form-item :prop="'specTableData.' + scope.$index + '.externalNo'" :rules="ruleExternalNo">
+                  <el-input v-model="scope.row.externalNo" placeholder="请输入条形码"></el-input>
+                </el-form-item>
+                <span title="一键同步" class="" v-if="scope.$index === 0">
+                <svg class="icon icon-jiantou3 same-icon" aria-hidden="true" v-if="scope.$index === 0" @click="handleSync('externalNo')" >
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+              </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column label="当前库存" prop="currentGoodsNum" min-width="120px"></el-table-column>
+          <el-table-column label="调整库存" v-if="pageType !== 1" min-width="140px">
+            <template slot-scope="scope">
+              <el-row type="flex">
+                <el-form-item :prop="'specTableData.' + scope.$index + '.updateGoodsNum'" :rules="ruleAdjustStock">
+                  <el-input v-model="scope.row.updateGoodsNum" @focus="updateGoodsData = scope.row" @input="handleUpdateGoodsNum"></el-input>
+                </el-form-item>
+                <span title="一键同步" class="" v-if="scope.$index === 0">
+                <svg class="icon icon-jiantou3 same-icon" aria-hidden="true" v-if="scope.$index === 0" @click="handleSync('updateGoodsNum')" >
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+              </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column label="实际库存" prop="goodsNum" v-if="pageType !== 1"></el-table-column>
+          <el-table-column label="进货价" prop="" min-width="140px">
+            <template slot-scope="scope">
+              <el-row type="flex">
+                <el-form-item :prop="'specTableData.' + scope.$index + '.buyingPrice'" :rules="ruleBuyPrice">
+                  <el-input v-model="scope.row.buyingPrice" @blur="inpBlur(scope.$index, 'buyingPrice')"></el-input>
+                </el-form-item>
+                <span title="一键同步" class="" v-if="scope.$index === 0">
+                <svg class="icon icon-jiantou3 same-icon" aria-hidden="true" v-if="scope.$index === 0" @click="handleSync('buyingPrice')" >
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+              </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column label="销售价" prop="" min-width="140px">
+            <template slot-scope="scope">
+              <el-row type="flex">
+                <el-form-item :prop="'specTableData.' + scope.$index + '.goodsPrice'" :rules="ruleSalePrice">
+                  <el-input v-model="scope.row.goodsPrice" @blur="inpBlur(scope.$index, 'goodsPrice')" class="width-80"></el-input>
+                </el-form-item>
+                <span title="一键同步" class="" v-if="scope.$index === 0">
+                <svg class="icon icon-jiantou3 same-icon" aria-hidden="true" v-if="scope.$index === 0" @click="handleSync('goodsPrice')" >
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+               </span>
+              </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column label="利润率" prop="currentGoodsNum">
+            <template slot-scope="scope">
+              <span>{{getLiRunLi(scope.row)}}</span>
+&lt;!&ndash;              <template v-if="parseFloat(item.goodsPrice) > 0 && parseFloat(item.buyingPrice) > 0 && (!isNaN(item.goodsPrice)) && (!isNaN(item.buyingPrice)) && item.whetherSpecial === false">{{((parseFloat(item.goodsPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsPrice) * 100).toFixed(2)}}%</template>
+              <template v-else-if="item.goodsSpecialPrice && item.buyingPrice && item.whetherSpecial === true">{{((parseFloat(item.goodsSpecialPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsPrice) * 100).toFixed(2)}}%</template>
+              <template v-else>{{'' | filterEmpty}}</template>&ndash;&gt;
+            </template>
+          </el-table-column>
+        &lt;!&ndash;  <el-table-column label="余额购买" prop="currentGoodsNum">
+            <template slot-scope="scope">
+
+            </template>
+          </el-table-column>&ndash;&gt;
+          <el-table-column min-width="160px">
+            <template slot="header" slot-scope="slot">
+              <el-select v-model="formData.getIntegral" style="padding: 0;height: 30px;line-height: 30px;" @change="integralChange">
+                <el-option label="按公式获得积分" :value="0"></el-option>
+                <el-option label="自定义获得积分" :value="1"></el-option>
+              </el-select>
+            </template>
+            <template slot-scope="scope">
+              <span v-if="formData.getIntegral === 0"></span>
+              <el-row  v-if="formData.getIntegral === 1" type="flex">
+                <el-form-item :prop="'specTableData.' + scope.$index + '.consumeGetPoint'" :rules="consumeGetPoint">
+                  <el-input v-model="scope.row.consumeGetPoint" @input="" ></el-input>
+                </el-form-item>
+                <span title="一键同步" class="" v-if="scope.$index === 0">
+                <svg class="icon icon-jiantou3 same-icon" aria-hidden="true" v-if="scope.$index === 0" @click="handleSync('consumeGetPoint')" >
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+                &lt;!&ndash; <el-checkbox v-model="scope.row.whetherGetPoint">
+                 </el-checkbox>&ndash;&gt;
+              &lt;!&ndash;  <span style="line-height: 40px;padding-left: 20px;">%</span>&ndash;&gt;
+              </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column min-width="160px">
+            <template slot="header" slot-scope="slot">
+              <el-checkbox :disabled="syncIndex === null" v-model="allSpecialSale" @change="specSaleStateChange" ></el-checkbox>
+              <span>是否特卖</span>
+            </template>
+            <template slot-scope="scope">
+              <div style="display: flex">
+                <el-checkbox class="" v-model="scope.row.whetherSpecial" @change="specSaleListChange" style="line-height: 80px;padding-right: 10px;"></el-checkbox>
+                <el-form-item :prop="'specTableData.' + scope.$index + '.goodsSpecialPrice'" :rules="rulePrice">
+                  <el-input v-model="scope.row.goodsSpecialPrice" :disabled="!scope.row.whetherSpecial" @blur="inpBlur(scope.$index, 'goodsSpecialPrice')" width="80px"></el-input>
+                </el-form-item>
+                <span title="一键同步" class="" v-if="scope.$index === 0">
+                  <svg class="icon icon-jiantou3 same-icon" aria-hidden="true" v-if="scope.$index === 0" @click="handleSync('goodsSpecialPrice')" >
+                    <use xlink:href="#icon-jiantou3"></use>
+                  </svg>
+                </span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>-->
+        <table class="spec-table sku-table">
+          <tr>
+            <th class="ta-c" width="60px">默认规格</th>
+            <th :class="{'vertical-line': index === 1}" v-for="(item, index) in skuTitle" width="120px">{{item}}</th>
+            <th class="vertical-line" width="140px"><div>条形码</div></th>
+            <th class="vertical-line ta-c" width="80px">当前库存</th>
+            <th class="vertical-line" width="120px" v-if="pageType !== 1">调整库存</th>
+            <th class="vertical-line" width="120px" v-if="pageType !== 1">实际库存</th>
+            <th class="vertical-line" width="120px"><div class="with-asterisk">进货价</div></th>
+            <th class="vertical-line" width="120px"><div class="with-asterisk">销售价</div></th>
+            <th class="vertical-line" width="100px">利润率</th>
+            <!-- <th class="vertical-line">条形码</th>-->
+            <!-- <th class="ta-l vertical-line" width="150px"><el-checkbox :disabled="examine === 2 || syncIndex === null" v-model="allSpecialSale" @change="specSaleStateChange"></el-checkbox>&nbsp;&nbsp;是否特卖</th>
+             <th class="ta-l vertical-line" width="150px"><el-checkbox :disabled="examine === 2 || syncIndex === null" v-model="allExchange" @change="specIntegralStateChange"></el-checkbox>&nbsp;&nbsp;积分兑换</th>
+             <th class="ta-l vertical-line" width="150px"><el-checkbox :disabled="examine === 2 || syncIndex === null" v-model="allIntegral" @change="specGetIntegralStateChange"></el-checkbox>&nbsp;&nbsp;获得积分</th>
+             -->
+            <th class="ta-l vertical-line" width="150px">
+              <el-select v-model="formData.getIntegral" style="padding: 0;height: 30px;line-height: 30px;" @change="integralChange">
+                <el-option label="按公式获得积分" :value="0"></el-option>
+                <el-option label="自定义获得积分" :value="1"></el-option>
+              </el-select>
+            </th>
+            <th class="ta-l vertical-line" width="150px"><el-checkbox :disabled="syncIndex === null" v-model="allSpecialSale" @change="specSaleStateChange"></el-checkbox>&nbsp;&nbsp;是否特卖</th>
+            <!-- <th class="vertical-line">操作</th>-->
+          </tr>
+          <tr v-for="(item, index) in formData.specTableData" v-if="item.visible !== false">
+            <td class="ta-c default-sku-radio">
+              <el-radio class="none-radio-label" v-model="formData.defaultSkuId" :label="index"  @change="defaultSkuChange($event, formData.specTableData, index)"></el-radio>
+              <!--<el-radio class="none-radio-label" v-model="formData.defaultSkuId" :label="index" :disabled="parseInt(item.disStatus) === 1" @change="defaultSkuChange($event, formData.specTableData, index)" :title="parseInt(item.disStatus) === 1 ? '已被禁用，不能勾选' : ''"></el-radio>-->
+            </td>
+            <template v-if="typeof item.standardValName !== 'string'">
+              <td>{{item.standardValName[0]}}</td>
+              <td>{{item.standardValName[1]}}</td>
+              <!-- <td v-for="list in item.standardValName" v-if="item.standardValName">{{list}}</td> -->
+            </template>
+            <template v-else>
+              <td v-if="item.standardValName">{{item.standardValName}}</td>
+            </template>
+            <!-- <td>{{item.externalNo | filterEmpty}}</td>-->
+            <!-- 条形吗 -->
+            <td class="pd-r" >
+              <el-form-item :prop="'specTableData.' + index + '.externalNo'" :rules="ruleExternalNo">
+                <el-input v-model="item.externalNo" @blur="inpBlur(index, 'buyingPrice')"></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn">
+                <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0" @click="handleSync('externalNo', index)">
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+            </td>
+            <!-- 当前库存 -->
+            <!--<td class="ta-c">{{item.goodsNum}}</td>-->
+            <td :class="{'pd-r': pageType === 1}">
+              <el-form-item :prop="'specTableData.' + index + '.currentGoodsNum'" :rules="ruleCurrentGoodsNum">
+                <el-input v-model="item.currentGoodsNum" :disabled="pageType !== 1" @focus="updateGoodsData = item" @input="handleAddGoodsNum"></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn" v-if="pageType === 1">
+                <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0 && formData.specTableData.length > 1" @click="handleSync('currentGoodsNum')">
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+            </td>
+            <!-- 调整库存 -->
+            <td class="pd-r" v-if="pageType !== 1">
+              <el-form-item :prop="'specTableData.' + index + '.updateGoodsNum'" :rules="ruleAdjustStock">
+                <el-input v-model="item.updateGoodsNum" @focus="updateGoodsData = item" @input="handleUpdateGoodsNum"></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn">
+                <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0" @click="handleSync('updateGoodsNum', index)">
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+            </td>
+            <td class="ta-c" v-if="pageType !== 1">
+              <span>{{item.goodsNum}}</span>
+            <!--  <el-input v-model="item.goodsNum" disabled></el-input>-->
+            </td>
+            <!-- 进货价 -->
+            <td class="pd-r">
+              <el-form-item :prop="'specTableData.' + index + '.buyingPrice'" :rules="ruleBuyPrice">
+                <el-input v-model="item.buyingPrice" @change="getIntegralPoint($event,formData.specTableData)"  @blur="inpBlur(index, 'buyingPrice')"></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn">
+                <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0" @click="handleSync('buyingPrice', index)">
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+            </td>
+            <!-- 销售价 -->
+            <td class="pd-r">
+              <el-form-item :prop="'specTableData.' + index + '.goodsPrice'" :rules="ruleSalePrice">
+                <el-input v-model="item.goodsPrice"  @change="getIntegralPoint($event,formData.specTableData)" @blur="inpBlur(index, 'goodsPrice')"></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn">
+                <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0" @click="handleSync('goodsPrice', index)">
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+            </td>
+            <!-- 利润利 -->
+            <td class="ta-c">
+              <span>{{getLiRunLi(item)}}</span>
+              <!-- <template v-if="item.whetherSpecial">{{((item.goodsSpecialPrice - item.buyingPrice) / item.goodsSpecialPrice) | numToFixed | filterEmpty('%')}}</template> -->
+              <!-- <template v-else>{{((item.goodsPrice - item.buyingPrice) / item.goodsPrice) | numToFixed | filterEmpty('%')}}</template> -->
+              <!--              <template v-if="item.goodsPrice > 0 && item.buyingPrice > 0 && item.whetherSpecial === false">{{((parseFloat(item.goodsPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsPrice) * 100).toFixed(2)}}%</template>
+                            <template v-else-if="item.goodsSpecialPrice > 0 && item.buyingPrice > 0 && item.whetherSpecial === true">{{((parseFloat(item.goodsSpecialPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsPrice) * 100).toFixed(2)}}%</template>
+                            <template v-else>{{'' | filterEmpty}}</template>-->
+            </td>
+            <!-- 获得积分 -->
+            <td class="pd-l pd-r ">
+              <span v-if="formData.getIntegral === 0">{{item.culaPoint}}</span>
+              <!-- <el-checkbox class="pos-a" v-model="item.whetherGetPoint" @change="specGetIntegralListChange"></el-checkbox>-->
+              <el-form-item :prop="'specTableData.' + index + '.consumeGetPoint'" :rules="consumeGetPoint" v-if="formData.getIntegral === 1">
+                <el-input v-model="item.consumeGetPoint" :disabled="!item.whetherGetPoint" style=""></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn " v-if="formData.getIntegral === 1">
+                  <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0" @click="handleSync('consumeGetPoint', index)">
+                    <use xlink:href="#icon-jiantou3"></use>
+                  </svg>
+                </span>
+            </td>
+            <!-- 条形码 -->
+            <!--<td class="pd-r">{{item.externalNo}}</td>-->
+            <!-- 特卖 -->
+            <td class="pd-l pd-r">
+              <el-checkbox class="pos-a" v-model="item.whetherSpecial"  @change="specSaleListChange('specTableData.' + index + '.goodsSpecialPrice')"></el-checkbox>
+              <el-form-item :prop="'specTableData.' + index + '.goodsSpecialPrice'" :rules="rulePrice">
+                <el-input v-model="item.goodsSpecialPrice" :disabled="!item.whetherSpecial"  @change="getIntegralPoint($event,formData.specTableData)" @blur="inpBlur(index, 'goodsSpecialPrice')"></el-input>
+              </el-form-item>
+              <span title="一键同步" class="pos-a sync-btn">
+                <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === 0" @click="handleSync('goodsSpecialPrice', index)">
+                  <use xlink:href="#icon-jiantou3"></use>
+                </svg>
+              </span>
+            </td>
+            <!-- 积分兑换 -->
+            <!-- <td class="pd-l pd-r">
+               <el-checkbox class="pos-a" v-model="item.whetherPoints" @change="specIntegralListChange"></el-checkbox>
+               <el-form-item :prop="'specTableData.' + index + '.points'" :rules="rulePoints">
+                 <el-input v-model="item.points" :disabled="!item.whetherPoints"></el-input>
+               </el-form-item>
+               <span title="一键同步" class="pos-a sync-btn">
+                 <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('points', index)">
+                   <use xlink:href="#icon-jiantou3"></use>
+                 </svg>
+               </span>
+             </td>-->
+            <!--            <td width="80px">
+                          <el-button type="text" @click="handleClearSpec(item)">清空</el-button>
+                          <el-button type="text" :disabled="parseInt(formData.defaultSkuId) === parseInt(index)" @click="handleDisStatusChange(item)" v-if="formData.specTableData.length > 1">{{parseInt(item.disStatus) === 1 ? '启用' : '禁用'}}</el-button>
+                        </td>-->
+          </tr>
+        </table>
+        <!--   <table class="spec-table sku-table">
+             <tr>
+               <th class="vertical-line">默认规格</th>
+               <th width="100px" :class="{'vertical-line': index === 1}" v-for="(item, index) in skuTitle">{{item}}</th>
+               <th class="vertical-line">条形码</th>
+               <th class="vertical-line">当前库存</th>
+               <th class="vertical-line" v-if="pageType !== 1">调整库存</th>
+               <th class="vertical-line" v-if="pageType !== 1">实际库存</th>
+               <th class="vertical-line"><div class="with-asterisk">进货价</div></th>
+               <th class="vertical-line"><div class="with-asterisk">销售价</div></th>
+               &lt;!&ndash;新增&ndash;&gt;
+               <th class="vertical-line"><div class="with-asterisk">利润率</div></th>
+               <th class="vertical-line"><div class="with-asterisk">余额购买</div></th>
+               <th class="vertical-line">
+                 <div class="with-asterisk">
+                   <el-select v-model="formData.getIntegral" >
+                     <el-option label="按公式获得积分" :value="1"></el-option>
+                     <el-option label="自定义获得积分" :value="2"></el-option>
+                   </el-select>
+                 </div>
+               </th>
+   &lt;!&ndash;            <th class="vertical-line">
+                 <div class="with-asterisk">
+                   <el-checkbox v-model="formData.isSale">是否特卖</el-checkbox>
+                 </div>
+               </th>&ndash;&gt;
+   &lt;!&ndash;            <th class="vertical-line" v-if="formData.isSale === true">
+                 <div class="with-asterisk">
+                   <el-checkbox v-model="formData.xiaofei">组合消费积分</el-checkbox>
+                 </div>
+               </th>
+               <th class="vertical-line" v-if="formData.isSale === true">
+                 <div class="with-asterisk">
+                   <el-checkbox v-model="formData.xindou">组合芯豆</el-checkbox>
+                 </div>
+               </th>&ndash;&gt;
+                <th class="ta-l vertical-line"><el-checkbox :disabled="syncIndex === null" v-model="allSpecialSale" @change="specSaleStateChange"></el-checkbox>&nbsp;&nbsp;是否特卖</th>
+               &lt;!&ndash; <th class="ta-l vertical-line"><el-checkbox :disabled="syncIndex === null" v-model="allExchange" @change="specIntegralStateChange"></el-checkbox>&nbsp;&nbsp;是否积分兑换</th> &ndash;&gt;
+               <th class="vertical-line">操作</th>
+             </tr>
+             <tr v-for="(item, index) in formData.specTableData" v-if="item.visible !== false">
+               <td class="ta-c default-sku-radio">
+                 <el-radio v-model="formData.defaultSkuId" :label="item.id" :disabled="parseInt(item.disStatus) === 1" :title="parseInt(item.disStatus) === 1 ? '已被禁用，不能勾选' : ''"></el-radio>
+               </td>
+               <template v-if="typeof item.standardValName !== 'string'">
+                 <td>{{item.standardValName[0]}}</td>
+                 <td>{{item.standardValName[1]}}</td>
+                 &lt;!&ndash; <td v-for="list in item.standardValName" v-if="item.standardValName">{{list}}</td> &ndash;&gt;
+               </template>
+               <template v-else>
+                 <td v-if="item.standardValName">{{item.standardValName}}</td>
+               </template>
+               &lt;!&ndash; 条形码 &ndash;&gt;
+               <td class="pd-r">
+                 <el-form-item :prop="'specTableData.' + index + '.externalNo'" :rules="ruleExternalNo">
+                   <el-input v-model="item.externalNo" placeholder="请输入条形码"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('externalNo')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td>
+               &lt;!&ndash; 当前库存 &ndash;&gt;
+               <td :class="{'pd-r': pageType === 1}">
+                 <el-form-item :prop="'specTableData.' + index + '.currentGoodsNum'" :rules="ruleCurrentGoodsNum">
+                   <el-input v-model="item.currentGoodsNum" :disabled="pageType !== 1" @input="handleAddGoodsNum"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn" v-if="pageType === 1">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('currentGoodsNum')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td>
+               &lt;!&ndash; 调整库存 &ndash;&gt;
+               <td class="pd-r" v-if="pageType !== 1">
+                 <el-form-item :prop="'specTableData.' + index + '.updateGoodsNum'" :rules="ruleAdjustStock">
+                   <el-input v-model="item.updateGoodsNum" @focus="updateGoodsData.currentGoodsNum = item" @input="handleUpdateGoodsNum"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('updateGoodsNum')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td>
+               &lt;!&ndash; 当前库存 &ndash;&gt;
+               <td v-if="pageType !== 1">
+                 <el-input v-model="item.goodsNum" disabled></el-input>
+               </td>
+               &lt;!&ndash; 进货价 &ndash;&gt;
+               <td class="pd-r">
+                 <el-form-item :prop="'specTableData.' + index + '.buyingPrice'" :rules="ruleBuyPrice">
+                   <el-input v-model="item.buyingPrice" @blur="inpBlur(index, 'buyingPrice')"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('buyingPrice')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td>
+               &lt;!&ndash; 销售价 &ndash;&gt;
+               <td class="pd-r">
+                 <el-form-item :prop="'specTableData.' + index + '.goodsPrice'" :rules="ruleSalePrice">
+                   <el-input v-model="item.goodsPrice" @blur="inpBlur(index, 'goodsPrice')"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('goodsPrice')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td>
+               &lt;!&ndash; 利润率 &ndash;&gt;
+               <td class="pd-r">
+                 <template v-if="item.goodsPrice && item.buyingPrice">{{((parseFloat(item.goodsPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsPrice) * 100).toFixed(2)}}%</template>
+                 <template v-else>{{'' | filterEmpty}}</template>
+               </td>
+               &lt;!&ndash; 余额购买 &ndash;&gt;
+               <td class="pd-r">
+                 <span>1111</span>
+               </td>
+               &lt;!&ndash; 获得积分方式 &ndash;&gt;
+               <td class="pd-r">
+                 <span v-if="formData.getIntegral === 1">1111</span>
+                 <el-row  v-if="formData.getIntegral === 2">
+                   <el-checkbox v-model="formData.isSale">
+                     <el-input v-model="item.currentGoodsNum" @input=""></el-input>
+                   </el-checkbox>
+                   <sapn>%</sapn>
+                 </el-row>
+               </td>
+               &lt;!&ndash; 是否特卖 &ndash;&gt;
+               <td class="pd-l pd-r">
+                 <el-checkbox class="pos-a" v-model="item.whetherSpecial" @change="specSaleListChange"></el-checkbox>
+                 <el-form-item :prop="'specTableData.' + index + '.goodsSpecialPrice'" :rules="rulePrice">
+                   <el-input v-model="item.goodsSpecialPrice" :disabled="!item.whetherSpecial" @blur="inpBlur(index, 'goodsSpecialPrice')"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('goodsSpecialPrice')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td>
+   &lt;!&ndash;            <td class="pd-l pd-r">
+                 <el-checkbox class="pos-a" v-model="item.whetherPoints" @change="specIntegralListChange"></el-checkbox>
+                 <el-form-item :prop="'specTableData.' + index + '.points'" :rules="rulePoints">
+                   <el-input v-model="item.points" :disabled="!item.whetherPoints"></el-input>
+                 </el-form-item>
+                 <span title="一键同步" class="pos-a sync-btn">
+                   <svg class="icon icon-jiantou3 cursor-p full-wrap" aria-hidden="true" v-if="index === syncIndex" @click="handleSync('points')">
+                     <use xlink:href="#icon-jiantou3"></use>
+                   </svg>
+                 </span>
+               </td> &ndash;&gt;
+               &lt;!&ndash; 是否特卖 &ndash;&gt;
+             &lt;!&ndash;  <td class="pd-r">
+                 <el-checkbox v-model="formData.isSale">是否特卖</el-checkbox>
+                 <el-input v-model="item.currentGoodsNum" :disabled="item." @input=""></el-input>
+               </td>&ndash;&gt;
+   &lt;!&ndash;            &lt;!&ndash; 组合消费积分 &ndash;&gt;
+               <td class="pd-r" v-if="formData.isSale === true">
+                 <el-input v-model="item.currentGoodsNum" @input="">%</el-input>
+               </td>
+               &lt;!&ndash; 组合芯豆 &ndash;&gt;
+               <td class="pd-r" v-if="formData.isSale === true">
+                 <el-input v-model="item.currentGoodsNum" @input="">%</el-input>
+               </td>&ndash;&gt;
+
+               <td width="80px">
+                 <el-button type="text" @click="handleClearSpec(item)">清空</el-button>
+                 <el-button type="text" @click="handleDisStatusChange(item)">{{parseInt(item.disStatus) === 1 ? '启用' : '禁用'}}</el-button>
+               </td>
+             </tr>
+           </table>-->
+      </el-form-item>
+    </el-form>
+
+    <el-dialog
+      :title="addType === 1 ? '添加参数' : '添加规格'"
+      :visible.sync="addAttributeVisible"
+      width="400px">
+      <el-form ref="add-attribute-form" :model="formData" :rules="rules" label-width="80px">
+        <el-form-item :label="addType === 1 ? '参数名称' : '规格名称'" prop="createAttributeName">
+          <el-input class="full-w" :placeholder="'请输入' + (addType === 1 ? '参数' : '规格') + '名称（30个字符内）'" maxlength="30" v-model="formData.createAttributeName"></el-input>
+        </el-form-item>
+        <el-form-item :label="addType === 1 ? '参数值' : '规格值'" prop="createAttributeValue">
+          <el-input class="full-w" :placeholder="'请输入' + (addType === 1 ? '参数' : '规格') + '值（多个以英文逗号分隔）'" v-model="formData.createAttributeValue"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="addAttributeVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleCreateAttribute('add-attribute-form')">保存</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+</template>
+
+<script>
+  export default {
+    props: {
+      // sku列表 (编辑)
+      assignSkuData: {
+        type: Array,
+        default: []
+      },
+      // 根据商品分类id (商品小类)筛选规格列表
+      goodsTypeId: {
+        type: Number,
+        default: null
+      },
+      // 供应商id
+      supplierId: {
+        type: Number,
+        default: null
+      },
+      // 分类层级
+      level: {
+        type: Number,
+        default: null
+      },
+      spec: {
+        type: Number,
+        default: 0
+      }
+    },
+    data () {
+      // 条形码
+      let validateExternalNo = (rule, value, callback) => {
+        let reg = /^[0-9a-zA-Z]{0,30}$/gi
+        if (value && !value.toString().match(reg)) return callback(new Error('限数字字母，30个字符长度'))
+        callback()
+      }
+
+      // 进货价
+      let validateBuyPrice = (rule, value, callback) => {
+        if (!value) return callback(new Error('请输入进货价'))
+        if (value && value <= 0) return callback(new Error('必须是大于0的数字'))
+        if (value && !value.toString().match(/^\d+\.\d{2}$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 销售价
+      let validateSalePrice = (rule, value, callback) => {
+        if (!value) return callback(new Error('请输入销售价'))
+        if (value && value <= 0) return callback(new Error('必须是大于0的数字'))
+        if (value && !value.toString().match(/^\d+\.\d{2}$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 当前库存
+      let validateNum = (rule, value, callback) => {
+        if (value && !value.toString().match(/^\d+$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 自定义积分
+      let validatePoints2 = (rule, value, callback) => {
+        let num = parseInt(rule.field.split('.')[1])
+        if (this.formData.specTableData[num].whetherGetPoint && !value && value !== 0) return callback(new Error('请输入自定义积分数量'))
+        if (value && !value.toString().match(/^\d+$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 积分兑换
+      let validatePoints = (rule, value, callback) => {
+        let num = parseInt(rule.field.split('.')[1])
+        if (this.formData.specTableData[num].whetherPoints && !value && value !== 0) return callback(new Error('请输入积分兑换价格'))
+        if (value && !value.toString().match(/^\d+$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 价格
+      let validatePrice = (rule, value, callback) => {
+        let num = parseInt(rule.field.split('.')[1])
+        if (this.formData.specTableData[num].whetherSpecial && !value) return callback(new Error('请输入特卖价格'))
+        if (value && !value.toString().match(/^\d+\.\d{2}$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 调整库存
+      let validateAdjustStock = (rule, value, callback) => {
+        if (value && !value.toString().match(/^[-]?\d+$/g)) return callback(new Error('请输入正确的数值'))
+        callback()
+      }
+
+      // 参数 || 规格名称
+      let validateCreateAttributeName = (rule, value, callback) => {
+        if (!value) return callback(new Error(this.addType === 1 ? '请输入参数名称' : '请输入规格名称'))
+        if (value.length > 30) return callback(new Error('30个字符以内'))
+        callback()
+      }
+
+      // 参数 || 规格值
+      let validateCreateAttributeValue = (rule, value, callback) => {
+        if (!value) return callback(new Error(this.addType === 1 ? '请输入参数值' : '请输入规格值'))
+        let splitVal = value.split(',')
+        let flag = true
+        splitVal.forEach((row) => {
+          if (row.length > 30) flag = false
+        })
+        if (!flag) return callback(new Error('单个值限制30个字符以内'))
+        callback()
+      }
+
+      // sku长度
+      let validateSkuLen = (rule, value, callback) => {
+        if (this.spec === 1 && !value) return callback(new Error(this.specList.length ? '请选择规格' : '规格不能为空'))
+        callback()
+      }
+      return {
+        isInit: false,                // 初始化完成
+        pageType: 2,                  // 页面类型 [1、新增，2、编辑]
+        formData: {
+          // ...start----------------------------------------------------------以下属性新增-------------------------------
+          getIntegral: 1,              // 获取积分方式：自定义
+          isSale: 1,                   // 是否特卖
+          defaultSkuId: '',            // 默认sku
+          // ...end-----------------------------------------------------------------------------------------
+          createAttributeName: '',
+          createAttributeValue: '',
+          skuLen: null,               // sku长度
+          specTableData: []
+        },
+        rules: {
+          // 添加参数
+          createAttributeName: [{required: true, validator: validateCreateAttributeName, trigger: 'blur'}],
+          createAttributeValue: [{required: true, validator: validateCreateAttributeValue, trigger: 'blur'}],
+          skuLen: [{validator: validateSkuLen, trigger: 'change'}]
+        },
+        skuTitle: [],                 // sku标题
+        specSelectList: [],           // 规格选择列表
+        specList: [],                 // 规格列表
+        specDisabled: false,          // 当规格选择2个时禁用其它选择
+        allSpecialSale: false,        // 是否特卖
+        allExchange: false,           // 是否积分兑换
+        syncIndex: null,              // 一键同步索引值
+        ruleExternalNo: [{validator: validateExternalNo, trigger: 'blur'}],
+        ruleBuyPrice: [{required: true, validator: validateBuyPrice, trigger: 'blur'}],
+        ruleSalePrice: [{required: true, validator: validateSalePrice, trigger: 'blur'}],
+        ruleCurrentGoodsNum: [{required: true, validator: validateNum, trigger: 'blur'}],
+        consumeGetPoint: [{required: true, validator: validatePoints2, trigger: 'blur'}],
+        ruleAdjustStock: [{validator: validateAdjustStock, trigger: 'blur'}],
+        rulePoints: [{validator: validatePoints, trigger: 'blur'}],
+        rulePrice: [{validator: validatePrice, trigger: 'blur'}],
+        addAttributeVisible: false,   // 添加参数
+        addType: 1,                   // 添加类型 [1、参数，2、规格]
+        goodsId: '',                  // 商品id
+        updateGoodsData: {},          // 当前调整库存数据
+        editSpecSelectList: [],       // 编辑商品初始化保存第一次sku选择规格
+        editGoodsTypeId: null,         // 编辑商品初始化保存第一次传入小类id
+        skusupplierId: null,               // 供应商id
+        goodsTypeLevel: null               // 分类层级
+      }
+    },
+
+    watch: {
+      'goodsTypeId' (value, old) {
+       // if (!value) return false
+       // if (this.pageType === 2 && this.isInit === true) {
+       //   this.getEditSpecList()
+       // } else {
+       //   this.getSpecList()
+       // }
+        if (this.pageType === 2 && this.isInit === true) {
+          if (value === this.editGoodsTypeId) {
+            this.getEditSpecList()
+          } else {
+            this.getSpecList(this.skusupplierId)
+          }
+        }
+        if (this.pageType === 1 && value !== this.editGoodsTypeId) this.getSpecList(this.skusupplierId)
+       // this.getSpecList()
+      },
+      'supplierId' (value) {
+        this.skusupplierId = value
+       // this.getSpecList()
+      },
+      'level' (value) {
+        this.goodsTypeLevel = value
+      },
+
+      'assignSkuData': {
+        handler (value) {
+          if (!value || !value.length) return false
+          this.formData.specTableData = []
+         // let filterDefaultSku = value.filter(row => parseInt(row.whetherDefaultSku) === 1)
+          if (value !== '' && value !== null) this.formData.getIntegral = value[0].whetherGetPoint
+          value.forEach((row) => {
+            let groupId = []
+            let standardValName = []
+            if (row.goodsSkuValList && row.goodsSkuValList.length) {
+              row.goodsSkuValList.forEach((list) => {
+                groupId.push(list.standardValId)
+                standardValName.push(list.standardValName)
+              })
+            }
+            // 选中默认sku
+          //  if (!this.formData.defaultSkuId && parseInt(row.disStatus) === 0 && (!filterDefaultSku.length || (filterDefaultSku.length && parseInt(filterDefaultSku[0].disStatus) === 1) || row.whetherDefaultSku === 1)) this.formData.defaultSkuId = row.id
+            this.formData.specTableData.push({
+              id: row.id,
+              groupId: groupId.length ? groupId.join('-') : row.id,
+              standardValName: standardValName.length === 1 ? standardValName[0] : standardValName,
+              visible: true,                        // 是否在列表显示
+              disStatus: row.disStatus,             // 0启用 1禁用
+              buyingPrice: row.buyingPrice,         // 进货价
+              goodsPrice: row.goodsPrice,           // 销售价
+              currentGoodsNum: row.currentGoodsNum, // 当前库存
+              updateGoodsNum: null,                 // 调整库存
+              goodsNum: row.goodsNum,               // 实际库存
+              whetherDefaultSku: row.whetherDefaultSku,  // 默认sku
+              whetherSpecial: parseInt(row.whetherSpecial) === 1 ? !!true : !!false,  // 是否特卖
+              goodsSpecialPrice: row.goodsSpecialPrice,                               // 特卖价格
+              // whetherPoints: parseInt(row.whetherPoints) === 1 ? !!true : !!false,    // 是否积分兑换
+              // points: row.points,                   // 兑换该商品所需积分
+              whetherGetPoint: parseInt(row.whetherGetPoint),  // 是否获得积分
+              goodsSkuValList: row.goodsSkuValList, // sku值集合,
+              externalNo: row.externalNo,            // 条形码
+              //  whetherGetPoint: row.whetherGetPoint,            // 获得积分
+              consumeGetPoint: row.consumeGetPoint             // 自定义积分
+            })
+          })
+          this.getIntegralPoint('111', this.formData.specTableData)
+          this.specChange()
+        },
+        deep: true
+      }
+    },
+
+    mounted () {
+      this.pageType = this.$route.path.match(/add/gi) ? 1 : 2
+      this.goodsId = parseInt(this.$route.query.id)
+      if (this.goodsId) this.getEditSpecList()
+      setTimeout(() => {
+        this.isInit = true
+        this.editGoodsTypeId = this.$Utils.deepCopy(this.goodsTypeId)
+      }, 500)
+    },
+
+    methods: {
+      /**
+       * 获取规格列表
+       */
+      getSpecList (supplierId) {
+        this.$http.post('@ROOT_API/standard/getStandardByGoodsType', {
+          attributeTypeId: this.goodsTypeId,
+          goodsId: this.goodsId,
+          supplierId: supplierId
+        }).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            return false
+          }
+          let results = resData.data
+          this.specList = results
+          console.log(this.specList)
+          this.specSelectList = []
+          results.forEach((row) => {
+            this.specSelectList.push({
+              id: row.id,
+              standardName: row.standardName,
+              goodsStandarValList: []
+            })
+          })
+          this.specChange()
+        })
+      },
+
+      /**
+       * 查询所有规格列表
+       */
+      getEditSpecList () {
+        this.$http.post('@ROOT_API/standard/getStandardByGoodsId', {
+        //  attributeTypeId: this.goodsTypeId,
+          goodsId: this.goodsId
+         // supplierId: this.supplierId
+        }).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            return false
+          }
+          let results = resData.data
+          this.specList = results
+          this.specSelectList = []
+          results.forEach((row, index) => {
+            let goodsStandarValList = []
+            if (row.goodsStandarValList && row.goodsStandarValList.length) {
+              row.goodsStandarValList.forEach((list) => {
+                if (list.isSelected === true) {
+                  goodsStandarValList.push(list)
+                }
+              })
+            }
+            this.specSelectList.push({
+              id: row.id,
+              standardName: row.standardName,
+              goodsStandarValList
+            })
+          })
+          this.syncIndex = 0
+          // this.specSaleListChange()
+          // this.specIntegralListChange()
+          this.specChange()
+        })
+      },
+
+      /**
+       * 创建参数前操作
+       */
+      handleCreateAttributeBefore (type) {
+        if (!this.goodsTypeId || !this.skusupplierId || this.goodsTypeLevel !== 3) {
+          this.$message({
+            message: '请选择商品三级分类和供应商',
+            duration: 1500,
+            type: 'error'
+          })
+          return false
+        }
+        if (type) this.addType = type
+        this.addAttributeVisible = true
+        this.formData.createAttributeName = ''
+        this.formData.createAttributeValue = ''
+      },
+
+      /**
+       * 创建参数
+       */
+      handleCreateAttribute (formName) {
+        this.$refs[formName].validate((valid) => {
+          if (!valid) return false
+          let standardValName = []
+          let splitVal = this.formData.createAttributeValue.split(',')
+          splitVal.forEach((row) => {
+            if (row) standardValName.push(row)
+          })
+          this.$http.post('@ROOT_API/standard/saveStandard', {
+            attributeTypeId: this.goodsTypeId,                // 是 int 商品分类id (商品小类)
+            standardName: this.formData.createAttributeName,  // 是 string  规格名称
+            standardValName: standardValName.join(','),      // 是 String  规格值 多个规格英文逗号分开
+            supplierNewId: this.skusupplierId   // 供应商id
+          }).then((res) => {
+            let resData = res.data
+            if (parseInt(resData.status) !== 1) {
+              this.$message({
+                message: resData.msg,
+                type: 'error',
+                duration: 1500
+              })
+              return false
+            }
+            this.$message({
+              message: resData.msg,
+              type: 'success',
+              duration: 1000
+            })
+            let results = resData.data
+            this.specList.push(results)
+            this.specSelectList.push({
+              id: results.id,
+              attributeType: 1,
+              standardName: results.standardName,
+              goodsStandarValList: []
+            })
+            this.addAttributeVisible = false
+          })
+        })
+      },
+
+      /**
+       * 新增规格值
+       */
+      handleAddSpec (obj) {
+        if (!obj.addValue) return false
+        this.$http.post('@ROOT_API/standard/saveStandardVal', {
+          standardId: obj.id,             // 是 int 商品分类id (商品小类)
+          standardValName: obj.addValue   // 是 string  规格名称
+        }).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            return false
+          }
+          this.$message({
+            message: resData.msg,
+            type: 'success',
+            duration: 1000
+          })
+          obj.addValue = ''
+          obj.goodsStandarValList.push({
+            id: resData.data.id,
+            standardValName: resData.data.standardValName
+          })
+          // this.specSelectList.unshift({
+          //   goodsStandarValList: []
+          // })
+        })
+      },
+
+      /**
+       * 移除参数
+       */
+      handleRemoveSpec (obj, index) {
+        this.$http.get('@ROOT_API/standard/delStandardById', {
+          params: {
+            standardId: obj.id
+          }
+        }).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              duration: 1500,
+              type: 'error'
+            })
+            return false
+          }
+          this.$message({
+            message: resData.msg,
+            duration: 1000,
+            type: 'success'
+          })
+          this.specList.splice(index, 1)
+          this.specSelectList.splice(index, 1)
+          this.specChange()
+        })
+      },
+
+      /**
+       * 移除参数值
+       */
+      handleRemoveSpecVal (obj, id, index) {
+        this.$http.get('@ROOT_API/standard/delStandardValById', {
+          params: {
+            standardValId: id
+          }
+        }).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              duration: 1500,
+              type: 'error'
+            })
+            return false
+          }
+          this.$message({
+            message: resData.msg,
+            duration: 1000,
+            type: 'success'
+          })
+          obj.splice(index, 1)
+          this.formData.specTableData.forEach((row, i) => {
+            if (row.id === id) this.formData.specTableData.splice(i, 1)
+          })
+        })
+      },
+
+      /**
+       * 移除已选择规格值
+       */
+      handleRemoveSelectSpec (index, id) {
+        this.specSelectList[index].goodsStandarValList.forEach((row, i) => {
+          if (row.id.toString() === id.toString()) this.specSelectList[index].goodsStandarValList.splice(i, 1)
+        })
+        this.specChange()
+        this.formData.defaultSkuId = ''
+      },
+
+      /**
+       * 规格选择
+       */
+      specChange (val) {
+        this.syncIndex = null
+        this.skuTitle = []
+        // 过滤单选或组合选择
+        // console.log(this.specSelectList)
+        let filterSelect = this.specSelectList.filter((row) => {
+          if (row.goodsStandarValList.length !== 0) {
+            this.skuTitle.push(row.standardName)
+            return row
+          }
+        })
+        this.formData.skuLen = filterSelect.length
+        this.specDisabled = this.skuTitle.length === 2 ? !!true : !!false
+        let tableIds = []
+        this.formData.specTableData.map((row, index) => {
+          row.visible = false
+          tableIds.push(row.groupId)
+        })
+        //  if (!filterSelect.length) this.formData.specTableData = []
+        if (!filterSelect.length) return false
+        let filterSpecGroup = filterSelect.length === 2 ? this.specGroup(filterSelect[0].goodsStandarValList, filterSelect[1].goodsStandarValList) : this.specGroup(filterSelect[0].goodsStandarValList)
+        filterSpecGroup.forEach((row) => {
+          if (tableIds.indexOf(row.groupId.toString()) === -1) {
+            this.formData.specTableData.push({
+              id: row.id,
+              groupId: row.groupId,
+              standardValName: row.standardValName,
+              visible: true,          // 是否在列表显示
+              disStatus: 0,           // 0启用 1禁用
+              buyingPrice: '',        // 进货价
+              goodsPrice: '',         // 销售价
+              externalNo: '',         // 条形码
+              currentGoodsNum: 0,     // 当前库存
+              updateGoodsNum: '',     // 调整库存
+              goodsNum: 0,            // 实际库存
+              whetherSpecial: false, // 是否特卖
+              goodsSpecialPrice: '',  // 特卖价格
+              //  whetherPoints: false,  // 是否积分兑换
+              //  points: '',              // 兑换该商品所需积分
+              //  whetherDefaultSku: 0,     // 默认sku
+              consumeGetPoint: '',       // 自定义积分
+              whetherGetPoint: this.formData.getIntegral       //   获得积分
+            })
+          } else {
+            this.formData.specTableData.forEach((list) => {
+              if (list.groupId.toString() === row.groupId.toString()) list.visible = true
+            })
+          }
+        })
+        this.formData.specTableData.forEach((row, index) => {
+          this.inpBlur(index, 'goodsSpecialPrice')
+          this.inpBlur(index, 'buyingPrice')
+          this.inpBlur(index, 'goodsPrice')
+          // this.$Utils.blurAutoCompletion(row, 'goodsSpecialPrice')
+          if (row.visible && this.syncIndex === null) this.syncIndex = index
+        })
+        this.specSaleListChange()
+        this.specIntegralListChange()
+        let effectiveData = this.formData.specTableData.filter(item => item.visible === true)
+        this.formData.specTableData = effectiveData
+        // 选中默认sku
+        this.formData.specTableData.forEach((item, index) => {
+          if (item.whetherDefaultSku === 1) {
+            this.formData.defaultSkuId = index
+          }
+        })
+        if (val === false) this.formData.defaultSkuId = ''
+      },
+
+      /**
+       * 规格组合
+       */
+      specGroup (first, second) {
+        let result = []
+        if (second) {
+          second.forEach((row) => {
+            first.forEach((list) => {
+              result.push({
+                id: '',
+                groupId: list.id + '-' + row.id,
+                standardValName: [list.standardValName, row.standardValName]
+              })
+            })
+          })
+        } else {
+          first.forEach((row) => {
+            result.push({
+              id: '',
+              groupId: row.id,
+              standardValName: row.standardValName
+            })
+          })
+        }
+        return result
+      },
+
+      /**
+       * 价格输入框自动补全价格
+       */
+      inpBlur (index, obj) {
+        this.$Utils.blurAutoCompletion(this.formData.specTableData[index], obj)
+      },
+
+      /**
+       * 一键同步
+       * @param  {[String]} key [需要同步的键]
+       */
+      handleSync (key) {
+        let defVal = null
+        this.formData.specTableData.forEach((row, index) => {
+          if (row.visible) {
+            if (defVal === null) defVal = row[key]
+            if (defVal) {
+              row[key] = defVal
+              if (key === 'updateGoodsNum') {
+                let currentGoodsNum = parseFloat(row.currentGoodsNum) || 0
+                row.goodsNum = currentGoodsNum + parseFloat(defVal)
+              }
+              if (key === 'currentGoodsNum') {
+                let updateGoodsNum = parseFloat(row.updateGoodsNum) || 0
+                row.goodsNum = updateGoodsNum + parseFloat(defVal)
+              }
+            }
+            this.$refs['sku-form'].clearValidate('specTableData.' + index + '.' + key)
+          }
+        })
+        this.$refs['sku-form'].clearValidate(key)
+        this.getIntegralPoint('111', this.formData.specTableData)
+      },
+
+      /**
+       * 新增时当前库存关联实际库存
+       */
+      handleAddGoodsNum (value) {
+        if (!value || isNaN(value)) return false
+        this.updateGoodsData.goodsNum = value
+      },
+
+      /**
+       * 调整库存
+       */
+      handleUpdateGoodsNum (value) {
+        if (!value || isNaN(value)) {
+          this.updateGoodsData.goodsNum = this.updateGoodsData.currentGoodsNum
+          return false
+        }
+        let currentGoodsNum = parseInt(this.updateGoodsData.currentGoodsNum)
+        this.updateGoodsData.goodsNum = currentGoodsNum ? currentGoodsNum + parseInt(value) : parseInt(value)
+      },
+
+      /**
+       * 是否全选特卖
+       */
+      specSaleStateChange (value) {
+        this.formData.specTableData.forEach((row) => {
+          if (row.visible) row.whetherSpecial = value
+        })
+        this.getIntegralPoint('111', this.formData.specTableData)
+      },
+      /**
+       * 修改自定义积分
+       */
+      integralChange (value) {
+        this.formData.specTableData.forEach((row) => {
+          if (row.visible) row.whetherGetPoint = value
+          if (row.visible) row.consumeGetPoint = ''
+        })
+        this.getIntegralPoint('111', this.formData.specTableData)
+      },
+      /**
+       * 按公式计算积分数
+       */
+      getIntegralPoint (type, list) {
+        let data = []
+        list.forEach(item => {
+          data.push({
+            id: item.id,
+            whetherGetPoint: item.whetherGetPoint,
+            whetherSpecial: item.whetherSpecial === true ? 1 : 0,
+            goodsSpecialPrice: parseFloat(item.goodsSpecialPrice),
+            buyingPrice: parseFloat(item.buyingPrice),
+            goodsPrice: parseFloat(item.goodsPrice)
+          })
+        })
+        let flag = data.every(item => {
+          if (item.whetherSpecial === 1) {
+            return item.goodsSpecialPrice > 0 && item.buyingPrice > 0 && item.goodsPrice > 0
+          } else {
+            return item.buyingPrice > 0 && item.goodsPrice > 0
+          }
+        })
+        if (this.formData.getIntegral === 0 && !isNaN(type) && flag === true) {
+          this.$http.post('@ROOT_API/goods/getBuySkuGetPointByParam', {
+            goodsSkuList: data
+          }).then((res) => {
+            let resData = res.data
+            if (parseInt(resData.status) === 1) {
+              list.forEach((item, index) => {
+                this.$set(item, 'culaPoint', '')
+                resData.data.forEach((itemm, indexx) => {
+                  if (index === indexx) {
+                    item.culaPoint = itemm.consumeGetPoint
+                  }
+                })
+              })
+            }
+          }).finally(() => {
+          })
+        }
+      },
+      /**
+       * 是否全选积分兑换
+       */
+      specIntegralStateChange (value) {
+        this.formData.specTableData.forEach((row) => {
+          if (row.visible) row.whetherPoints = value
+        })
+        this.getIntegralPoint('111', this.formData.specTableData)
+      },
+
+      /**
+       * 是否特卖列表状态改变
+       */
+      specSaleListChange () {
+        let status = true
+        this.formData.specTableData.forEach((row) => {
+          if (row.visible && row.whetherSpecial === false) status = false
+        })
+        this.allSpecialSale = status
+        this.getIntegralPoint('111', this.formData.specTableData)
+      },
+
+      /**
+       * 是否积分列表状态改变
+       */
+      specIntegralListChange (value) {
+        let status = true
+        this.formData.specTableData.forEach((row) => {
+          if (row.visible && row.whetherPoints === false) status = false
+        })
+        this.allExchange = status
+      },
+
+      /**
+       * 清除规格数据
+       */
+      handleClearSpec (obj) {
+        this.formData.specTableData.forEach((row) => {
+          if (row.groupId.toString() === obj.groupId.toString()) {
+            row.buyingPrice = ''
+            row.goodsPrice = ''
+            row.externalNo = ''
+            row.currentGoodsNum = ''
+            row.updateGoodsNum = ''
+            row.goodsNum = ''
+            row.goodsSpecialPrice = ''
+            // row.points = ''
+            row.whetherDefaultSku = 0
+            row.consumeGetPoint = ''    // 自定义积分
+          }
+        })
+      },
+
+      /**
+       * sku状态 禁用 || 启用
+       */
+      handleDisStatusChange (obj) {
+        obj.disStatus = parseInt(obj.disStatus) === 1 ? 0 : 1
+      },
+
+      /**
+       * 禁用规格数据
+       */
+      handleDisabledSpec (id) {
+        this.formData.specTableData.forEach((row) => {
+          if (row.id.toString() === id.toString()) row.disabled = true
+        })
+      },
+      /**
+       * 默认sku change
+       */
+      defaultSkuChange (val, data, index) {
+        data.forEach((item, i) => {
+          if (i === index) {
+            data[i].whetherDefaultSku = 1
+          } else {
+            data[i].whetherDefaultSku = 0
+          }
+        })
+      },
+      /**
+       * 校验表单
+       */
+      handleValidateForm () {
+        let filterSelect = this.specSelectList.filter((row) => row.goodsStandarValList.length !== 0)
+        this.formData.skuLen = filterSelect.length || null
+        this.$refs['sku-form'].validate((valid) => {
+          if (!valid) {
+            this.$emit('validate', false)
+            return false
+          } else {
+            if (this.formData.defaultSkuId !== null && this.formData.defaultSkuId !== '') {
+              let results = []
+              this.formData.specTableData.forEach((row) => {
+                if (row.visible) {
+                  // 过滤关联id
+                  let goodsSkuValList = []
+                  let splitId = row.groupId.toString().split('-')
+                  splitId.forEach((standardValId, i) => {
+                    goodsSkuValList.push({
+                      id: row.goodsSkuValList ? row.goodsSkuValList[i].id : '',
+                      standardId: filterSelect[i].id,
+                      standardValId
+                    })
+                  })
+                  // 组合结果集
+                  results.push({
+                    id: this.pageType === 2 ? row.id : '',
+                    buyingPrice: row.buyingPrice,
+                    goodsPrice: row.goodsPrice,
+                    currentGoodsNum: row.currentGoodsNum ? row.currentGoodsNum : 0,
+                    updateGoodsNum: row.updateGoodsNum ? row.updateGoodsNum : 0,
+                    goodsNum: row.goodsNum ? row.goodsNum : 0,
+                    disStatus: row.disStatus,
+                    whetherSpecial: row.whetherSpecial ? 1 : 0,
+                    goodsSpecialPrice: row.goodsSpecialPrice,
+                    // whetherPoints: row.whetherPoints ? 1 : 0,
+                    // points: row.points,
+                    goodsSkuValList: row.goodsSkuValList ? row.goodsSkuValList : goodsSkuValList,
+                    externalNo: row.externalNo,
+                    whetherDefaultSku: row.whetherDefaultSku,      // 默认sku
+                    whetherGetPoint: row.whetherGetPoint ? 1 : 0,      // 获得积分
+                    consumeGetPoint: row.consumeGetPoint      // 自定义积分
+                  })
+                }
+              })
+              // console.log('results: ', results)
+              // this.$emit('validate', false)
+              this.$emit('validate', true, results)
+              return true
+            } else {
+              this.$message({
+                message: '请选择默认sku',
+                type: 'error',
+                duration: 1500
+              })
+            }
+          }
+        })
+      },
+      /**
+       * 获取利润率
+       */
+      getLiRunLi (item) {
+        if (item.goodsSpecialPrice > 0 && item.buyingPrice > 0 && item.whetherSpecial === true) {
+          return ((parseFloat(item.goodsSpecialPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsSpecialPrice) * 100).toFixed(2) + '%'
+        } else if (item.goodsPrice > 0 && item.buyingPrice > 0 && item.whetherSpecial === false) {
+          return ((parseFloat(item.goodsPrice) - parseFloat(item.buyingPrice)) / parseFloat(item.goodsPrice) * 100).toFixed(2) + '%'
+        } else {
+          return '--'
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  .sku-wrap{
+
+    .close-btn, .remove-btn{
+      color: #999;
+      font-size: 16px;
+      background: #fff;
+      border-radius: 100%;
+    }
+
+    .remove-btn{
+      left: -30px;
+    }
+
+    .close-btn{
+      top: -5px;
+      right: -5px;
+      display: none;
+    }
+
+    .close-btn:hover, .remove-btn:hover{
+      color: #fff;
+      background: red;
+    }
+
+    .el-checkbox.is-bordered{
+      margin-left: 0;
+      margin-right: 30px;
+
+      .el-checkbox__input{
+        display: none !important;
+      }
+    }
+
+    .el-checkbox.is-bordered:hover{
+      .close-btn{
+        display: block;
+      }
+    }
+
+    /* -------------------- { sku table elementui } -------------------- */
+    /*  .el-table{
+        .el-form-item{
+          margin-top: 20px;
+          margin-bottom: 20px;
+          width: 100px;
+        }
+      }
+      table{
+        margin: 0;
+      }
+      .el-table__header-wrapper{
+        .el-input{
+          width: 100%!important;
+          padding: 0;
+        }
+        .el-input__inner{
+          height: 30px;
+          line-height: 30px;
+        }
+        .el-input--suffix{
+          line-height: 30px;
+        }
+        .el-input__prefix, .el-input__suffix{
+          top: 5px;
+        }
+      }
+
+      .same-icon{
+        width: 30px;
+        height: 30px;
+        margin-top: 20px;
+        fill: #2eaaf7;
+        cursor: pointer;
+      }
+      .el-form-item{
+        margin-bottom: 20px!important;
+      }
+      .sku-table{
+        min-width: 700px;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        .el-form-item{
+          margin-bottom: 20px!important;
+        }
+        .pos-a {
+          width: 14px;
+          height: 14px;
+          margin-top: -7px;
+          left: 10px;
+          top: 50%;
+        }
+        .el-checkbox.pos-a{
+          width: 14px;
+          height: 14px;
+          margin-top: -7px;
+          left: 10px;
+          top: 50%;
+
+          .el-checkbox__input{
+            vertical-align: top;
+          }
+        }
+
+       !* th, td{
+          text-align: left;
+          padding: 0 10px;
+          border: 1px solid #ebeef5;
+          position: relative;
+        }
+
+        th{
+          color: #909399;
+          height: 40px;
+          text-align: left;
+          background: #eef1f9;
+        }
+
+        td{
+          padding: 10px;
+        }
+
+        td.pd-l{
+          padding-left: 35px;
+        }
+
+        td.pd-r{
+          padding-right: 30px;
+        }*!
+
+        .sync-btn{
+          fill: #2eaaf7;
+          width: 30px;
+          height: 30px;
+          margin-top: -15px;
+          right: 0;
+          top: 50%;
+        }
+      }
+
+      .vertical-line::before{
+        color: #999;
+        content: ' ';
+        width: 1px;
+        height: 16px;
+        display: inline-block;
+        margin-right: 5px;
+        margin-top: -8px;
+        background: #999;
+        position: absolute;
+        left: 0;
+        top: 50%;
+      }
+      .none-radio-label{
+        .el-radio__label{
+          display: none;
+        }
+      }*/
+
+    /* -------------------- { sku table 原生} -------------------- */
+    .spec-table.sku-table{
+      border-collapse: collapse;
+      margin-bottom: 20px;
+
+      .el-form-item{
+        margin-bottom: 0;
+      }
+
+      .el-checkbox.pos-a{
+        width: 14px;
+        height: 14px;
+        margin-top: -7px;
+        left: 10px;
+        top: 50%;
+
+        .el-checkbox__input{
+          vertical-align: top;
+        }
+      }
+
+      th, td{
+        text-align: left;
+        padding: 0 10px;
+        border: 1px solid #ebeef5;
+        position: relative;
+      }
+
+      th{
+        color: #909399;
+        height: 40px;
+        text-align: left;
+        background: #eef1f9;
+      }
+
+      td{
+        padding: 10px;
+      }
+
+      .default-sku-radio{
+        .el-radio__label{
+          display: none;
+        }
+      }
+
+      .pd-l{
+        padding-left: 35px;
+      }
+
+      .pd-r{
+        padding-right: 30px;
+      }
+
+      .sync-btn{
+        fill: #2eaaf7;
+        width: 30px;
+        height: 30px;
+        margin-top: -15px;
+        right: 0;
+        top: 50%;
+      }
+    }
+
+    .custom-table-wrap.sku-table{
+      table{
+        border-collapse: collapse;
+
+        th:nth-child(1){
+          border-left: 0;
+        }
+
+        .el-checkbox.pos-a{
+          width: 14px;
+          height: 14px;
+          margin-top: -7px;
+          left: 0;
+          top: 50%;
+
+          .el-checkbox__input{
+            vertical-align: top;
+          }
+        }
+      }
+
+      td{
+        .cell{
+          padding: 0 10px;
+          margin: 0;
+        }
+      }
+
+      .pd-l{
+        padding-left: 25px;
+      }
+
+      .pd-r{
+        padding-right: 20px;
+      }
+
+      td{
+        padding: 10px 0;
+        border: 1px solid #ebeef5;
+      }
+
+      .el-radio__label{
+        display: none;
+      }
+
+      .sync-btn{
+        fill: #2eaaf7;
+        width: 30px;
+        height: 30px;
+        margin-top: -15px;
+        right: -10px;
+        top: 50%;
+      }
+    }
+
+    .vertical-line::before{
+      color: #999;
+      content: ' ';
+      width: 1px;
+      height: 16px;
+      display: inline-block;
+      margin-right: 5px;
+      margin-top: -8px;
+      background: #999;
+      position: absolute;
+      left: 0;
+      top: 50%;
+    }
+    .none-radio-label{
+      .el-radio__label{
+        display: none;
+      }
+    }
+  }
+</style>
