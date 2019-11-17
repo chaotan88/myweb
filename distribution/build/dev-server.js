@@ -13,6 +13,7 @@ var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = (process.env.NODE_ENV === 'testing' || process.env.NODE_ENV === 'production')
   ? require('./webpack.prod.conf')
   : require('./webpack.dev.conf')
+ 
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -81,7 +82,6 @@ devMiddleware.waitUntilValid(() => {
   }
   _resolve()
 })
-
 var server = app.listen(port)
 
 module.exports = {

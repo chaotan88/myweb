@@ -54,6 +54,19 @@ module.exports = {
       //   }
       // }
     },
+    before (app) {
+      debugger
+      app.get('/api/seller', function (req, res) {
+        debugger
+        // 服务端收到请求后返回给客户端一个json数据
+        res.json({
+        // 当我们数据正常时，我们通过传递errno字符为0表示数据正常
+        errno: 0,
+        // 返回json中的卖家数据
+        data: seller
+        })
+      })
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)

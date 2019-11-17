@@ -3,6 +3,7 @@
   <div class="pos-a header-layout-wrap">
     <div class="fl-l ta-c logo-wrap">
       <img src="../../assets/img/admin-logo.png">
+      <span>亮知物联渠道管理系统</span>
     </div>
     <div class="fl-r user-info-wrap">
       <dl class="d-ib">
@@ -59,7 +60,7 @@ export default {
   z-index: 100;
 
   .logo-wrap{
-    width: 210px;
+    // width: 210px;
     height: 100%;
     padding: 20px 0;
     /*background: #0a1f2e;*/
@@ -67,6 +68,12 @@ export default {
 
     img{
       height: 100%;
+      margin-left: 50px;
+    }
+    span {
+      font-size: 22px;
+      line-height: 45px;
+      color: #fff;
     }
   }
 

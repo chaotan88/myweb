@@ -3,7 +3,7 @@
   <div class="full-wrap pos-a admin-login-wrap">
     <div class="pos-a login-cen">
       <h1 class="ta-c"><img src="../../assets/img/login-logo.png"></h1>
-      <h2 class="fw-n ta-c">中腾分销管理系统</h2>
+      <h2 class="fw-n ta-c">渠道管理系统</h2>
       <el-form :model="formData" :rules="rules" ref="form" class="form-wrap">
         <el-form-item label="账户名：" class="pos-r" prop="userName">
           <el-input v-model="formData.userName" @keyup.enter.native="loginHandle('form')"></el-input>
