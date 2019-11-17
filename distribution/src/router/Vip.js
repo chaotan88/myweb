@@ -2,7 +2,7 @@ export default {
   path: '/admin/vip',
   redirect: '/admin/vip/center',
   meta: {
-    nav: '会员',
+    nav: '推广大使',
     icon: 'icon-huiyuan',
     visible: true,
     auth: true,
@@ -11,12 +11,12 @@ export default {
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [
 
-    // 会员管理
+    // 推广大使管理
     {
       path: '/admin/vip/center',
       redirect: '/admin/vip/center/index',
       meta: {
-        nav: '会员管理',
+        nav: '推广大使管理',
         icon: 'icon-huiyuanguanli',
         auth: true,
         authCode: 601061
@@ -24,19 +24,19 @@ export default {
       component: r => require(['@/views/admin/vip/IndexLayout'], r),
       children: [
 
-        // 会员管理
+        // 推广大使管理
         {
           path: '/admin/vip/center/index',
           meta: {
-            title: '会员管理',
+            title: '推广大使管理',
             pageBack: true,
             // refresh: false,
             auth: true,
             authCode: 601061,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
-              { title: '会员管理', path: '' }
+              { title: '推广大使', path: '/admin/vip/' },
+              { title: '推广大使管理', path: '' }
             ]
           },
           component: r => require(['@/views/admin/vip/Index'], r)
@@ -51,8 +51,8 @@ export default {
             authCode: 601061,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
-              { title: '会员管理', path: '/admin/vip/center/index' },
+              { title: '推广大使', path: '/admin/vip/' },
+              { title: '推广大使管理', path: '/admin/vip/center/index' },
               { title: '修改信息', path: '' }
             ]
           },
@@ -68,8 +68,8 @@ export default {
             authCode: 601061,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
-              { title: '会员管理', path: '/admin/vip/center/index' },
+              { title: '推广大使', path: '/admin/vip/' },
+              { title: '推广大使管理', path: '/admin/vip/center/index' },
               { title: '详情', path: '' }
             ]
           },
@@ -85,8 +85,8 @@ export default {
             authCode: 601061,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
-              { title: '会员管理', path: '/admin/vip/center/index' },
+              { title: '推广大使', path: '/admin/vip/' },
+              { title: '推广大使管理', path: '/admin/vip/center/index' },
               { title: '账户升级', path: '' }
             ]
           },
@@ -119,7 +119,7 @@ export default {
             authCode: 601062,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
+              { title: '推广大使', path: '/admin/vip/' },
               { title: '升级审核', path: '' }
             ]
           },
@@ -137,7 +137,7 @@ export default {
             authCode: 601062,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
+              { title: '推广大使', path: '/admin/vip/' },
               { title: '升级审核', path: '' }
             ]
           },
@@ -155,7 +155,7 @@ export default {
             authCode: 601062,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
+              { title: '推广大使', path: '/admin/vip/' },
               { title: '升级审核', path: '' }
             ]
           },
@@ -173,7 +173,7 @@ export default {
             authCode: 601062,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
+              { title: '推广大使', path: '/admin/vip/' },
               { title: '升级审核', path: '' }
             ]
           },
@@ -190,7 +190,7 @@ export default {
             thirdMenu: false,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
+              { title: '推广大使', path: '/admin/vip/' },
               { title: '升级审核', path: '/admin/vip/center/index' },
               { title: '详情', path: '' }
             ]
@@ -208,7 +208,7 @@ export default {
             thirdMenu: false,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
-              { title: '会员', path: '/admin/vip/' },
+              { title: '推广大使', path: '/admin/vip/' },
               { title: '升级审核', path: '/admin/vip/center/index' },
               { title: '审核', path: '' }
             ]

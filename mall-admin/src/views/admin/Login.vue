@@ -37,35 +37,39 @@
        * 登录
        */
       loginHandle (formName) {
-        this.$refs[formName].validate((valid) => {
-          if (!valid) return false
-          this.loading = true
-          this.$http.post('@ROOT_PUBLIC/login/login', {
-            phone: this.formData.userName,
-            password: this.formData.password
-          }).then((res) => {
-            this.loading = false
-            let resData = res.data
-            if (parseInt(resData.status) !== 1) {
-              this.$message({
-                message: resData.msg,
-                duration: 1500,
-                type: 'error'
-              })
-              return false
-            }
-            this.$message({
-              message: resData.msg,
-              duration: 1000,
-              type: 'success'
-            })
-            localStorage.setItem(this.$global.USER_INFO, JSON.stringify(resData.data))
-            this.$store.commit('userInfo', resData.data)
-            this.$router.push('/admin')
-          }).catch(() => {
-            this.loading = false
-          })
-        })
+        let user = {}
+        localStorage.setItem(this.$global.USER_INFO, JSON.stringify(user))
+        this.$store.commit('userInfo', user)
+        this.$router.push('/admin')
+        // this.$refs[formName].validate((valid) => {
+        //   if (!valid) return false
+        //   this.loading = true
+        //   this.$http.post('@ROOT_PUBLIC/login/login', {
+        //     phone: this.formData.userName,
+        //     password: this.formData.password
+        //   }).then((res) => {
+        //     this.loading = false
+        //     let resData = res.data
+        //     if (parseInt(resData.status) !== 1) {
+        //       this.$message({
+        //         message: resData.msg,
+        //         duration: 1500,
+        //         type: 'error'
+        //       })
+        //       return false
+        //     }
+        //     this.$message({
+        //       message: resData.msg,
+        //       duration: 1000,
+        //       type: 'success'
+        //     })
+        //     localStorage.setItem(this.$global.USER_INFO, JSON.stringify(resData.data))
+        //     this.$store.commit('userInfo', resData.data)
+        //     this.$router.push('/admin')
+        //   }).catch(() => {
+        //     this.loading = false
+        //   })
+        // })
       }
     }
   }

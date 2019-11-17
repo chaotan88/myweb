@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Console from './Console.js'
 import Distribution from './Distribution.js'
-import Sale from './Sale.js'
+import Business from './business.js'
+import Order from './Order.js'
 import Finance from './Finance.js'
 import Report from './Report.js'
 import Statistics from './Statistics.js'
@@ -42,8 +43,11 @@ const router = new Router({
         // 分销规则
         Distribution,
 
-        // 销售结算
-        Sale,
+        // 业务管理
+        Business,
+
+        // 套餐订单
+        Order,
 
         // 财务
         Finance,
