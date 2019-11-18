@@ -1,4 +1,4 @@
-<!-- 分销规则新增 & 编辑 -->
+<!-- 套餐新增 & 编辑 -->
 <template>
   <common-tpl class="manage-public-detail-wrap" footer back>
     <!-- 主体内容 -->
@@ -10,29 +10,63 @@
           <!-- 基本信息 -->
           <div class="box">
             <gray-title title="基本信息"></gray-title>
-            <el-form-item label="会员身份：" prop="ruleName">
-              <el-input v-model="ruleForm.ruleName" placeholder="限50个字符"></el-input>
+            <el-form-item label="套餐名称：" prop="ruleName">
+              <el-input v-model="ruleForm.ruleName" placeholder="限50个字符,不含特殊字符"></el-input>
             </el-form-item>
-            <el-form-item label="上传图标：" prop="uploadFiles">
-              <el-upload class="upload-picture fl-l pos-r"
-                :class="{uploadHide: fileList.length === 1}"
-                list-type="picture-card"
-                :action="uploadUrl"
-                :file-list="fileList"
-                :limit="1"
-                :on-exceed="exceedHandle"
-                :before-upload="beforeAvatarUpload"
-                :on-remove="removeHandle"
-                :on-success="uploadSuccessHandle">
-                <!-- <el-button class="pos-a" size="small" type="primary">{{ruleForm.faceUrl ? "修改图标" : "上传图标"}}</el-button> -->
-                <i class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-              <el-input v-model="ruleForm.uploadFiles" class="d-n"></el-input>
-              <span class="cue pos-a">（格式：png、jpg，150px*150px）</span>
+            <el-form-item label="销售价：" prop="ruleName">
+              <el-input v-model="ruleForm.ruleName" placeholder="精确到百分位,限10个字符"></el-input>
             </el-form-item>
-            <el-form-item label="规则说明：" prop="describe" class="pos-r">
-              <el-input type="textarea" :rows="5" v-model="ruleForm.describe"></el-input>
-              <span class="d-ib word-count">&nbsp;{{ruleForm.describe ? ruleForm.describe.length : 0}}/200</span>
+            <el-form-item label="成本价：" prop="ruleName">
+              <el-input v-model="ruleForm.ruleName" placeholder="精确到百分位,限10个字符"></el-input>
+            </el-form-item>
+            <el-form-item label="简要说明：" prop="ruleName">
+              <el-input v-model="ruleForm.ruleName" placeholder="限50个字符,不含特殊字符"></el-input>
+            </el-form-item>
+            <el-form-item label="套餐主图：" prop="uploadFiles">
+              <div class="package-cover-img">
+                <el-upload class="upload-picture fl-l pos-r"
+                  :class="{uploadHide: fileList.length === 1}"
+                  list-type="picture-card"
+                  :action="uploadUrl"
+                  :file-list="fileList"
+                  :limit="1"
+                  :on-exceed="exceedHandle"
+                  :before-upload="beforeAvatarUpload"
+                  :on-remove="removeHandle"
+                  :on-success="uploadSuccessHandle">
+                  <i class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <el-input v-model="ruleForm.uploadFiles" class="d-n"></el-input>
+                <span class="cue pos-a">（图片建议尺寸：300 * 150px ；建议大小：100KB以内）</span>
+              </div>
+              <div class="package-main-img">
+                <el-upload class="upload-picture fl-l pos-r"
+                  :class="{uploadHide: fileList.length === 1}"
+                  list-type="picture-card"
+                  :action="uploadUrl"
+                  :file-list="fileList"
+                  :limit="1"
+                  :on-exceed="exceedHandle"
+                  :before-upload="beforeAvatarUpload"
+                  :on-remove="removeHandle"
+                  :on-success="uploadSuccessHandle">
+                  <i class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                <el-input v-model="ruleForm.uploadFiles" class="d-n"></el-input>
+                <span class="cue pos-a">（图片建议尺寸：300 * 300px ；建议大小：100KB以内）</span>
+              </div>
+            </el-form-item>
+            <el-form-item label="详情描述：" prop="describe" class="pos-r">
+              <div class="edit_container">
+                <quill-editor 
+                    v-model="content" 
+                    ref="myQuillEditor" 
+                    :options="editorOption" 
+                    @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
+                    @change="onEditorChange($event)">
+                </quill-editor>
+                <button v-on:click="saveHtml">保存</button>
+              </div> 
             </el-form-item>
           </div>
 
@@ -409,12 +443,17 @@ export default {
         cashRate: '',
         goodsProfitRate: ''
       },    // 当前选择规则
-      gradationListData: []     // 级差列表
+      gradationListData: [],     // 级差列表
+      content: `<p>hello world</p>`,
+      editorOption: {}
     }
   },
   computed: {
     uploadUrl () {
       return this.$dm.ROOT_API + 'upload/uploadimg/admin/terminal?clientType=1&token=' + this.userInfo.token          // 上传图片
+    },
+    editor () {
+      return this.$refs.myQuillEditor.quill
     }
   },
   mounted () {
@@ -633,6 +672,13 @@ export default {
     removeHandle (file, fileList) {
       this.ruleForm.uploadFiles = ''      // 移除的时候清空对象
       this.fileList = []
+    },
+    onEditorReady (editor) {},
+    onEditorBlur () {}, // 失去焦点事件
+    onEditorFocus () {}, // 获得焦点事件
+    onEditorChange () {}, // 内容改变事件
+    saveHtml (event) {
+      alert(this.content)
     }
   }
 }

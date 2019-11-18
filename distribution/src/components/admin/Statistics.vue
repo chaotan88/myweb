@@ -7,7 +7,7 @@
         </dt>
         <dd>
           <strong class="fw-n d-b">{{statisticalData.memberNum | filterEmpty}}</strong>
-          <p>会员总数</p>
+          <p>推广大使总数</p>
         </dd>
       </dl>
     </div>
@@ -17,15 +17,6 @@
         <dd>
           <strong class="fw-n d-b">{{statisticalData.agentNum | filterEmpty}}</strong>
           <p>总营业额</p>
-        </dd>
-      </dl>
-    </div>
-    <div class="items">
-      <dl class="pos-r">
-        <dt class="d-b pos-a dt3"></dt>
-        <dd>
-          <strong class="fw-n d-b">{{statisticalData.orderAmount | filterEmpty}}</strong>
-          <p>会员申请人数</p>
         </dd>
       </dl>
     </div>
@@ -61,7 +52,7 @@ export default{
   justify-content: space-between;
 
   .items{
-    width: 33.33%;
+    width: 50%;
     height: 100%;
     margin-right: 20px;
     overflow: hidden;
@@ -72,7 +63,7 @@ export default{
     dl{
       color: #fff;
       margin-top: 45px;
-      margin-left: 20%;
+      margin-left: 30%;
       padding-left: 85px;
 
       dt{

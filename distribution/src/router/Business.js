@@ -40,33 +40,35 @@ export default {
           component: r => require(['@/views/admin/business/PackageList'], r)
         },
 
-        // 创建规则
+        // 添加套餐
         {
           path: '/admin/business/package/add',
           meta: {
-            title: '创建规则',
+            title: '添加套餐',
             auth: true,
             authCode: 601021,
             breadcrumb: [
               { title: '首页', path: '/admin' },
               { title: '业务管理', path: '/admin/business' },
-              { title: '创建规则', path: '' }
+              { title: '套餐管理', path: '/admin/business/package/list' },
+              { title: '添加套餐', path: '' }
             ]
           },
           component: r => require(['@/views/admin/business/packagePublic'], r)
         },
 
-        // 编辑规则
+        // 编辑套餐
         {
           path: '/admin/business/package/edit',
           meta: {
-            title: '编辑规则',
+            title: '编辑套餐',
             auth: true,
             authCode: 601021,
             breadcrumb: [
               { title: '首页', path: '/admin' },
               { title: '业务管理', path: '/admin/business' },
-              { title: '编辑规则', path: '' }
+              { title: '套餐管理', path: '/admin/business/package/list' },
+              { title: '编辑套餐', path: '' }
             ]
           },
           component: r => require(['@/views/admin/business/packagePublic'], r)

@@ -7,46 +7,27 @@
       <statistics-component></statistics-component>
     </div>
 
-    <!-- 统计数据 -->
-    <div class="pos-r statistics-data-wrap">
-
-      <!-- 产品收益分布 -->
-      <div class="pos-a piechart-wrap">
-        <title-public title="产品收益分布"></title-public>
-        <div class="common-shadow-wrap piechart-cen">
-          <template v-if="profitPieChartData.length">
-            <div class="piechart-chart" ref="piechart"></div>
-          </template>
-          <div class="ta-c no-data-wrap" v-else>
-            <svg class="icon icon-no-data" aria-hidden="true">
-              <use xlink:href="#icon-no-data"></use>
-            </svg>
-            <p>暂无数据！</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 近半年会员增长状况 -->
-      <div class="statistics-data-cen">
-        <title-public title="近半年会员增长状况"></title-public>
-        <div class="pos-r statistics-data-c">
-          <no-data style="padding: 100px 0;"></no-data>
-          <!-- <div class="echart" ref="statisticsEchart"></div> -->
-        </div>
-      </div>
-    </div>
-
-    <!-- 营收趋势分析 -->
+    <!-- 营业额增长趋势 -->
     <div class="statistics-revenue-wrap">
-      <title-public title="营收趋势分析"></title-public>
+      <title-public title="营业额增长趋势"></title-public>
       <div class="pos-r statistics-revenue-cen">
         <div class="statistics-revenue-t">
-          <!-- <screen-public @change="revenueScreenChange"></screen-public> -->
+          <!-- 时间 -->
+          <el-form ref="form" :model="formData.data" label-position="right" class="search-form" label-width="110px">
+            <div class="d-ib pos-a" style="width: 150px;">
+              <el-select v-model="formData.curYear" size="medium" class="year-box" placeholder="选择年份" @change="selectYear" clearable>
+                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in yearArr"></el-option>
+              </el-select>
+            </div>
+            <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
+              <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleFilterDate"></el-date-picker>
+            </el-form-item>
+          </el-form>
         </div>
-        <div class="statistics-revenue-c">
+        <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
           <no-data style="padding: 100px 0;"></no-data>
-          <!-- <div class="EchartOne" ref="EchartOne"></div> -->
-        </div>
+        </div> -->
+        <div id="line-chart-id"></div>
       </div>
     </div>
 
@@ -58,12 +39,12 @@
         <div class="box-c">
           <h2>最新通知</h2>
           <div class="latest-notice-wrap">
-            <no-data style="padding: 120px 0;"></no-data>
-            <!-- <div class="pos-r notice-list" v-for="item in listData">
+            <!-- <no-data style="padding: 120px 0;"></no-data> -->
+            <div class="pos-r notice-list" v-for="item in listData">
               <span class="d-ib truncate text">{{item.messageContent}}</span>
               <span class="d-ib truncate text">{{item.identity}}</span>
               <span class="d-ib pos-a time">{{item.operateTime}}</span>
-            </div> -->
+            </div>
           </div>
 
           <!-- 分页 -->
@@ -103,39 +84,16 @@
 <script>
 import StatisticsComponent from '@/components/admin/Statistics'
 import TitlePublic from './TitlePublic'
+let echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
 export default{
   components: {StatisticsComponent, TitlePublic},
   data () {
     return {
       formData: {
-        revenueSection: '',             // 营收趋势时间筛选区间
-        revenueStartDate: '',           // 营收趋势开始时间
-        revenueEndDate: ''              // 营收趋势结束时间
-      },
-      vipPieChartData: [{value: 100, name: '会员分布'}],
-      agentPieChartData: [{value: 100, name: '代理分布'}],
-      revenuePieChartData: [{value: 100, name: '营收分布'}],
-      revenueTrendNum: [],              // 趋势分析数字
-      revenueTrendMonth: [],             // 趋势分析月份
-      statisticalData: {
-        memberNum: 2322,
-        agentNum: 320034,
-        orderAmount: 82
-      },                                // 统计数据
-      noticeListData: [],               // 最新消息列表数据
-      profitPieChartData: [],           // 产品收益分布
-      orderStatisticsData: {            // 订单统计数据
-        todayOrderAmount: '',
-        totalOrderAmount: ''
-      },
-      vipStatisticsData: {              // 会员统计数据
-        todayNewMember: '',
-        totalMember: ''
-      },
-      recentOrderStatisticsData: {      // 近30天订单统计数据
-        finished: '',
-        waitReceiveGoods: '',
-        waitSendGoods: ''
+        curYear: '',           // 选择日期
+        statisticsDate: [],    // 日期
+        endDate: ''            // 统计时间结束: '',           // 否 string  结束时间
       },
       listData: [
         {
@@ -166,7 +124,7 @@ export default{
       ],                     // 列表数据
       quickLinks: [
         {
-          title: '会员申请',
+          title: '推广大使申请',
           icon: 'icon-icon',
           url: '/admin/distribution/apply/all'
         },
@@ -181,56 +139,38 @@ export default{
           url: '/admin/sale/balance/list'
         },
         {
-          title: '会员统计',
+          title: '推广大使统计',
           icon: 'icon-jiedianhuiyuanfenzu',
           url: '/admin/vip/center/index'
         }
       ],
-      vipIncreaseData: [],  // 近半年会员增长状况
       pageData: {
         currentPage: 1,     // 当前分页
         pageSize: 5,        // 显示条数，不写的话默认为10
         total: 0            // 列表总条数
-      }
+      },
+      yearArr: [              // 选择年
+        {
+          label: '近三个月',
+          value: 3
+        },
+        {
+          label: '近半年',
+          value: 6
+        },
+        {
+          label: '近一年',
+          value: 12
+        }
+      ]
     }
   },
 
   mounted () {
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
-    // this.getOrderVipStatistics()
-    // this.getListData()
   },
 
   methods: {
-
-    /**
-     * 获取营收趋势分析数据
-     */
-    getRevenueTrendData (startDate, endDate, section) {
-      this.$http.post('@ROOT_API/product/revenueTrend', {
-        beginTime: startDate,
-        endTime: endDate,
-        timeSection: section
-      }).then((res) => {
-        let resData = res.data
-        if (resData.status !== '1') {
-          this.$message({
-            message: resData.msg,
-            type: 'error',
-            duration: 1500
-          })
-          return false
-        }
-        let results = this.sortByKey(resData.data, 'monthNum')
-        this.revenueTrendNum = []
-        this.revenueTrendMonth = []
-        results.forEach((row) => {
-          this.revenueTrendNum.push(row.orderAmount)
-          this.revenueTrendMonth.push(row.monthNum)
-        })
-        this.initChart()
-      })
-    },
 
     /**
      * json排序
@@ -243,94 +183,97 @@ export default{
       })
     },
 
-    /**
-     * 获取饼图数据
-     */
-    getPieChartData (beginTime, endTime, timeSection, graphType) {
-      this.$http.get('@ROOT_API/product/distributionGraph', {
-        params: {
-          beginTime,        // 开始时间
-          endTime,          // 结束时间
-          timeSection,      // 时间区间：3个月，6个月，12个月
-          graphType         // 图表类型 1.会员分布，2.代理分布，3.营收分布
+    getLineChartData () {
+      let data = [
+        {
+          name: '1月',
+          value: 10000
+        },
+        {
+          name: '2月',
+          value: 15000
+        },
+        {
+          name: '3月',
+          value: 18000
+        },
+        {
+          name: '4月',
+          value: 20000
+        },
+        {
+          name: '5月',
+          value: 25000
+        },
+        {
+          name: '6月',
+          value: 28000
         }
-      }).then((res) => {
-        let resData = res.data
-        if (resData.status !== '1') {
-          this.$message({
-            message: resData.msg,
-            type: 'error',
-            duration: 1500
-          })
-          if (graphType === 1) this.vipPieChartData = []
-          if (graphType === 2) this.agentPieChartData = []
-          if (graphType === 3) this.revenuePieChartData = []
-          return false
-        }
-        let results = [
-          {value: resData.data.productRate, name: resData.data.productName}
-        ]
-        switch (graphType) {
-          case 1:
-            this.vipPieChartData = results
-            this.createPieChart('vipPieChart', results)
-            break
-          case 2:
-            this.agentPieChartData = results
-            this.createPieChart('agentPieChart', results)
-            break
-          case 3:
-            this.revenuePieChartData = results
-            this.createPieChart('revenuePieChart', results)
-            break
-        }
+      ]
+      this.buildChart(data)
+    },
+    buildChart (data) {
+      let chart = echarts.init(document.getElementById('line-chart-id'))
+      let xData = data.map(da => da.name)
+      let yData = data.map(da => da.value)
+      chart.setOption({
+        xAxis: {
+          type: 'category',
+          data: xData
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: yData,
+          type: 'line'
+        }]
       })
+    },
+    /**
+     * 过滤选择时间
+     */
+    handleFilterDate (data) {
+      this.formData.curYear = ''
+      this.getLineChartData()
     },
 
     /**
-     * 获取订单和会员统计
+     * 时间改变
      */
-    getOrderVipStatistics () {
-      this.$http.get('@ROOT_API/', {
-        start: this.pageData.currentPage,
-        pageSize: this.pageData.pageSize
-      }).then((res) => {
-        let resData = res.data
-        if (parseInt(resData.status) !== 1) {
-          // this.$message({
-          //   message: resData.msg,
-          //   type: 'error',
-          //   duration: 1500
-          // })
-          return false
-        }
-        this.orderStatisticsData = resData.data.orderStaticData
-        this.vipStatisticsData = resData.data.memberStaticData
-        this.recentOrderStatisticsData = resData.data.latest30daysOrder
-      })
+    selectYear (value) {
+      if (!value) return false
+      var dt = new Date()
+      switch (value) {
+        case 3:
+          dt.setMonth(dt.getMonth() - 3)
+          break
+        case 6:
+          dt.setMonth(dt.getMonth() - 6)
+          break
+        case 12:
+          dt.setMonth(dt.getMonth() - 12)
+          break
+      }
+      this.formData.statisticsDate = [dt, new Date()]
+      this.getLineChartData()
     },
-
   /**
     * 获取最新通知
     */
     getListData () {
-      this.$router.push({query: {page: this.pageData.currentPage}})    // 地址栏追加当前分页（当你刷新的时候不会回到第一页）
-      this.$http.post('@ROOT_API/', {
-        start: this.pageData.currentPage,
-        pageSize: this.pageData.pageSize
-      }).then((res) => {
-        let resData = res.data
-        if (parseInt(resData.status) !== 1) {
-          // this.$message({
-          //   message: resData.msg,
-          //   type: 'error',
-          //   duration: 1500
-          // })
-          return false
-        }
-        this.listData = resData.data.list
-        this.pageData.total = resData.data.total        // 自定义好的列表总条数为0，需要传值给后台数据，循环后台传回来的数据
-      })
+      // this.$router.push({query: {page: this.pageData.currentPage}})    // 地址栏追加当前分页（当你刷新的时候不会回到第一页）
+      // this.$http.post('@ROOT_API/', {
+      //   start: this.pageData.currentPage,
+      //   pageSize: this.pageData.pageSize
+      // }).then((res) => {
+      //   let resData = res.data
+      //   if (parseInt(resData.status) !== 1) {
+      //     return false
+      //   }
+      //   this.listData = resData.data.list
+      //   this.pageData.total = resData.data.total        // 自定义好的列表总条数为0，需要传值给后台数据，循环后台传回来的数据
+      // })
     },
 
     /**
@@ -347,6 +290,14 @@ export default{
 <style lang='less' scoped>
 .console-index-wrap{
 
+  #line-chart-id {
+    height: 300px;
+    width: 100%;
+    background: #fff;
+    div {
+      height: 300px;
+    }
+  }
   /* -------------------- { 统计数据 } -------------------- */
   .statistics-data-wrap{
     margin-top: 20px;

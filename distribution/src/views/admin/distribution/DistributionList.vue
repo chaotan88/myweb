@@ -1,68 +1,20 @@
 <!-- 分销规则列表页 -->
 <template>
   <common-tpl class="distribution-list-wrap" :footer="false">
-    <!-- 头部 -->
-    <template slot="header">
-      <!-- 高级搜索组件 -->
-      <high-search @search="highSearch('form')" :close="highSearchClose">
-        <div class="pos-r" slot="search">
-          <el-input placeholder="输入身份名称" v-model.trim="formData.ruleName" @keyup.enter.native="searchHandle">
-          </el-input>
-          <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
-        </div>
-        <div class="reset-btn" slot="btn" @click="resetForm()">清空</div>
-        <div slot="main">
-          <el-form ref="form" :rules="rules" :model="formData" label-position="right" label-width="100px" class="search-form">
-            <el-form-item label="会员身份：">
-              <el-input v-model.trim="formData.ruleName" placeholder="身份名称" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="代理费：">
-              <el-col :span="11">
-                <el-form-item prop="agentLowness" class="fl-l">
-                  <el-input v-model.trim="formData.agentLowness" @blur="inpBlur('agentLowness')" placeholder="精确到百分位，限10个字符" clearable></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col class="ta-c fl-l" :span="2">-</el-col>
-              <el-col :span="11">
-                <el-form-item prop="agentHigh" class="agent fl-l">
-                  <el-input v-model.trim="formData.agentHigh" @blur="inpBlur('agentHigh')" placeholder="精确到百分位，限10个字符" clearable></el-input>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
-          </el-form>
-          <div class="clear"></div>
-        </div>
-        <!-- <div slot="edit">
-          <template>
-            <el-button @click="handleLink()"><i class="el-icon-plus fw-b"></i>创建身份</el-button>
-          </template>
-        </div> -->
-      </high-search>
-    </template>
-
     <!-- 主体 -->
     <template slot="main">
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="ruleName" label="会员身份" width="120px">
+        <el-table-column prop="ruleName" label="推广大使身份">
           <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="agentFee" label="代理费(元)" width="120px">
+        <el-table-column prop="agentFee" label="服务费">
           <template slot-scope="scope">{{scope.row.agentFee | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="consumePointRate" label="直接推荐比例（消费积分）" width="230px">
+        <el-table-column prop="consumePointRate" label="购买套餐额度满">
           <template slot-scope="scope">{{scope.row.consumePointRate | filterEmpty('%')}}</template>
         </el-table-column>
-        <el-table-column prop="cashRate" label="直接推荐比例（通用积分）" width="230px">
+        <el-table-column prop="cashRate" label="推荐人数">
           <template slot-scope="scope">{{scope.row.cashRate | filterEmpty('%')}}</template>
-        </el-table-column>
-        <el-table-column prop="directSubName" label="下级名称" min-width="100">
-          <template slot-scope="scope">
-            <template v-if="parseInt(scope.row.rand) === 0">{{'' | filterEmpty}}</template>
-            <template v-else>{{scope.row.directSubName | filterEmpty}}</template>
-          </template>
-        </el-table-column>
-        <el-table-column prop="rand" label="级数">
-          <template slot-scope="scope">{{scope.row.rand}}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
@@ -74,9 +26,9 @@
                 <el-dropdown-item>
                   <div @click="handleLink(scope.row)"><i class="icon el-icon-edit"></i>编辑</div>
                 </el-dropdown-item>
-                <el-dropdown-item>
+                <!-- <el-dropdown-item>
                   <div @click="handleDeleteBefore(scope.row)"><i class="icon el-icon-delete"></i>删除</div>
-                </el-dropdown-item>
+                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -85,17 +37,6 @@
           <no-data></no-data>
         </div>
       </el-table>
-
-      <!-- 分页 -->
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :current-page="pageData.currentPage"
-        :page-size="pageData.pageSize"
-        :total="pageData.total"
-        @current-change="pageChange"
-        v-if="pageData.total">
-      </el-pagination>
     </template>
 
     <template slot="other">

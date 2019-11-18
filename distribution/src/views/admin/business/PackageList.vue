@@ -4,65 +4,45 @@
     <!-- 头部 -->
     <template slot="header">
       <!-- 高级搜索组件 -->
-      <high-search @search="highSearch('form')" :close="highSearchClose">
+      <high-search @search="searchHandle" :textVisible = "false">
         <div class="pos-r" slot="search">
-          <el-input placeholder="输入身份名称" v-model.trim="formData.ruleName" @keyup.enter.native="searchHandle">
-          </el-input>
-          <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
+          <div class="d-ib pos-r">
+            <el-input placeholder="输入套餐名称" v-model.trim="formData.contentText" @keyup.enter.native="searchHandle" style="width: 220px;"></el-input>
+            <i class="ta-c pos-a el-icon-search" title="搜索" @click="searchHandle"></i>
+          </div>
         </div>
-        <div class="reset-btn" slot="btn" @click="resetForm()">清空</div>
-        <div slot="main">
-          <el-form ref="form" :rules="rules" :model="formData" label-position="right" label-width="100px" class="search-form">
-            <el-form-item label="会员身份：">
-              <el-input v-model.trim="formData.ruleName" placeholder="身份名称" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="代理费：">
-              <el-col :span="11">
-                <el-form-item prop="agentLowness" class="fl-l">
-                  <el-input v-model.trim="formData.agentLowness" @blur="inpBlur('agentLowness')" placeholder="精确到百分位，限10个字符" clearable></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col class="ta-c fl-l" :span="2">-</el-col>
-              <el-col :span="11">
-                <el-form-item prop="agentHigh" class="agent fl-l">
-                  <el-input v-model.trim="formData.agentHigh" @blur="inpBlur('agentHigh')" placeholder="精确到百分位，限10个字符" clearable></el-input>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
-          </el-form>
-          <div class="clear"></div>
-        </div>
-        <!-- <div slot="edit">
-          <template>
-            <el-button @click="handleLink()"><i class="el-icon-plus fw-b"></i>创建身份</el-button>
-          </template>
-        </div> -->
+        <template slot="edit">
+          <el-button @click="handleLink()"><i class=""></i>添加套餐</el-button>
+        </template>
       </high-search>
     </template>
 
     <!-- 主体 -->
     <template slot="main">
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="ruleName" label="会员身份" width="120px">
+        <el-table-column prop="ruleName" label="套餐编号" width="120px">
           <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="agentFee" label="代理费(元)" width="120px">
+        <el-table-column prop="agentFee" label="创建时间" width="120px">
           <template slot-scope="scope">{{scope.row.agentFee | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="consumePointRate" label="直接推荐比例（消费积分）" width="230px">
+        <el-table-column prop="consumePointRate" label="套餐名称" width="230px">
           <template slot-scope="scope">{{scope.row.consumePointRate | filterEmpty('%')}}</template>
         </el-table-column>
-        <el-table-column prop="cashRate" label="直接推荐比例（通用积分）" width="230px">
+        <el-table-column prop="cashRate" label="销售价" width="230px">
           <template slot-scope="scope">{{scope.row.cashRate | filterEmpty('%')}}</template>
         </el-table-column>
-        <el-table-column prop="directSubName" label="下级名称" min-width="100">
+        <el-table-column prop="directSubName" label="分佣类型" min-width="100">
           <template slot-scope="scope">
             <template v-if="parseInt(scope.row.rand) === 0">{{'' | filterEmpty}}</template>
             <template v-else>{{scope.row.directSubName | filterEmpty}}</template>
           </template>
         </el-table-column>
-        <el-table-column prop="rand" label="级数">
+        <el-table-column prop="rand" label="已配置金额">
           <template slot-scope="scope">{{scope.row.rand}}</template>
+        </el-table-column>
+        <el-table-column prop="rand" label="套餐状态">
+          <template slot-scope="scope">{{scope.row.status}}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
@@ -71,11 +51,14 @@
                 <span class="d-b va-m">...</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
+                <el-dropdown-item v-if="scope.row.status === '1'">
                   <div @click="handleLink(scope.row)"><i class="icon el-icon-edit"></i>编辑</div>
                 </el-dropdown-item>
-                <el-dropdown-item>
+                <el-dropdown-item v-if="scope.row.status === '1'">
                   <div @click="handleDeleteBefore(scope.row)"><i class="icon el-icon-delete"></i>删除</div>
+                </el-dropdown-item>
+                <el-dropdown-item v-if="scope.row.status !== '1'">
+                  <div @click="handleCloseBefore(scope.row)"><i class="icon el-icon-circle-close"></i>关闭</div>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -100,11 +83,20 @@
 
     <template slot="other">
       <!-- 删除 -->
-      <el-dialog title="删除分销规则" :visible.sync="deleteVisible" width="480px">
+      <el-dialog title="删除套餐" :visible.sync="deleteVisible" width="480px">
         确认是否删除？
         <span slot="footer" class="dialog-footer">
           <el-button @click="deleteVisible = false">取 消</el-button>
           <el-button type="primary" :loading="confirmLoading" @click="handleDelete">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <!-- 关闭 -->
+      <el-dialog title="关闭套餐" :visible.sync="closeVisible" width="480px">
+        确定是否关闭此套餐？
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="closeVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="confirmLoading" @click="handleClose">确 定</el-button>
         </span>
       </el-dialog>
     </template>
@@ -133,6 +125,8 @@ export default {
       copyFormData: {},         // 拷贝数据
       deleteVisible: false,     // 删除弹框
       deleteData: {},           // 删除数据
+      closeVisible: false,
+      closeData: {},
       pageData: {               // 分页
         currentPage: 1,
         pageSize: 10,
@@ -183,9 +177,10 @@ export default {
           return false
         }
         let results = resData.data
-        // results.list.forEach((row, index) => {
-        //   if (index < results.list.length - 1) row.subordinate = results.list[index + 1].ruleName
-        // })
+        results.list.forEach((row, index) => {
+          if (index < 3) row.status = '1'
+          else row.status = '0'
+        })
         this.tableData = results.list
         this.pageData.total = results.total
       }).finally(() => {
@@ -198,10 +193,10 @@ export default {
      */
     handleLink (item) {
       if (!item) {
-        this.$router.push('/admin/distribution/rule/add')
+        this.$router.push('/admin/business/package/add')
       } else {
         localStorage.setItem('MANAGER_STORE', JSON.stringify(item))
-        this.$router.push({path: '/admin/distribution/rule/edit', query: {id: item.ruleId}})
+        this.$router.push({path: '/admin/business/package/edit', query: {id: item.ruleId}})
       }
     },
 
@@ -237,12 +232,45 @@ export default {
         })
         this.deleteVisible = false
         this.getListData()
-        // this.tableData.map((item, index) => {
-        //   if (this.deleteData.ruleId === item.ruleId) {
-        //     this.tableData.splice(index, 1)
-        //     return
-        //   }
-        // })
+      }).finally(() => {
+        setTimeout(() => {
+          this.confirmLoading = false
+        }, 1000)
+      })
+    },
+
+    /**
+     * 关闭前操作
+     */
+    handleCloseBefore (row) {
+      this.closeVisible = true
+      this.closeData = row
+    },
+
+    /**
+     * 关闭
+    */
+    handleClose () {
+      this.confirmLoading = true
+      this.$http.post('@ROOT_API/rule/closePackage', {
+        ruleId: this.closeData.ruleId
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        this.$message({
+          message: resData.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.closeVisible = false
+        this.getListData()
       }).finally(() => {
         setTimeout(() => {
           this.confirmLoading = false
