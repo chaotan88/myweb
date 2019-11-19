@@ -14,7 +14,7 @@
               <el-input v-model="ruleForm.ruleName" placeholder="限50个字符,不含特殊字符"></el-input>
             </el-form-item>
             <el-form-item label="销售价：" prop="ruleName">
-              <el-input v-model="ruleForm.ruleName" placeholder="精确到百分位,限10个字符"></el-input>
+              <el-input v-model="ruleForm.saleAmout" placeholder="精确到百分位,限10个字符"></el-input>
             </el-form-item>
             <el-form-item label="成本价：" prop="ruleName">
               <el-input v-model="ruleForm.ruleName" placeholder="精确到百分位,限10个字符"></el-input>
@@ -22,13 +22,13 @@
             <el-form-item label="简要说明：" prop="ruleName">
               <el-input v-model="ruleForm.ruleName" placeholder="限50个字符,不含特殊字符"></el-input>
             </el-form-item>
-            <el-form-item label="套餐主图：" prop="uploadFiles">
+            <el-form-item label="套餐封面图：" prop="uploadFiles">
               <div class="package-cover-img">
                 <el-upload class="upload-picture fl-l pos-r"
-                  :class="{uploadHide: fileList.length === 1}"
+                  :class="{uploadHide: coverImgList.length === 1}"
                   list-type="picture-card"
                   :action="uploadUrl"
-                  :file-list="fileList"
+                  :file-list="coverImgList"
                   :limit="1"
                   :on-exceed="exceedHandle"
                   :before-upload="beforeAvatarUpload"
@@ -39,14 +39,16 @@
                 <el-input v-model="ruleForm.uploadFiles" class="d-n"></el-input>
                 <span class="cue pos-a">（图片建议尺寸：300 * 150px ；建议大小：100KB以内）</span>
               </div>
+            </el-form-item>
+            <el-form-item label="套餐主图：" prop="uploadFiles">
               <div class="package-main-img">
                 <el-upload class="upload-picture fl-l pos-r"
-                  :class="{uploadHide: fileList.length === 1}"
+                  :class="{uploadHide: mainImgList.length === 3}"
                   list-type="picture-card"
                   :action="uploadUrl"
-                  :file-list="fileList"
-                  :limit="1"
-                  :on-exceed="exceedHandle"
+                  :file-list="mainImgList"
+                  :limit="3"
+                  :on-exceed="exceedHandleMain"
                   :before-upload="beforeAvatarUpload"
                   :on-remove="removeHandle"
                   :on-success="uploadSuccessHandle">
@@ -65,168 +67,111 @@
                     @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                     @change="onEditorChange($event)">
                 </quill-editor>
-                <button v-on:click="saveHtml">保存</button>
               </div> 
             </el-form-item>
-          </div>
-
-          <!-- 加入条件 -->
-          <div class="box">
-            <gray-title title="加入条件"></gray-title>
-            <h2 class="fw-n title">说明：以下条件满足一个条件即可成为该等级，未设置则表示不开启该项规则</h2>
-            <el-form-item label="代理费：" prop="agentFee">
-              <el-input v-model="ruleForm.agentFee" placeholder="精确到百分位，限10个字符" @blur="inpBlur('agentFee')"></el-input><span class="recommendSpan">元</span>
+            <el-form-item label="套餐状态：" prop="ruleName">
+              <el-radio-group v-model="ruleForm.pachageStatus">
+                <el-radio :label="1">开启</el-radio>
+                <el-radio :label="0">关闭</el-radio>
+              </el-radio-group>
             </el-form-item>
-            <!-- <el-form-item label="购买商品满：" prop="buyGoods">
-              <el-input v-model="ruleForm.buyGoods" placeholder="填写正整数，限20个字符"></el-input><span class="recommendSpan">元</span>
-            </el-form-item> -->
-            <el-form-item label="消费积分满：" prop="consume">
-              <el-input v-model="ruleForm.consume" placeholder="填写正整数，限10个字符"></el-input><span class="recommendSpan">个积分</span>
+            <el-form-item label="套餐总数 ：" prop="ruleName">
+              <el-input v-model="ruleForm.ruleName" placeholder="输入正整数,限10个字符"></el-input>
             </el-form-item>
-            <el-form-item label="直接推荐同级及同级以上满：" prop="recommend">
-              <el-input v-model="ruleForm.recommend" placeholder="填写正整数，限10个字符"></el-input><span class="recommendSpan">人，升级到下一级</span>
-            </el-form-item>
-          </div>
-
-          <!-- 获得内容 -->
-          <div class="box">
-            <gray-title title="获得内容"></gray-title>
-            <el-form-item label="商城商品：" prop="goods">
-              <el-input v-model="ruleForm.goods" placeholder="填写正整数，限10个字符" @blur="inpBlur"></el-input><span class="recommendSpan">元</span> <span class="spanColor">（以余额的形式返还到商城账户中）</span>
-            </el-form-item>
-            <el-form-item label="商城消费积分：" prop="bonusPoints">
-              <el-input v-model="ruleForm.bonusPoints" placeholder="填写正整数，限10个字符"></el-input><span class="recommendSpan">个积分</span> <span class="spanColor">（只有通过缴纳代理费方式达到等级才生效）</span>
-            </el-form-item>
-            <el-form-item label="赠送商城消费积分：" prop="giftIntegral">
-              <el-input v-model="ruleForm.giftIntegral" placeholder="填写正整数，限10个字符"></el-input><span class="recommendSpan">个积分</span> <span class="spanColor">（达到该等级额外赠送的商城消费积分）</span>
+            <el-form-item label="订购数量 ：" prop="ruleName">
+              <el-radio-group v-model="ruleForm.isLimit">
+                <el-radio :label="1">不限</el-radio>
+                <el-radio :label="0">限制</el-radio>
+              </el-radio-group>
+              <span v-if="ruleForm.isLimit === 0">
+                <el-input v-model="ruleForm.buyCount" placeholder="输入1-100正整数">
+                </el-input>/人
+              </span>
             </el-form-item>
           </div>
 
-          <!-- 奖励规则 -->
+          <!-- 分佣配置 -->
           <div class="box">
-            <gray-title title="奖励规则"></gray-title>
-            <div class="award">
-              <h2 class="fw-n recommend">推荐分佣：</h2>
-              <el-form-item label="选择直接下级：" prop="subordinate">
-                <el-select v-model="ruleForm.subordinate" placeholder="选择下级" @change="ruleChange" :disabled="pageType === 2">
-                  <template v-for="ruleList in ruleAllData">
-                    <el-option :label="ruleList.ruleName" :value="ruleList.ruleId"></el-option>
-                  </template>
-                </el-select>
-                <span>
-                  <span class="recommendSpan">奖励消费积分比例：{{currentSelectRule.consumePointRate | filterEmpty('%')}}</span>
-                  <span class="recommendSpan">奖励通用积分比例：{{currentSelectRule.cashRate | filterEmpty('%')}}</span>
-                  <span class="recommendSpan">商品收益：{{currentSelectRule.goodsProfitRate | filterEmpty('%')}}</span>
-                </span>
+            <gray-title title="分佣配置"></gray-title>
+            <el-form-item label="已配置金额：">
+              <div><span class="red-cnt">{{ruleForm.usedAmount}}</span> 元,剩余 
+                <span class="red-cnt">{{ruleForm.saleAmount - ruleForm.usedAmount}}</span> 元</div>
+            </el-form-item>
+            <el-form-item label="分佣类型：">
+              <el-radio-group v-model="ruleForm.commissionType">
+                <el-radio :label="1">礼包分佣</el-radio>
+                <el-radio :label="0">提货分佣</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <div v-if="ruleForm.commissionType === 1">
+              <el-form-item label="推荐奖：" prop="consume">
+                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
               </el-form-item>
-              <p>【直接推荐奖励】以下设置比例应大于或等于下级比例，如果没有下级则设置的等级为最初级</p>
-              <el-form-item label="奖励消费积分比例：" prop="rewardConsume">
-                <el-input v-model="ruleForm.rewardConsume" placeholder="0-100精确到百分位" @blur="inpBlur('rewardConsume')"></el-input><span class="recommendSpan">%</span><span class="spanColor">推荐用户获得消费积分 = 推荐金额 X 奖励消费积分比例</span>
+              <el-form-item label="大使管理奖：" prop="recommend">
+                <span class="recommendSpan">推荐</span>
+                <el-input value="VIP推广大使" placeholder="填写正整数，限10个字符" readonly></el-input>
+                <span class="recommendSpan">满</span>
+                <el-input v-model="ruleForm.consume" placeholder="0-100"></el-input>
+                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                <span class="recommendSpan">元/人</span>
               </el-form-item>
-              <el-form-item label="奖励通用积分比例：" prop="rewardCash">
-                <el-input v-model="ruleForm.rewardCash" placeholder="0-100精确到百分位" @blur="inpBlur('rewardCash')"></el-input><span class="recommendSpan">%</span><span class="spanColor">推荐用户获得通用积分 = 推荐金额 X 奖励通用积分比例</span>
+              <el-form-item label="区域级管理奖：" prop="consume">
+                <div style="margin-bottom: 10px;">
+                  <el-input value="区县运营中心" readonly></el-input>
+                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                  <span class="recommendSpan">元/人</span>
+                </div>
+                <div>
+                  <el-input value="市级运营中心" readonly></el-input>
+                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                  <span class="recommendSpan">元/人</span>
+                </div>
               </el-form-item>
-              <el-form-item label="奖励商品收益比例：" prop="rewardGoods">
-                <el-input v-model="ruleForm.rewardGoods" placeholder="0-100精确到百分位" @blur="inpBlur('rewardGoods')"></el-input><span class="recommendSpan">%</span><span class="spanColor">商销售收益（以通用积分体现） = 所推荐供应商利润 X 奖励商品收益比例</span>
+              <el-form-item label="跨区管理奖：" prop="consume">
+                <el-input value="市级运营中心" readonly></el-input>
+                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                <span class="recommendSpan">元/人</span>
               </el-form-item>
-              <el-form-item label="店补收益比例：" prop="shopProfitSubsidyRate">
-                <el-input v-model="ruleForm.shopProfitSubsidyRate" placeholder="0-100精确到百分位" @blur="inpBlur('shopProfitSubsidyRate')"></el-input><span class="recommendSpan">%</span><span class="spanColor">推荐用户获得店补 = 推荐所获得消费积分 X 店补收益比例</span>
+            </div>
+            <div v-else>
+              <el-form-item label="大使提货奖：" prop="consume">
+                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                <span class="recommendSpan">元/人</span>
               </el-form-item>
-              <p>【间接推荐奖励】根据选中的下级，获得得以下会员的差额分佣（级差分佣奖励=当前分佣比例-下级分佣比例）</p>
-              <dl class="pos-r" v-if="gradationListData.length">
-                <dt class="pos-a">
-                  <span class="d-b ta-r">差额分佣级别：</span>
-                  <span class="d-b ta-r">级差消费积分比例：</span>
-                  <span class="d-b ta-r">级差通用积分比例：</span>
-                  <span class="d-b ta-r">级差商品收益比例：</span>
-                  <span class="d-b ta-r">店补收益比例：</span>
-                </dt>
-                <dd>
-                  <table>
-                    <tr>
-                      <th :style="{width: 10 / gradationListData.length + '%'}" v-for="gradationList in gradationListData">{{gradationList.ruleName | filterEmpty}}</th>
-                    </tr>
-                    <tr>
-                      <td v-for="gradationList in gradationListData">{{(ruleForm.rewardConsume - gradationList.consumePointRate) | filterEmpty('%')}}</td>
-                    </tr>
-                    <tr>
-                      <td v-for="gradationList in gradationListData">{{(ruleForm.rewardCash - gradationList.cashRate) | filterEmpty('%')}}</td>
-                    </tr>
-                    <tr>
-                      <td v-for="gradationList in gradationListData">{{(ruleForm.rewardGoods - gradationList.goodsProfitRate) | filterEmpty('%')}}</td>
-                    </tr>
-                    <tr>
-                      <td v-for="gradationList in gradationListData">{{(ruleForm.rewardGoods - gradationList.goodsProfitRate) | filterEmpty('%')}}</td>
-                    </tr>
-                    <!-- <tr>
-                      <th>服务中心</th>
-                      <th>钻石会员</th>
-                      <th>铂金会员</th>
-                      <th>金卡会员</th>
-                    </tr>
-                    <tr>
-                      <td>2.5%</td>
-                      <td>5%</td>
-                      <td>7.5%</td>
-                      <td>10%</td>
-                    </tr>
-                    <tr>
-                      <td>2.5%</td>
-                      <td>5%</td>
-                      <td>7.5%</td>
-                      <td>10%</td>
-                    </tr>
-                    <tr>
-                      <td>2.5%</td>
-                      <td>5%</td>
-                      <td>7.5%</td>
-                      <td>10%</td>
-                    </tr> -->
-                  </table>
-                </dd>
-              </dl>
-              <div class="rewardBonus pos-r">
-                <el-form-item label="全球加权分红比例：" prop="rewardBonus">
-                  <el-input v-model="ruleForm.rewardBonus" placeholder="0-100精确到百分位" @blur="inpBlur('rewardBonus')"></el-input><span class="recommendSpan pos-a">%</span>
-                </el-form-item>
-                <!-- <div class="rewardBonus-left"></div> -->
-                <!-- <div class="rewardBonus-right">
-                  <el-form-item label="核算周期：" prop="cycle">
-                    <el-input v-model="ruleForm.cycle" class="cycle" placeholder="大于等于1的正整数" @blur="inpBlur('rewardBonus')"></el-input>
-                    <span class="recommendSpan">天</span><span class="spanColor">推荐用户获得商品收益（以消费积分体现） = 推荐金额 X 奖励商品收益比例</span>
-                  </el-form-item>
-                </div> -->
-              </div>
-              <el-form-item label="办公场地补贴比例：" prop="rewardOffice">
-                <el-input v-model="ruleForm.rewardOffice" placeholder="0-100精确到百分位" @blur="inpBlur('rewardOffice')"></el-input><span class="rewardOffice">
-                <span class="recommendSpan">%</span></span><span class="spanColor">办公场地补贴（以消费积分体现） = 下级销售金额 X 办公场补贴比例</span>
+              <el-form-item label="运营提货奖：" prop="consume">
+                <div style="margin-bottom: 10px;">
+                  <el-input value="区县运营中心" readonly></el-input>
+                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                </div>
+                <div>
+                  <el-input value="市级运营中心" readonly></el-input>
+                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                </div>
               </el-form-item>
-              <el-form-item label="芯片收益值：" prop="rewardChip">
-                <el-input v-model="ruleForm.rewardChip" placeholder="填写整数，精确到百分位" @blur="inpBlur('rewardChip')"></el-input>
-                <span class="spanColor">芯片销售收益（以通用积分体现）= 芯片收益值 X 芯片数量</span>
+              <el-form-item label="跨区提货奖：" prop="consume">
+                <el-input value="市级运营中心" readonly></el-input>
+                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
               </el-form-item>
-              <div class="administration-wrap">
-                <el-form-item label="管理奖比例：" prop="manageAwardRate" class="administration administration-l">
-                  <el-input v-model="ruleForm.manageAwardRate" placeholder="填写整数，精确到百分位" @blur="inpBlur('manageAwardRate')"></el-input>
-                  <span class="spanColor">%</span>
-                </el-form-item>
-               <!--  <el-form-item label="管理奖奖励级数：" prop="manageAwardNum" class="administration administration-r">
-                  <el-input v-model="ruleForm.manageAwardNum" placeholder="填写0-10以内的整数" ></el-input>
-                  <span class="spanColor">往上分几级</span>
-                </el-form-item> -->
-              </div>
-              <el-form-item label="区域重消比例：" prop="areaRepeatRate">
-                <el-input v-model="ruleForm.areaRepeatRate" placeholder="填写整数，精确到百分位" @blur="inpBlur('areaRepeatRate')"></el-input>
-                <span class="spanColor">区域重销收益（以通用积分体现） = 所代理的区域下的利润 X 区域重消比例</span>
-              </el-form-item>
-              <!-- <el-form-item label="平级奖比例:" prop="levelingRate">
-                <el-input v-model="ruleForm.levelingRate" placeholder="0-100精确到百分位" @blur="inpBlur('levelingRate')"></el-input><span class="recommendSpan">%</span></span><span class="spanColor">下级如果出现相同等级，平级奖=平级会员业绩 * 平级奖比例</span>
-              </el-form-item>
-              <el-form-item label="超越奖：" prop="beSurpassedRate">
-                <el-input v-model="ruleForm.beSurpassedRate" placeholder="0-100精确到百分位" @blur="inpBlur('beSurpassedRate')"></el-input><span class="recommendSpan">%</span></span><span class="spanColor">直接推荐的会员超越了推荐人，超越奖=超越会员业绩 * 平级奖比例</span>
-              </el-form-item> -->
             </div>
           </div>
+
+          <!-- 代金券配置 -->
+          <div class="box">
+            <gray-title title="代金券配置"></gray-title>
+            <el-form-item label="赠送：" prop="goods">
+              <el-select v-model="ruleForm.memberLevel" size="medium" class="year-box"
+                placeholder="选择代金券">
+                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in Vouchers"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="抵扣：" prop="bonusPoints">
+              <el-select v-model="ruleForm.memberLevel" size="medium" class="year-box"
+                placeholder="选择代金券">
+                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in Vouchers"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+
         </el-form>
       </div>
     </template>
@@ -353,6 +298,8 @@ export default {
         desc: ''
       },
       fileList: [],             // 图片集合
+      coverImgList: [],
+      mainImgList: [],
       userInfo: {},             // 用户信息
       storeData: {},            // 商品id
       passVisible: false,       // 审核弹窗
@@ -445,7 +392,8 @@ export default {
       },    // 当前选择规则
       gradationListData: [],     // 级差列表
       content: `<p>hello world</p>`,
-      editorOption: {}
+      editorOption: {},
+      Vouchers: []
     }
   },
   computed: {
@@ -644,6 +592,12 @@ export default {
      * 上传数量超过最大限制数量
      */
     exceedHandle (files, fileList) {
+      this.$message({
+        message: '最多只能上传1个图标',
+        type: 'error'
+      })
+    },
+    exceedHandleMain () {
       this.$message({
         message: '最多只能上传1个图标',
         type: 'error'
@@ -873,6 +827,12 @@ export default {
         }
       }
     }
+    .edit_container {
+      height: 300px;
+      .quill-editor {
+        height: 200px;
+      }
+    }
   }
 }
 </style>
@@ -910,7 +870,7 @@ export default {
 
       .cue{
         color: #999;
-        left: 200px;
+        // left: 200px;
         bottom: 0;
       }
     }

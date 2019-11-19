@@ -4,81 +4,67 @@
     <!-- 头部 -->
     <template slot="header">
       <!-- 高级搜索组件 -->
-      <high-search @search="highSearch('form')" :close="highSearchClose">
+      <high-search @search="highSearch('form')" :textVisible = "false">
         <div class="pos-r" slot="search">
-          <el-input placeholder="输入身份名称" v-model.trim="formData.ruleName" @keyup.enter.native="searchHandle">
+          <el-input placeholder="输入推广大使手机" v-model.trim="formData.ruleName" @keyup.enter.native="searchHandle">
           </el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
-        <div class="reset-btn" slot="btn" @click="resetForm()">清空</div>
-        <div slot="main">
-          <el-form ref="form" :rules="rules" :model="formData" label-position="right" label-width="100px" class="search-form">
-            <el-form-item label="会员身份：">
-              <el-input v-model.trim="formData.ruleName" placeholder="身份名称" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="代理费：">
-              <el-col :span="11">
-                <el-form-item prop="agentLowness" class="fl-l">
-                  <el-input v-model.trim="formData.agentLowness" @blur="inpBlur('agentLowness')" placeholder="精确到百分位，限10个字符" clearable></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col class="ta-c fl-l" :span="2">-</el-col>
-              <el-col :span="11">
-                <el-form-item prop="agentHigh" class="agent fl-l">
-                  <el-input v-model.trim="formData.agentHigh" @blur="inpBlur('agentHigh')" placeholder="精确到百分位，限10个字符" clearable></el-input>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
-          </el-form>
-          <div class="clear"></div>
-        </div>
-        <!-- <div slot="edit">
-          <template>
-            <el-button @click="handleLink()"><i class="el-icon-plus fw-b"></i>创建身份</el-button>
-          </template>
-        </div> -->
       </high-search>
     </template>
 
     <!-- 主体 -->
     <template slot="main">
+      <div style="margin-bottom: 20px;margin-top: -20px;" class="voucher-card-list">
+        <div class="switch-wrap ">
+          <el-radio-group v-model="pageType" @change="pageTypeHandle">
+            <el-radio-button label="1">进行中</el-radio-button>
+            <el-radio-button label="2">回收站</el-radio-button>
+          </el-radio-group>
+          <el-button @click="handleLink()" style="float: right;">添加代金券</el-button>
+        </div>
+        <div class="voucher-card-content">
+          <div class="to-pre-icon"><i class="icon-font el-icon-caret-left" @click="toPre()"></i></div>
+          <div class="voucher-items">
+            <div v-for="(item, index) in voucherShowList" :key="index" class="voucher-item">
+              <img src="../../../assets/img/voucher-bg.png"/>
+              <div class="item-amount">&yen;<span>{{item.amount}}</span></div>
+              <div class="item-use">{{item.use === 1 ? '抵扣现金' : ''}}</div>
+              <div class="right">
+                <div class="first-line">可用于订购套餐使用
+                  <i class="icon-font el-icon-video-pause" v-if="item.status === 1" @click="handleStopBefore(item)"></i>
+                  <i class="icon-font el-icon-delete" @click="handleDeleteBefore(item)" v-else></i>
+                </div>
+                <div class="second-line">
+                  <span v-if="item.status === 1" class="opened">开启</span>
+                  <span v-else-if="item.status === 2" class="closed">关闭</span>
+                  <span v-else-if="item.status === 3" class="stoped">停止</span>
+                  <span class="aging">时效：{{item.aging}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="to-next-icon"><i class="icon-font el-icon-caret-right" @click="toNext()"></i></div>
+        </div>
+      </div>
+
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="ruleName" label="会员身份" width="120px">
+        <el-table-column prop="ruleName" label="推广大使手机">
           <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="agentFee" label="代理费(元)" width="120px">
+        <el-table-column prop="agentFee" label="代金券金额">
           <template slot-scope="scope">{{scope.row.agentFee | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="consumePointRate" label="直接推荐比例（消费积分）" width="230px">
+        <el-table-column prop="consumePointRate" label="领取时间">
           <template slot-scope="scope">{{scope.row.consumePointRate | filterEmpty('%')}}</template>
         </el-table-column>
-        <el-table-column prop="cashRate" label="直接推荐比例（通用积分）" width="230px">
+        <el-table-column prop="cashRate" label="到期时间">
           <template slot-scope="scope">{{scope.row.cashRate | filterEmpty('%')}}</template>
         </el-table-column>
-        <el-table-column prop="directSubName" label="下级名称" min-width="100">
+        <el-table-column prop="directSubName" label="使用状态">
           <template slot-scope="scope">
             <template v-if="parseInt(scope.row.rand) === 0">{{'' | filterEmpty}}</template>
             <template v-else>{{scope.row.directSubName | filterEmpty}}</template>
-          </template>
-        </el-table-column>
-        <el-table-column prop="rand" label="级数">
-          <template slot-scope="scope">{{scope.row.rand}}</template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" width="80">
-          <template slot-scope="scope">
-            <el-dropdown class="d-b" v-if="parseInt(scope.row.rand) !== 0">
-              <div class="ta-c d-b el-dropdown-link">
-                <span class="d-b va-m">...</span>
-              </div>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <div @click="handleLink(scope.row)"><i class="icon el-icon-edit"></i>编辑</div>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <div @click="handleDeleteBefore(scope.row)"><i class="icon el-icon-delete"></i>删除</div>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
           </template>
         </el-table-column>
         <div slot="empty">
@@ -100,12 +86,77 @@
 
     <template slot="other">
       <!-- 删除 -->
-      <el-dialog title="删除分销规则" :visible.sync="deleteVisible" width="480px">
+      <el-dialog title="删除代金券" :visible.sync="deleteVisible" width="480px">
         确认是否删除？
         <span slot="footer" class="dialog-footer">
           <el-button @click="deleteVisible = false">取 消</el-button>
           <el-button type="primary" :loading="confirmLoading" @click="handleDelete">确 定</el-button>
         </span>
+      </el-dialog>
+    </template>
+
+    <template slot="other">
+      <!-- 停止 -->
+      <el-dialog title="停止代金券" :visible.sync="stopVisible" width="480px">
+        确定停止代金券发放？
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="stopVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="confirmLoading" @click="handleStop">确 定</el-button>
+        </span>
+      </el-dialog>
+    </template>
+
+    <template slot="other">
+      <!-- 添加/编辑 -->
+      <el-dialog class="dialog-left"
+        :title="addDialogTitle"
+        :visible.sync="addDialogVisible"
+        width="580px">
+        <div class="ta-l view-authinfo-wrap">
+          <template v-if="addDialogType === 'id'">
+            <el-form :model="addForm" :rules="rules" ref="verifiForm" label-position="right" label-width='120px'>
+              <el-form-item inline label='赠送额度：' prop='name'>
+                <el-input class='inp-name' placeholder='精确到百分位,限10个字符' v-model="addForm.name"></el-input>
+              </el-form-item>
+              <el-form-item inline label='用途：' prop='address' class="address-wrap">
+                <el-select v-model="addForm.used" size="medium" class="year-box"
+                  placeholder="请选择">
+                  <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in uses"></el-option>
+                </el-select>
+              </el-form-item>
+              <div class="ta-c btn-wrap">
+                <!-- <el-button @click="$emit('close')">取消</el-button>
+                <el-button type="primary" class='confirm-btn' @click="submitForm('verifiForm')">确定</el-button> -->
+              </div>
+            </el-form>
+          </template>
+          <template v-else>
+            <!-- <dl class="pos-r">
+              <dt class="ta-r pos-a">企业名称：</dt>
+              <dd>{{this.formData.company}}</dd>
+            </dl>
+            <dl class="pos-r">
+              <dt class="ta-r pos-a">企业所在地：</dt>
+              <dd>
+                {{userAllInfo.companyProvince}}
+                {{userAllInfo.companyCity}}
+                {{userAllInfo.companyZone}}
+                {{userAllInfo.address}}
+              </dd>
+            </dl>
+            <dl class="pos-r">
+              <dt class="ta-r pos-a">营业执照：</dt>
+              <dd>
+                <a :href="userAllInfo.companyLicense | filterImgUrl" target="_blank" title="查看">
+                  <img :src="userAllInfo.companyLicense | filterImgUrl">
+                </a>
+              </dd>
+            </dl> -->
+          </template>
+          <div class="ta-c btn-wrap">
+            <el-button type="primary" class='confirm-btn' @click="authDialogVisible = false">确定</el-button>
+          </div>
+        </div>
       </el-dialog>
     </template>
   </common-tpl>
@@ -144,7 +195,29 @@ export default {
 
         // 代理费高
         agentHigh: { validator: validateAgent, trigger: 'blur' }
-      }
+      },
+      pageType: '1',
+      voucherList: [{ id: 1, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '一年' },
+      { id: 2, amount: 3000, use: 1, desc: '可用于订购套餐使用2', status: 2, aging: '一年' },
+      { id: 3, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
+      { id: 4, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' },
+      { id: 5, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 2, aging: '15天' },
+      { id: 6, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
+      { id: 7, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' }],
+      voucherShowList: [],
+      start: 0,
+      len: 3,
+      stopVisible: false,
+      stopData: {},
+      addDialogTitle: '添加代金券',
+      addDialogVisible: false,
+      addDialogType: '',
+      addForm: {},
+      uses: [{ label: '抵扣现金', value: 1 }],
+      validates: [
+        { label: '15天', value: 1 }, { label: '一个月', value: 2 }, { label: '三个月', value: 3 },
+        { label: '半年', value: 4 }, { label: '一年', value: 5 }
+      ]
     }
   },
   mounted () {
@@ -157,6 +230,7 @@ export default {
 
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
     this.getListData()
+    this.getShowVoucherList()
   },
   methods: {
     /**
@@ -250,6 +324,12 @@ export default {
       })
     },
 
+    handleStopBefore (row) {
+      this.stopVisible = true
+      this.stopData = row
+    },
+
+    handleStop () {},
     /**
      * 分页操作
      */
@@ -296,6 +376,31 @@ export default {
      */
     resetForm () {
       this.formData = this.$Utils.deepCopy(this.copyFormData)
+    },
+    /**
+     * 页面类型转换
+     */
+    pageTypeHandle (val) {
+      this.$router.replace({path: this.$route.path, query: {type: val}})
+    },
+    getShowVoucherList () {
+      this.voucherShowList = this.voucherList.slice(this.start * this.len, (this.start * this.len) + this.len)
+    },
+    toNext () {
+      if (((this.start + 1) * this.len) < this.voucherList.length) {
+        this.start += 1
+        this.getShowVoucherList()
+      } else {
+        console.log('没有下一页')
+      }
+    },
+    toPre () {
+      if ((this.start > 0)) {
+        this.start -= 1
+        this.getShowVoucherList()
+      } else {
+        console.log('当前已经是第一页')
+      }
     }
   }
 }
@@ -317,6 +422,83 @@ export default {
   }
   .admin-common-main{
     padding-top: 20px;
+    .voucher-card-list {
+      .voucher-card-content {
+        display: flex;
+        margin-top: 10px;
+        .to-pre-icon, .to-next-icon {
+          width: 50px;
+          line-height: 80px;
+          font-size: 36px;
+          color: #409EFF;
+          i {
+            cursor: pointer;
+          }
+        }
+        .voucher-items {
+          display: flex;
+          width: calc(100% - 100px);
+          .voucher-item {
+            width: 32%;
+            border: 3px solid #C1E0FF;
+            background: #F2F2F2;
+            margin-right: 20px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            .item-amount {
+              position: absolute;
+              top: 25px;
+              left: 30px;
+              font-size: 22px;
+              color: #fff;
+            }
+            .item-use {
+              position: absolute;
+              top: 50px;
+              left: 30px;
+              color: #fff;
+              font-size: 16px;
+            }
+            .right {
+              font-size: 14px;
+              padding: 10px 0;
+              .first-line {
+                i {
+                  float: right;
+                  margin-left: 7px;
+                  margin-right: 10px;
+                  font-size: 23px;
+                  cursor: pointer;
+                }
+              }
+              .second-line {
+                margin-top: 10px;
+                .opened {
+                  background: #66CC33;
+                  color: #fff;
+                  font-size: 12px;
+                  text-align: center;
+                  padding: 2px 4px;
+                  border-radius: 2px;
+                }
+                .closed, .stoped {
+                  background: #999;
+                  color: #fff;
+                  font-size: 12px;
+                  text-align: center;
+                  padding: 2px 4px;
+                  border-radius: 2px;
+                }
+              }
+            }
+          }
+          .voucher-item:nth-child(3) {
+            margin-right: 0;
+          }
+        }
+      }
+    }
   }
 }
 </style>
