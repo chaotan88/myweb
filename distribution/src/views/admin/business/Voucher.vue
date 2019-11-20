@@ -39,6 +39,7 @@
                   <span v-if="item.status === 1" class="opened">开启</span>
                   <span v-else-if="item.status === 2" class="closed">关闭</span>
                   <span v-else-if="item.status === 3" class="stoped">停止</span>
+                  <span v-else-if="item.status === 4" class="stoped">已删除</span>
                   <span class="aging">时效：{{item.aging}}</span>
                 </div>
               </div>
@@ -124,6 +125,21 @@
                   <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in uses"></el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item inline label='有效时长：' prop='address' class="address-wrap">
+                <el-select v-model="addForm.validate" size="medium" class="year-box"
+                  placeholder="请选择">
+                  <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in validates"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item inline label='说明：' prop='name'>
+                <el-input class='inp-name' placeholder='限20个字符,不含特殊字符' v-model="addForm.remark"></el-input>
+              </el-form-item>
+              <el-form-item inline label='代金券状态：' prop='name'>
+                <el-radio-group v-model="addForm.memberType">
+                    <el-radio :label="1">开启</el-radio>
+                    <el-radio :label="2">关闭</el-radio>
+                  </el-radio-group>
+              </el-form-item>
               <div class="ta-c btn-wrap">
                 <!-- <el-button @click="$emit('close')">取消</el-button>
                 <el-button type="primary" class='confirm-btn' @click="submitForm('verifiForm')">确定</el-button> -->
@@ -197,6 +213,16 @@ export default {
         agentHigh: { validator: validateAgent, trigger: 'blur' }
       },
       pageType: '1',
+      voucherALLList: [{ id: 1, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '一年' },
+      { id: 2, amount: 3000, use: 1, desc: '可用于订购套餐使用2', status: 2, aging: '一年' },
+      { id: 3, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
+      { id: 4, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' },
+      { id: 5, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 2, aging: '15天' },
+      { id: 6, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
+      { id: 7, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' },
+      { id: 5, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 4, aging: '15天' },
+      { id: 6, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 4, aging: '15天' },
+      { id: 7, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 4, aging: '15天' }],
       voucherList: [{ id: 1, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '一年' },
       { id: 2, amount: 3000, use: 1, desc: '可用于订购套餐使用2', status: 2, aging: '一年' },
       { id: 3, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
@@ -229,7 +255,7 @@ export default {
     })
 
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
-    this.getListData()
+    // this.getListData()
     this.getShowVoucherList()
   },
   methods: {
@@ -271,12 +297,16 @@ export default {
      * 新增/编辑
      */
     handleLink (item) {
-      if (!item) {
-        this.$router.push('/admin/distribution/rule/add')
+      if (item) {
+        this.addDialogType = 'id'
+        this.addForm = item
+        this.addDialogTitle = '编辑代金券'
       } else {
-        localStorage.setItem('MANAGER_STORE', JSON.stringify(item))
-        this.$router.push({path: '/admin/distribution/rule/edit', query: {id: item.ruleId}})
+        this.addDialogType = ''
+        this.addForm = {}
+        this.addDialogTitle = '添加代金券'
       }
+      this.addDialogVisible = true
     },
 
     /**
@@ -381,7 +411,14 @@ export default {
      * 页面类型转换
      */
     pageTypeHandle (val) {
-      this.$router.replace({path: this.$route.path, query: {type: val}})
+      if (val === '2') {
+        this.voucherList = this.voucherALLList.filter(item => item.status === 4)
+      } else {
+        this.voucherList = this.voucherALLList.filter(item => item.status === 1 || item.status === 2 || item.status === 3)
+      }
+      this.start = 0
+      this.getShowVoucherList()
+      // this.$router.replace({path: this.$route.path, query: {type: val}})
     },
     getShowVoucherList () {
       this.voucherShowList = this.voucherList.slice(this.start * this.len, (this.start * this.len) + this.len)

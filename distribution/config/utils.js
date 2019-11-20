@@ -39,26 +39,8 @@ switch (process.env.NODE_ENV) {
     break
   default:
     module.exports.domain = { // 开发环境
-      // ROOT_API: 'http://192.168.1.75:8380/passpay-distribute/distribute/',    // 凯哥
-      // ROOT_PUBLIC: 'http://192.168.1.75:8380/passpay-distribute/',            // 凯哥
-
-      // ROOT_API: 'http://192.168.1.124:8180/passpay-distribute/distribute/',    // 龙江
-      // ROOT_PUBLIC: 'http://192.168.1.124:8180/passpay-distribute/',            // 龙江
-
-      // ROOT_API: 'http://192.168.8.125:9096/passpay-distribute/distribute/',    // 少杰
-      // ROOT_PUBLIC: 'http://192.168.8.125:9096/passpay-distribute/',            // 少杰
-
-      //  ROOT_API: 'http://192.168.1.123:8089/passpay-distribute/distribute/',      // 李纳
-      //  ROOT_PUBLIC: 'http://192.168.1.123:8089/passpay-distribute/',              // 李纳
-
-      // ROOT_API: 'http://192.168.1.116:8502/passpay-distribute/distribute/',      // 李纳
-      // ROOT_PUBLIC: 'http://192.168.1.116:8502/passpay-distribute/',              // 李纳
-
-      // ROOT_API: 'http://192.168.1.68:8080/passpay-distribute/distribute/',     // 强哥
-      // ROOT_PUBLIC: 'http://192.168.1.68:8080/passpay-distribute/',             // 强哥
-
-    ROOT_API: 'http://passpay.andes-hub.com/behinddistribute/distribute/',    // 测试服
-    ROOT_PUBLIC: 'http://passpay.andes-hub.com/behinddistribute/',            // 测试服 - 登录
+    ROOT_API: 'http://120.76.250.165/lzwlbehinddistribute/distribute/',    // 测试服
+    ROOT_PUBLIC: 'http://120.76.250.165/lzwlbehinddistribute/',            // 测试服 - 登录
       // ROOT_IMG: 'http://120.76.250.165/'
     }
 }

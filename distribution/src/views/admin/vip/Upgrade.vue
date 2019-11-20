@@ -8,7 +8,7 @@
         <el-form :model="formData" class="" label-width="160px">
           <!-- 会员基本信息 -->
           <gray-title title="会员基本信息"></gray-title>
-          <el-form-item label="会员手机：">
+          <el-form-item label="推广大使手机：">
             {{detailsData.userPhone | filterEmpty}}
           </el-form-item>
           <el-form-item label="姓名：">
@@ -29,204 +29,34 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="升级金额：">
+          <el-form-item inline label='选择地区：' prop='address' class="address-wrap">
+            <region-select :assignData="detailsData.region" @change="regionChange"></region-select>
+          </el-form-item>
+          <el-form-item label="服务费：">
             {{detailsData.upgradeAmount | filterEmpty}}
           </el-form-item>
-
-          <el-row type="flex" class="fw-n admin-gray-title" align="middle">
-            <div>升级抵扣</div>
-            <span style="margin-left: 20px;font-size: 16px;color: #4293e8;cursor: pointer;" class="" @click="handleAddBefore"><i class="el-icon-plus">&nbsp;添加抵扣</i></span>
-          </el-row>
-          <el-form-item label="累计抵扣金额：">
-            {{detailsData.deductionAmountTotal | filterEmpty}}
+          <el-form-item label="实际支付金额：">
+            <el-input placeholder="输入整数,限20个字符" v-model="detailsData.amount"></el-input>
           </el-form-item>
-          <el-form-item label="" label-width="40px">
-            <el-table :data="deductionList" style="width: 100%;margin-bottom: 60px;" v-loading="loading" element-loading-text="加载中">
-              <el-table-column fixed prop="customerPhone" label="抵扣类型" min-width="120">
-                <template slot-scope="scope">{{scope.row.deductionType | filterDeductionType}}</template>
-              </el-table-column>
-              <el-table-column prop="customerPhone" label="扣除账户手机" min-width="120">
-                <template slot-scope="scope">{{scope.row.deductionUserPhone | filterEmpty}}</template>
-              </el-table-column>
-              <el-table-column prop="" label="抵扣售出金额" width="180">
-                <template slot-scope="scope">{{scope.row.deductionSaleAmount | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-              <el-table-column prop="ruleName" label="账户预计收益" min-width="120">
-                <template slot-scope="scope">{{scope.row.expectedProfit | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-              <el-table-column prop="region" label="实际抵扣金额" min-width="200">
-                <template slot-scope="scope">{{scope.row.deductionAmount | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-              <el-table-column prop="cardName" label="剩余未抵扣金额" min-width="120">
-                <template slot-scope="scope">{{scope.row.laveAmount | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-              <el-table-column prop="invitationName" label="操作" width="120">
-                <template slot-scope="scope">
-                  <el-dropdown class="d-b">
-                    <div class="ta-c d-b el-dropdown-link">
-                      <span class="d-b va-m">...</span>
-                    </div>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item v-if="scope.row.deductionType !== 1">
-                        <div @click="handleBefore(scope.row, 'details')"><i class="icon el-icon-view"></i>查看</div>
-                      </el-dropdown-item>
-                      <el-dropdown-item>
-                        <div @click="handleBefore(scope.row, 'del')"><i class="icon el-icon-delete"></i>删除</div>
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </template>
-              </el-table-column>
-              <div slot="empty">
-                <no-data></no-data>
-              </div>
-            </el-table>
+          
+          <el-form-item label="上传凭证：">
+            <el-upload class="upload-picture fl-l pos-r"
+              :class="{uploadHide: coverImgList.length === 1}"
+              list-type="picture-card"
+              :action="uploadUrl"
+              :file-list="coverImgList"
+              :limit="1"
+              :on-exceed="exceedHandle"
+              :before-upload="beforeAvatarUpload"
+              :on-remove="removeHandle"
+              :on-success="uploadSuccessHandle">
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
           </el-form-item>
 
         </el-form>
       </div>
     </template>
-
-    <template slot="other">
-      <el-dialog title="删除抵扣" :visible.sync="deleteVisible" width="540px" @close="">
-        <p>确认是否删除抵扣？</p><br/>
-        <span slot="footer" class="dialog-footer">
-        <el-button @click="deleteVisible = false">返 回</el-button>
-        <el-button type="primary" :loading="dialogLoading" @click="handleDelete">确 定</el-button>
-        </span>
-      </el-dialog>
-
-      <el-dialog title="查看抵扣记录" :visible.sync="infoVisible" width="50%" @close="">
-        <el-row type="flex" justify="space-between" style="margin-bottom: 20px;">
-          <span>已选择预计收益：<span style="color: red;">{{rowData.expectedProfit}}</span></span>
-          <span>抵扣金额：<span style="color: red;">{{rowData.deductionAmount}}</span></span>
-          <span>剩余未抵扣收益：<span style="color: red;">{{rowData.laveAmount}}</span></span>
-        </el-row>
-        <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中" max-height="350">
-          <el-table-column fixed prop="" label="待售商品" min-width="120">
-            <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="挂售金额" min-width="120">
-            <template slot-scope="scope">{{scope.row.hangSellAmount | filterEmpty | filterMoney}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="挂售时间" min-width="120">
-            <template slot-scope="scope">{{scope.row.hangTime | filterDate}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="预计收益" >
-            <template slot-scope="scope">{{scope.row.expectedProfit | filterEmpty | filterMoney}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="是否抵扣" >
-            <template slot-scope="scope">{{scope.row.ifDeduction ? '是' : '否'}}</template>
-          </el-table-column>
-        </el-table>
-
-        <el-form :model="formData" label-width="120px" v-if="rowData.deductionType === 3">
-          <el-form-item label="上传抵扣凭证：">
-            <thumbnail-component v-if="rowData.deductionType === 3" :empty="false" :styles="{width: '70px', height: '70px'}" :link="true"  :list="[{url: this.$Utils.filterImgUrl(rowData.deductionVoucher), img: rowData.deductionVoucher}]" style="width: 100%;height: 100%;" @change="deleteImg($event)">
-            </thumbnail-component>
-          </el-form-item>
-        </el-form>
-
-        <span slot="footer" class="dialog-footer">
-        <el-button type="" :loading="dialogLoading" @click="infoVisible = false">关 闭</el-button>
-        </span>
-      </el-dialog>
-
-      <el-dialog title="添加抵扣" :visible.sync="addVisible" width="50%" @close="" class="add-dialog" @open="initData">
-        <el-form :model="formData" class="" label-width="140px" ref="formData" :key="formKey">
-          <el-form-item label="" label-width="20px">
-            <el-table :data="tableData" style="width: 100%" >
-              <el-table-column fixed prop="customerPhone" label="应抵扣金额" min-width="120">
-                <template slot-scope="scope">{{scope.row.upgradeAmount | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-              <el-table-column prop="customerPhone" label="已扣金额" min-width="120">
-                <template slot-scope="scope">{{scope.row.deductionAmountTotal | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-              <el-table-column prop="customerPhone" label="剩余待扣金额" min-width="120">
-                <template slot-scope="scope">{{scope.row.upgradeAmount - scope.row.deductionAmountTotal | filterEmpty | filterMoney}}</template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-          <el-form-item label="抵扣类型：">
-            <el-radio-group v-model="formData.deductionType" @change="deductionTypeChange">
-              <el-radio :label="1">账户通用积分抵扣</el-radio>
-              <el-radio :label="2">账户买卖仓预计收益抵扣</el-radio>
-              <el-radio :label="3">跨账户买卖仓预计收益抵扣</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <template v-if="formData.deductionType === 1">
-            <el-form-item label="剩余通用积分：">
-              {{getIntegral(cashPoints) | filterEmpty('个')}}
-            </el-form-item>
-          </template>
-
-          <el-form-item label="已选择预计收益：" v-if="formData.deductionType === 2">
-            <span :class="{colorRed: checkedRevenue}">{{checkedRevenue | filterEmpty | filterMoney}}</span><span v-show="checkedRevenue">元</span>
-          </el-form-item>
-
-          <template v-if="formData.deductionType === 3">
-            <el-row type="flex" justify="space-between" class="circle">
-              <el-form-item label="" label-width="20px">
-                <div class="">
-                  <el-input v-model="formData.phone" placeholder="请输入会员手机号" @keyup.enter.native="handleAddBefore"></el-input>
-                  <i class="ta-c pos-a el-icon-search" @click="handleAddBefore"></i>
-                </div>
-              </el-form-item>
-              <el-form-item label="已选择预计收益：">
-                <span :class="{colorRed: checkedRevenue}">{{checkedRevenue | filterEmpty | filterMoney}}</span><span v-show="checkedRevenue">元</span>
-              </el-form-item>
-            </el-row>
-          </template>
-
-          <template v-if="formData.deductionType !== 1">
-            <el-form-item label="" label-width="20px">
-              <el-table :data="formData.deductionGoods" style="width: 100%" max-height="250" v-loading="loading" element-loading-text="加载中">
-                <el-table-column fixed prop="" label="待售商品" min-width="120">
-                  <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
-                </el-table-column>
-                <el-table-column prop="" label="挂售金额" min-width="120">
-                  <template slot-scope="scope">{{scope.row.hangSellAmount | filterEmpty | filterMoney}}</template>
-                </el-table-column>
-                <el-table-column prop="" label="挂售时间" min-width="120">
-                  <template slot-scope="scope">{{scope.row.hangTime | filterDate}}</template>
-                </el-table-column>
-                <el-table-column prop="" label="预计收益" >
-                  <template slot-scope="scope">{{scope.row.expectedProfit | filterEmpty | filterMoney}}</template>
-                </el-table-column>
-                <el-table-column prop="" label="是否抵扣" >
-                  <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.ifDeduction" @change="getCheckedRevenue"></el-checkbox>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-form-item>
-          </template>
-
-          <el-form-item label="上传抵扣凭证：" v-if="formData.deductionType === 3" prop="imgs" :rules="{required: true, type: 'array', message: '不能为空'} ">
-            <thumbnail-component :empty="false" :styles="{width: '70px', height: '70px'}" :link="true" del :auto-delete="true" :list="formData.imgs" style="width: 100%;height: 100%;" @change="deleteImg($event)">
-              <template slot="other">
-                <upload-component :styles="{width: '70px', height: '70px'}" @success="uploadImgSuccess"  v-if="formData.imgs.length === 0"></upload-component>
-              </template>
-            </thumbnail-component>
-          </el-form-item>
-
-          <el-form-item label="输入抵扣金额：" prop="deductionAmount" :rules="deductionAmount" style="margin-top: 20px;" :key="formKey">
-            <el-input v-model.number="formData.deductionAmount" placeholder="0-100000正整数"></el-input>
-          </el-form-item>
-
-          <el-form-item label="剩余未抵扣收益：" v-if="formData.deductionType !== 1">
-            {{checkedRevenue ? checkedRevenue - formData.deductionAmount : '' | filterEmpty('元')}}
-            <span v-if="formData.deductionType !== 1" class="colorRed" style="margin-left: 20px;">该金额将以通用积分形式保留在被抵扣的账户中</span>
-          </el-form-item>
-
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-        <el-button @click="addVisible = false">关 闭</el-button>
-        <el-button type="primary" :loading="dialogLoading" @click="submitFormData('formData')">确 定</el-button>
-        </span>
-      </el-dialog>
-    </template>
-
     <!-- 底部 -->
     <template slot="footer">
       <el-button type="primary" @click="handleSubmit()">提交审核</el-button>
@@ -235,6 +65,8 @@
 </template>
 
 <script>
+  import RegionSelect from '@/components/utils/RegionSelect'
+
   export default {
     data () {
      //  校验0-100000
@@ -273,14 +105,21 @@
           currentPage: 1,
           pageSize: 10,
           total: 0
-        }
+        },
+        coverImgList: [],
+        userInfo: {}
+      }
+    },
+    computed: {
+      uploadUrl () {
+        return this.$dm.ROOT_API + 'upload/uploadimg/admin/terminal?clientType=1&token=' + this.userInfo.token          // 上传图片
       }
     },
     mounted () {
       this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
       this.copyFormData = this.$Utils.deepCopy(this.formData)
       this.userId = parseInt(this.$route.query.userId) || ''
-      this.getListData()
+      // this.getListData()
     },
 
     methods: {
@@ -558,8 +397,68 @@
             this.submitLoading = false
           }, 1000)
         })
+      },
+      regionChange (results) {
+        this.detailsData.region = results
+      },
+      /**
+       * 文件上传前的格式和大小校验
+       */
+      beforeAvatarUpload (file) {
+        const pattern = /(jpg|jpeg|png)$/ig
+        const isLegalPhoto = pattern.test(file.type)
+        const isLt2M = file.size / 1024 / 1024 < 2
+
+        if (!isLegalPhoto) {
+          this.$message.error('上传图片的格式不合法，请重新上传')
+        }
+        if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 2MB!')
+        }
+        return isLegalPhoto && isLt2M
+      },
+
+      /**
+       * 上传数量超过最大限制数量
+       */
+      exceedHandle (files, fileList) {
+        this.$message({
+          message: '最多只能上传1个图标',
+          type: 'error'
+        })
+      },
+      exceedHandleMain () {
+        this.$message({
+          message: '最多只能上传1个图标',
+          type: 'error'
+        })
+      },
+
+      /**
+       * 文件上传成功
+       */
+      uploadSuccessHandle (res) {
+        if (res.status !== '1') {
+          this.$message({
+            message: res.msg,
+            type: 'error',
+            duration: 1000
+          })
+          return false
+        }
+        this.fileList.push({url: this.$Utils.filterImgUrl(res.data)})  // 绝对路径
+        this.ruleForm.uploadFiles = res.data                     // 相对路径
+      },
+
+      /**
+       * 文件被移除
+       */
+      removeHandle (file, fileList) {
+        this.ruleForm.uploadFiles = ''      // 移除的时候清空对象
+        this.fileList = []
       }
-    }
+    },
+    components: { RegionSelect }
   }
 </script>
 

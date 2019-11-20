@@ -1,11 +1,15 @@
 <!-- 缩略图组件 -->
 <template>
-  <div class="thumbnail-component-wrap" :class="{active: actived === true}" ref="thumbnail-component-wrap" @click.stop="$emit('click')">
+  <div class="thumbnail-component-wrap" :class="{active: actived === true}" ref="thumbnail-component-wrap"@click.stop="$emit('click')">
     <template v-if="list.length">
-      <div :class="[listClass, item.customClass, {radio: isRadio, radioed: isRadio && radioIndex === index}]"  v-for="(item, index) in list" v-if="item && (custom || item.url || showList)" ref="drag-list" :style="customStyle" @click="$emit('radio', item, index)">
+      <div :class="[listClass, item.customClass, {radio: isRadio, radioed: isRadio && radioIndex === index}]" 
+        v-for="(item, index) in list" v-if="item && (custom || item.url || showList)"
+          ref="drag-list" :style="customStyle" @click="$emit('radio', item, index)">
         <template v-if="!custom">
           <!-- :style="{width: customStyle.width, height: customStyle.height}" -->
-          <a class="d-b pos-r full-wrap" :class="{'cursor-p': link === true}" :href="filterLink(item.url)" target="_blank" :title="item.url && link && !view ? '查看大图' : ''">
+          <a class="d-b pos-r full-wrap" :class="{'cursor-p': link === true}" :href="filterLink(item.url)"
+            target="_blank" :title="item.url && link && !view ? '查看大图' : ''">
+            1111
             <span class="full-wrap pos-a view-wrap" v-if="view && !move">
               <i class="pos-a el-icon-view"></i>
             </span>

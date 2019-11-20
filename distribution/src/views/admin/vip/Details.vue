@@ -10,21 +10,21 @@
           <gray-title title="会员基本信息"></gray-title>
           <table>
             <tr>
-              <td>会员手机：</td>
+              <td>推广大使手机：</td>
               <td>{{datailsData.customerPhone | filterEmpty}}</td>
             </tr>
             <tr>
-              <td>会员ID：</td>
+              <td>推广大使ID：</td>
               <td>{{datailsData.invitationCode | filterEmpty}}</td>
             </tr>
             <tr>
-              <td>会员类型：</td>
+              <td>级别产生方式：</td>
               <td>
                 <template v-if="pageType === 1">{{datailsData.memberType | filterMemberType}}</template>
                 <template v-else>
                   <el-radio-group v-model="formData.memberType">
-                    <el-radio :label="1">正常会员</el-radio>
-                    <el-radio :label="2">特批会员</el-radio>
+                    <el-radio :label="1">在线升级</el-radio>
+                    <el-radio :label="2">手动升级</el-radio>
                   </el-radio-group>
                 </template>
               </td>
@@ -34,40 +34,8 @@
               <td>
                 <el-row type="flex">
                   <span style="margin-right: 20px">{{datailsData.rankName | filterEmpty}}</span>
-                  <el-button type="primary"   v-if="(datailsData.ifUpgrade === 1 && datailsData.rank !== 8) && pageType === 2" @click="handleUpgradeBefore(datailsData)">账户升级</el-button>
+                  <el-button type="primary"   v-if="(datailsData.ifUpgrade === 1 && datailsData.rank !== 8) && pageType === 2 && formData.memberType === 2" @click="handleUpgradeBefore(datailsData)">账户升级</el-button>
                 </el-row>
-               <!-- <template v-else>
-                  <el-select placeholder="选择会员身份" v-model="formData.ruleId" @change="ruleChange">
-                    <template v-for="item in ruleAllData">
-                      <el-option :value="item.ruleId" :label="item.ruleName"></el-option>
-                    </template>
-                  </el-select>
-                </template>-->
-              </td>
-            </tr>
-            <tr>
-              <td>代理级别：</td>
-              <td>
-                <template v-if="pageType === 1">{{datailsData.cardType | filterEmpty}}</template>
-                <template v-else>
-                  <el-form-item prop="agentRandStr" class="activate">
-                    <el-radio-group v-model="formData.agentRandStr">
-                      <el-radio :label="1">市级代理</el-radio>
-                      <el-radio :label="2">地区代理</el-radio>
-                    </el-radio-group>
-                  </el-form-item>
-                </template>
-              </td>
-            </tr>
-            <tr>
-              <td>代理区域：</td>
-              <td>
-                <template v-if="pageType === 1">{{datailsData.agentProvince + datailsData.agentCity + datailsData.agentZone| filterEmpty}}</template>
-                <template v-else>
-                  <el-form-item class="select-wrap">
-                    <region-select :assignData="formData.region" @change="regionChange"></region-select>
-                  </el-form-item>
-                </template>
               </td>
             </tr>
             <tr>
@@ -83,7 +51,7 @@
               </td>
             </tr>
             <tr>
-              <td class="with-asterisk">会员姓名：</td>
+              <td class="with-asterisk">姓名：</td>
               <td>
                 <template v-if="pageType === 1">{{datailsData.cardName | filterEmpty}}</template>
                 <template v-else>
@@ -93,15 +61,6 @@
                 </template>
               </td>
             </tr>
-            <!-- <tr>
-              <td>身份证：</td>
-              <td>
-                <template v-if="pageType === 1">{{datailsData.idCard | filterEmpty}}</template>
-                <template v-else>
-                  <el-input placeholder="请输入身份证" v-model="formData.idCard" clearable></el-input>
-                </template>
-              </td>
-            </tr> -->
             <tr>
               <td class="with-asterisk">证件号：</td>
               <td>
@@ -122,54 +81,14 @@
               <td>{{datailsData.region | filterEmpty}}</td>
             </tr>
             <tr>
-              <td>最后登录时间：</td>
-              <td>{{datailsData.lastLoginTime | filterDate}}</td>
+              <td>首次推荐人：</td>
+              <td>{{datailsData.invitationName | filterEmpty}}</td>
             </tr>
             <tr>
               <td>注册时间：</td>
               <td>{{datailsData.registerTime}}</td>
             </tr>
           </table>
-
-          <template v-if="pageType === 1">
-            <!-- 会员账户信息 -->
-            <gray-title title="会员基本信息"></gray-title>
-            <table>
-              <tr>
-                <td>金额账户余额：</td>
-                <td>{{datailsData.balance | filterEmpty}}</td>
-              </tr>
-              <tr>
-                <td>消费积分余额：</td>
-                <td>{{datailsData.bonusPoints | filterEmpty}}</td>
-              </tr>
-              <tr>
-                <td>通用积分余额：</td>
-                <td>{{datailsData.cashPoints | filterEmpty}}</td>
-              </tr>
-            </table>
-
-            <!-- 邀请人信息 -->
-            <gray-title title="邀请人信息"></gray-title>
-            <table>
-              <tr>
-                <td>邀请人ID号：</td>
-                <td>{{datailsData.inviterInvitationCode | filterEmpty}}</td>
-              </tr>
-              <tr>
-                <td>邀请人姓名：</td>
-                <td>{{datailsData.invitationName | filterEmpty}}</td>
-              </tr>
-              <tr>
-                <td>邀请人手机：</td>
-                <td>{{datailsData.inviterPhone | filterEmpty}}</td>
-              </tr>
-              <tr>
-                <td>邀请人身份：</td>
-                <td>{{datailsData.inviterDisRuleName | filterEmpty}}</td>
-              </tr>
-            </table>
-          </template>
         </el-form>
       </div>
     </template>
@@ -226,13 +145,11 @@ export default {
       },
       dialogVisible: false,   // 弹窗
       ruleAllData: [],        // 规则等级列表
-      datailsData: {},        // 详情信息
-      storeData: {}           // 商品id
+      datailsData: {}        // 详情信息
     }
   },
   mounted () {
     if (this.$route.path.match(/edit/gi)) this.pageType = 2
-    this.storeData = JSON.parse(localStorage.getItem('OPEN_STORE'))
     this.datailsData = JSON.parse(localStorage.getItem(this.$global.SYSTEM + 'VipDatails'))
     console.log('this.datailsData: ', this.datailsData)
     this.formData.ruleId = parseInt(this.datailsData.ruleId)
@@ -240,7 +157,7 @@ export default {
     this.formData.cardName = this.datailsData.cardName
     this.formData.idCard = this.datailsData.idCard
     this.formData.ruleName = this.datailsData.ruleName
-    if (this.pageType === 2) this.getRuleAllSubs()
+    // if (this.pageType === 2) this.getRuleAllSubs()
   },
 
   methods: {
@@ -248,18 +165,18 @@ export default {
      * 获取所有分销规则比例级数
      */
     getRuleAllSubs () {
-      this.$http.post('@ROOT_API/rule/getDisRuleAllSubs', {}).then((res) => {
-        let resData = res.data
-        if (parseInt(resData.status) !== 1) {
-          this.$message({
-            message: resData.msg,
-            type: 'error',
-            duration: 1500
-          })
-          return false
-        }
-        this.ruleAllData = resData.data
-      })
+      // this.$http.post('@ROOT_API/rule/getDisRuleAllSubs', {}).then((res) => {
+      //   let resData = res.data
+      //   if (parseInt(resData.status) !== 1) {
+      //     this.$message({
+      //       message: resData.msg,
+      //       type: 'error',
+      //       duration: 1500
+      //     })
+      //     return false
+      //   }
+      //   this.ruleAllData = resData.data
+      // })
     },
 
     /**

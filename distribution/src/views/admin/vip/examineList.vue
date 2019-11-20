@@ -17,7 +17,7 @@
         <el-table-column fixed prop="customerPhone" label="申请编号" min-width="170">
           <template slot-scope="scope">{{scope.row.upgradeNo}}</template>
         </el-table-column>
-        <el-table-column prop="customerPhone" label="会员手机" min-width="120">
+        <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.userPhone | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="lastLoginTime" label="申请日期" width="180">
@@ -29,10 +29,10 @@
         <el-table-column prop="region" label="申请成为" min-width="120">
           <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="cardName" label="升级金额（元）" min-width="120">
+        <el-table-column prop="cardName" label="服务费" min-width="120">
           <template slot-scope="scope">{{scope.row.upgradeAmount | filterMoney | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="invitationName" label="抵扣金额" width="120">
+        <el-table-column prop="invitationName" label="实际付款金额" width="120">
           <template slot-scope="scope">{{scope.row.deductionAmount | filterMoney | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="inviterInvitationCode" label="审核状态" width="120">

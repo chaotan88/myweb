@@ -5,7 +5,7 @@
       <!-- 高级搜索组件 -->
       <high-search @search="highSearch('form')" :close="highSearchClose">
         <div class="pos-r" slot="search">
-          <el-input v-model.trim="formData.condition" placeholder="输入会员姓名/手机号/身份证号" @keyup.enter.native="searchHandle"></el-input>
+          <el-input v-model.trim="formData.condition" placeholder="输入手机/推荐人" @keyup.enter.native="searchHandle"></el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
         <div slot="edit">
@@ -64,34 +64,29 @@
     <!-- 列表 -->
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column fixed prop="customerPhone" label="会员姓名" min-width="120">
-          <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="customerPhone" label="会员手机" min-width="120">
+        <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="invitationCode" label="会员ID" min-width="120">
-          <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
-        </el-table-column>
         <el-table-column prop="ruleName" label="当前身份" min-width="120">
+          <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="ruleName" label="级别产生方式" min-width="120">
           <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="region" label="所属地区" min-width="200">
           <template slot-scope="scope">{{scope.row.region | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="cardName" label="身份认证" min-width="120">
-          <template slot-scope="scope">{{scope.row.cardStatus | filterCardStatus}}</template>
-        </el-table-column>
-        <el-table-column prop="invitationName" label="邀请人姓名" width="120">
+        <el-table-column prop="registerTime" label="注册时间" width="180"></el-table-column>
+        <el-table-column prop="invitationName" label="首次推荐人" width="120">
           <template slot-scope="scope">{{scope.row.invitationName | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="inviterInvitationCode" label="邀请人ID" width="120">
-          <template slot-scope="scope">{{scope.row.inviterInvitationCode | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="lastLoginTime" label="最后登录时间" width="180">
           <template slot-scope="scope">{{scope.row.lastLoginTime | filterDate}}</template>
         </el-table-column>
-        <el-table-column prop="registerTime" label="注册时间" width="180"></el-table-column>
+        <el-table-column prop="cardName" label="身份认证" min-width="120">
+          <template slot-scope="scope">{{scope.row.cardStatus | filterCardStatus}}</template>
+        </el-table-column>       
+        
         <el-table-column fixed="right" label="操作" width="60">
           <template slot-scope="scope">
             <el-dropdown class="d-b">

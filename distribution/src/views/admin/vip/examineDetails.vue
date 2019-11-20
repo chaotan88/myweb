@@ -10,7 +10,7 @@
           <gray-title title="会员基本信息"></gray-title>
           <table>
             <tr>
-              <td>会员手机：</td>
+              <td>推广大使手机：</td>
               <td>{{upgradeDetail.userPhone | filterEmpty}}</td>
             </tr>
             <tr>
@@ -31,45 +31,22 @@
               <td>{{upgradeDetail.rankName | filterEmpty}}</td>
             </tr>
             <tr>
-              <td>升级金额：</td>
+              <td>选择地区：</td>
+              <td>{{upgradeDetail.rankName | filterEmpty}}</td>
+            </tr>
+            <tr>
+              <td>服务费：</td>
               <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td>
             </tr>
-          </table>
-
-          <!-- 邀请人信息 -->
-          <gray-title title="升级抵扣"></gray-title>
-          <table>
             <tr>
-              <td>抵扣金额累计：</td>
-              <td><span style="color: red">{{upgradeDetail.deductionAmountTotal | filterMoney | filterEmpty}}</span> 元</td>
+              <td>实际支付金额：</td>
+              <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td>
+            </tr>
+            <tr>
+              <td>上传凭证：</td>
+              <!-- <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td> -->
             </tr>
           </table>
-          <el-table :data="tableData" style="width: 100%;margin-bottom: 20px" v-loading="loading" element-loading-text="加载中">
-            <el-table-column fixed  label="抵扣类型">
-              <template slot-scope="scope">{{scope.row.deductionType | filterDeductionType}}</template>
-            </el-table-column>
-            <el-table-column  label="扣除账户手机">
-              <template slot-scope="scope">{{scope.row.deductionUserPhone | filterEmpty}}</template>
-            </el-table-column>
-            <el-table-column  label="抵扣售出金额">
-              <template slot-scope="scope">{{scope.row.deductionSaleAmount | filterMoney | filterEmpty}}</template>
-            </el-table-column>
-            <el-table-column  label="账户预计收益">
-              <template slot-scope="scope">{{scope.row.expectedProfit | filterMoney | filterEmpty}}</template>
-            </el-table-column>
-            <el-table-column  label="实际抵扣金额">
-              <template slot-scope="scope">{{scope.row.deductionAmount | filterMoney | filterEmpty}}</template>
-            </el-table-column>
-            <el-table-column  label="剩余未抵扣金额">
-              <template slot-scope="scope">{{scope.row.laveAmount | filterMoney | filterEmpty}}</template>
-            </el-table-column>
-            <el-table-column  label="操作" width="120">
-              <template slot-scope="scope" v-if="scope.row.deductionType !== 1"><span class="checkLook" @click="LookDetail(scope.row)"> 查看 </span> </template>
-            </el-table-column>
-            <div slot="empty">
-              <no-data></no-data>
-            </div>
-          </el-table>
 
           <!-- 审核结果 -->
           <gray-title title="审核结果"></gray-title>
@@ -96,70 +73,6 @@
           </div>
         </el-form>
       </div>
-    </template>
-
-    <template slot="other">
-      <el-dialog title="查看抵扣记录" :visible.sync="dialogVisible" width="800px">
-        <div class="centBox">
-          <div class="top">
-            <el-row>
-              <el-col :span="8">
-                <div class="itme">已选择预计收益：<span style="color: red"> {{deduction.expectedProfit | filterEmpty}}</span> 元</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="itme">
-                  <div class="itme">抵扣金额：<span style="color: red"> {{deduction.deductionAmount | filterMoney | filterEmpty}}</span> 元</div>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="itme">
-                  <div class="itme">剩余未抵扣收益：<span style="color: red"> {{deduction.laveAmount | filterMoney | filterEmpty}}</span> 元</div>
-                </div>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="cent">
-            <el-table :data="deductionDetail" style="width: 100%;margin-bottom: 20px" v-loading="loading" element-loading-text="加载中">
-              <el-table-column fixed  label="待售商品" min-width="120">
-                <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
-              </el-table-column>
-              <el-table-column  label="挂售金额" min-width="120">
-                <template slot-scope="scope">{{scope.row.hangSellAmount | filterMoney | filterEmpty}}</template>
-              </el-table-column>
-              <el-table-column  label="挂售时间" width="180">
-                <template slot-scope="scope">{{scope.row.hangTime | filterDate}}</template>
-              </el-table-column>
-              <el-table-column  label="预计收益" min-width="120">
-                <template slot-scope="scope">{{scope.row.expectedProfit | filterMoney | filterEmpty}}</template>
-              </el-table-column>
-              <el-table-column  label="是否抵扣" min-width="100">
-                <template slot-scope="scope">{{scope.row.ifDeduction | filterifDeduction}}</template>
-              </el-table-column>
-              <div slot="empty">
-                <no-data></no-data>
-              </div>
-            </el-table>
-          </div>
-          <div v-show="deduction.deductionVoucher">
-            <el-row>
-              <el-col :span="4">
-                <div class="itme">抵扣凭证</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="imgBox">
-                  <a :href="deduction.deductionVoucher | filterImgUrl" target="_blank">
-                  <img :src="deduction.deductionVoucher">
-                  </a>
-                </div>
-              </el-col>
-            </el-row>
-          </div>
-        </div>
-        <template slot="footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" :loading="submitLoading" @click="dialogVisible = false">确 定</el-button>
-        </template>
-      </el-dialog>
     </template>
 
     <!-- 底部 -->
