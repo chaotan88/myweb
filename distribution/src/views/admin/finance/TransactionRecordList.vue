@@ -5,16 +5,16 @@
       <!-- 高级搜索组件 -->
       <high-search :textVisible="false">
         <div class="pos-r" slot="search">
-          <div class="d-ib" style="width: 160px;">
+          <!-- <div class="d-ib" style="width: 160px;">
             <el-select class="full-w" v-model="formData.accountType">
               <el-option label="全部" value=""></el-option>
               <el-option label="提现到支付宝账户" value="2"></el-option>
               <el-option label="提现到银行卡" value="1"></el-option>
             </el-select>
           </div>
-          &nbsp;
+          &nbsp; -->
           <div class="d-ib pos-r" style="width: 250px;">
-            <el-input placeholder="输入会员姓名/手机号/身份证号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
+            <el-input placeholder="输入交易编号/手机号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
           </div>
         </div>
@@ -39,31 +39,31 @@
 
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="cardName" label="会员姓名" min-width="100">
+        <el-table-column prop="cardName" label="交易编号" min-width="100">
           <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="customerPhone" label="会员手机" min-width="120">
+        <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="invitationCode" label="会员ID">
+        <el-table-column prop="invitationCode" label="推广大使身份">
           <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="disRuleName" label="会员身份" min-width="100">
+        <el-table-column prop="disRuleName" label="交易时间" min-width="100">
           <template slot-scope="scope">{{scope.row.disRuleName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="dealWithStatus" label="状态">
+        <el-table-column prop="dealWithStatus" label="交易类型">
           <template slot-scope="scope">{{scope.row.dealWithStatus | filterdealwithStatus}}</template>
         </el-table-column>
-        <el-table-column prop="withdrawalAmount" label="提现金额（元）" min-width="130">
+        <el-table-column prop="withdrawalAmount" label="交易内容" min-width="130">
           <template slot-scope="scope">{{scope.row.withdrawalAmount | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="withdrawalFees" label="提现手续费（元）" min-width="150">
+        <el-table-column prop="withdrawalFees" label="交易额）" min-width="150">
           <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="cashPoints" label="通用积分结余（个）" min-width="160">
+        <el-table-column prop="cashPoints" label="交易状态" min-width="160">
           <template slot-scope="scope">{{scope.row.cashPoints | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="applyTime" label="提现申请时间" min-width="160">
+        <el-table-column prop="applyTime" label="账户结余" min-width="160">
           <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
         </el-table-column>
 
@@ -100,17 +100,17 @@
 
     <template slot="other">
 
-      <reflect-dialog :visible="reflectVisible" :initData="reflectData" @close="reflectVisible = false" @success="handleSuccess"></reflect-dialog>
+      <transaction-dialog :visible="reflectVisible" :initData="reflectData" @close="reflectVisible = false" @success="handleSuccess"></transaction-dialog>
 
     </template>
   </common-tpl>
 </template>
 
 <script>
-import ReflectDialog from './ReflectDialog'
+import TransactionDialog from './TransactionDialog'
 
 export default{
-  components: {ReflectDialog},
+  components: {TransactionDialog},
   data () {
     return {
       loading: false,         // 加载loading
@@ -157,45 +157,46 @@ export default{
      * @param  {[type]} type [数据类型，type存在表示获取导出数据]
      */
     getListData (type) {
-      let url = ''
-      if (!type) {
-        url = '@ROOT_API/withdrawalManageController/getWithdrawalList'
-        this.loading = true
-      } else {
-        url = 'withdrawalManageController/exportWithdrawalList'
-      }
-      let data = {
-        start: this.pageData.currentPage,
-        pageSize: this.pageData.pageSize,
-        dealWithStatus: this.pageType,
-        condition: this.formData.searchText,
-        accountType: this.formData.accountType
-      }
-      if (!type) {
-        this.$http.post(url, data).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            this.tableData = []
-            this.pageData.total = 0
-            return false
-          }
-          this.tableData = resData.data.list
-          this.pageData.total = resData.data.total
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        let filterParams = []
-        for (let key in data) {
-          filterParams.push(key + '=' + data[key])
-        }
-        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
-      }
+      this.tableData = [{}]
+      // let url = ''
+      // if (!type) {
+      //   url = '@ROOT_API/withdrawalManageController/getWithdrawalList'
+      //   this.loading = true
+      // } else {
+      //   url = 'withdrawalManageController/exportWithdrawalList'
+      // }
+      // let data = {
+      //   start: this.pageData.currentPage,
+      //   pageSize: this.pageData.pageSize,
+      //   dealWithStatus: this.pageType,
+      //   condition: this.formData.searchText,
+      //   accountType: this.formData.accountType
+      // }
+      // if (!type) {
+      //   this.$http.post(url, data).then((res) => {
+      //     let resData = res.data
+      //     if (parseInt(resData.status) !== 1) {
+      //       this.$message({
+      //         message: resData.msg,
+      //         type: 'error',
+      //         duration: 1500
+      //       })
+      //       this.tableData = []
+      //       this.pageData.total = 0
+      //       return false
+      //     }
+      //     this.tableData = resData.data.list
+      //     this.pageData.total = resData.data.total
+      //   }).finally(() => {
+      //     this.loading = false
+      //   })
+      // } else {
+      //   let filterParams = []
+      //   for (let key in data) {
+      //     filterParams.push(key + '=' + data[key])
+      //   }
+      //   window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+      // }
     },
     /**
      * 高级搜索

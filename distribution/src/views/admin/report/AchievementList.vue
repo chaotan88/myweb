@@ -1,6 +1,6 @@
 <!-- 业绩统计表 -->
 <template>
-  <common-tpl class="cash-list-wrap" :footer="false">
+  <common-tpl class="achievement-list-wrap" :footer="false">
     <!-- 主体 -->
     <template slot="main">
 
@@ -23,40 +23,13 @@
             <h3 class="fw-n">
               <span>{{statisticsData.grabTotalAmount | filterEmpty('元')}}</span>
             </h3>
-            <h4 class="fw-n">抢购业绩</h4>
+            <h4 class="fw-n">套餐总业绩</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
               <i class="d-ib va-t small-box"></i>
-              <span>微信 &nbsp{{statisticsData.grabWxPayAmount || 0}}</span>
+              <span>微信 &nbsp;{{statisticsData.grabWxPayAmount || 0}}</span>
               <i class="d-ib va-t small-box" style="background: orange; margin-left: 15px;"></i>
-              <span>支付宝 &nbsp{{statisticsData.grabAliPayAmount || 0}}</span>
-              <i class="d-ib va-t small-box" style="background: red; margin-left: 15px;"></i>
-              <span>通用积分 &nbsp{{statisticsData.grabCashPointPayAmount || 0}}</span>
+              <span>支付宝 &nbsp;{{statisticsData.grabAliPayAmount || 0}}</span>
             </div>
-          </dd>
-        </dl>
-
-        <dl class="ta-c fl-l cursor-p">
-          <dd class="d-ib va-m ta-c">
-            <h3 class="fw-n">
-              <span>{{statisticsData.purchaseTotalAmount | filterEmpty('元')}}</span>
-            </h3>
-            <h4 class="fw-n">批发业绩</h4>
-            <div class="va-m small-box-wrap" style="margin-top: 10px;">
-              <i class="d-ib va-t small-box"></i>
-              <span>微信 &nbsp{{statisticsData.purchaseWxPayAmount || 0}}</span>
-              <i class="d-ib va-t small-box" style="background: orange; margin-left: 15px;"></i>
-              <span>支付宝 &nbsp{{statisticsData.purchaseAliPayAmount || 0}}</span>
-              <i class="d-ib va-t small-box" style="background: red; margin-left: 15px;"></i>
-              <span>通用积分 &nbsp{{statisticsData.purchaseCashPointPayAmount || 0}}</span>
-            </div>
-          </dd>
-        </dl>
-        <dl class="ta-c fl-l cursor-p">
-          <dd class="d-ib va-m ta-c">
-            <h3 class="fw-n">
-              <span>{{statisticsData.withDrawalAmount | filterEmpty('元')}}</span>
-            </h3>
-            <h4 class="fw-n">提现金额</h4>
           </dd>
         </dl>
 
@@ -87,13 +60,35 @@
         </template>
       </div>
 
+      <div class="statistics-cen">
+        <div class="date-and-chart-content">
+        <div class="statistics-revenue-t">
+          <!-- 时间 -->
+          <el-form ref="form" label-position="right" class="search-form" label-width="110px">
+            <div class="d-ib pos-a" style="width: 150px;">
+              <el-select v-model="formData.chartYear" size="medium" class="year-box" placeholder="选择年份" @change="selectChartYear" clearable>
+                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in chartYearArr"></el-option>
+              </el-select>
+            </div>
+            <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
+              <el-date-picker v-model.trim="formData.chartStatisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleChartFilterDate"></el-date-picker>
+            </el-form-item>
+          </el-form>
+        </div>
+        <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
+          <no-data style="padding: 100px 0;"></no-data>
+        </div> -->
+        <div id="line-chart-achieve"></div>
+      </div>
+      </div>
+
       <!-- 高级搜索组件 -->
       <high-search @search="highSearch('form')" :textVisible="false">
         <div class="pos-r" slot="search">
 
           <!-- 输入手机可查找会员旗下业绩 -->
           <div class="d-ib pos-r" style="width: 380px;">
-            <el-input placeholder="输入手机可查找会员旗下业绩" v-model.trim="formData.customerPhone" @keyup.enter.native="searchHandle"></el-input>
+            <el-input placeholder="输入手机可查找推广大使旗下业绩" v-model.trim="formData.customerPhone" @keyup.enter.native="searchHandle"></el-input>
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
           </div>
           &nbsp;
@@ -102,9 +97,8 @@
           <div class="d-ib" style="width: 150px;">
             <el-select class="full-w" v-model="formData.payType" @change="subTypehandle()" placeholder="全部支付方式">
               <el-option label="全部支付方式" value=""></el-option>
-              <el-option label="微信" value="1"></el-option>
-              <el-option label="支付宝" value="2"></el-option>
-              <el-option label="通用积分" value="5"></el-option>
+              <el-option label="微信未付" value="1"></el-option>
+              <el-option label="支付宝支付" value="2"></el-option>
             </el-select>
           </div>
         </div>
@@ -114,62 +108,24 @@
       </high-search>
 
       <el-table :data="tableData" class="full-w" v-loading="loading" element-loading-text="加载中">
-       <el-table-column prop="" label="产品名称">
+       <el-table-column prop="" label="套餐名称">
           <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="" label="抢购价">
+        <el-table-column prop="" label="套餐金额">
           <template slot-scope="scope">{{scope.row.grabPrice | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="" label="成本价">
+        <el-table-column prop="" label="套餐成本">
           <template slot-scope="scope">{{scope.row.buyingPrice | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="" label="基数放量利润">
-          <template slot-scope="scope">{{scope.row.companyProfit | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="" label="基数放量">
-          <template slot-scope="scope">{{scope.row.companyGoodsNum | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="" label="基数放量抢购金额" width="160">
-          <template slot-scope="scope">{{scope.row.companyAmount | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="" label="已抢购业绩">
-          <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="" label="已挂售数">
+        <el-table-column prop="" label="订购数量">
           <template slot-scope="scope">{{scope.row.hangSellNum | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="" label="已抢购数量">
-          <template slot-scope="scope">{{scope.row.grabNum | filterEmpty}}</template>
+        <el-table-column prop="" label="实付金额">
+          <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="" label="挂售未抢购数量">
-          <template slot-scope="scope">{{scope.row.notSellNum | filterEmpty}}</template>
+        <el-table-column prop="" label="订购总金额">
+          <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="" label="批发价">
-          <template slot-scope="scope">{{scope.row.purchasePrice | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="" label="已批发数量">
-          <template slot-scope="scope">{{scope.row.purchaseNum | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="" label="批发业绩">
-          <template slot-scope="scope">{{scope.row.purchaseTotalAmount | filterEmpty}}</template>
-        </el-table-column>
-        <!-- <el-table-column prop="" label="交易时间">
-          <template slot-scope="scope">{{scope.row.createTime | filterDate}}</template>
-        </el-table-column> -->
-        <!-- <el-table-column fixed="right" label="操作" width="60">
-          <template slot-scope="scope">
-            <el-dropdown class="d-b">
-              <div class="ta-c d-b el-dropdown-link">
-                <span class="d-b va-m">...</span>
-              </div>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <div @click="this.$router.push('/admin/finance/currency/cash/details')"><i class="icon el-icon-view"></i>详情</div>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
-        </el-table-column> -->
         <div slot="empty">
           <no-data></no-data>
         </div>
@@ -194,6 +150,9 @@
 </template>
 
 <script>
+let echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
+
 export default {
   data () {
      // 验证手机
@@ -204,7 +163,29 @@ export default {
     }
     return {
       loading: false,                 // loading
-      yearArr: [              // 选择年
+      yearArr: [          // 选择年
+        {
+          label: '今天',
+          value: 0
+        },
+        {
+          label: '近三天',
+          value: 1
+        },
+        {
+          label: '近三个月',
+          value: 3
+        },
+        {
+          label: '近半年',
+          value: 6
+        },
+        {
+          label: '近一年',
+          value: 12
+        }
+      ],
+      chartYearArr: [          // 选择年
         {
           label: '近三个月',
           value: 3
@@ -222,29 +203,15 @@ export default {
       tableData: [{
         transferName: 111
       }],
-      // pickerOptions0: {                // 限制时间
-      //   onPick: ({ maxDate, minDate }) => {
-      //     this.onPickDate = minDate
-      //   },
-      //   disabledDate: (time) => {
-      //     if (this.onPickDate) {
-      //       let date = this.onPickDate
-      //       let y = date.getFullYear()
-      //       let m = date.getMonth()
-      //       let firstDay = new Date(y, m, 1)
-      //       let lastDay = new Date(y, m + 2, 0)
-      //       return time.getTime() < firstDay || time.getTime() || time.getTime() > lastDay
-      //     } else {
-      //       return time.getTime() > new Date()
-      //     }
-      //   }
-      // },
       formData: {
         curYear: '',           // 选择日期
         statisticsDate: [],    // 日期
         customerPhone: '',     // 否 string  客户号码
         endDate: '',           // 统计时间结束: '',           // 否 string  结束时间
-        payType: ''            // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
+        payType: '',            // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
+        chartYear: '',
+        chartDate: '',
+        chartStatisticsDate: []
       },
       statisticsData: {},     // 统计数据
       rules: {
@@ -348,9 +315,12 @@ export default {
      * 时间改变
      */
     selectYear (value) {
-      if (!value) return false
+      if (!value && value !== 0) return false
       var dt = new Date()
       switch (value) {
+        case 1:
+          dt.setDate(dt.getDate() - 1)
+          break
         case 3:
           dt.setMonth(dt.getMonth() - 3)
           break
@@ -363,6 +333,24 @@ export default {
       }
       this.formData.statisticsDate = [dt, new Date()]
       this.getApiData()
+    },
+
+    selectChartYear (value) {
+      if (!value && value !== 0) return false
+      var dt = new Date()
+      switch (value) {
+        case 3:
+          dt.setMonth(dt.getMonth() - 3)
+          break
+        case 6:
+          dt.setMonth(dt.getMonth() - 6)
+          break
+        case 12:
+          dt.setMonth(dt.getMonth() - 12)
+          break
+      }
+      this.formData.statisticsChartDate = [dt, new Date()]
+      this.getLineChartData()
     },
 
     /**
@@ -388,6 +376,58 @@ export default {
       this.getApiData()
     },
 
+    handleChartFilterDate (data) {
+      this.formData.chartYear = ''
+      this.getLineChartData()
+    },
+
+    getLineChartData () {
+      let data = [
+        {
+          name: '1月',
+          value: 10000
+        },
+        {
+          name: '2月',
+          value: 15000
+        },
+        {
+          name: '3月',
+          value: 18000
+        },
+        {
+          name: '4月',
+          value: 20000
+        },
+        {
+          name: '5月',
+          value: 25000
+        },
+        {
+          name: '6月',
+          value: 28000
+        }
+      ]
+      this.buildChart(data)
+    },
+    buildChart (data) {
+      let chart = echarts.init(document.getElementById('line-chart-achieve'))
+      let xData = data.map(da => da.name)
+      let yData = data.map(da => da.value)
+      chart.setOption({
+        xAxis: {
+          type: 'category',
+          data: xData
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: yData,
+          type: 'line'
+        }]
+      })
+    },
     /**
      * 选择支付方式
      */
@@ -440,7 +480,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.cash-list-wrap{
+.achievement-list-wrap{
 
   /*-------------统计----------*/
   .statistics-cen{
@@ -448,7 +488,7 @@ export default {
     justify-content: space-between;
 
     dl{
-      width: 33%;
+      width: 100%;
       height: 140px;
       padding-top: 40px;
       margin-right: 20px;
@@ -510,13 +550,25 @@ export default {
     dl:last-child{
       margin-right: 0;
     }
+
+    .date-and-chart-content {
+      width: 100%;
+    }
+    #line-chart-achieve {
+      height: 300px;
+      width: 100%;
+      background: #fff;
+      div {
+        height: 300px;
+      }
+    }
   }
   
 }
 </style>
 
 <style lang="less">
-.cash-list-wrap{
+.achievement-list-wrap{
  
  /*------------高级搜索------*/
   .search-wrap{

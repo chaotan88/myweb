@@ -8,8 +8,9 @@
           <div class="d-ib" style="width: 160px;">
             <el-select class="full-w" v-model="formData.accountType">
               <el-option label="全部" value=""></el-option>
-              <el-option label="提现到支付宝账户" value="2"></el-option>
-              <el-option label="提现到银行卡" value="1"></el-option>
+              <el-option label="银行卡" value="2"></el-option>
+              <el-option label="支付宝" value="1"></el-option>
+              <el-option label="微信支付" value="3"></el-option>
             </el-select>
           </div>
           &nbsp;
@@ -39,20 +40,17 @@
 
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="cardName" label="会员姓名" min-width="100">
+        <el-table-column prop="cardName" label="推广大使手机" min-width="100">
           <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="customerPhone" label="会员手机" min-width="120">
-          <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="invitationCode" label="会员ID">
-          <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="disRuleName" label="会员身份" min-width="100">
+        <el-table-column prop="customerPhone" label="推广大使身份" min-width="120">
           <template slot-scope="scope">{{scope.row.disRuleName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="dealWithStatus" label="状态">
           <template slot-scope="scope">{{scope.row.dealWithStatus | filterdealwithStatus}}</template>
+        </el-table-column>
+        <el-table-column prop="invitationCode" label="提现方式">
+          <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="withdrawalAmount" label="提现金额（元）" min-width="130">
           <template slot-scope="scope">{{scope.row.withdrawalAmount | filterMoney}}</template>
@@ -60,13 +58,15 @@
         <el-table-column prop="withdrawalFees" label="提现手续费（元）" min-width="150">
           <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="cashPoints" label="通用积分结余（个）" min-width="160">
-          <template slot-scope="scope">{{scope.row.cashPoints | filterEmpty}}</template>
+        <el-table-column prop="withdrawalFees" label="提现应付金额（元）" min-width="150">
+          <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
+        </el-table-column>
+        <el-table-column prop="withdrawalFees" label="账户结余）" min-width="150">
+          <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="applyTime" label="提现申请时间" min-width="160">
           <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
         </el-table-column>
-
         <el-table-column fixed="right" label="操作" width="60">
           <template slot-scope="scope">
             <el-dropdown class="d-b">
@@ -157,6 +157,7 @@ export default{
      * @param  {[type]} type [数据类型，type存在表示获取导出数据]
      */
     getListData (type) {
+      this.tableData = [{}]
       let url = ''
       if (!type) {
         url = '@ROOT_API/withdrawalManageController/getWithdrawalList'

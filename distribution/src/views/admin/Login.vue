@@ -42,6 +42,8 @@
        * 登录
        */
       loginHandle (formName) {
+        // localStorage.setItem(this.$global.USER_INFO, {})
+        // this.$router.push('/admin')
         this.$refs[formName].validate((valid) => {
           if (!valid) return false
           this.loading = true

@@ -75,9 +75,6 @@
                 <el-radio :label="0">关闭</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="套餐总数 ：" prop="ruleName">
-              <el-input v-model="ruleForm.ruleName" placeholder="输入正整数,限10个字符"></el-input>
-            </el-form-item>
             <el-form-item label="订购数量 ：" prop="ruleName">
               <el-radio-group v-model="ruleForm.isLimit">
                 <el-radio :label="1">不限</el-radio>
@@ -88,30 +85,34 @@
                 </el-input>/人
               </span>
             </el-form-item>
+            <el-form-item label="套餐类型 ：" prop="commissionType">
+              <el-radio-group v-model="ruleForm.commissionType">
+                <el-radio :label="1">礼包分佣</el-radio>
+                <el-radio :label="2">提货分佣</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="订购要求 ：" prop="whetherNeetGift" v-if="ruleForm.commissionType === 2">
+              <el-checkbox v-model="ruleForm.whetherNeetGift" :true-label="1" :false-label="2"></el-checkbox>
+              优先购买礼包套餐，才能购买此套餐
+              <el-select v-model="ruleForm.neetGiftMealId" size="medium" class="year-box"
+                placeholder="选择礼包套餐">
+                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in packages"></el-option>
+              </el-select>
+            </el-form-item>
           </div>
 
           <!-- 分佣配置 -->
           <div class="box">
             <gray-title title="分佣配置"></gray-title>
             <el-form-item label="已配置金额：">
-              <div><span class="red-cnt">{{ruleForm.usedAmount}}</span> 元,剩余 
-                <span class="red-cnt">{{ruleForm.saleAmount - ruleForm.usedAmount}}</span> 元</div>
-            </el-form-item>
-            <el-form-item label="分佣类型：">
-              <el-radio-group v-model="ruleForm.commissionType">
-                <el-radio :label="1">礼包分佣</el-radio>
-                <el-radio :label="0">提货分佣</el-radio>
-              </el-radio-group>
+              <div><span class="red-cnt">{{ruleForm.usedAmount || 0}}</span> 元,剩余 
+                <span class="red-cnt">{{(ruleForm.saleAmount - ruleForm.usedAmount) || 0}}</span> 元</div>
             </el-form-item>
             <div v-if="ruleForm.commissionType === 1">
               <el-form-item label="推荐奖：" prop="consume">
                 <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
               </el-form-item>
               <el-form-item label="大使管理奖：" prop="recommend">
-                <span class="recommendSpan">推荐</span>
-                <el-input value="VIP推广大使" placeholder="填写正整数，限10个字符" readonly></el-input>
-                <span class="recommendSpan">满</span>
-                <el-input v-model="ruleForm.consume" placeholder="0-100"></el-input>
                 <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
@@ -393,7 +394,8 @@ export default {
       gradationListData: [],     // 级差列表
       content: `<p>hello world</p>`,
       editorOption: {},
-      Vouchers: []
+      Vouchers: [],
+      packages: [{ label: '初级推广大使升级大礼包', value: 1 }]
     }
   },
   computed: {

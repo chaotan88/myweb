@@ -5,10 +5,10 @@
           
       <table class="ta-l recharge-table">
         <tr>
-          <th colspan="4" class="fw-n">会员信息</th>
+          <th colspan="4" class="fw-n">推广大使信息</th>
         </tr>
         <tr>
-          <td>会员姓名</td>
+          <td>推广大使姓名</td>
           <td>{{initData.cardName | filterEmpty}}</td>
           <td>手机号</td>
           <td>{{initData.customerPhone | filterEmpty}}</td>

@@ -719,6 +719,21 @@ export default {
 }
 </style>
 <style lang="less">
+.distribution-list-wrap {
+  .uploadHide{
+    height: 148px;
+    width: 148px;
+
+    .el-upload-list__item{
+      width: 148px;
+      height: 148px;
+    }
+    .el-upload{
+      display: none;
+    }
+  }
+}
+
 .manage-public-detail-wrap{
   .el-dialog {
     .el-dialog__body {
@@ -790,18 +805,6 @@ export default {
     }
   }
 
-  .uploadHide{
-    height: 148px;
-    width: 148px;
-
-    .el-upload-list__item{
-      width: 148px;
-      height: 148px;
-    }
-    .el-upload{
-      display: none;
-    }
-  }
 
   .el-textarea{
     width: 420px;

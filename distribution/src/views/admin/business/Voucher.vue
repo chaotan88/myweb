@@ -114,7 +114,7 @@
         :visible.sync="addDialogVisible"
         width="580px">
         <div class="ta-l view-authinfo-wrap">
-          <template v-if="addDialogType === 'id'">
+          <template>
             <el-form :model="addForm" :rules="rules" ref="verifiForm" label-position="right" label-width='120px'>
               <el-form-item inline label='赠送额度：' prop='name'>
                 <el-input class='inp-name' placeholder='精确到百分位,限10个字符' v-model="addForm.name"></el-input>
@@ -146,8 +146,8 @@
               </div>
             </el-form>
           </template>
-          <template v-else>
-            <!-- <dl class="pos-r">
+          <!-- <template v-else>
+            <dl class="pos-r">
               <dt class="ta-r pos-a">企业名称：</dt>
               <dd>{{this.formData.company}}</dd>
             </dl>
@@ -167,8 +167,8 @@
                   <img :src="userAllInfo.companyLicense | filterImgUrl">
                 </a>
               </dd>
-            </dl> -->
-          </template>
+            </dl>
+          </template> -->
           <div class="ta-c btn-wrap">
             <el-button type="primary" class='confirm-btn' @click="authDialogVisible = false">确定</el-button>
           </div>

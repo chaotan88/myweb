@@ -4,9 +4,9 @@
      <!-- 头部 -->
     <template slot="header">
       <!-- 高级搜索组件 -->
-      <high-search @search="highSearch('form')">
+      <high-search @search="highSearch('form')" :textVisible = "false">
         <div class="pos-r" slot="search">
-          <el-input placeholder="输入会员姓名/手机号/身份证号" v-model.trim=formData.condition @keyup.enter.native="searchHandle">
+          <el-input placeholder="输入手机号码" v-model.trim=formData.condition @keyup.enter.native="searchHandle">
           </el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
@@ -14,66 +14,38 @@
           <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
         </div>
         <div class="reset-btn" slot="btn" @click="resetForm()">清空</div>
-        <div slot="main">
-          <el-form ref="form" :rules="rules" :model="formData" label-position="right" label-width="140px" class="search-form">
-            <el-form-item label="会员姓名：" prop="cardName">
-              <el-input v-model.trim="formData.cardName" placeholder="20个字符以内" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="会员手机号：" prop="phone">
-              <el-input v-model.trim="formData.phone" placeholder="手机格式，限11个字符" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="身份证号：" prop="idCard">
-              <el-input v-model.trim="formData.idCard" placeholder="仅限输入数字和字母，20个字符以内" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="申请时间：" class="apply-time pos-r apply-date-wrap">
-              <el-col :span="5">
-                <el-date-picker type="date" placeholder="年/月/日" v-model="formData.applyTimeStart" clearable></el-date-picker>
-              </el-col>
-              <el-col class="ta-c" :span="2">至</el-col>
-              <el-col :span="5">
-                <el-date-picker type="date" placeholder="年/月/日" v-model="formData.applyTimeEnd" clearable></el-date-picker>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="支付状态：" v-if="!pageType">
-              <el-select v-model="formData.payStatus" placeholder="选择支付状态" clearable>
-                <el-option label="付款审核中" value="3"></el-option>
-                <el-option label="已支付" value="1"></el-option>
-                <el-option label="未支付" value="0"></el-option>
-                <el-option label="支付失败" value="2"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <div class="clear"></div>
-        </div>
       </high-search>
     </template>
 
     <!-- 主体 -->
     <template slot="main">
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="applyNo" label="会员姓名">
+        <el-table-column prop="applyNo" label="订单编号">
           <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="phone" label="会员手机" min-width="120">
+        <el-table-column prop="phone" label="套餐名称" min-width="120">
           <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="applyTime" label="申请日期" width="180">
+        <el-table-column prop="applyTime" label="套餐编号" width="180">
           <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
         </el-table-column>
-        <el-table-column prop="currentIdentity" label="当前会员身份">
+        <el-table-column prop="currentIdentity" label="订单状态">
           <template slot-scope="scope">{{scope.row.currentIdentity | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="applyIdentity" label="申请成为身份">
+        <el-table-column prop="applyIdentity" label="买家手机号">
           <template slot-scope="scope">{{scope.row.applyIdentity | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="payAmount" label="应付金额（元）">
+        <el-table-column prop="payAmount" label="收货人姓名">
           <template slot-scope="scope">{{scope.row.payAmount | filterMoney}}</template>
-        </el-table-column>
-        <el-table-column prop="payType" label="付款方式">
-          <template slot-scope="scope">{{scope.row.payType | filterPayType}}</template>
         </el-table-column>
         <el-table-column prop="payStatus" label="支付状态">
           <template slot-scope="scope">{{scope.row.payStatus | filterPayStatus(scope.row.payType)}}</template>
+        </el-table-column>
+        <el-table-column prop="payType" label="实收款">
+          <template slot-scope="scope">{{scope.row.payType | filterPayType}}</template>
+        </el-table-column>
+        <el-table-column prop="payType" label="下单时间">
+          <template slot-scope="scope">{{scope.row.payType | filterDate}}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
@@ -243,57 +215,58 @@ export default {
      * @param  {[type]} type [数据类型，type存在表示获取导出数据]
      */
     getListData (type) {
-      let url = ''
-      if (!type) {
-        url = '@ROOT_API/distributeApplyManage/payAuditList'
-        this.loading = true
-      } else {
-        url = 'distributeApplyManage/exportPayAuditList'
-      }
-      let data = {
-        start: type ? 1 : this.pageData.currentPage,   // 是 int 当前页
-        pageSize: type ? this.pageData.total : this.pageData.pageSize,    // 是 int 每页条数
-        condition: this.formData.condition,            // 否 Sting 查询条件
-        phone: this.formData.phone,                    // 否 String  电话号码
-        cardName: this.formData.cardName,              // 否 Sting 会员姓名
-        applyNo: this.formData.applyNo,                // 否 Sting 申请编号
-        idCard: this.formData.idCard,                  // 否 Sting 身份证号
-        payAmountBegin: this.formData.agencyFeeStart,  // 否 String  应付金额起始值
-        payAmountEnd: this.formData.agencyFeeEnd,      // 否 String  应付金额结束值
-        applyTimeBeign: this.formData.applyTimeStart ? this.$Utils.filterDate(this.formData.applyTimeStart, 'YYYY-MM-DD') : '',      // 否 String  申请时间起始值
-        applyTimeEnd: this.formData.applyTimeEnd ? this.$Utils.filterDate(this.formData.applyTimeEnd, 'YYYY-MM-DD') : '',        // 否 String  申请时间结束值
-        payStatus: this.pageType || this.formData.payStatus    // 否 String  支付状态（0:未支付，1：已支付，2:支付失败，3：付款审核中）
-        // payAuditStatus: this.pageType                  // 否 String  支付审核状态（0未审核，1审核通过，2审核不通过）
-      }
-      if (!type) {
-        this.$http.post(url, data).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            this.tableData = []
-            this.pageData.total = 0
-            return false
-          }
-          let results = resData.data
-          this.pageData.total = results.total
-          results.list.forEach((row) => {
-            row.paymentVoucher = row.paymentVoucher ? row.paymentVoucher.split(',') : row.paymentVoucher ? [row.paymentVoucher] : []
-          })
-          this.tableData = results.list
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        let filterParams = []
-        for (let key in data) {
-          filterParams.push(key + '=' + data[key])
-        }
-        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
-      }
+      this.tableData = [{}]
+    //   let url = ''
+    //   if (!type) {
+    //     url = '@ROOT_API/distributeApplyManage/payAuditList'
+    //     this.loading = true
+    //   } else {
+    //     url = 'distributeApplyManage/exportPayAuditList'
+    //   }
+    //   let data = {
+    //     start: type ? 1 : this.pageData.currentPage,   // 是 int 当前页
+    //     pageSize: type ? this.pageData.total : this.pageData.pageSize,    // 是 int 每页条数
+    //     condition: this.formData.condition,            // 否 Sting 查询条件
+    //     phone: this.formData.phone,                    // 否 String  电话号码
+    //     cardName: this.formData.cardName,              // 否 Sting 会员姓名
+    //     applyNo: this.formData.applyNo,                // 否 Sting 申请编号
+    //     idCard: this.formData.idCard,                  // 否 Sting 身份证号
+    //     payAmountBegin: this.formData.agencyFeeStart,  // 否 String  应付金额起始值
+    //     payAmountEnd: this.formData.agencyFeeEnd,      // 否 String  应付金额结束值
+    //     applyTimeBeign: this.formData.applyTimeStart ? this.$Utils.filterDate(this.formData.applyTimeStart, 'YYYY-MM-DD') : '',      // 否 String  申请时间起始值
+    //     applyTimeEnd: this.formData.applyTimeEnd ? this.$Utils.filterDate(this.formData.applyTimeEnd, 'YYYY-MM-DD') : '',        // 否 String  申请时间结束值
+    //     payStatus: this.pageType || this.formData.payStatus    // 否 String  支付状态（0:未支付，1：已支付，2:支付失败，3：付款审核中）
+    //     // payAuditStatus: this.pageType                  // 否 String  支付审核状态（0未审核，1审核通过，2审核不通过）
+    //   }
+    //   if (!type) {
+    //     this.$http.post(url, data).then((res) => {
+    //       let resData = res.data
+    //       if (parseInt(resData.status) !== 1) {
+    //         this.$message({
+    //           message: resData.msg,
+    //           type: 'error',
+    //           duration: 1500
+    //         })
+    //         this.tableData = []
+    //         this.pageData.total = 0
+    //         return false
+    //       }
+    //       let results = resData.data
+    //       this.pageData.total = results.total
+    //       results.list.forEach((row) => {
+    //         row.paymentVoucher = row.paymentVoucher ? row.paymentVoucher.split(',') : row.paymentVoucher ? [row.paymentVoucher] : []
+    //       })
+    //       this.tableData = results.list
+    //     }).finally(() => {
+    //       this.loading = false
+    //     })
+    //   } else {
+    //     let filterParams = []
+    //     for (let key in data) {
+    //       filterParams.push(key + '=' + data[key])
+    //     }
+    //     window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+    //   }
     },
 
     /**

@@ -19,7 +19,7 @@ export default {
         icon: 'icon-yuetixian',
         // refresh: false,           // 刷新页面
         auth: true,
-        authCode: 601043
+        authCode: 601041
       },
       component: r => require(['@/views/admin/finance/TransactionRecordLayout'], r),
       children: [
@@ -30,7 +30,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601043,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '财务管理', path: '/admin/finance' },
@@ -176,7 +176,7 @@ export default {
         icon: 'icon-yuetixian',
         // refresh: false,           // 刷新页面
         auth: true,
-        authCode: 601043
+        authCode: 601041
       },
       component: r => require(['@/views/admin/finance/FinanceReconciliationLayout'], r),
       children: [
@@ -187,7 +187,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601043,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '财务管理', path: '/admin/finance' },

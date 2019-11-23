@@ -1,6 +1,6 @@
-<!-- 销售统计表 -->
+<!-- 财务对账 -->
 <template>
-  <common-tpl class="cash-list-wrap" :footer="false">
+  <common-tpl class="finance-recon-list-wrap" :footer="false">
     <!-- 主体 -->
     <template slot="main">
 
@@ -11,8 +11,11 @@
             <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in yearArr"></el-option>
           </el-select>
         </div> -->
+        <div class="date-tabs">
+          <span v-for="(dt, index) in dateTabs" :key="index" @click="dateTypeChange(dt)" :class="selectDateType === dt.value ? 'dt-active' : ''">{{dt.label}}</span>
+        </div>
         <el-form-item label="统计时间段：" class="pos-r apply-date-wrap">
-          <el-date-picker v-model.trim="formData.statisticsDate"  type="date" placeholder="年-月-日" clearable @change="handleFilterDate"></el-date-picker>
+          <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleFilterDate"></el-date-picker>
         </el-form-item>
       </el-form>
 
@@ -23,14 +26,10 @@
             <h3 class="fw-n">
               <span>{{statisticsData.grabTotalAmount | filterEmpty('元')}}</span>
             </h3>
-            <h4 class="fw-n">抢购业绩</h4>
+            <h4 class="fw-n">收入金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
               <i class="d-ib va-t small-box"></i>
-              <span>微信 &nbsp{{statisticsData.grabWxPayAmount || 0}}</span>
-              <i class="d-ib va-t small-box" style="background: orange; margin-left: 15px;"></i>
-              <span>支付宝 &nbsp{{statisticsData.grabAliPayAmount || 0}}</span>
-              <i class="d-ib va-t small-box" style="background: red; margin-left: 15px;"></i>
-              <span>通用积分 &nbsp{{statisticsData.grabCashPointPayAmount || 0}}</span>
+              <span>套餐订购 &nbsp;{{statisticsData.grabWxPayAmount || 0}}</span>
             </div>
           </dd>
         </dl>
@@ -40,14 +39,12 @@
             <h3 class="fw-n">
               <span>{{statisticsData.purchaseTotalAmount | filterEmpty('元')}}</span>
             </h3>
-            <h4 class="fw-n">批发业绩</h4>
+            <h4 class="fw-n">应付金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
               <i class="d-ib va-t small-box"></i>
-              <span>微信 &nbsp{{statisticsData.purchaseWxPayAmount || 0}}</span>
-              <i class="d-ib va-t small-box" style="background: orange; margin-left: 15px;"></i>
-              <span>支付宝 &nbsp{{statisticsData.purchaseAliPayAmount || 0}}</span>
+              <span>套餐成本 &nbsp;{{statisticsData.purchaseAliPayAmount || 0}}</span>
               <i class="d-ib va-t small-box" style="background: red; margin-left: 15px;"></i>
-              <span>通用积分 &nbsp{{statisticsData.purchaseCashPointPayAmount || 0}}</span>
+              <span>佣金分配 &nbsp;{{statisticsData.purchaseCashPointPayAmount || 0}}</span>
             </div>
           </dd>
         </dl>
@@ -56,7 +53,11 @@
             <h3 class="fw-n">
               <span>{{statisticsData.withDrawalAmount | filterEmpty('元')}}</span>
             </h3>
-            <h4 class="fw-n">提现金额</h4>
+            <h4 class="fw-n">支出金额</h4>
+            <div class="va-m small-box-wrap" style="margin-top: 10px;">
+              <i class="d-ib va-t small-box"></i>
+              <span>提现已付金额 &nbsp;{{statisticsData.purchaseAliPayAmount || 0}}</span>
+            </div>
           </dd>
         </dl>
 
@@ -91,75 +92,60 @@
       <high-search @search="highSearch('form')" :textVisible="false">
         <div style="margin-bottom: 20px" class="switch-wrap" slot="search">
           <el-radio-group v-model="pageType" @change="pageTypeHandle">
-            <el-radio-button label="1">抢购</el-radio-button>
-            <el-radio-button label="2">批发</el-radio-button>
+            <el-radio-button label="1">全部</el-radio-button>
+            <el-radio-button label="2">套餐订购</el-radio-button>
+            <el-radio-button label="3">套餐成本</el-radio-button>
+            <el-radio-button label="4">佣金分配</el-radio-button>
+            <el-radio-button label="5">提现已付金额</el-radio-button>
           </el-radio-group>
         </div>
-        <template slot="edit">
-          <template v-if="pageType === 1">
-            <el-button :disabled="!tableData.length" @click="getListData('buyExport')">导出</el-button>
-          </template>
-          <template v-else>
-            <el-button :disabled="!tableData.length" @click="getWholesaleListData('wholesaleExport')">导出</el-button>
-          </template>
-        </template>
       </high-search>
       <el-table :data="tableData" class="full-w" v-loading="loading" element-loading-text="加载中">
-
-        <!-- 抢购 -->
-        <template v-if="pageType === 1">
-          <el-table-column prop="" label="产品名称">
+        <template>
+          <el-table-column prop="" label="交易编号">
             <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="抢购价">
+          <el-table-column prop="" label="推广大使手机">
             <template slot-scope="scope">{{scope.row.grabPrice | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="当天配置抢购数" width="160">
+          <el-table-column prop="" label="推广大使身份" width="160">
             <template slot-scope="scope">{{scope.row.configGrabNum | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="实际抢购件数">
+          <el-table-column prop="" label="交易时间">
             <template slot-scope="scope">{{scope.row.grabNum | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="抢购金额">
+          <el-table-column prop="" label="交易类型">
             <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="支付宝支付">
+          <el-table-column prop="" label="交易内容">
             <template slot-scope="scope">{{scope.row.grabAliPayAmount | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="微信支付">
+          <el-table-column prop="" label="交易额">
             <template slot-scope="scope">{{scope.row.grabWxPayAmount | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="通用积分支付">
+          <el-table-column prop="" label="交易状态">
             <template slot-scope="scope">{{scope.row.grabCashPointPayAmount | filterEmpty}}</template>
           </el-table-column>
-        </template>
-
-        <!-- 批发 -->
-        <template v-else>
-          <el-table-column prop="" label="产品名称">
-            <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
+          <el-table-column prop="" label="交易科目">
+            <template slot-scope="scope">{{scope.row.grabCashPointPayAmount | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="批发价">
-            <template slot-scope="scope">{{scope.row.purchasePrice | filterEmpty}}</template>
+          <el-table-column prop="" label="交易属性">
+            <template slot-scope="scope">{{scope.row.grabCashPointPayAmount | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="当天配置批发数">
-            <template slot-scope="scope">{{scope.row.configPurchaseNum | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="实际批发件数">
-            <template slot-scope="scope">{{scope.row.purchaseNum | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="批发金额">
-            <template slot-scope="scope">{{scope.row.purchaseTotalAmount | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="支付宝支付">
-            <template slot-scope="scope">{{scope.row.purchaseAliPayAmount | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="微信支付">
-            <template slot-scope="scope">{{scope.row.purchaseWxPayAmount | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="通用积分支付">
-            <template slot-scope="scope">{{scope.row.purchaseCashPointPayAmount | filterEmpty}}</template>
-          </el-table-column>
+          <el-table-column fixed="right" label="操作" width="80">
+          <template slot-scope="scope">
+            <el-dropdown class="d-b">
+              <div class="ta-c d-b el-dropdown-link">
+                <span class="d-b va-m">...</span>
+              </div>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <div @click="showDetail(scope.row)"><i class="icon el-icon-view"></i>详情</div>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
         </template>
         <div slot="empty">
           <no-data></no-data>
@@ -179,12 +165,13 @@
     </template>
 
     <template slot="other">
-
+      <financeRecon-dialog :visible="financeReconVisible" :initData="detailData" @close="financeReconVisible = false" @success="handleSuccess"></financeRecon-dialog>
     </template>
   </common-tpl>
 </template>
 
 <script>
+import FinanceReconDialog from './FinanceReconDialog'
 export default {
   data () {
      // 验证手机
@@ -216,7 +203,7 @@ export default {
       date: '',                // 时间
       formData: {
         customerPhone: '',     // 否 string  客户号码
-        statisticsDate: '',    // 日期
+        statisticsDate: [],    // 日期
         payType: ''            // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
       },
       statisticsData: {},     // 统计数据
@@ -230,7 +217,17 @@ export default {
         currentPage: 3,
         pageSize: 10,
         total: 20
-      }
+      },
+      dateTabs: [
+        { label: '今天', value: 0 },
+        { label: '昨天', value: 1 },
+        { label: '近一周', value: 7 },
+        { label: '近15天', value: 15 },
+        { label: '自定义', value: 999 }
+      ],
+      selectDateType: 0,
+      financeReconVisible: false,
+      detailData: {}
     }
   },
   mounted () {
@@ -433,14 +430,68 @@ export default {
         this.pageData.currentPage = page
         this.$router.push({query: {page: this.pageData.currentPage}})
       }
+    },
+    dateTypeChange (item) {
+      this.selectDateType = item.value
+      var dt = new Date()
+      switch (item.value) {
+        case 0:
+          dt.setDate(dt.getDate())
+          break
+        case 1:
+          dt.setDate(dt.getDate() - 1)
+          break
+        case 7:
+          dt.setDate(dt.getDate() - 7)
+          break
+        case 15:
+          dt.setDate(dt.getDate() - 15)
+          break
+      }
+      this.formData.statisticsDate = [dt, new Date()]
+      console.log(this.formData.statisticsDate, 66666)
+    },
+    showDetail (row) {
+      this.detailData = row
+      this.financeReconVisible = true
     }
-  }
+  },
+  components: { FinanceReconDialog }
 }
 </script>
 
 <style lang="less" scoped>
-.cash-list-wrap{
+.finance-recon-list-wrap{
 
+  .search-form {
+    display: flex;
+    font-size: 13px;
+    color: #333;
+    span {
+      display: inline-block;
+      width: 63px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      border: 1px solid rgba(193, 224, 255, 1);
+      cursor: pointer;
+    }
+    span:nth-child(1) {
+      border-right: 0;
+    }
+    span:nth-child(2) {
+      border-right: 0;
+    }
+    span:nth-child(3) {
+      border-right: 0;
+    }
+    span:nth-child(4) {
+      border-right: 0;
+    }
+    .dt-active {
+      background: rgba(193, 224, 255, 1);
+    }
+  }
   /*-------------统计----------*/
   .statistics-cen{
     display: flex;
@@ -515,12 +566,15 @@ export default {
 </style>
 
 <style lang="less">
-.cash-list-wrap{
+.finance-recon-list-wrap{
  
  /*------------高级搜索------*/
   .search-wrap{
     .apply-date-wrap{
       left: 200px;
+      .el-form-item__label, .el-form-item__content {
+        line-height: 50px;
+      }
     }
     .search-head-wrap{
       padding: 0 !important;

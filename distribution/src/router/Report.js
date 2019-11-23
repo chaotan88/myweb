@@ -12,13 +12,13 @@ export default {
   children: [
     // 业绩统计
     {
-      path: '/admin/report/achievement/list',
+      path: '/admin/report/achievement',
       redirect: '/admin/report/achievement/list',
       meta: {
         nav: '业绩统计',
         icon: 'icon-paiming',
         auth: true,
-        authCode: 601055,
+        authCode: 601050,
         visible: true
       },
       component: r => require(['@/views/admin/report/AchievementLayout'], r),
@@ -31,7 +31,7 @@ export default {
             title: '业绩统计',
             pageBack: true,
             auth: true,
-            authCode: 601055,
+            authCode: 601050,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '数据统计', path: '/admin/report/' },
@@ -45,13 +45,13 @@ export default {
 
     // 推广大使增长
     {
-      path: '/admin/report/vip/increase',
+      path: '/admin/report/vip',
       redirect: '/admin/report/vip/increase',
       meta: {
         nav: '推广大使增长',
         icon: 'icon-tianjiayonghu',
         auth: true,
-        authCode: 601054,
+        authCode: 601050,
         visible: true
       },
       component: r => require(['@/views/admin/report/VipLayout'], r),
@@ -64,7 +64,7 @@ export default {
             title: '数据统计',
             pageBack: true,
             auth: true,
-            authCode: 601054,
+            authCode: 601050,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '数据统计', path: '/admin/report/' },

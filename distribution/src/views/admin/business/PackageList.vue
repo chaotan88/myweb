@@ -20,29 +20,32 @@
     <!-- 主体 -->
     <template slot="main">
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="ruleName" label="套餐编号" width="120px">
-          <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
+        <el-table-column prop="setMealNumber" label="套餐编号" width="220px">
+          <template slot-scope="scope">{{scope.row.setMealNumber | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="agentFee" label="创建时间" width="120px">
-          <template slot-scope="scope">{{scope.row.agentFee | filterMoney}}</template>
+        <el-table-column prop="createTime" label="创建时间" width="200px">
+          <template slot-scope="scope">{{scope.row.createTime | filterDate}}</template>
         </el-table-column>
-        <el-table-column prop="consumePointRate" label="套餐名称" width="230px">
-          <template slot-scope="scope">{{scope.row.consumePointRate | filterEmpty('%')}}</template>
+        <el-table-column prop="setMealName" label="套餐名称" width="230px">
+          <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="cashRate" label="销售价" width="230px">
-          <template slot-scope="scope">{{scope.row.cashRate | filterEmpty('%')}}</template>
+        <el-table-column prop="setMealPrice" label="销售价" width="120px">
+          <template slot-scope="scope">{{scope.row.setMealPrice | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="directSubName" label="分佣类型" min-width="100">
+        <el-table-column prop="commissionType" label="分佣类型" min-width="100">
           <template slot-scope="scope">
-            <template v-if="parseInt(scope.row.rand) === 0">{{'' | filterEmpty}}</template>
-            <template v-else>{{scope.row.directSubName | filterEmpty}}</template>
+            <template v-if="parseInt(scope.row.commissionType) === 1">礼包分佣</template>
+            <template v-else>提货分佣</template>
           </template>
         </el-table-column>
-        <el-table-column prop="rand" label="已配置金额">
-          <template slot-scope="scope">{{scope.row.rand}}</template>
+        <el-table-column prop="configurationMoney" label="已配置金额">
+          <template slot-scope="scope">{{scope.row.configurationMoney}}</template>
         </el-table-column>
-        <el-table-column prop="rand" label="套餐状态">
-          <template slot-scope="scope">{{scope.row.status}}</template>
+        <el-table-column prop="setMealStatus" label="套餐状态">
+          <template slot-scope="scope">
+            <template v-if="parseInt(scope.row.setMealStatus) === 1">开启</template>
+            <template v-else>关闭</template>
+          </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
@@ -158,12 +161,10 @@ export default {
      */
     getListData () {
       this.loading = true
-      this.$http.post('@ROOT_API/rule/getRuleList', {
+      this.$http.post('@ROOT_API/meal/getSetMealList', {
         start: this.pageData.currentPage,             // 是 int 开始时间
         pageSize: this.pageData.pageSize,             // 是 int 开始时间
-        agentAmountMin: this.formData.agentLowness,   // 否 double  代理金额最小值
-        agentAmountMax: this.formData.agentHigh,      // 否 double  代理金额最大值
-        ruleName: this.formData.ruleName               // 否 string  规则名称
+        setMealName: this.formData.contentText
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {

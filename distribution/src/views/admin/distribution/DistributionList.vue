@@ -1,22 +1,60 @@
 <!-- 分销规则列表页 -->
 <template>
-  <common-tpl class="distribution-list-wrap" :footer="false">
+  <common-tpl class="distribution-list-wrap" :footer="true">
     <!-- 主体 -->
     <template slot="main">
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="ruleName" label="推广大使身份">
-          <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
+        <el-table-column prop="ruleIcon" label="级别图标">
+          <template slot-scope="scope">
+            <div @click="beforeUploadClick(scope.$index)">
+              <el-upload class="upload-picture fl-l pos-r"
+                :class="{uploadHide: scope.row.ruleIconList && scope.row.ruleIconList.length === 1}"
+                list-type="picture-card"
+                :action="uploadUrl"
+                :file-list="scope.row.ruleIconList"
+                :limit="5"
+                :on-exceed="exceedHandle"
+                :before-upload="beforeAvatarUpload"
+                :on-remove="removeHandle"
+                :on-success="uploadSuccessHandle"
+                @trigger="trigger(index)">
+                <i class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column prop="agentFee" label="服务费">
-          <template slot-scope="scope">{{scope.row.agentFee | filterMoney}}</template>
+        <el-table-column prop="rankName" label="推广大使身份">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.rankName"></el-input>
+          </template>
         </el-table-column>
-        <el-table-column prop="consumePointRate" label="购买套餐额度满">
-          <template slot-scope="scope">{{scope.row.consumePointRate | filterEmpty('%')}}</template>
+        <el-table-column prop="identityType" label="身份类型">
+          <template slot-scope="scope">
+            <span v-if="scope.row.identityType === 1">普通身份</span>
+            <span v-else-if="scope.row.identityType === 2">区域身份</span>
+            <span v-else-if="scope.row.identityType === 3">市级身份</span>
+            <span v-else>--</span>
+          </template>
         </el-table-column>
-        <el-table-column prop="cashRate" label="推荐人数">
-          <template slot-scope="scope">{{scope.row.cashRate | filterEmpty('%')}}</template>
+        <el-table-column prop="setMealAmount" label="购买套餐满">
+          <template slot-scope="scope">
+            <el-input v-if="scope.row.rand === 2" v-model="scope.row.setMealAmount"></el-input>
+            <span v-else>--</span>
+          </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="80">
+        <el-table-column prop="needIdentityAmount" label="推荐推广大使数">
+          <template slot-scope="scope">
+            <el-input v-if="scope.row.rand === 3" v-model="scope.row.needIdentityAmount"></el-input>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="feeDescription" label="服务费（万元）">
+          <template slot-scope="scope">
+            <el-input v-if="scope.row.rand === 4 || scope.row.rand === 5" v-model="scope.row.needIdentityAmount"></el-input>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
             <el-dropdown class="d-b" v-if="parseInt(scope.row.rand) !== 0">
               <div class="ta-c d-b el-dropdown-link">
@@ -26,28 +64,18 @@
                 <el-dropdown-item>
                   <div @click="handleLink(scope.row)"><i class="icon el-icon-edit"></i>编辑</div>
                 </el-dropdown-item>
-                <!-- <el-dropdown-item>
-                  <div @click="handleDeleteBefore(scope.row)"><i class="icon el-icon-delete"></i>删除</div>
-                </el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <div slot="empty">
           <no-data></no-data>
         </div>
       </el-table>
     </template>
 
-    <template slot="other">
-      <!-- 删除 -->
-      <el-dialog title="删除分销规则" :visible.sync="deleteVisible" width="480px">
-        确认是否删除？
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="deleteVisible = false">取 消</el-button>
-          <el-button type="primary" :loading="confirmLoading" @click="handleDelete">确 定</el-button>
-        </span>
-      </el-dialog>
+    <template slot="footer">
+      <el-button type="primary" @click="handleSubmit()">保存</el-button>
     </template>
   </common-tpl>
 </template>
@@ -71,7 +99,6 @@ export default {
         agentLowness: '',       // 价格低
         agentHigh: ''           // 价格高
       },
-      copyFormData: {},         // 拷贝数据
       deleteVisible: false,     // 删除弹框
       deleteData: {},           // 删除数据
       pageData: {               // 分页
@@ -85,11 +112,13 @@ export default {
 
         // 代理费高
         agentHigh: { validator: validateAgent, trigger: 'blur' }
-      }
+      },
+      userInfo: {},
+      uploadIndex: 0
     }
   },
   mounted () {
-    this.copyFormData = this.$Utils.deepCopy(this.formData)
+    this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
 
     // 判断是否同一模块，带出搜索记录
     this.$Utils.filterSearchData('/admin/distribution/rule', (res) => {
@@ -105,13 +134,7 @@ export default {
      */
     getListData () {
       this.loading = true
-      this.$http.post('@ROOT_API/rule/getRuleList', {
-        start: this.pageData.currentPage,             // 是 int 开始时间
-        pageSize: this.pageData.pageSize,             // 是 int 开始时间
-        agentAmountMin: this.formData.agentLowness,   // 否 double  代理金额最小值
-        agentAmountMax: this.formData.agentHigh,      // 否 double  代理金额最大值
-        ruleName: this.formData.ruleName               // 否 string  规则名称
-      }).then((res) => {
+      this.$http.get('@ROOT_API/envoyRank/getMemberEnvoyRankList', {}).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
           this.$message({
@@ -123,45 +146,13 @@ export default {
           this.pageData.total = 0
           return false
         }
-        let results = resData.data
-        // results.list.forEach((row, index) => {
-        //   if (index < results.list.length - 1) row.subordinate = results.list[index + 1].ruleName
-        // })
-        this.tableData = results.list
-        this.pageData.total = results.total
+        this.tableData = resData.data
       }).finally(() => {
         this.loading = false
       })
     },
-
-    /**
-     * 新增/编辑
-     */
-    handleLink (item) {
-      if (!item) {
-        this.$router.push('/admin/distribution/rule/add')
-      } else {
-        localStorage.setItem('MANAGER_STORE', JSON.stringify(item))
-        this.$router.push({path: '/admin/distribution/rule/edit', query: {id: item.ruleId}})
-      }
-    },
-
-    /**
-     * 删除前操作
-     */
-    handleDeleteBefore (row) {
-      this.deleteVisible = true
-      this.deleteData = row
-    },
-
-    /**
-     * 删除
-    */
-    handleDelete () {
-      this.confirmLoading = true
-      this.$http.post('@ROOT_API/rule/deleteRule', {
-        ruleId: this.deleteData.ruleId
-      }).then((res) => {
+    handleSubmit () {
+      this.$http.post('@ROOT_API/envoyRank/updateMemberEnvoyRank', this.tableData).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
           this.$message({
@@ -176,67 +167,85 @@ export default {
           type: 'success',
           duration: 1000
         })
-        this.deleteVisible = false
-        this.getListData()
-        // this.tableData.map((item, index) => {
-        //   if (this.deleteData.ruleId === item.ruleId) {
-        //     this.tableData.splice(index, 1)
-        //     return
-        //   }
-        // })
       }).finally(() => {
         setTimeout(() => {
-          this.confirmLoading = false
+          this.submitLoading = false
         }, 1000)
       })
     },
-
-    /**
-     * 分页操作
-     */
-    pageChange (page) {
-      localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
-      if (this.pageData.currentPage === page) {
-        this.getListData()
-      } else {
-        this.pageData.currentPage = page
-        this.$router.push({query: {page: this.pageData.currentPage}})
-      }
-    },
-
-    /**
-     * 高级搜索
-     */
-    highSearch (formName) {
-      this.$refs[formName].validate(valid => {
-        if (!valid) {
-          this.highSearchClose = false
-          return false
-        }
-        this.highSearchClose = true
-        this.pageChange(1)
-      })
-    },
-
-    /**
-     * 搜索
-     */
-    searchHandle () {
-      this.pageChange(1)
-    },
-
     /**
      * 自动补全百分位
      */
     inpBlur (type) {
       this.$Utils.blurAutoCompletion(this.formData, type)
     },
+    /**
+     * 文件上传前的格式和大小校验
+     */
+    beforeAvatarUpload (file) {
+      const pattern = /(jpg|jpeg|png)$/ig
+      const isLegalPhoto = pattern.test(file.type)
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isLegalPhoto) {
+        this.$message.error('上传图片的格式不合法，请重新上传')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      return isLegalPhoto && isLt2M
+    },
 
     /**
-     * 清空重置搜索
+     * 上传数量超过最大限制数量
      */
-    resetForm () {
-      this.formData = this.$Utils.deepCopy(this.copyFormData)
+    exceedHandle (files, fileList) {
+      this.$message({
+        message: '最多只能上传1个图标',
+        type: 'error'
+      })
+    },
+
+    /**
+     * 文件上传成功
+     */
+    uploadSuccessHandle (res) {
+      if (res.status !== '1') {
+        this.$message({
+          message: res.msg,
+          type: 'error',
+          duration: 1000
+        })
+        return false
+      }
+      let item = this.tableData[this.uploadIndex]
+      if (!item) return false
+      let ruleIconList = []
+      ruleIconList.push({url: this.$Utils.filterImgUrl(res.data)})
+      item['ruleIconList'] = ruleIconList
+      item['ruleIcon'] = res.data
+      this.$set(this.tableData, item, this.uploadIndex)
+      console.log(this.tableData)
+    },
+
+    /**
+     * 文件被移除
+     */
+    removeHandle (file, fileList) {
+      let item = this.tableData[this.uploadIndex]
+      let ruleIconList = []
+      item['ruleIconList'] = ruleIconList
+      item['ruleIcon'] = ''
+      this.$set(this.tableData, item, this.uploadIndex)
+      console.log(this.tableData)
+    },
+    beforeUploadClick (index) {
+      this.uploadIndex = index
+    }
+  },
+  computed: {
+    uploadUrl () {
+      return this.$dm.ROOT_API + 'upload/uploadimg/admin/terminal?clientType=1&token=' + this.userInfo.token          // 上传图片
     }
   }
 }
@@ -271,5 +280,27 @@ export default {
       }
     }
   }
+  .el-upload--picture-card{
+    width: 110px;
+    height: 110px;
+  }
+  .uploadHide{
+    height: 110px;
+    width: 110px;
+
+    .el-upload-list__item{
+      width: 110px;
+      height: 110px;
+    }
+    .el-upload{
+      display: none;
+    }
+  }
+  .el-table td {
+    border-left: 1px solid #ebeef5;
+  }
+  .el-table td:first-child {
+    border-left: 0;
+}
 }
 </style>

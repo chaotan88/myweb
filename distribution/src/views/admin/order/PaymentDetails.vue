@@ -4,112 +4,91 @@
     <!-- 主体内容 -->
     <template slot="main">
       <div class="goods-common-details">
-        <gray-title title="会员信息" class="ta-l title"></gray-title>
+        <gray-title title="订单信息" class="ta-l title"></gray-title>
         <table>
           <tr>
-            <td>会员手机：</td>
+            <td>订单状态：</td>
             <td>{{detailsData.phone | filterEmpty}}</td>
           </tr>
           <tr>
-            <td>会员身份：</td>
+            <td>订单号：</td>
             <td>{{detailsData.currentIdentity}}</td>
           </tr>
           <tr>
-            <td>证件类型：</td>
+            <td>下单时间：</td>
             <td>{{detailsData.cardType | filterCardType}}</td>
           </tr>
           <tr>
-            <td>姓名：</td>
+            <td>支付时间：</td>
             <td>{{detailsData.cardName | filterEmpty}}</td>
           </tr>
-          <tr>
-            <td>证件号：</td>
-            <td>{{detailsData.idCard | filterEmpty}}</td>
-          </tr>
-          <tr>
-            <td>性别：</td>
-            <td>{{detailsData.sex}}</td>
-          </tr>
-          <tr>
-            <td>地区：</td>
-            <td>{{detailsData.userAddress | filterEmpty}}</td>
-          </tr>
         </table>
-        <gray-title title="升级信息" class="ta-l"></gray-title>
+
+        <el-table border :data="tableData" style="width: 100%" :summary-method="getSummaries" show-summary>
+          <el-table-column
+            prop="id"
+            label="序号"
+            width="180">
+          </el-table-column>
+          <el-table-column prop="applyNo" label="主图">
+            <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
+          </el-table-column>
+          <el-table-column prop="applyTime" label="套餐编码" width="180">
+            <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
+          </el-table-column>
+          <el-table-column prop="phone" label="套餐名称" min-width="120">
+            <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
+          </el-table-column>
+          <el-table-column prop="currentIdentity" label="套餐状态">
+            <template slot-scope="scope">{{scope.row.currentIdentity | filterEmpty}}</template>
+          </el-table-column>
+          <el-table-column prop="applyIdentity" label="套餐价">
+            <template slot-scope="scope">{{scope.row.applyIdentity | filterEmpty}}</template>
+          </el-table-column>
+          <div slot="empty">
+            <no-data></no-data>
+          </div>
+        </el-table>
+
+        <gray-title title="买家信息" class="ta-l"></gray-title>
         <table>
           <tr>
-            <td>申请编号：</td>
+            <td>买家姓名：</td>
             <td>{{detailsData.applyNo | filterEmpty}}</td>
           </tr>
           <tr>
-            <td>申请成为：</td>
+            <td>买家手机号：</td>
             <td>{{detailsData.applyIdentity | filterEmpty}}</td>
           </tr>
-          <tr>
-            <td>充值金额：</td>
-            <td>{{detailsData.payAmount | filterMoney | filterEmpty('元')}}</td>
-          </tr>
         </table>
-        <gray-title title="支付信息" class="ta-l"></gray-title>
+        <gray-title title="物流信息" class="ta-l"></gray-title>
         <table>
           <tr>
-            <td>应付金额：</td>
-            <td>{{detailsData.payAmount | filterMoney | filterEmpty('元')}}</td>
+            <td>收件人：</td>
+            <td>{{detailsData.payAmount | filterEmpty}}</td>
           </tr>
           <tr>
-            <td>付款方式：</td>
-            <td>{{detailsData.payType | filterPayType}}</td>
+            <td>联系方式：</td>
+            <td>{{detailsData.payType | filterEmpty}}</td>
           </tr>
           <tr>
-            <td>支付凭证：</td>
-            <td>
-              <template v-if="detailsData.paymentVoucher && detailsData.paymentVoucher.length">
-                <div class="d-ib thumbnail-wrap" v-for="item in detailsData.paymentVoucher">
-                  <a :href="item | filterImgUrl" target="_blank">
-                    <img class="full-wrap" :src="item | filterImgUrl">
-                  </a>
-                </div>
-              </template>
-              <template v-else>{{'' | filterEmpty}}</template>
-            </td>
-          </tr>
-          <tr>
-            <td>支付状态：</td>
+            <td>收件人地址：</td>
             <td>{{detailsData.payStatus | filterPayStatus(detailsData.payType)}}</td>
           </tr>
           <tr v-if="parseInt(detailsData.payStatus) === 2">
-            <td>失败原因：</td>
+            <td>发货时间：</td>
+            <td>{{detailsData.payAuditInfo | filterEmpty}}</td>
+          </tr>
+          <tr>
+            <td>快递类型：</td>
+            <td>{{detailsData.payStatus | filterPayStatus(detailsData.payType)}}</td>
+          </tr>
+          <tr v-if="parseInt(detailsData.payStatus) === 2">
+            <td>物流单号：</td>
             <td>{{detailsData.payAuditInfo | filterEmpty}}</td>
           </tr>
         </table>
 
-        <gray-title title="邀请人信息" class="ta-l"></gray-title>
-        <table>
-          <tr>
-            <td>邀请人ID：</td>
-            <td>{{detailsData.beInvitationCode | filterEmpty()}}</td>
-          </tr>
-          <tr>
-            <td>邀请人姓名：</td>
-            <td>{{detailsData.beCardName | filterEmpty}}</td>
-          </tr>
-          <tr>
-            <td>邀请人手机号：</td>
-            <td>{{detailsData.bePhone | filterEmpty}}</td>
-          </tr>
-        </table>
-
-        <gray-title title="开通信息" class="ta-l"></gray-title>
-        <table>
-          <tr>
-            <td>商城商品：</td>
-            <td>{{detailsData.toGoodsMoney | filterMoney | filterEmpty('元')}}</td>
-          </tr>
-          <tr>
-            <td>商城消费积分：</td>
-            <td>{{detailsData.toConsumePoint | filterMoney | filterEmpty('个积分')}}</td>
-          </tr>
-        </table>
       </div>
     </template>
 
@@ -137,7 +116,8 @@ export default {
       applyId: '',              // 申请id
       detailsData: {},          // 详情数据
       fxUserInfo: {},           // 用户信息
-      passVisible: false        // 审核弹窗
+      passVisible: false,        // 审核弹窗
+      tableData: [{}]
     }
   },
   mounted () {
@@ -174,6 +154,32 @@ export default {
           this.detailsData = resData.data
         }
       })
+    },
+    getSummaries (param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index < 4) return ''
+        if (index === 4) {
+          sums[index] = '实收金额合计:'
+          return
+        }
+        const values = data.map(item => Number(item[column.property]))
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr)
+            if (!isNaN(value)) {
+              return prev + curr
+            } else {
+              return prev
+            }
+          }, 0)
+          sums[index] += ' 元'
+        } else {
+          sums[index] = 'N/A'
+        }
+      })
+      return sums
     }
   }
 }
@@ -239,6 +245,9 @@ export default {
         }
       }
     }
+  }
+  .el-table {
+    margin-bottom: 20px;
   }
 }
 </style>

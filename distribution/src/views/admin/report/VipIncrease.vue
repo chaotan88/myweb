@@ -1,8 +1,30 @@
-<!-- 会员增长表 -->
+<!-- 推广大使增长表 -->
 <template>
   <common-tpl class="vip-increase-wrap" :footer="false">
     <!-- 统计 -->
     <template slot="header">
+      <div class="statistics-cen">
+        <div class="date-and-chart-content">
+          <div class="statistics-revenue-t">
+            <!-- 时间 -->
+            <el-form ref="form" label-position="right" class="search-form" label-width="110px">
+              <div class="d-ib pos-a" style="width: 150px;">
+                <el-select v-model="formData.chartYear" size="medium" class="year-box" placeholder="选择年份" @change="selectChartYear" clearable>
+                  <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in chartYearArr"></el-option>
+                </el-select>
+              </div>
+              <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
+                <el-date-picker v-model.trim="formData.chartStatisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleChartFilterDate"></el-date-picker>
+              </el-form-item>
+            </el-form>
+          </div>
+          <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
+            <no-data style="padding: 100px 0;"></no-data>
+          </div> -->
+          <div id="line-chart-vip"></div>
+        </div>
+      </div>
+
       <div class="statistics-cen">
         <dl class="ta-c fl-l">
           <dt class="d-ib va-m">
@@ -15,7 +37,7 @@
               <span v-if="statisticsData.memberTotal">{{statisticsData.memberTotal | filterEmpty}}</span>
               <template v-else>--</template>
             </h3>
-            <h4>会员总数</h4>
+            <h4>推广大使总数</h4>
           </dd>
         </dl>
         <dl class="ta-c fl-l">
@@ -64,19 +86,19 @@
     <template slot="main">
       <div class="table-wrap">
         <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-          <el-table-column prop="disRuleName" label="会员等级">
+          <el-table-column prop="disRuleName" label="推广大使等级">
             <template slot-scope="scope">
               <template v-if="!scope.row.disRuleId">总计</template>
               <template v-else>{{scope.row.disRuleName | filterEmpty}}</template>
             </template>
           </el-table-column>
-          <el-table-column prop="" label="会员总数">
+          <el-table-column prop="" label="推广大使总数">
             <template slot-scope="scope">
               <template>{{scope.row.memberTotal | filterEmpty}}</template>
             </template>
           </el-table-column>
           <el-table-column prop="" label="近7天">
-            <el-table-column prop="" label="新增会员数">
+            <el-table-column prop="" label="新增推广大使数">
               <template slot-scope="scope">
                 <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowSeven}}</template>
                 <template v-else>{{scope.row.memberGrowSeven | filterEmpty}}</template>
@@ -90,7 +112,7 @@
             </el-table-column>
           </el-table-column>
           <el-table-column prop="" label="近30天">
-            <el-table-column prop="" label="新增会员数">
+            <el-table-column prop="" label="新增推广大使数">
               <template slot-scope="scope">
                 <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowThirty}}</template>
                 <template v-else>{{scope.row.memberGrowThirty | filterEmpty}}</template>
@@ -104,7 +126,7 @@
             </el-table-column>
           </el-table-column>
           <el-table-column prop="" label="近90天">
-            <el-table-column prop="" label="新增会员数">
+            <el-table-column prop="" label="新增推广大使数">
               <template slot-scope="scope">
                 <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowNinety}}</template>
                 <template v-else>{{scope.row.memberGrowNinety | filterEmpty}}</template>
@@ -139,6 +161,8 @@
 </template>
 
 <script>
+let echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
 export default{
   data () {
     return {
@@ -150,7 +174,26 @@ export default{
         pageSize: 10,
         total: 10
       },
-      userInfo: {}
+      userInfo: {},
+      formData: {
+        chartYear: '',
+        chartDate: '',
+        chartStatisticsDate: []
+      },
+      chartYearArr: [          // 选择年
+        {
+          label: '近三个月',
+          value: 3
+        },
+        {
+          label: '近半年',
+          value: 6
+        },
+        {
+          label: '近一年',
+          value: 12
+        }
+      ]
     }
   },
   mounted () {
@@ -231,6 +274,75 @@ export default{
         this.pageData.currentPage = page
         this.$router.push({query: {userId: this.userId, page: this.pageData.currentPage}})
       }
+    },
+    selectChartYear (value) {
+      if (!value && value !== 0) return false
+      var dt = new Date()
+      switch (value) {
+        case 3:
+          dt.setMonth(dt.getMonth() - 3)
+          break
+        case 6:
+          dt.setMonth(dt.getMonth() - 6)
+          break
+        case 12:
+          dt.setMonth(dt.getMonth() - 12)
+          break
+      }
+      this.formData.statisticsChartDate = [dt, new Date()]
+      this.getLineChartData()
+    },
+    handleChartFilterDate (data) {
+      this.formData.chartYear = ''
+      this.getLineChartData()
+    },
+
+    getLineChartData () {
+      let data = [
+        {
+          name: '1月',
+          value: 10000
+        },
+        {
+          name: '2月',
+          value: 15000
+        },
+        {
+          name: '3月',
+          value: 18000
+        },
+        {
+          name: '4月',
+          value: 20000
+        },
+        {
+          name: '5月',
+          value: 25000
+        },
+        {
+          name: '6月',
+          value: 28000
+        }
+      ]
+      this.buildChart(data)
+    },
+    buildChart (data) {
+      let chart = echarts.init(document.getElementById('line-chart-vip'))
+      let xData = data.map(da => da.name)
+      let yData = data.map(da => da.value)
+      chart.setOption({
+        xAxis: {
+          type: 'category',
+          data: xData
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: yData,
+          type: 'line'
+        }]
+      })
     }
   }
 }
@@ -298,6 +410,17 @@ export default{
     dl:last-child{
       /*background: #f39817;*/
       margin-right: 0;
+    }
+    .date-and-chart-content {
+      width: 100%;
+    }
+    #line-chart-vip {
+      height: 300px;
+      width: 100%;
+      background: #fff;
+      div {
+        height: 300px;
+      }
     }
   }
 
