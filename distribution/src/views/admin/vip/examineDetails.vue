@@ -36,14 +36,15 @@
             </tr>
             <tr>
               <td>服务费：</td>
-              <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td>
+              <td>{{upgradeDetail.serviceAmount | filterMoney | filterEmpty('元')}}</td>
             </tr>
             <tr>
               <td>实际支付金额：</td>
-              <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td>
+              <td>{{upgradeDetail.realPayAmount | filterMoney | filterEmpty('元')}}</td>
             </tr>
             <tr>
               <td>上传凭证：</td>
+              
               <!-- <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td> -->
             </tr>
           </table>
@@ -122,7 +123,6 @@ export default {
       },
       dialogVisible: false,   // 弹窗
       upgradeDetail: {},       // 审核详情
-      tableData: [],           // 列表
       deductionDetail: [],      // 抵扣记录列表
       deduction: {}           // 当前抵扣列表
     }
@@ -165,7 +165,6 @@ export default {
           return false
         }
         this.upgradeDetail = resData.data
-        this.tableData = resData.data.deductionList
       })
     },
 

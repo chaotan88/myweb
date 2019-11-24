@@ -23,10 +23,12 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 import SSKindEditor from 'ss-kindeditor'
+import VueUeditorWrap from 'vue-ueditor-wrap'
 
 // 给axios添加finally方法
 require('promise.prototype.finally').shim()
 
+Vue.component('vue-ueditor-wrap', VueUeditorWrap)
 Vue.use(VueQuillEditor)
 Vue.use(SSKindEditor)
 

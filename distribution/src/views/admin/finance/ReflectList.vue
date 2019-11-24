@@ -19,19 +19,6 @@
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
           </div>
         </div>
-        <!-- <div class="pos-r" slot="search">
-          <div class="d-ib" style="width: 120px;">
-            <el-select class="full-w" v-model="formData.topNum">
-              <el-option label="Top10" value="ten"></el-option>
-              <el-option label="Top50" value="fifty"></el-option>
-              <el-option label="Top100" value="hundred"></el-option>
-              <el-option label="Top200" value="twoHundred"></el-option>
-              <el-option label="所有" value="all"></el-option>
-            </el-select>
-          </div>
-           <div class="d-ib pos-r">
-          </div>
-        </div> -->
         <template slot="edit">
           <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
         </template>
@@ -49,8 +36,12 @@
         <el-table-column prop="dealWithStatus" label="状态">
           <template slot-scope="scope">{{scope.row.dealWithStatus | filterdealwithStatus}}</template>
         </el-table-column>
-        <el-table-column prop="invitationCode" label="提现方式">
-          <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
+        <el-table-column prop="accountType" label="提现方式">
+          <template slot-scope="scope">
+            <span v-if="scope.row.accountType === 1">银行卡</span>
+            <span v-else-if="scope.row.accountType === 1">支付宝</span>
+            <span v-else>--</span>
+          </template>
         </el-table-column>
         <el-table-column prop="withdrawalAmount" label="提现金额（元）" min-width="130">
           <template slot-scope="scope">{{scope.row.withdrawalAmount | filterMoney}}</template>
@@ -58,11 +49,11 @@
         <el-table-column prop="withdrawalFees" label="提现手续费（元）" min-width="150">
           <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="withdrawalFees" label="提现应付金额（元）" min-width="150">
-          <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
+        <el-table-column prop="withdrawalAmount" label="提现应付金额（元）" min-width="150">
+          <template slot-scope="scope">{{scope.row.withdrawalAmount | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="withdrawalFees" label="账户结余）" min-width="150">
-          <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
+        <el-table-column prop="cashPoints" label="账户结余（元）" min-width="150">
+          <template slot-scope="scope">{{scope.row.cashPoints | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="applyTime" label="提现申请时间" min-width="160">
           <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>

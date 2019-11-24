@@ -16,21 +16,21 @@
           </el-form-item>
 
           <el-form-item label="推广大使手机：">
-            <strong>{{initData.withdrawalAmount | filterMoney | filterEmpty('元')}}</strong>
+            <strong>{{initData.customerPhone | filterEmpty}}</strong>
           </el-form-item>
 
           <el-form-item label="推广大使身份：">
-            <strong>{{initData.withdrawalFees | filterMoney | filterEmpty('元')}}</strong>
+            <strong>{{initData.withdrawalFees | filterEmpty}}</strong>
           </el-form-item>
           <template>
-            <el-form-item label="交易时间：">{{initData.bankName | filterEmpty}}</el-form-item>
-            <el-form-item label="账户结余：">{{initData.branchBankName | filterEmpty}}</el-form-item>
-            <el-form-item label="交易类型：">{{initData.cardNum | filterEmpty}}</el-form-item>
-            <el-form-item label="交易状态：">{{initData.cardholder | filterEmpty}}</el-form-item>
+            <el-form-item label="交易时间：">{{initData.addTime | filterDate}}</el-form-item>
+            <el-form-item label="账户结余：">{{initData.currentAmount | filterMoney}}</el-form-item>
+            <el-form-item label="交易类型：">{{initData.propertyTypeVal | filterEmpty}}</el-form-item>
+            <el-form-item label="交易状态：">{{initData.addSourceVal | filterEmpty}}</el-form-item>
           </template>
           <template>
-            <el-form-item label="收益值：">{{initData.alipayNum | filterEmpty}}</el-form-item>
-            <el-form-item label="交易内容：">{{initData.idCard | filterEmpty}}</el-form-item>
+            <el-form-item label="收益值：">+{{initData.propertyAmount | filterMoney}}</el-form-item>
+            <el-form-item label="交易内容：">{{initData.addSourceVal | filterEmpty}}</el-form-item>
           </template>
         </div>
       </el-form>

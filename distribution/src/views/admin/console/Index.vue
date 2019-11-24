@@ -27,7 +27,10 @@
         <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
           <no-data style="padding: 100px 0;"></no-data>
         </div> -->
-        <div id="line-chart-id"></div>
+        <div id="line-chart-id" v-show="chartData.length > 0"></div>
+        <div v-show="!chartData || chartData.length === 0" class="chart-no-data">
+          <no-data></no-data>
+        </div>
       </div>
     </div>
 
@@ -98,48 +101,48 @@ export default{
       listData: [
         {
           messageContent: '13576738373',               // 会员手机
-          identity: '申请成为钻石会员',                // 会员身份
+          identity: '成为VIP推广大使',                // 会员身份
           operateTime: '2018.9.3  6:53:00'             // 申请时间
         },
         {
           messageContent: '13576738373',               // 会员手机
-          identity: '申请成为钻石会员',                // 会员身份
+          identity: '成为VIP推广大使',                // 会员身份
           operateTime: '2018.9.3  6:53:00'             // 申请时间
         },
         {
           messageContent: '13576738373',               // 会员手机
-          identity: '申请成为钻石会员',                // 会员身份
+          identity: '成为VIP推广大使',                // 会员身份
           operateTime: '2018.9.3  6:53:00'             // 申请时间
         },
         {
           messageContent: '13576738373',               // 会员手机
-          identity: '申请成为钻石会员',                // 会员身份
+          identity: '成为VIP推广大使',                // 会员身份
           operateTime: '2018.9.3  6:53:00'             // 申请时间
         },
         {
           messageContent: '13576738373',               // 会员手机
-          identity: '申请成为钻石会员',                // 会员身份
+          identity: '成为VIP推广大使',                // 会员身份
           operateTime: '2018.9.3  6:53:00'             // 申请时间
         }
       ],                     // 列表数据
       quickLinks: [
         {
-          title: '推广大使申请',
+          title: '套餐管理',
           icon: 'icon-icon',
-          url: '/admin/distribution/apply/all'
+          url: '/admin/business/package'
         },
         {
-          title: '付款审核',
-          icon: 'icon-daifukuan',
-          url: '/admin/sale/payment/all'
-        },
-        {
-          title: '结算管理',
+          title: '代金券管理',
           icon: 'icon-fukuan',
-          url: '/admin/sale/balance/list'
+          url: '/admin/business/voucher'
         },
         {
-          title: '推广大使统计',
+          title: '套餐订单',
+          icon: 'icon-daifukuan',
+          url: '/admin/order/payment'
+        },
+        {
+          title: '推广大使管理',
           icon: 'icon-jiedianhuiyuanfenzu',
           url: '/admin/vip/center/index'
         }
@@ -162,7 +165,8 @@ export default{
           label: '近一年',
           value: 12
         }
-      ]
+      ],
+      chartData: []
     }
   },
 
@@ -210,6 +214,7 @@ export default{
           value: 28000
         }
       ]
+      this.chartData = data
       this.buildChart(data)
     },
     buildChart (data) {
@@ -297,6 +302,12 @@ export default{
     div {
       height: 300px;
     }
+  }
+  .chart-no-data {
+    height: 200px;
+    width: 100%;
+    padding-top: 100px;
+    background: #fff;
   }
   /* -------------------- { 统计数据 } -------------------- */
   .statistics-data-wrap{

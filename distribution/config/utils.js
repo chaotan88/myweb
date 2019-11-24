@@ -39,8 +39,8 @@ switch (process.env.NODE_ENV) {
     break
   default:
     module.exports.domain = { // 开发环境
-    ROOT_API: 'http://120.76.250.165/lzwlbehinddistribute/distribute/',    // 测试服
-    ROOT_PUBLIC: 'http://120.76.250.165/lzwlbehinddistribute/',            // 测试服 - 登录
-      // ROOT_IMG: 'http://120.76.250.165/'
-    }
+      ROOT_API: 'http://120.76.250.165/lzwlbehinddistribute/distribute/',    // 测试服
+      ROOT_PUBLIC: 'http://120.76.250.165/lzwlbehinddistribute/',            // 测试服 - 登录
+      ROOT_IMG: 'http://120.76.250.165/'
+  }
 }

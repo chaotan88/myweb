@@ -9,19 +9,19 @@
 
           <div class="box">
             <gray-title title="提现设置"></gray-title>
-            <el-form-item label="提现周期：" prop="cycle">
-              <el-select v-model="ruleForm.cycle" placeholder="选择下级" @change="ruleChange">
+            <el-form-item label="提现周期：" prop="withdrawalCycle">
+              <el-select v-model="ruleForm.withdrawalCycle" placeholder="选择提现周期" @change="ruleChange">
                   <template v-for="(ruleList, index) in cycles">
                     <el-option :label="ruleList.ruleName" :value="ruleList.ruleId"></el-option>
                   </template>
                 </el-select>
             </el-form-item>
-            <el-form-item label="周期内允许提现次数：" prop="allowedCount">
-              <el-input v-model="ruleForm.allowedCount" placeholder="请输入0或正整数"></el-input><span class="recommendSpan">元</span>
+            <el-form-item label="周期内允许提现次数：" prop="cycleNumber">
+              <el-input v-model="ruleForm.cycleNumber" placeholder="请输入0或正整数"></el-input><span class="recommendSpan">元</span>
             </el-form-item>
-            <el-form-item label="提现条件：" prop="ratio">
+            <el-form-item label="提现条件：" prop="conditionValue">
               <span class="recommendSpan">累计通用积分账户沉淀资金的</span>
-              <el-input v-model="ruleForm.ratio" placeholder="填写大于0的正整数"></el-input>
+              <el-input v-model="ruleForm.conditionValue" placeholder="填写大于0的正整数"></el-input>
               <span class="recommendSpan">% ，不可提现。</span>
             </el-form-item>
             <el-form-item>
@@ -47,33 +47,35 @@
 <script>
 export default {
   data () {
-    // 验证代销商品数量
     let validateNumber = (rule, value, callback) => {
       let reg = /^\d{0,10}$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('只能输入10个字符以内的正整数'))
+      if (value && !value.toString().match(reg)) return callback(new Error('只能输入0或正整数'))
       callback()
     }
     return {
       confirmLoading: false,    // 确定loading
       ruleForm: {
-        cycle: 1,
-        allowedCount: '',
-        ratio: ''
+        withdrawalCycle: '',
+        cycleNumber: '',
+        conditionValue: '',
+        conditionType: 1
       },
       rules: {
-        allowedCount: [
-          { required: true, message: '请输入允许提现次数', trigger: 'blur', valid: validateNumber },
-          { max: 10, message: '长度在10个字符', trigger: 'blur' }
+        cycleNumber: [
+          { validator: validateNumber, trigger: 'blur' }
+        ],
+        conditionValue: [
+          { validator: validateNumber, trigger: 'blur' }
         ]
       },
       cycles: [{
-        ruleId: '1',
+        ruleId: 1,
         ruleName: '每天'
       }, {
-        ruleId: '2',
+        ruleId: 2,
         ruleName: '每周'
       }, {
-        ruleId: '3',
+        ruleId: 3,
         ruleName: '每月'
       }]
     }
@@ -105,7 +107,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (!valid) return false
         this.confirmLoading = true
-        this.$http.post('@ROOT_API/rule/saveOrUpdateRule', {
+        this.$http.post('@ROOT_API/withdrawalManageController/settingWithdrawal', {
         }).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {

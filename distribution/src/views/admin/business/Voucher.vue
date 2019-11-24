@@ -16,34 +16,51 @@
     <!-- 主体 -->
     <template slot="main">
       <div style="margin-bottom: 20px;margin-top: -20px;" class="voucher-card-list">
-        <div class="switch-wrap ">
-          <el-radio-group v-model="pageType" @change="pageTypeHandle">
-            <el-radio-button label="1">进行中</el-radio-button>
-            <el-radio-button label="2">回收站</el-radio-button>
-          </el-radio-group>
-          <el-button @click="handleLink()" style="float: right;">添加代金券</el-button>
+        <div class="switch-wrap" style="display: flex; border-bottom: 1px solid #dddddd;">
+          <div class="pos-r third-nav-wrap">
+            <a :class="['d-ib', 'ta-c', currentTab === 1 ? 'active' : '']"
+              @click="tabClick(1)">进行中</a>
+            <a :class="['d-ib', 'ta-c', currentTab === 2 ? 'active' : '']"
+              @click="tabClick(2)">回收站</a>
+          </div>
+          <div class="user-define-add-btn">
+            <el-button @click="handleLink()">添加代金券</el-button>
+          </div>
         </div>
         <div class="voucher-card-content">
           <div class="to-pre-icon"><i class="icon-font el-icon-caret-left" @click="toPre()"></i></div>
-          <div class="voucher-items">
+          <div class="voucher-items" v-if="voucherShowList.length > 0">
             <div v-for="(item, index) in voucherShowList" :key="index" class="voucher-item">
               <img src="../../../assets/img/voucher-bg.png"/>
               <div class="item-amount">&yen;<span>{{item.amount}}</span></div>
-              <div class="item-use">{{item.use === 1 ? '抵扣现金' : ''}}</div>
+              <div class="item-use">{{item.useType === 1 ? '抵扣现金' : ''}}</div>
               <div class="right">
-                <div class="first-line">可用于订购套餐使用
-                  <i class="icon-font el-icon-video-pause" v-if="item.status === 1" @click="handleStopBefore(item)"></i>
-                  <i class="icon-font el-icon-delete" @click="handleDeleteBefore(item)" v-else></i>
+                <div class="first-line">{{item.description}}
+                  <i class="icon-font el-icon-video-pause" v-if="item.status === 2" @click="handleStopBefore(item)"></i>
+                  <i class="icon-font el-icon-delete" @click="handleDeleteBefore(item)"
+                    v-else-if="item.status === 1 || item.status == 4"></i>
                 </div>
                 <div class="second-line">
-                  <span v-if="item.status === 1" class="opened">开启</span>
-                  <span v-else-if="item.status === 2" class="closed">关闭</span>
-                  <span v-else-if="item.status === 3" class="stoped">停止</span>
-                  <span v-else-if="item.status === 4" class="stoped">已删除</span>
-                  <span class="aging">时效：{{item.aging}}</span>
+                  <span v-if="item.status === 2" class="opened">开启</span>
+                  <span v-else-if="item.status === 1" class="closed">关闭</span>
+                  <span v-else-if="item.status === 4" class="stoped">停止</span>
+                  <span v-else-if="item.status === 3" class="stoped">已删除</span>
+                  <span class="aging">时效：
+                    <span v-if="item.duration === 1">15天</span>
+                    <span v-if="item.duration === 2">一个月</span>
+                    <span v-if="item.duration === 3">三个月</span>
+                    <span v-if="item.duration === 4">半年</span>
+                    <span v-if="item.duration === 5">一年</span>
+                  </span>
+                  <span v-if="item.status === 1">
+                    <i class="icon-font el-icon-edit" @click="handleLink(item)"></i>
+                  </span>
                 </div>
               </div>
             </div>
+          </div>
+          <div v-else style="width: calc(100% - 100px);">
+            <no-data></no-data>
           </div>
           <div class="to-next-icon"><i class="icon-font el-icon-caret-right" @click="toNext()"></i></div>
         </div>
@@ -115,63 +132,40 @@
         width="580px">
         <div class="ta-l view-authinfo-wrap">
           <template>
-            <el-form :model="addForm" :rules="rules" ref="verifiForm" label-position="right" label-width='120px'>
-              <el-form-item inline label='赠送额度：' prop='name'>
-                <el-input class='inp-name' placeholder='精确到百分位,限10个字符' v-model="addForm.name"></el-input>
+            <el-form :model="addForm" :rules="rules" ref="addForm" label-position="right" label-width='120px'>
+              <el-form-item inline label='赠送额度：' prop='amount'>
+                <el-input class='inp-name' placeholder='精确到百分位,限10个字符' v-model="addForm.amount"></el-input>
               </el-form-item>
-              <el-form-item inline label='用途：' prop='address' class="address-wrap">
-                <el-select v-model="addForm.used" size="medium" class="year-box"
+              <el-form-item inline label='用途：' prop='useType' class="address-wrap">
+                <el-select v-model="addForm.useType" size="medium" class="year-box"
                   placeholder="请选择">
                   <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in uses"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item inline label='有效时长：' prop='address' class="address-wrap">
-                <el-select v-model="addForm.validate" size="medium" class="year-box"
+              <el-form-item inline label='有效时长：' prop='duration' class="address-wrap">
+                <el-select v-model="addForm.duration" size="medium" class="year-box"
                   placeholder="请选择">
                   <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in validates"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item inline label='说明：' prop='name'>
-                <el-input class='inp-name' placeholder='限20个字符,不含特殊字符' v-model="addForm.remark"></el-input>
+              <el-form-item inline label='说明：' prop='description'>
+                <el-input class='inp-name' placeholder='限20个字符,不含特殊字符' v-model="addForm.description"></el-input>
               </el-form-item>
-              <el-form-item inline label='代金券状态：' prop='name'>
-                <el-radio-group v-model="addForm.memberType">
-                    <el-radio :label="1">开启</el-radio>
-                    <el-radio :label="2">关闭</el-radio>
+              <el-form-item inline label='代金券状态：' prop='status'>
+                <el-radio-group v-model="addForm.status">
+                    <el-radio :label="2">开启</el-radio>
+                    <el-radio :label="1">关闭</el-radio>
                   </el-radio-group>
               </el-form-item>
               <div class="ta-c btn-wrap">
-                <!-- <el-button @click="$emit('close')">取消</el-button>
-                <el-button type="primary" class='confirm-btn' @click="submitForm('verifiForm')">确定</el-button> -->
+                <!-- <el-button @click="$emit('close')">取消</el-button> -->
+                <el-button type="primary" class='confirm-btn' @click="submitForm('addForm')">确定</el-button>
               </div>
             </el-form>
           </template>
-          <!-- <template v-else>
-            <dl class="pos-r">
-              <dt class="ta-r pos-a">企业名称：</dt>
-              <dd>{{this.formData.company}}</dd>
-            </dl>
-            <dl class="pos-r">
-              <dt class="ta-r pos-a">企业所在地：</dt>
-              <dd>
-                {{userAllInfo.companyProvince}}
-                {{userAllInfo.companyCity}}
-                {{userAllInfo.companyZone}}
-                {{userAllInfo.address}}
-              </dd>
-            </dl>
-            <dl class="pos-r">
-              <dt class="ta-r pos-a">营业执照：</dt>
-              <dd>
-                <a :href="userAllInfo.companyLicense | filterImgUrl" target="_blank" title="查看">
-                  <img :src="userAllInfo.companyLicense | filterImgUrl">
-                </a>
-              </dd>
-            </dl>
-          </template> -->
-          <div class="ta-c btn-wrap">
+          <!-- <div class="ta-c btn-wrap">
             <el-button type="primary" class='confirm-btn' @click="authDialogVisible = false">确定</el-button>
-          </div>
+          </div> -->
         </div>
       </el-dialog>
     </template>
@@ -181,10 +175,9 @@
 <script>
 export default {
   data () {
-    // 代理费
-    let validateAgent = (rule, value, callback) => {
-      let reg = /^[0-9]{1,8}([.][0-9]{1,2})?$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('请输入10个字符以内的代理费，限2位小数'))
+    let validateAmount = (rule, value, callback) => {
+      let reg = /^\d{0,7}\.\d{2}$/gi
+      if (value && !value.toString().match(reg)) return callback(new Error('精确到百分位，限10个字符'))
       callback()
     }
     return {
@@ -193,9 +186,11 @@ export default {
       tableData: [],            // 列表数据
       loading: false,           // 加载loading
       formData: {
-        ruleName: '',           // 规则名称
-        agentLowness: '',       // 价格低
-        agentHigh: ''           // 价格高
+        amount: '',
+        useType: '',
+        duration: '',
+        description: '',
+        status: 2
       },
       copyFormData: {},         // 拷贝数据
       deleteVisible: false,     // 删除弹框
@@ -206,30 +201,25 @@ export default {
         total: 0
       },
       rules: {
-        // 代理费低
-        agentLowness: { validator: validateAgent, trigger: 'blur' },
-
-        // 代理费高
-        agentHigh: { validator: validateAgent, trigger: 'blur' }
+        amount: [
+          { required: true, message: '请输入赠送额度', trigger: 'blur' },
+          { validator: validateAmount, trigger: 'blur' }
+        ],
+        useType: [
+          { required: true, message: '请选择用途', trigger: 'blur' }
+        ],
+        duration: [
+          { required: true, message: '请选择有效时长', trigger: 'blur' }
+        ],
+        description: [
+          { max: 20, message: '请选择代金券状态', trigger: 'blur' }
+        ],
+        status: [
+          { required: true, message: '请选择代金券状态', trigger: 'blur' }
+        ]
       },
       pageType: '1',
-      voucherALLList: [{ id: 1, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '一年' },
-      { id: 2, amount: 3000, use: 1, desc: '可用于订购套餐使用2', status: 2, aging: '一年' },
-      { id: 3, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
-      { id: 4, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' },
-      { id: 5, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 2, aging: '15天' },
-      { id: 6, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
-      { id: 7, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' },
-      { id: 5, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 4, aging: '15天' },
-      { id: 6, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 4, aging: '15天' },
-      { id: 7, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 4, aging: '15天' }],
-      voucherList: [{ id: 1, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '一年' },
-      { id: 2, amount: 3000, use: 1, desc: '可用于订购套餐使用2', status: 2, aging: '一年' },
-      { id: 3, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
-      { id: 4, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' },
-      { id: 5, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 2, aging: '15天' },
-      { id: 6, amount: 3000, use: 1, desc: '可用于订购套餐使用', status: 3, aging: '15天' },
-      { id: 7, amount: 6000, use: 1, desc: '可用于订购套餐使用', status: 1, aging: '15天' }],
+      voucherALLList: [],
       voucherShowList: [],
       start: 0,
       len: 3,
@@ -243,7 +233,8 @@ export default {
       validates: [
         { label: '15天', value: 1 }, { label: '一个月', value: 2 }, { label: '三个月', value: 3 },
         { label: '半年', value: 4 }, { label: '一年', value: 5 }
-      ]
+      ],
+      currentTab: 1
     }
   },
   mounted () {
@@ -256,20 +247,18 @@ export default {
 
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
     // this.getListData()
-    this.getShowVoucherList()
+    this.getVoucherList()
   },
   methods: {
     /**
      * 获取列表数据
      */
-    getListData () {
+    getVoucherList () {
       this.loading = true
-      this.$http.post('@ROOT_API/rule/getRuleList', {
-        start: this.pageData.currentPage,             // 是 int 开始时间
-        pageSize: this.pageData.pageSize,             // 是 int 开始时间
-        agentAmountMin: this.formData.agentLowness,   // 否 double  代理金额最小值
-        agentAmountMax: this.formData.agentHigh,      // 否 double  代理金额最大值
-        ruleName: this.formData.ruleName               // 否 string  规则名称
+      this.$http.post('@ROOT_API/coupon/getCouponList', {
+        start: this.pageData.currentPage,
+        pageSize: this.pageData.pageSize,
+        statusFalg: this.currentTab
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -283,11 +272,8 @@ export default {
           return false
         }
         let results = resData.data
-        // results.list.forEach((row, index) => {
-        //   if (index < results.list.length - 1) row.subordinate = results.list[index + 1].ruleName
-        // })
-        this.tableData = results.list
-        this.pageData.total = results.total
+        this.voucherALLList = results.list
+        this.getShowVoucherList()
       }).finally(() => {
         this.loading = false
       })
@@ -303,10 +289,57 @@ export default {
         this.addDialogTitle = '编辑代金券'
       } else {
         this.addDialogType = ''
-        this.addForm = {}
+        this.addForm = {
+          amount: '',
+          useType: '',
+          duration: '',
+          description: '',
+          status: 2
+        }
         this.addDialogTitle = '添加代金券'
       }
       this.addDialogVisible = true
+    },
+    submitForm (formName) {
+      let url = 'coupon/addCoupon'
+      let params = {
+        amount: this.addForm.amount,
+        useType: this.addForm.useType,
+        duration: this.addForm.duration,
+        description: this.addForm.description,
+        status: this.addForm.status
+      }
+      if (this.addForm.id) {
+        url = 'coupon/updateCoupon'
+        params.id = this.addForm.id
+      }
+      this.$refs[formName].validate((valid) => {
+        if (!valid) return false
+        this.confirmLoading = true
+        this.$http.post(`@ROOT_API/${url}`, params).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            return false
+          }
+          // succese
+          this.$message({
+            message: resData.msg,
+            type: 'success',
+            duration: 1000
+          })
+          this.addDialogVisible = false
+          this.getVoucherList()
+        }).finally(() => {
+          setTimeout(() => {
+            this.confirmLoading = false
+          }, 500)
+        })
+      })
     },
 
     /**
@@ -322,8 +355,8 @@ export default {
     */
     handleDelete () {
       this.confirmLoading = true
-      this.$http.post('@ROOT_API/rule/deleteRule', {
-        ruleId: this.deleteData.ruleId
+      this.$http.post('@ROOT_API/coupon/deleteCoupon', {
+        id: this.deleteData.id
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -341,12 +374,6 @@ export default {
         })
         this.deleteVisible = false
         this.getListData()
-        // this.tableData.map((item, index) => {
-        //   if (this.deleteData.ruleId === item.ruleId) {
-        //     this.tableData.splice(index, 1)
-        //     return
-        //   }
-        // })
       }).finally(() => {
         setTimeout(() => {
           this.confirmLoading = false
@@ -359,7 +386,38 @@ export default {
       this.stopData = row
     },
 
-    handleStop () {},
+    handleStop () {
+      this.updateCouponStatus(this.stopData.id, 1)
+    },
+    updateCouponStatus (id, status) {
+      if (!id || !status) return false
+      this.$http.post('@ROOT_API/coupon/updateCouponStatus', {
+        id: id,
+        status: status
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        // succese
+        this.$message({
+          message: resData.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.stopVisible = false
+        this.getVoucherList()
+      }).finally(() => {
+        setTimeout(() => {
+          this.confirmLoading = false
+        }, 500)
+      })
+    },
     /**
      * 分页操作
      */
@@ -421,10 +479,10 @@ export default {
       // this.$router.replace({path: this.$route.path, query: {type: val}})
     },
     getShowVoucherList () {
-      this.voucherShowList = this.voucherList.slice(this.start * this.len, (this.start * this.len) + this.len)
+      this.voucherShowList = this.voucherALLList.slice(this.start * this.len, (this.start * this.len) + this.len)
     },
     toNext () {
-      if (((this.start + 1) * this.len) < this.voucherList.length) {
+      if (((this.start + 1) * this.len) < this.voucherALLList.length) {
         this.start += 1
         this.getShowVoucherList()
       } else {
@@ -438,6 +496,10 @@ export default {
       } else {
         console.log('当前已经是第一页')
       }
+    },
+    tabClick (tab) {
+      this.currentTab = tab
+      this.getVoucherList()
     }
   }
 }
@@ -477,7 +539,7 @@ export default {
           width: calc(100% - 100px);
           .voucher-item {
             width: 32%;
-            border: 3px solid #C1E0FF;
+            // border: 3px solid #C1E0FF;
             background: #F2F2F2;
             margin-right: 20px;
             position: relative;
@@ -500,6 +562,7 @@ export default {
             .right {
               font-size: 14px;
               padding: 10px 0;
+              width: 170px;
               .first-line {
                 i {
                   float: right;
@@ -527,11 +590,19 @@ export default {
                   padding: 2px 4px;
                   border-radius: 2px;
                 }
+                span:nth-child(3) {
+                  float: right;
+                  margin-right: 15px;
+                  cursor: pointer;
+                }
               }
             }
           }
           .voucher-item:nth-child(3) {
             margin-right: 0;
+          }
+          .voucher-item:hover {
+            border: 3px solid #C1E0FF;
           }
         }
       }

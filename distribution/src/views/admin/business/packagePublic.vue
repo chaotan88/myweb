@@ -1,6 +1,6 @@
 <!-- 套餐新增 & 编辑 -->
 <template>
-  <common-tpl class="manage-public-detail-wrap" footer back>
+  <common-tpl class="package-public-detail-wrap" footer back>
     <!-- 主体内容 -->
     <template slot="main">
       <div class="goods-common-details">
@@ -10,21 +10,23 @@
           <!-- 基本信息 -->
           <div class="box">
             <gray-title title="基本信息"></gray-title>
-            <el-form-item label="套餐名称：" prop="ruleName">
-              <el-input v-model="ruleForm.ruleName" placeholder="限50个字符,不含特殊字符"></el-input>
+            <el-form-item label="套餐名称：" prop="setMealName">
+              <el-input v-model="ruleForm.setMealName" placeholder="限50个字符,不含特殊字符"></el-input>
             </el-form-item>
-            <el-form-item label="销售价：" prop="ruleName">
-              <el-input v-model="ruleForm.saleAmout" placeholder="精确到百分位,限10个字符"></el-input>
+            <el-form-item label="销售价：" prop="setMealPrice">
+              <el-input v-model="ruleForm.setMealPrice" placeholder="精确到百分位,限10个字符"
+                @change="mealPriceChange"></el-input>
             </el-form-item>
-            <el-form-item label="成本价：" prop="ruleName">
-              <el-input v-model="ruleForm.ruleName" placeholder="精确到百分位,限10个字符"></el-input>
+            <el-form-item label="成本价：" prop="setMealCostPrice">
+              <el-input v-model="ruleForm.setMealCostPrice" placeholder="精确到百分位,限10个字符"></el-input>
             </el-form-item>
-            <el-form-item label="简要说明：" prop="ruleName">
-              <el-input v-model="ruleForm.ruleName" placeholder="限50个字符,不含特殊字符"></el-input>
+            <el-form-item label="简要说明：" prop="simpleDescription">
+              <el-input v-model="ruleForm.simpleDescription" placeholder="限50个字符,不含特殊字符"></el-input>
             </el-form-item>
-            <el-form-item label="套餐封面图：" prop="uploadFiles">
-              <div class="package-cover-img">
-                <el-upload class="upload-picture fl-l pos-r"
+            <el-form-item label="套餐主图：" prop="uploadFiles" style="padding-bottom: 50px;">
+              <div style="display: flex;">
+                <div class="package-cover-img">
+                <el-upload class="upload-picture pos-r"
                   :class="{uploadHide: coverImgList.length === 1}"
                   list-type="picture-card"
                   :action="uploadUrl"
@@ -35,12 +37,29 @@
                   :on-remove="removeHandle"
                   :on-success="uploadSuccessHandle">
                   <i class="el-icon-plus avatar-uploader-icon"></i>
+                  <!-- <div class="el-upload__text">列表封面图片</div> -->
                 </el-upload>
-                <el-input v-model="ruleForm.uploadFiles" class="d-n"></el-input>
-                <span class="cue pos-a">（图片建议尺寸：300 * 150px ；建议大小：100KB以内）</span>
+                <div class="upload-tips">（图片建议尺寸：300 * 150px ；建议大小：100KB以内）</div>
+              </div>
+              <div class="package-main-img">
+                <el-upload class="upload-picture pos-r"
+                  :class="{uploadHide: mainImgList.length === 3}"
+                  list-type="picture-card"
+                  :action="uploadUrl"
+                  :file-list="mainImgList"
+                  :limit="3"
+                  :on-exceed="exceedHandleMain"
+                  :before-upload="beforeAvatarUpload"
+                  :on-remove="removeHandleMain"
+                  :on-success="uploadSuccessHandleMain">
+                  <i class="el-icon-plus avatar-uploader-icon"></i>
+                  <!-- <div class="el-upload__text">上传主图</div> -->
+                </el-upload>
+                <span class="upload-tips-right">（图片建议尺寸：300 * 300px ；建议大小：100KB以内）</span>
+              </div>
               </div>
             </el-form-item>
-            <el-form-item label="套餐主图：" prop="uploadFiles">
+            <!-- <el-form-item label="套餐主图：" prop="uploadFiles">
               <div class="package-main-img">
                 <el-upload class="upload-picture fl-l pos-r"
                   :class="{uploadHide: mainImgList.length === 3}"
@@ -53,39 +72,42 @@
                   :on-remove="removeHandle"
                   :on-success="uploadSuccessHandle">
                   <i class="el-icon-plus avatar-uploader-icon"></i>
+                  <div class="el-upload__text">上传主图</div>
                 </el-upload>
-                <el-input v-model="ruleForm.uploadFiles" class="d-n"></el-input>
                 <span class="cue pos-a">（图片建议尺寸：300 * 300px ；建议大小：100KB以内）</span>
               </div>
-            </el-form-item>
-            <el-form-item label="详情描述：" prop="describe" class="pos-r">
+            </el-form-item> -->
+            <el-form-item label="详情描述：" prop="textDescription" class="pos-r">
               <div class="edit_container">
-                <quill-editor 
+                <!-- <quill-editor 
                     v-model="content" 
                     ref="myQuillEditor" 
                     :options="editorOption" 
                     @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                     @change="onEditorChange($event)">
-                </quill-editor>
+                </quill-editor> -->
+                <vue-ueditor-wrap v-model="ruleForm.textDescription" :config="myConfig"></vue-ueditor-wrap>
               </div> 
             </el-form-item>
-            <el-form-item label="套餐状态：" prop="ruleName">
-              <el-radio-group v-model="ruleForm.pachageStatus">
+            <el-form-item label="套餐状态：" prop="setMealStatus">
+              <el-radio-group v-model="ruleForm.setMealStatus">
                 <el-radio :label="1">开启</el-radio>
-                <el-radio :label="0">关闭</el-radio>
+                <el-radio :label="2">关闭</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="订购数量 ：" prop="ruleName">
-              <el-radio-group v-model="ruleForm.isLimit">
+            <div class="item-online">
+              <el-form-item label="订购数量 ：" prop="whetherNumberLimit">
+              <el-radio-group v-model="ruleForm.whetherNumberLimit">
                 <el-radio :label="1">不限</el-radio>
-                <el-radio :label="0">限制</el-radio>
+                <el-radio :label="2">限制</el-radio>
               </el-radio-group>
-              <span v-if="ruleForm.isLimit === 0">
-                <el-input v-model="ruleForm.buyCount" placeholder="输入1-100正整数">
-                </el-input>/人
-              </span>
             </el-form-item>
-            <el-form-item label="套餐类型 ：" prop="commissionType">
+            <el-form-item label="订购数量 ：" prop="numberLimit" v-if="ruleForm.whetherNumberLimit === 2">
+              <el-input v-model="ruleForm.numberLimit" placeholder="输入1-100正整数">
+              </el-input>&nbsp;/ 人
+            </el-form-item>
+            </div>
+            <el-form-item label="套餐类型 ：" prop="commissionType" @change="changeAmount">
               <el-radio-group v-model="ruleForm.commissionType">
                 <el-radio :label="1">礼包分佣</el-radio>
                 <el-radio :label="2">提货分佣</el-radio>
@@ -96,7 +118,7 @@
               优先购买礼包套餐，才能购买此套餐
               <el-select v-model="ruleForm.neetGiftMealId" size="medium" class="year-box"
                 placeholder="选择礼包套餐">
-                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in packages"></el-option>
+                <el-option :label="item.setMealName" :value="item.id" :key="index" v-for="(item, index) in packages"></el-option>
               </el-select>
             </el-form-item>
           </div>
@@ -105,53 +127,53 @@
           <div class="box">
             <gray-title title="分佣配置"></gray-title>
             <el-form-item label="已配置金额：">
-              <div><span class="red-cnt">{{ruleForm.usedAmount || 0}}</span> 元,剩余 
-                <span class="red-cnt">{{(ruleForm.saleAmount - ruleForm.usedAmount) || 0}}</span> 元</div>
+              <div><span class="red-cnt">{{ruleForm.configurationMoney || 0}}</span> 元,剩余 
+                <span class="red-cnt">{{(ruleForm.setMealPrice - ruleForm.configurationMoney) || 0}}</span> 元</div>
             </el-form-item>
             <div v-if="ruleForm.commissionType === 1">
-              <el-form-item label="推荐奖：" prop="consume">
-                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+              <el-form-item label="推荐奖：" prop="giftRecommendReward">
+                <el-input v-model="ruleForm.giftRecommendReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
               </el-form-item>
-              <el-form-item label="大使管理奖：" prop="recommend">
-                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+              <el-form-item label="大使管理奖：" prop="giftRecommendRankReward">
+                <el-input v-model="ruleForm.giftRecommendRankReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
-              <el-form-item label="区域级管理奖：" prop="consume">
+              <el-form-item label="区域级管理奖：" prop="giftManageAreaReward">
                 <div style="margin-bottom: 10px;">
-                  <el-input value="区县运营中心" readonly></el-input>
-                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                  <span class="readonly-text">区县运营中心</span>
+                  <el-input v-model="ruleForm.giftManageAreaReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                   <span class="recommendSpan">元/人</span>
                 </div>
                 <div>
-                  <el-input value="市级运营中心" readonly></el-input>
-                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                  <span class="readonly-text">市级运营中心</span>
+                  <el-input v-model="ruleForm.giftManageCityReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                   <span class="recommendSpan">元/人</span>
                 </div>
               </el-form-item>
-              <el-form-item label="跨区管理奖：" prop="consume">
-                <el-input value="市级运营中心" readonly></el-input>
-                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+              <el-form-item label="跨区管理奖：" prop="giftManageCrossReward">
+                <span class="readonly-text">市级运营中心</span>
+                <el-input v-model="ruleForm.giftManageCrossReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
             </div>
             <div v-else>
-              <el-form-item label="大使提货奖：" prop="consume">
-                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+              <el-form-item label="大使提货奖：" prop="pickReward">
+                <el-input v-model="ruleForm.pickReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
-              <el-form-item label="运营提货奖：" prop="consume">
+              <el-form-item label="运营提货奖：" prop="pickAreaReward">
                 <div style="margin-bottom: 10px;">
-                  <el-input value="区县运营中心" readonly></el-input>
-                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                  <span class="readonly-text">区县运营中心</span>
+                  <el-input v-model="ruleForm.pickAreaReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                 </div>
                 <div>
-                  <el-input value="市级运营中心" readonly></el-input>
-                  <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+                  <span class="readonly-text">市级运营中心</span>
+                  <el-input v-model="ruleForm.pickCityReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
                 </div>
               </el-form-item>
-              <el-form-item label="跨区提货奖：" prop="consume">
-                <el-input value="市级运营中心" readonly></el-input>
-                <el-input v-model="ruleForm.consume" placeholder="精确到百分位，限10个字符"></el-input>
+              <el-form-item label="跨区提货奖：" prop="pickCrossReward">
+                <span class="readonly-text">市级运营中心</span>
+                <el-input v-model="ruleForm.pickCrossReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
               </el-form-item>
             </div>
           </div>
@@ -159,16 +181,16 @@
           <!-- 代金券配置 -->
           <div class="box">
             <gray-title title="代金券配置"></gray-title>
-            <el-form-item label="赠送：" prop="goods">
-              <el-select v-model="ruleForm.memberLevel" size="medium" class="year-box"
+            <el-form-item label="赠送：" prop="couponHandsel">
+              <el-select v-model="ruleForm.couponHandsel" size="medium" class="year-box"
                 placeholder="选择代金券">
-                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in Vouchers"></el-option>
+                <el-option :label="item.description" :value="item.id" :key="index" v-for="(item, index) in vouchers"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="抵扣：" prop="bonusPoints">
-              <el-select v-model="ruleForm.memberLevel" size="medium" class="year-box"
+            <el-form-item label="抵扣：" prop="couponDeduction">
+              <el-select v-model="ruleForm.couponDeduction" size="medium" class="year-box"
                 placeholder="选择代金券">
-                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in Vouchers"></el-option>
+                <el-option :label="item.description" :value="item.id" :key="index" v-for="(item, index) in couponList"></el-option>
               </el-select>
             </el-form-item>
           </div>
@@ -187,215 +209,112 @@
 <script>
 export default {
   data () {
-    // 验证代销商品数量
     let validateNumber = (rule, value, callback) => {
       let reg = /^\d{0,10}$/gi
       if (value && !value.toString().match(reg)) return callback(new Error('只能输入10个字符以内的正整数'))
       callback()
     }
-
-    // 验证代理费
-    let validateAgentFee = (rule, value, callback) => {
-      // if (!value && parseInt(value) !== 0) return callback('代理费不能为空')
+    let validateWhetherNumberLimit = (rule, value, callback) => {
+      let reg = /^\d{0,10}$/gi
+      if ((value && !value.toString().match(reg)) || value > 100) return callback(new Error('只能输入0-100以内的正整数'))
+      callback()
+    }
+    // 验证销售价格
+    let validateSetMealPrice = (rule, value, callback) => {
       let reg = /^\d{0,7}\.\d{2}$/gi
       if (value && !value.toString().match(reg)) return callback(new Error('精确到百分位，限10个字符'))
       callback()
     }
-
-    // 验证消费积分满
-    let validateConsume = (rule, value, callback) => {
-      if (!value && parseInt(value) !== 0) return callback(new Error('消费积分不能为空'))
-      let reg = /^\d{0,10}$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('只能输入10个字符以内的正整数'))
-      callback()
-    }
-
-    // 直接推荐同级满
-    let validateRecommend = (rule, value, callback) => {
-      // if (!value) return callback('直接推荐同级人数不能为空')
-      let reg = /^\d{0,10}$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('只能输入10个字符以内的正整数'))
-      callback()
-    }
-
-    // 选择直接下级
-    let validateSubordinate = (rule, value, callback) => {
-      if (!value) return callback(new Error('请选择直接下级'))
-      callback()
-    }
-
-    // 验证核算周期
-    let validateCycle = (rule, value, callback) => {
-      let reg = /^\+?[1-9]\d*$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('只能输入大于1等于1的正整数'))
-      callback()
-    }
-
-    // 验证商品描述
-    let ruleNumber = (rule, value, callback) => {
-      if (value && value.toString().length > 200) return callback(new Error('只能输入200个字符'))
-      callback()
-    }
-
-    // 芯片收益值
-    let validateChip = (rule, value, callback) => {
-      let reg = /^(0|[1-9][0-9]*)+(.[0-9]{1,2})?$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('请输入整数，限2位小数'))
-      callback()
-    }
-
-    // 验证管理奖奖励级数
-    let validateInteger = (rule, value, callback) => {
-      let reg = /^([0-9]|(1[0]))$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('只能输入0-10以内的正整数'))
-      callback()
-    }
-
-    // 验证全球加权分红比例/办公场地补贴比例
-    let validatePercent = (rule, value, callback) => {
-      let reg = /^(0|[1-9]\d{0,2})\.\d{2}$/gi
-      if ((value && parseFloat(value) > 100) || (value && !value.toString().match(reg))) return callback(new Error('请输入100以内的正确的分佣比例，只保留两位小数'))
-      callback()
-    }
-
     return {
       confirmLoading: false,    // 确定loading
       pageType: 1,              // 页面类型
       ruleForm: {
-        // 基本信息
-        ruleName: '',           // 会员身份
-        describe: '',           // 规则说明
-        description: '',
-        uploadFiles: '',        // 图片相对路径
-        // 加入条件
-        agentFee: '',           // 代理费
-        buyGoods: '',           // 购买商品数
-        consume: '',            // 消费积分
-        recommend: '',          // 推荐同级
-        // 获得内容
-        goods: '',              // 商城商品
-        integral: '',           // 商城消费积分
-        giftIntegral: '',       // 赠送商城消费积分
-        subordinate: '',        // 下级
-        // 奖励规则
-        cycle: '',              // 核算周期
-        rewardConsume: '',      // 奖励消费积分比例
-        rewardCash: '',         // 奖励通用积分比例
-        rewardGoods: '',        // 奖励商品收益比例
-        shopProfitSubsidyRate: '', // 店补收益比例
-        rewardBonus: '',        // 全球加权分红比例
-        rewardOffice: '',       // 办公场地补贴比例
-        rewardChip: '',         // 芯片销售收益
-        areaRepeatRate: '',     // 区域重消
-        levelingRate: '',       // 平级奖比例
-        beSurpassedRate: '',    // 超越奖
-        manageAwardRate: '',    // 管理奖比例
-        manageAwardNum: '',     // 管理奖奖励级数
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        setMealName: '',
+        setMealPrice: '',
+        setMealCostPrice: '',
+        simpleDescription: '',
+        uploadFiles: '',
+        textDescription: '',
+        setMealStatus: 1,
+        whetherNumberLimit: 1,
+        numberLimit: '',
+        commissionType: 1,
+        whetherNeetGift: 2,
+        neetGiftMealId: '',
+        configurationMoney: 0,
+        giftRecommendReward: '',
+        giftRecommendRankReward: '',
+        giftManageAreaReward: '',
+        giftManageCityReward: '',
+        giftManageCrossReward: '',
+        pickReward: '',
+        pickAreaReward: '',
+        pickCityReward: '',
+        pickCrossReward: '',
+        couponHandsel: '',
+        couponDeduction: '',
+        appendImageUri: '',
+        mainImageUrl: ''
+
       },
-      fileList: [],             // 图片集合
       coverImgList: [],
       mainImgList: [],
       userInfo: {},             // 用户信息
-      storeData: {},            // 商品id
-      passVisible: false,       // 审核弹窗
-      faceUrl: '',              // 上传图标地址
-      isUploading: false,       // 上传中
       rules: {
-
-        // 会员身份
-        ruleName: [
-          { required: true, message: '请输入合伙身份', trigger: 'blur' },
+        setMealName: [
+          { required: true, message: '请输入套餐', trigger: 'blur' },
           { max: 50, message: '长度在50个字符', trigger: 'blur' }
         ],
-
-        // 代理费
-        agentFee: [{ validator: validateAgentFee, trigger: 'blur' }],
-
-        // 上传图标
+        setMealPrice: [
+          { required: true, message: '请输入销售价', trigger: 'blur' },
+          { validator: validateSetMealPrice, trigger: 'blur' }
+        ],
+        setMealCostPrice: [
+          { required: true, message: '请输入成本价', trigger: 'blur' },
+          { validator: validateSetMealPrice, trigger: 'blur' }
+        ],
+        simpleDescription: [
+          { required: true, message: '请输入简要说明', trigger: 'blur' },
+          { max: 50, message: '长度在50个字符', trigger: 'blur' }
+        ],
         uploadFiles: [{ required: true, message: '请上传图标', trigger: 'change' }],
-
-        // 商品描述
-        describe: [{ validator: ruleNumber, trigger: 'blur' }],
-
-        // 购买商品数
-        buyGoods: [{ validator: validateNumber, trigger: 'blur' }],
-
-        // 消费积分
-        consume: [{ required: true, validator: validateConsume, trigger: 'blur' }],
-
-        // 商城商品
-        goods: [{ validator: validateNumber, trigger: 'blur' }],
-
-        // 商城消费积分
-        bonusPoints: [{ validator: validateNumber, trigger: 'blur' }],
-
-        // 赠送商城消费积分
-        giftIntegral: [{ validator: validateNumber, trigger: 'blur' }],
-
-        // 推荐同级
-        recommend: [{ validator: validateRecommend, trigger: 'blur' }],
-
-        // 下级
-        subordinate: { required: true, validator: validateSubordinate, trigger: 'change' },
-
-        // 奖励消费积分比例
-        rewardConsume: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 奖励通用积分比例
-        rewardCash: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 奖励商品收益比例
-        rewardGoods: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 店补收益比例
-        shopProfitSubsidyRate: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 全球加权分红比例
-        rewardBonus: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 核算周期
-        cycle: [{ validator: validateCycle, trigger: 'blur' }],
-
-        // 办公场地补贴比例
-        rewardOffice: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 芯片销售收益
-        rewardChip: [{ validator: validateChip, trigger: 'blur' }],
-
-        // 区域重消
-        areaRepeatRate: [{ validator: validateChip, trigger: 'blur' }],
-
-        // 平级奖比例
-        levelingRate: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 超越奖
-        beSurpassedRate: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 管理奖比例
-        manageAwardRate: [{ validator: validatePercent, trigger: 'blur' }],
-
-        // 管理奖奖励级数
-        manageAwardNum: [{ validator: validateInteger, trigger: 'blur' }]
+        textDescription: [{ required: true, message: '请输入详细名称', trigger: 'blur' }],
+        setMealStatus: [{ required: true, message: '请选择套餐开启状态', trigger: 'blur' }],
+        whetherNumberLimit: [{ required: true, message: '请选择是否限制订购数量', trigger: 'blur' }],
+        numberLimit: [
+          { required: true, message: '请输入订购数量', trigger: 'blur' },
+          { validator: validateWhetherNumberLimit, trigger: 'blur' }
+        ],
+        commissionType: [{ required: true, message: '请选择套餐类型', trigger: 'blur' }],
+        // whetherNeetGift: [{ required: true, message: '请选择礼包套餐', trigger: 'blur' }],
+        giftRecommendReward: [{ validator: validateNumber, trigger: 'blur' }],
+        giftRecommendRankReward: [{ validator: validateNumber, trigger: 'blur' }],
+        giftManageAreaReward: [{ validator: validateNumber, trigger: 'blur' }],
+        giftManageCityReward: [{ validator: validateNumber, trigger: 'blur' }],
+        giftManageCrossReward: [{ validator: validateNumber, trigger: 'blur' }],
+        pickReward: [{ validator: validateNumber, trigger: 'blur' }],
+        pickAreaReward: [{ validator: validateNumber, trigger: 'blur' }],
+        pickCityReward: [{ validator: validateNumber, trigger: 'blur' }],
+        pickCrossReward: [{ validator: validateNumber, trigger: 'blur' }]
       },
-      ruleId: '',               // 规则id
-      rand: '',                 // 级数
-      ruleAllData: [],          // 所有分销规则比例级数
-      currentSelectRule: {
-        consumePointRate: '',
-        cashRate: '',
-        goodsProfitRate: ''
-      },    // 当前选择规则
-      gradationListData: [],     // 级差列表
+      mealId: '',
       content: `<p>hello world</p>`,
       editorOption: {},
-      Vouchers: [],
-      packages: [{ label: '初级推广大使升级大礼包', value: 1 }]
+      vouchers: [], // 赠送代金券，不限金额
+      couponList: [], // 抵扣金额 只显示小于或等于套餐销售价的代金券
+      packages: [],
+      myConfig: {
+        // 编辑器不自动被内容撑高
+        autoHeightEnabled: false,
+        // 初始容器高度
+        initialFrameHeight: 180,
+        // 初始容器宽度
+        initialFrameWidth: '100%',
+        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
+        serverUrl: 'http://35.201.165.105:8000/controller.php',
+        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
+        UEDITOR_HOME_URL: '/static/UEditor/'
+      }
     }
   },
   computed: {
@@ -408,19 +327,18 @@ export default {
   },
   mounted () {
     if (this.$route.path.match(/edit/gi)) this.pageType = 2
-    this.ruleId = parseInt(this.$route.query.id)
-    this.storeData = JSON.parse(localStorage.getItem('OPEN_STORE'))
+    this.mealId = parseInt(this.$route.query.id)
     this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
-    if (this.ruleId) this.getDetailsData()
-    this.getRuleAllSubs()
+    if (this.mealId) this.getDetailsData()
+    this.initSelectData()
   },
   methods: {
     /**
      * 获取详情数据
      */
     getDetailsData () {
-      this.$http.post('@ROOT_API/rule/getRuleDetail', {
-        ruleId: this.ruleId
+      this.$http.get(`@ROOT_API/meal/getSetMeal?mealId=${this.mealId}`, {
+        mealId: this.mealId
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -432,79 +350,44 @@ export default {
           return false
         }
         let results = resData.data
-        this.ruleForm.ruleName = results.ruleName
-        if (results.ruleIcon) {
-          this.fileList.push({url: this.$Utils.filterImgUrl(results.ruleIcon)})  // 绝对路径
-          this.ruleForm.uploadFiles = results.ruleIcon                     // 相对路径
-        }
-        this.ruleForm.describe = results.ruleDesc
-        this.ruleForm.agentFee = results.agentFee
-        if (this.ruleForm.agentFee !== '' || this.ruleForm.agentFee !== null) this.inpBlur('agentFee')
-        this.ruleForm.consume = results.consumePoint
-        this.ruleForm.recommend = results.directRecommendPeer
-        this.ruleForm.goods = results.toGoodsMoney
-        this.ruleForm.bonusPoints = results.toConsumePoint
-
-        this.ruleForm.giftIntegral = results.giveConsumePoint // giveConsumePoint  否 INT '赠送商城消费积分（达到该等级额外赠送的商城消费积分）'
-        // rand  否 TINYINT '当前级数'
-        // directParent  是 INT '直接上级'
-        this.ruleForm.subordinate = results.directSub // 是 INT '直接下级( 推荐分佣 选择直接下级)'
-        this.ruleForm.rewardConsume = results.consumePointRate  // consumePointRate  是 double  '奖励消费积分比例'
-        if (this.ruleForm.rewardConsume) this.inpBlur('rewardConsume')
-        this.ruleForm.rewardCash = results.cashRate // cashRate  是 double  '奖励通用积分比例'
-        if (this.ruleForm.rewardCash) this.inpBlur('rewardCash')
-        this.ruleForm.rewardGoods = results.goodsProfitRate // goodsProfitRate 是 double  '奖励商品收益比例'
-        if (this.ruleForm.rewardGoods) this.inpBlur('rewardGoods')
-        this.ruleForm.shopProfitSubsidyRate = results.shopProfitSubsidyRate // goodsProfitRate 是 double  '奖励商品收益比例'
-        if (this.ruleForm.shopProfitSubsidyRate) this.inpBlur('shopProfitSubsidyRate')
-        this.ruleForm.rewardBonus = results.globalWeightRate
-        if (this.ruleForm.rewardBonus) this.inpBlur('rewardBonus')
-        this.ruleForm.rewardOffice = results.officeRate
-        if (this.ruleForm.rewardOffice) this.inpBlur('rewardOffice')
-        this.ruleForm.rewardChip = results.chipRate
-        if (this.ruleForm.rewardChip) this.inpBlur('rewardChip')
-        this.ruleForm.areaRepeatRate = results.areaRepeatRate
-        if (this.ruleForm.areaRepeatRate) this.inpBlur('areaRepeatRate')
-        this.ruleForm.levelingRate = results.levelingRate
-        if (this.ruleForm.levelingRate) this.inpBlur('levelingRate')
-        this.ruleForm.beSurpassedRate = results.beSurpassedRate
-        if (this.ruleForm.beSurpassedRate) this.inpBlur('beSurpassedRate')
-        this.ruleForm.manageAwardRate = results.manageAwardRate
-        if (this.ruleForm.manageAwardRate) this.inpBlur('manageAwardRate')
-        this.ruleForm.manageAwardNum = results.manageAwardNum
-      })
-    },
-
-    /**
-     * 获取所有分销规则比例级数
-     */
-    getRuleAllSubs () {
-      this.$http.post('@ROOT_API/rule/getDisRuleAllSubs', {
-        rand: this.rand
-      }).then((res) => {
-        let resData = res.data
-        if (parseInt(resData.status) !== 1) {
-          this.$message({
-            message: resData.msg,
-            type: 'error',
-            duration: 1500
+        this.ruleForm.setMealName = results.setMealName
+        this.ruleForm.setMealPrice = results.setMealPrice
+        this.ruleForm.setMealCostPrice = results.setMealCostPrice
+        this.ruleForm.simpleDescription = results.simpleDescription
+        this.ruleForm.textDescription = results.textDescription
+        this.ruleForm.setMealStatus = results.setMealStatus
+        this.ruleForm.whetherNumberLimit = results.whetherNumberLimit
+        this.ruleForm.numberLimit = results.numberLimit
+        this.ruleForm.commissionType = results.commissionType
+        this.ruleForm.whetherNeetGift = results.whetherNeetGift
+        this.ruleForm.neetGiftMealId = results.neetGiftMealId
+        this.ruleForm.configurationMoney = results.configurationMoney || 0
+        this.ruleForm.giftRecommendReward = results.giftRecommendReward
+        this.ruleForm.giftRecommendRankReward = results.giftRecommendRankReward
+        this.ruleForm.giftManageAreaReward = results.giftManageAreaReward
+        this.ruleForm.giftManageCityReward = results.giftManageCityReward
+        this.ruleForm.giftManageCrossReward = results.giftManageCrossReward
+        this.ruleForm.pickReward = results.pickReward
+        this.ruleForm.pickAreaReward = results.pickAreaReward
+        this.ruleForm.pickCityReward = results.pickCityReward
+        this.ruleForm.pickCrossReward = results.pickCrossReward
+        this.ruleForm.couponHandsel = results.couponHandsel
+        this.ruleForm.couponDeduction = results.couponDeduction
+        let coverImgListArr = results.mainImageUrl.split(',')
+        this.ruleForm.mainImageUrl = results.mainImageUrl
+        coverImgListArr.forEach((img) => {
+          this.coverImgList.push({
+            url: img
           })
-          return false
-        }
-        this.ruleAllData = resData.data
-        this.ruleId && this.ruleChange(this.ruleId)
-      })
-    },
-
-    /**
-     * 规则下拉选择
-     */
-    ruleChange (id) {
-      this.currentSelectRule = this.ruleAllData.filter((row) => row.ruleId === id)[0]
-      let level = this.currentSelectRule.rand
-      this.gradationListData = []
-      this.ruleAllData.forEach((row) => {
-        if (row.rand < level) this.gradationListData.push(row)
+        })
+        let mainImgListArr = results.appendImageUri.split(',')
+        mainImgListArr.forEach((img) => {
+          this.mainImgList.push({
+            url: img
+          })
+        })
+        this.ruleForm.appendImageUri = results.appendImageUri
+        this.ruleForm.uploadFiles = results.appendImageUri
       })
     },
 
@@ -515,31 +398,35 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (!valid) return false
         this.confirmLoading = true
-        this.$http.post('@ROOT_API/rule/saveOrUpdateRule', {
-          ruleId: this.ruleId,                                 // 否 long  分销规则Id，如果是【编辑】则需要当前Id，如果是【新增】则不需要传
-          ruleName: this.ruleForm.ruleName,                    // 是 VARCHAR '分销规则名称' 不允许重复
-          ruleIcon: this.ruleForm.uploadFiles,                 // 否 VARCHAR '分销规则图标'
-          ruleDesc: this.ruleForm.describe,                    // 否 VARCHAR '分销规则说明'
-          agentFee: this.ruleForm.agentFee || 0,               // 否 double  '代理费'
-          consumePoint: this.ruleForm.consume,                 // 否 INT '消费积分（消费积分满x）'
-          directRecommendPeer: this.ruleForm.recommend || 0,   // 否 INT '直接推荐同级个数'
-          toGoodsMoney: this.ruleForm.goods || 0,              // 否 double  '获得商城商品（元）'
-          toConsumePoint: this.ruleForm.bonusPoints || 0,      // 否 INT '获得商城消费积分（个 只有通过缴纳代理费方式达到等级）'
-          giveConsumePoint: this.ruleForm.giftIntegral || 0,   // 否 INT '赠送商城消费积分（达到该等级额外赠送的商城消费积分）'
-          directSub: this.ruleForm.subordinate,                // 是 INT '直接下级( 推荐分佣 选择直接下级)'
-          consumePointRate: this.ruleForm.rewardConsume || 0,  // 否 double  '奖励消费积分比例'
-          cashRate: this.ruleForm.rewardCash || 0,             // 否 double  '奖励通用积分比例'
-          goodsProfitRate: this.ruleForm.rewardGoods || 0,     // 否 double  '奖励商品收益比例'
-          shopProfitSubsidyRate: this.ruleForm.shopProfitSubsidyRate || 0,     // 否 double  '店铺分佣补贴'
-          globalWeightRate: this.ruleForm.rewardBonus || 0,    // 否 double  '全球加权分红比例'
-          officeRate: this.ruleForm.rewardOffice || 0,         // 否 double  '办公场地补贴比例'
-          chipRate: this.ruleForm.rewardChip || 0,             // 否 double  '芯片收益值'
-          areaRepeatRate: this.ruleForm.areaRepeatRate || 0,   // 否 double  '区域重消'
-          levelingRate: this.ruleForm.levelingRate || 0,       // 否 double  '平级奖比例'
-          beSurpassedRate: this.ruleForm.beSurpassedRate || 0, // 否 double  '超越奖'
-          manageAwardRate: this.ruleForm.manageAwardRate || 0, // 否 double  '管理奖比例'
-          manageAwardNum: this.ruleForm.manageAwardNum || 0    // 否 double  '管理奖奖励级数'
-        }).then((res) => {
+        let params = {
+          setMealName: this.ruleForm.setMealName,
+          setMealPrice: this.ruleForm.setMealPrice || 0,
+          setMealCostPrice: this.ruleForm.setMealCostPrice || 0,
+          simpleDescription: this.ruleForm.simpleDescription,
+          mainImageUrl: this.ruleForm.mainImageUrl, // 主图
+          appendImageUri: this.ruleForm.appendImageUri, // 附件图
+          textDescription: this.ruleForm.textDescription,
+          setMealStatus: this.ruleForm.setMealStatus,
+          whetherNumberLimit: this.ruleForm.whetherNumberLimit,
+          numberLimit: this.ruleForm.numberLimit || 0,
+          commissionType: this.ruleForm.commissionType,
+          whetherNeetGift: this.ruleForm.whetherNeetGift,
+          neetGiftMealId: this.ruleForm.neetGiftMealId,
+          configurationMoney: this.ruleForm.configurationMoney || 0,
+          giftRecommendReward: this.ruleForm.giftRecommendReward || 0,
+          giftRecommendRankReward: this.ruleForm.giftRecommendRankReward || 0,
+          giftManageAreaReward: this.ruleForm.giftManageAreaReward || 0,
+          giftManageCityReward: this.ruleForm.giftManageCityReward || 0,
+          giftManageCrossReward: this.ruleForm.giftManageCrossReward || 0,
+          pickReward: this.ruleForm.pickReward || 0,
+          pickAreaReward: this.ruleForm.pickAreaReward || 0,
+          pickCityReward: this.ruleForm.pickCityReward || 0,
+          pickCrossReward: this.ruleForm.pickCrossReward || 0,
+          couponHandsel: this.ruleForm.couponHandsel,
+          couponDeduction: this.ruleForm.couponDeduction
+        }
+        if (this.mealId) params.id = this.mealId
+        this.$http.post('@ROOT_API/meal/addSetMeal', params).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {
             this.$message({
@@ -601,7 +488,7 @@ export default {
     },
     exceedHandleMain () {
       this.$message({
-        message: '最多只能上传1个图标',
+        message: '最多只能上传3个图标',
         type: 'error'
       })
     },
@@ -618,30 +505,93 @@ export default {
         })
         return false
       }
-      this.fileList.push({url: this.$Utils.filterImgUrl(res.data)})  // 绝对路径
-      this.ruleForm.uploadFiles = res.data                     // 相对路径
+      this.coverImgList.push({url: this.$Utils.filterImgUrl(res.data)})  // 绝对路径
+      this.ruleForm.mainImageUrl = res.data                     // 相对路径
     },
 
     /**
      * 文件被移除
      */
     removeHandle (file, fileList) {
-      this.ruleForm.uploadFiles = ''      // 移除的时候清空对象
-      this.fileList = []
+      this.ruleForm.mainImageUrl = ''      // 移除的时候清空对象
+      this.coverImgList = []
     },
-    onEditorReady (editor) {},
-    onEditorBlur () {}, // 失去焦点事件
-    onEditorFocus () {}, // 获得焦点事件
-    onEditorChange () {}, // 内容改变事件
-    saveHtml (event) {
-      alert(this.content)
+    /**
+     * 文件上传成功
+     */
+    uploadSuccessHandleMain (res) {
+      if (res.status !== '1') {
+        this.$message({
+          message: res.msg,
+          type: 'error',
+          duration: 1000
+        })
+        return false
+      }
+      this.mainImgList.push({url: this.$Utils.filterImgUrl(res.data)})  // 绝对路径
+      this.ruleForm.appendImageUri = this.mainImgList.map(img => img.url).join(',')                     // 相对路径
+      this.ruleForm.uploadFiles = this.mainImgList.map(img => img.url).join(',')
+    },
+
+    /**
+     * 文件被移除
+     */
+    removeHandleMain (file, fileList) {
+      this.mainImgList = this.mainImgList.filter((img) => {
+        return img.url !== file.url
+      })
+      this.ruleForm.appendImageUri = this.mainImgList.join(',')
+    },
+    initSelectData () {
+      // 订购要求选择的套餐
+      this.$http.get('@ROOT_API/meal/getSetMealNeetGiftList', {}).then((res) => {
+        let { data } = res.data
+        if (!data) data = []
+        this.packages = data
+      })
+      // 代金券列表
+      this.$http.post('@ROOT_API/coupon/getCouponList', {
+        start: 1,
+        pageSize: 999,
+        statusFalg: '1'
+      }).then((res) => {
+        let { list } = res.data.data
+        if (!list) list = []
+        this.vouchers = list
+        this.getCouponList()
+      })
+    },
+    getCouponList () {
+      if (!this.ruleForm.setMealPrice) {
+        this.couponList = []
+      } else {
+        this.couponList = this.vouchers.filter(vou => vou.amount <= this.ruleForm.setMealPrice)
+      }
+    },
+    mealPriceChange () {
+      this.getCouponList()
+      this.changeAmount()
+    },
+    changeAmount () {
+      let configurationMoney = 0
+      let keys = []
+      if (this.ruleForm.commissionType === 1) {
+        keys = ['giftRecommendReward', 'giftRecommendRankReward', 'giftManageAreaReward', 'giftManageCityReward', 'giftManageCrossReward']
+      } else {
+        keys = ['pickReward', 'pickAreaReward', 'pickCityReward', 'pickCrossReward']
+      }
+      keys.forEach((key) => {
+        let data = parseFloat(this.ruleForm[key])
+        if (!isNaN(data)) configurationMoney += data
+      })
+      this.ruleForm.configurationMoney = configurationMoney
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.manage-public-detail-wrap{
+.package-public-detail-wrap{
 
   .goods-common-details{
 
@@ -830,16 +780,19 @@ export default {
       }
     }
     .edit_container {
-      height: 300px;
+      height: 400px;
       .quill-editor {
         height: 200px;
+      }
+      .edui-editor {
+        z-index: 1;
       }
     }
   }
 }
 </style>
 <style lang="less">
-.manage-public-detail-wrap{
+.package-public-detail-wrap{
   .el-dialog {
     .el-dialog__body {
       padding-bottom: 0;
@@ -915,6 +868,56 @@ export default {
 
   .el-textarea{
     width: 420px;
+  }
+  .package-cover-img, .package-main-img {
+    .uploadHide {
+      width: auto;
+      height: 100px;
+    }
+    .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 110px;
+      .el-upload__text {
+        position: absolute;
+        top: 25px;
+        font-size: 8px;
+        width: 100%;
+        text-align: center;
+      }
+    }
+    .upload-tips {
+      width: 170px;
+      line-height: 20px;
+      top: 100px;
+      left: -30px;
+      font-size: 8px;
+    }
+    .upload-tips-right {
+      width: 200px;
+      line-height: 20px;
+      top: 100px;
+      left: 140px;
+      font-size: 8px;
+    }
+    .el-upload-list__item {
+      width: 100px;
+      height: 100px;
+      line-height: 110px;
+    }
+  }
+  .package-cover-img {
+    padding-right: 20px;
+    height: 100px;
+    border-right: 1px dashed #999;
+    text-align: center;
+  }
+  .package-main-img {
+    height: 100px;
+    margin-left: 50px;
+  }
+  .edui-editor {
+    z-index: 1 !important;
   }
 }
 </style>

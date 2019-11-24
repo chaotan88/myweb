@@ -54,14 +54,14 @@
                 <span class="d-b va-m">...</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-if="scope.row.status === '1'">
-                  <div @click="handleLink(scope.row)"><i class="icon el-icon-edit"></i>编辑</div>
+                <el-dropdown-item v-if="scope.row.setMealStatus === 1">
+                  <div @click="handleCloseBefore(scope.row)"><i class="icon el-icon-edit"></i>关闭</div>
                 </el-dropdown-item>
-                <el-dropdown-item v-if="scope.row.status === '1'">
+                <el-dropdown-item v-if="scope.row.setMealStatus === 2">
+                  <div @click="handleLink(scope.row)"><i class="icon el-icon-circle-close"></i>编辑</div>
+                </el-dropdown-item>
+                <el-dropdown-item v-if="scope.row.setMealStatus === 2">
                   <div @click="handleDeleteBefore(scope.row)"><i class="icon el-icon-delete"></i>删除</div>
-                </el-dropdown-item>
-                <el-dropdown-item v-if="scope.row.status !== '1'">
-                  <div @click="handleCloseBefore(scope.row)"><i class="icon el-icon-circle-close"></i>关闭</div>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -197,7 +197,7 @@ export default {
         this.$router.push('/admin/business/package/add')
       } else {
         localStorage.setItem('MANAGER_STORE', JSON.stringify(item))
-        this.$router.push({path: '/admin/business/package/edit', query: {id: item.ruleId}})
+        this.$router.push({path: '/admin/business/package/edit', query: {id: item.id}})
       }
     },
 
@@ -214,8 +214,8 @@ export default {
     */
     handleDelete () {
       this.confirmLoading = true
-      this.$http.post('@ROOT_API/rule/deleteRule', {
-        ruleId: this.deleteData.ruleId
+      this.$http.post('@ROOT_API/meal/deleteSetMeal', {
+        id: this.deleteData.id
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -253,8 +253,8 @@ export default {
     */
     handleClose () {
       this.confirmLoading = true
-      this.$http.post('@ROOT_API/rule/closePackage', {
-        ruleId: this.closeData.ruleId
+      this.$http.post('@ROOT_API/meal/closeSetMeal', {
+        id: this.closeData.id
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {

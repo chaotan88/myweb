@@ -25,7 +25,8 @@
         </el-table-column>
         <el-table-column prop="rankName" label="推广大使身份">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.rankName"></el-input>
+            <i class="required-icon-on-table"></i>
+            <el-input v-model="scope.row.rankName" clearable placeholder="限20个字符" @change="colChange('rankName', scope.$index)"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="identityType" label="身份类型">
@@ -38,19 +39,23 @@
         </el-table-column>
         <el-table-column prop="setMealAmount" label="购买套餐满">
           <template slot-scope="scope">
-            <el-input v-if="scope.row.rand === 2" v-model="scope.row.setMealAmount"></el-input>
+            <i class="required-icon-on-table" v-if="scope.row.rand === 2"></i>
+            <el-input v-if="scope.row.rand === 2" v-model="scope.row.setMealAmount" clearable placeholder="限20个字符" @change="colChange('setMealAmount', scope.$index)"></el-input>
             <span v-else>--</span>
           </template>
         </el-table-column>
         <el-table-column prop="needIdentityAmount" label="推荐推广大使数">
           <template slot-scope="scope">
-            <el-input v-if="scope.row.rand === 3" v-model="scope.row.needIdentityAmount"></el-input>
+            <i class="required-icon-on-table" v-if="scope.row.rand === 3"></i>
+            <el-input v-if="scope.row.rand === 3" v-model="scope.row.needIdentityAmount" clearable placeholder="0-100正整数" @change="colChange('needIdentityAmount', scope.$index)"></el-input>
             <span v-else>--</span>
           </template>
         </el-table-column>
         <el-table-column prop="feeDescription" label="服务费（万元）">
           <template slot-scope="scope">
-            <el-input v-if="scope.row.rand === 4 || scope.row.rand === 5" v-model="scope.row.needIdentityAmount"></el-input>
+            <i class="required-icon-on-table" v-if="scope.row.rand === 4 || scope.row.rand === 5"></i>
+            <el-input v-if="scope.row.rand === 4 || scope.row.rand === 5"
+              v-model="scope.row.needIdentityAmount" clearable  placeholder="限20个字符"  @change="colChange('rankName', scope.$index)"></el-input>
             <span v-else>--</span>
           </template>
         </el-table-column>
@@ -74,6 +79,19 @@
       </el-table>
     </template>
 
+    <template slot="other">
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%">
+        <div class="message-content">
+          <div v-for="(msg, index) in errorArr" :key="index">{{msg}}</div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
+    </template>
     <template slot="footer">
       <el-button type="primary" @click="handleSubmit()">保存</el-button>
     </template>
@@ -114,7 +132,9 @@ export default {
         agentHigh: { validator: validateAgent, trigger: 'blur' }
       },
       userInfo: {},
-      uploadIndex: 0
+      uploadIndex: 0,
+      dialogVisible: false,
+      errorArr: []
     }
   },
   mounted () {
@@ -152,7 +172,65 @@ export default {
       })
     },
     handleSubmit () {
-      this.$http.post('@ROOT_API/envoyRank/updateMemberEnvoyRank', this.tableData).then((res) => {
+      let saveData = []
+      this.errorArr = []
+      this.tableData.forEach((da, index) => {
+        if (!da.rankName) {
+          this.errorArr.push(`第${index + 1}行推广大使身份为空！`)
+        }
+        if (da.rand === 1) {
+          saveData.push({
+            id: da.id,
+            rand: da.rand,
+            ruleName: da.rankName,
+            ruleIcon: da.ruleIcon
+          })
+        } else if (da.rand === 2) {
+          saveData.push({
+            id: da.id,
+            rand: da.rand,
+            ruleName: da.rankName,
+            ruleIcon: da.ruleIcon,
+            setMealAmount: parseFloat(da.setMealAmount)
+          })
+          if (!da.setMealAmount) {
+            this.errorArr.push(`第${index + 1}行购买套餐额为空！`)
+          }
+          if (isNaN(parseFloat(da.setMealAmount))) {
+            this.errorArr.push(`第${index + 1}行购买套餐额只能是大于0的数字！`)
+          }
+        } else if (da.rand === 3) {
+          saveData.push({
+            id: da.id,
+            rand: da.rand,
+            ruleName: da.rankName,
+            ruleIcon: da.ruleIcon,
+            needIdentityAmount: parseFloat(da.needIdentityAmount)
+          })
+          if (!da.needIdentityAmount) {
+            this.errorArr.push(`第${index + 1}行推荐推广大使数为空！`)
+          }
+          if (isNaN(parseFloat(da.needIdentityAmount))) {
+            this.errorArr.push(`第${index + 1}行推荐推广大使数只能是0-100正整数！`)
+          }
+        } else if (da.rand === 4 || da.rand === 5) {
+          saveData.push({
+            id: da.id,
+            rand: da.rand,
+            ruleName: da.rankName,
+            ruleIcon: da.ruleIcon,
+            feeDescription: da.feeDescription
+          })
+          if (!da.needIdentityAmount) {
+            this.errorArr.push(`第${index + 1}行服务费为空！`)
+          }
+        }
+      })
+      if (this.errorArr.length > 0) {
+        this.dialogVisible = true
+        return false
+      }
+      this.$http.post('@ROOT_API/envoyRank/updateMemberEnvoyRank', saveData).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
           this.$message({
@@ -241,6 +319,24 @@ export default {
     },
     beforeUploadClick (index) {
       this.uploadIndex = index
+    },
+    colChange (col, index) {
+      let item = this.tableData[index]
+      if (col === 'setMealAmount') {
+        if (isNaN(parseFloat(item[col])) || item[col] < 0) {
+          item[col] = ''
+        }
+        if (item[col].length > 20) {
+          item[col] = ''
+        }
+      } else if (col === 'needIdentityAmount') {
+        if (isNaN(parseFloat(item[col])) || item[col] < 0 || item[col] > 100) {
+          item[col] = ''
+        }
+      } else if (item[col].length > 20) {
+        item[col] = ''
+      }
+      this.$set(this.tableData, item, index)
     }
   },
   computed: {
@@ -281,16 +377,17 @@ export default {
     }
   }
   .el-upload--picture-card{
-    width: 110px;
-    height: 110px;
+    width: 80px;
+    height: 80px;
+    line-height: 95px;
   }
   .uploadHide{
-    height: 110px;
-    width: 110px;
+    height: 80px;
+    width: 80px;
 
     .el-upload-list__item{
-      width: 110px;
-      height: 110px;
+      width: 80px;
+      height: 80px;
     }
     .el-upload{
       display: none;

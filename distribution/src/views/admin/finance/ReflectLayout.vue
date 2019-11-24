@@ -7,7 +7,9 @@
       <router-link class='d-ib ta-c' to="/admin/finance/reflect/processed">已处理({{statistics.hasDeal ? statistics.hasDeal : 0}})</router-link>
       <router-link class='d-ib ta-c' to="/admin/finance/reflect/back">回退({{statistics.back ? statistics.back : 0}})</router-link>
       <!-- <router-link class='tab-right-btn' to="/admin/finance/reflect/reflectSetting">提现设置</router-link> -->
-      <div class='tab-right-btn' @click="toSetting">提现设置</div>
+      <div class='user-define-add-btn' @click="toSetting" style="float: right;">
+        <el-button @click="toSetting()">提现设置</el-button>
+      </div>
     </template>
   </third-menu>
 </template>
