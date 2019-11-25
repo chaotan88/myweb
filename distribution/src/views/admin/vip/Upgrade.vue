@@ -20,17 +20,18 @@
 
           <gray-title title="升级内容"></gray-title>
           <el-form-item label="升级成为：">
-            <el-select v-model="detailsData.rankId" placeholder="请选择" @change="rankIdChange">
+            <el-select v-model="formData.rankId" placeholder="请选择" @change="rankIdChange">
               <el-option
                 v-for="item in detailsData.rankList"
-                :key="item.rankId"
-                :label="item.rankName"
-                :value="item.rankId">
+                :key="item.ruleId"
+                :label="item.ruleName"
+                :value="item.ruleId">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item inline label='选择地区：' prop='address' class="address-wrap">
-            <region-select :assignData="detailsData.region" @change="regionChange"></region-select>
+            <region-select :assignData="detailsData.region" @change="regionChange" v-if="formData.rankId === 4 || formData.rankId === 5"></region-select>
+            <span v-else>--</span>
           </el-form-item>
           <el-form-item label="服务费：">
             {{detailsData.upgradeAmount | filterEmpty}}
@@ -80,6 +81,7 @@
         submitLoading: false,   // 确定loading
         pageType: 1,            // 页面类型 [1、详情，2、编辑]
         formData: {
+          rankId: '',
           deductionType: 1,           // 抵扣类型
           upgradeId: '',              // 升级表id
           userId: '',                 // 上页面id
@@ -119,7 +121,7 @@
       this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
       this.copyFormData = this.$Utils.deepCopy(this.formData)
       this.userId = parseInt(this.$route.query.userId) || ''
-      // this.getListData()
+      this.getListData()
     },
 
     methods: {
@@ -140,7 +142,6 @@
           this.detailsData = resData.data
           this.detailsData.rankId = this.detailsData.rankList[0].rankId
           this.formData.upgradeId = resData.data.upgradeId
-          this.getListTableData()
           this.rankIdChange(this.detailsData.rankId)
         })
       },
@@ -148,24 +149,6 @@
       rankIdChange (val) {
         this.detailsData.rankList.forEach(item => {
           if (item.rankId === val) this.$set(this.detailsData, 'upgradeAmount', item.upgradeAmount)
-        })
-      },
-      /**
-       * 获取详情数据
-       */
-      getListTableData () {
-        this.$http.get('@ROOT_API/buyMemberAccountManageController/getDeductionInfo', {params: {upgradeId: this.formData.upgradeId}}).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
-          }
-          this.detailsData.deductionAmountTotal = resData.data.deductionAmountTotal
-          this.deductionList = resData.data.deductionList
         })
       },
       /**
@@ -253,7 +236,6 @@
             return false
           }
           this.deleteVisible = false
-          this.getListTableData()
         }).finally(() => {
           this.dialogLoading = false
         })

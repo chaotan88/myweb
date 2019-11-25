@@ -68,16 +68,20 @@
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="ruleName" label="当前身份" min-width="120">
-          <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="ruleName" label="级别产生方式" min-width="120">
-          <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
+        <el-table-column prop="memberType" label="级别产生方式" min-width="120">
+          <template slot-scope="scope">
+            <span v-if="scope.row.memberType == 1">线上升级</span>
+            <span v-if="scope.row.memberType == 2">手动升级</span>
+            <span v-else>--</span>
+          </template>
         </el-table-column>
         <el-table-column prop="region" label="所属地区" min-width="200">
           <template slot-scope="scope">{{scope.row.region | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="registerTime" label="注册时间" width="180"></el-table-column>
-        <el-table-column prop="invitationName" label="首次推荐人" width="120">
+        <el-table-column prop="invitationName" label="首锁推荐人" width="120">
           <template slot-scope="scope">{{scope.row.invitationName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="lastLoginTime" label="最后登录时间" width="180">

@@ -33,7 +33,7 @@
               <td>当前身份：</td>
               <td>
                 <el-row type="flex">
-                  <span style="margin-right: 20px">{{datailsData.rankName | filterEmpty}}</span>
+                  <span style="margin-right: 20px; line-height: 38px;">{{datailsData.ruleName | filterEmpty}}</span>
                   <el-button type="primary"   v-if="(datailsData.ifUpgrade === 1 && datailsData.rank !== 8) && pageType === 2 && formData.memberType === 2" @click="handleUpgradeBefore(datailsData)">账户升级</el-button>
                 </el-row>
               </td>
@@ -74,14 +74,14 @@
             </tr>
             <tr>
               <td>性别：</td>
-              <td>{{datailsData.sex}}</td>
+              <td>{{datailsData.sexVal}}</td>
             </tr>
             <tr>
               <td>地区：</td>
               <td>{{datailsData.region | filterEmpty}}</td>
             </tr>
             <tr>
-              <td>首次推荐人：</td>
+              <td>首锁推荐人：</td>
               <td>{{datailsData.invitationName | filterEmpty}}</td>
             </tr>
             <tr>

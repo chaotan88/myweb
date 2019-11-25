@@ -92,11 +92,11 @@
       <high-search @search="highSearch('form')" :textVisible="false">
         <div style="margin-bottom: 20px" class="switch-wrap" slot="search">
           <el-radio-group v-model="pageType" @change="pageTypeHandle">
-            <el-radio-button label="1">全部</el-radio-button>
-            <el-radio-button label="2">套餐订购</el-radio-button>
-            <el-radio-button label="3">套餐成本</el-radio-button>
-            <el-radio-button label="4">佣金分配</el-radio-button>
-            <el-radio-button label="5">提现已付金额</el-radio-button>
+            <el-radio-button label="">全部</el-radio-button>
+            <el-radio-button label="1">套餐订购</el-radio-button>
+            <el-radio-button label="2">套餐成本</el-radio-button>
+            <el-radio-button label="3">佣金分配</el-radio-button>
+            <el-radio-button label="4">提现已付金额</el-radio-button>
           </el-radio-group>
         </div>
       </high-search>
@@ -199,7 +199,7 @@ export default {
       tableData: [{
         transferName: 111
       }],
-      pageType: 1,             // 1,抢购 2,批发
+      pageType: '',             // 1,抢购 2,批发
       date: '',                // 时间
       formData: {
         customerPhone: '',     // 否 string  客户号码
@@ -241,30 +241,25 @@ export default {
       this.formData = res
     })
     this.formData.statisticsDate = (this.formData.statisticsDate || this.$Utils.filterDate(new Date(), 'YYYY-MM-DD')) + ' 00:00:00'
-    this.getApiData()                  // 调用api
+    this.getTableData()
+    this.getStatisticsData()
   },
 
   methods: {
-    /**
-     * 调用api
-     */
-    getApiData () {
-      this.getStatisticsData()          // 获取统计数据
-      if (this.pageType === 1) {
-        this.getListData()              // 获取列表数据
-      } else {
-        this.getWholesaleListData()     // 获取批发列表数据
-      }
+    getTableData () {
+      this.$http.post('@ROOT_API/buyBusinessAccount/getBusinessAccountList', {
+        start: this.pageData.currentPage,
+        pageSize: this.pageData.pageSize,
+        businessType: this.pageType
+      }).then((res) => {
+        debugger
+      })
     },
     /**
      * 获取统计数据
      */
     getStatisticsData () {
-      this.$http.post('@ROOT_API/buySellStaticReoprtController/getTotalPerformaceStatic', {
-        customerPhone: this.formData.customerPhone,   // 否 string  客户号码
-        ...this.handleDateArgs(),
-        payType: this.formData.payType                // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
-      }).then((res) => {
+      this.$http.post('@ROOT_API/buyBusinessAccount/getBusinessAccountStatistics', {}).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
           this.$message({
@@ -378,7 +373,6 @@ export default {
           break
       }
       this.formData.statisticsDate = dt
-      this.getApiData()
     },
 
     /**
@@ -402,7 +396,6 @@ export default {
     handleFilterDate (data) {
       this.formData.statisticsDate = this.$Utils.filterDate(data, 'YYYY-MM-DD')
       localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
-      this.getApiData()
     },
 
     /**
@@ -454,7 +447,8 @@ export default {
     showDetail (row) {
       this.detailData = row
       this.financeReconVisible = true
-    }
+    },
+    handleSuccess () {}
   },
   components: { FinanceReconDialog }
 }

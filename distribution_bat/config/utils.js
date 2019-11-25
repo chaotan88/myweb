@@ -25,15 +25,19 @@ module.exports.global = {
 switch (process.env.NODE_ENV) {
   case 'production':
     module.exports.domain = { // 正式环境
-      ROOT_API: 'https://120.77.210.28/behinddistribute/distribute/',
-      ROOT_PUBLIC: 'https://120.77.210.28/behinddistribute/',
+      //ROOT_API: 'https://120.77.210.28/behinddistribute/distribute/',
+      //ROOT_PUBLIC: 'https://120.77.210.28/behinddistribute/',
+	   ROOT_API: 'http://passpay.andes-hub.com/behinddistribute/distribute/',    // 测试服
+	 ROOT_PUBLIC: 'http://passpay.andes-hub.com/behinddistribute/',
       ROOT_IMG: 'https://120.77.210.28/'
     }
     break
   case 'testing':
     module.exports.domain = { // 测试环境
-      ROOT_API: 'https://120.77.210.28/behinddistribute/distribute/',    // 测试服
-      ROOT_PUBLIC: 'https://120.77.210.28/behinddistribute/',            // 测试服 - 登录
+      //ROOT_API: 'https://120.77.210.28/behinddistribute/distribute/',    // 测试服
+      //ROOT_PUBLIC: 'https://120.77.210.28/behinddistribute/',            // 测试服 - 登录
+	  ROOT_API: 'http://passpay.andes-hub.com/behinddistribute/distribute/',    // 测试服
+	 ROOT_PUBLIC: 'http://passpay.andes-hub.com/behinddistribute/',            // 测试服 - 登录
       ROOT_IMG: 'https://120.77.210.28/',
     }
     break

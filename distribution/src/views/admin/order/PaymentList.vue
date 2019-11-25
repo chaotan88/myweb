@@ -184,13 +184,16 @@ export default {
         this.pageType = ''
         break
       case 'examine':
-        this.pageType = 3
-        break
-      case 'pass':
         this.pageType = 1
         break
-      case 'reject':
+      case 'pass':
         this.pageType = 2
+        break
+      case 'reject':
+        this.pageType = 3
+        break
+      case 'finished':
+        this.pageType = 5
         break
     }
     this.copyFormData = this.$Utils.deepCopy(this.formData)
@@ -216,57 +219,49 @@ export default {
      */
     getListData (type) {
       this.tableData = [{}]
-    //   let url = ''
-    //   if (!type) {
-    //     url = '@ROOT_API/distributeApplyManage/payAuditList'
-    //     this.loading = true
-    //   } else {
-    //     url = 'distributeApplyManage/exportPayAuditList'
-    //   }
-    //   let data = {
-    //     start: type ? 1 : this.pageData.currentPage,   // 是 int 当前页
-    //     pageSize: type ? this.pageData.total : this.pageData.pageSize,    // 是 int 每页条数
-    //     condition: this.formData.condition,            // 否 Sting 查询条件
-    //     phone: this.formData.phone,                    // 否 String  电话号码
-    //     cardName: this.formData.cardName,              // 否 Sting 会员姓名
-    //     applyNo: this.formData.applyNo,                // 否 Sting 申请编号
-    //     idCard: this.formData.idCard,                  // 否 Sting 身份证号
-    //     payAmountBegin: this.formData.agencyFeeStart,  // 否 String  应付金额起始值
-    //     payAmountEnd: this.formData.agencyFeeEnd,      // 否 String  应付金额结束值
-    //     applyTimeBeign: this.formData.applyTimeStart ? this.$Utils.filterDate(this.formData.applyTimeStart, 'YYYY-MM-DD') : '',      // 否 String  申请时间起始值
-    //     applyTimeEnd: this.formData.applyTimeEnd ? this.$Utils.filterDate(this.formData.applyTimeEnd, 'YYYY-MM-DD') : '',        // 否 String  申请时间结束值
-    //     payStatus: this.pageType || this.formData.payStatus    // 否 String  支付状态（0:未支付，1：已支付，2:支付失败，3：付款审核中）
-    //     // payAuditStatus: this.pageType                  // 否 String  支付审核状态（0未审核，1审核通过，2审核不通过）
-    //   }
-    //   if (!type) {
-    //     this.$http.post(url, data).then((res) => {
-    //       let resData = res.data
-    //       if (parseInt(resData.status) !== 1) {
-    //         this.$message({
-    //           message: resData.msg,
-    //           type: 'error',
-    //           duration: 1500
-    //         })
-    //         this.tableData = []
-    //         this.pageData.total = 0
-    //         return false
-    //       }
-    //       let results = resData.data
-    //       this.pageData.total = results.total
-    //       results.list.forEach((row) => {
-    //         row.paymentVoucher = row.paymentVoucher ? row.paymentVoucher.split(',') : row.paymentVoucher ? [row.paymentVoucher] : []
-    //       })
-    //       this.tableData = results.list
-    //     }).finally(() => {
-    //       this.loading = false
-    //     })
-    //   } else {
-    //     let filterParams = []
-    //     for (let key in data) {
-    //       filterParams.push(key + '=' + data[key])
-    //     }
-    //     window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
-    //   }
+      let url = ''
+      if (!type) {
+        url = '@ROOT_API/meal/getSetMealOrderList'
+        this.loading = true
+      } else {
+        url = 'meal/exportSetMealOrderList'
+      }
+      let data = {
+        start: type ? 1 : this.pageData.currentPage,
+        pageSize: type ? this.pageData.total : this.pageData.pageSize,
+        condition: this.formData.condition,
+        phone: this.formData.phone,
+        orderStatus: this.pageType || this.formData.payStatus
+      }
+      if (!type) {
+        this.$http.post(url, data).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            this.tableData = []
+            this.pageData.total = 0
+            return false
+          }
+          let results = resData.data
+          this.pageData.total = results.total
+          // results.list.forEach((row) => {
+          //   row.paymentVoucher = row.paymentVoucher ? row.paymentVoucher.split(',') : row.paymentVoucher ? [row.paymentVoucher] : []
+          // })
+          this.tableData = results.list
+        }).finally(() => {
+          this.loading = false
+        })
+      } else {
+        let filterParams = []
+        for (let key in data) {
+          filterParams.push(key + '=' + data[key])
+        }
+        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+      }
     },
 
     /**

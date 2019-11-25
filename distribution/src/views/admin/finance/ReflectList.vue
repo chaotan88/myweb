@@ -27,8 +27,8 @@
 
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="cardName" label="推广大使手机" min-width="100">
-          <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
+        <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
+          <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="customerPhone" label="推广大使身份" min-width="120">
           <template slot-scope="scope">{{scope.row.disRuleName | filterEmpty}}</template>

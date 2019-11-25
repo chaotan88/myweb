@@ -12,6 +12,10 @@ import '../static/css/base.css'
 // Vue.use(vueSwiper)
 import carousel from '@/views/components/carousel.vue'
 import config from '@/views/datas/config';
+import Video from 'video.js/dist/video.js'
+import 'video.js/dist/video-js.css'
+
+Vue.prototype.$video = Video
 Vue.component('carousel', carousel)
 Vue.use(Elementui)
 Vue.config.productionTip = false

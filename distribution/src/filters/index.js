@@ -424,10 +424,10 @@ module.exports = {
     let res = ''
     switch (parseInt(val)) {
       case 1:
-        res = '正常会员'
+        res = '线上升级'
         break
       case 2:
-        res = '特批会员'
+        res = '手动升级'
         break
     }
     return res

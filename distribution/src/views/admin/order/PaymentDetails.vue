@@ -42,8 +42,8 @@
           <el-table-column prop="currentIdentity" label="套餐状态">
             <template slot-scope="scope">{{scope.row.currentIdentity | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="applyIdentity" label="套餐价">
-            <template slot-scope="scope">{{scope.row.applyIdentity | filterEmpty}}</template>
+          <el-table-column prop="orderIdentity" label="套餐价">
+            <template slot-scope="scope">{{scope.row.orderIdentity | filterEmpty}}</template>
           </el-table-column>
           <div slot="empty">
             <no-data></no-data>
@@ -58,7 +58,7 @@
           </tr>
           <tr>
             <td>买家手机号：</td>
-            <td>{{detailsData.applyIdentity | filterEmpty}}</td>
+            <td>{{detailsData.orderIdentity | filterEmpty}}</td>
           </tr>
         </table>
         <gray-title title="物流信息" class="ta-l"></gray-title>
@@ -113,7 +113,7 @@ export default {
         checkResult: '2',       // 审核结果
         description: ''
       },
-      applyId: '',              // 申请id
+      orderId: '',              // 申请id
       detailsData: {},          // 详情数据
       fxUserInfo: {},           // 用户信息
       passVisible: false,        // 审核弹窗
@@ -121,7 +121,7 @@ export default {
     }
   },
   mounted () {
-    this.applyId = parseInt(this.$route.query.id) || ''
+    this.orderId = parseInt(this.$route.query.id) || ''
     this.fxUserInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
     this.getDetails()
   },
@@ -130,9 +130,9 @@ export default {
      * 详情
      */
     getDetails () {
-      this.$http.get('@ROOT_API/distributeApplyManage/applyInfo', {
+      this.$http.get('@ROOT_API/meal/getSetMealOrderDetails', {
         params: {
-          applyId: this.applyId          // long  申请ID
+          orderId: this.orderId          // long  申请ID
         }
       }).then(res => {
         let resData = res.data
