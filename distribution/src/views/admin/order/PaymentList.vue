@@ -20,32 +20,32 @@
     <!-- 主体 -->
     <template slot="main">
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="applyNo" label="订单编号">
-          <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
+        <el-table-column prop="orderNo" label="订单编号" min-width="220">
+          <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="phone" label="套餐名称" min-width="120">
+        <el-table-column prop="setMealName" label="套餐名称" min-width="150">
+          <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="setMealNumber" label="套餐编号" width="220">
+          <template slot-scope="scope">{{scope.row.setMealNumber | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="orderStatus" label="订单状态">
+          <template slot-scope="scope">{{scope.row.orderStatus | filterOrderStatus}}</template>
+        </el-table-column>
+        <el-table-column prop="phone" label="买家手机号" width="150">
           <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="applyTime" label="套餐编号" width="180">
-          <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
-        </el-table-column>
-        <el-table-column prop="currentIdentity" label="订单状态">
-          <template slot-scope="scope">{{scope.row.currentIdentity | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="applyIdentity" label="买家手机号">
-          <template slot-scope="scope">{{scope.row.applyIdentity | filterEmpty}}</template>
-        </el-table-column>
-        <el-table-column prop="payAmount" label="收货人姓名">
-          <template slot-scope="scope">{{scope.row.payAmount | filterMoney}}</template>
+        <el-table-column prop="customerName" label="收货人姓名" width="150">
+          <template slot-scope="scope">{{scope.row.customerName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="payStatus" label="支付状态">
           <template slot-scope="scope">{{scope.row.payStatus | filterPayStatus(scope.row.payType)}}</template>
         </el-table-column>
-        <el-table-column prop="payType" label="实收款">
-          <template slot-scope="scope">{{scope.row.payType | filterPayType}}</template>
+        <el-table-column prop="orderAmount" label="实收款">
+          <template slot-scope="scope">{{scope.row.orderAmount | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="payType" label="下单时间">
-          <template slot-scope="scope">{{scope.row.payType | filterDate}}</template>
+        <el-table-column prop="orderTime" label="下单时间" width="220">
+          <template slot-scope="scope">{{scope.row.orderTime | filterDate}}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
@@ -54,8 +54,8 @@
                 <span class="d-b va-m">...</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-if="parseInt(scope.row.payStatus) === 3">
-                  <div @click="handleExamineBefore(scope.row)"><i class="icon el-icon-edit"></i>审核</div>
+                <el-dropdown-item><!-- v-if="parseInt(scope.row.orderStatus) === 2"-->
+                  <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id}})"><i class="icon el-icon-edit"></i>发货</div>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id}})"><i class="icon el-icon-view"></i>详情</div>
@@ -81,11 +81,6 @@
       </el-pagination>
     </template>
 
-    <template slot="other">
-      <!-- 付款审核 -->
-      <payment-examine :visible="examineVisible" :examineData="examineData" @close="examineVisible = false" @success="handleExamineSuccess"></payment-examine>
-
-    </template>
   </common-tpl>
 </template>
 
@@ -148,10 +143,7 @@ export default {
         {label: '付款审核中', value: 2},
         {label: '支付失败', value: 3}
       ],
-      copyCheckForm: {},           // 拷贝数据
       copyFormData: '',
-      examineData: {},             // 审核数据
-      examineVisible: false,       // 审核弹框
       pageData: {                  // 分页
         currentPage: 1,
         pageSize: 10,
@@ -207,8 +199,6 @@ export default {
       if (getPagetype && parseInt(getPagetype) === this.pageType || getPagetype === this.pageType) this.formData = res
     })
 
-    this.copyCheckForm = this.$Utils.deepCopy(this.checkForm)
-
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
     this.getListData()
   },
@@ -262,23 +252,6 @@ export default {
         }
         window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
       }
-    },
-
-    /**
-     * 审核前操作
-     */
-    handleExamineBefore (row) {
-      this.examineVisible = true
-      this.checkForm = this.$Utils.deepCopy(this.copyCheckForm)
-      this.examineData = row
-    },
-
-    /**
-     * 审核成功
-     */
-    handleExamineSuccess () {
-      this.examineVisible = false
-      this.getListData()
     },
 
     /**

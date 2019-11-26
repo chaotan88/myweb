@@ -10,6 +10,7 @@ import NoData from '@/components/admin/NoData'                        // 暂无�
 import GrayTitle from '@/components/admin/GrayTitle'                  // 后台灰色标题
 import ThumbnailComponent from '@/components/public/ThumbnailComponent' // 缩略图组件
 import UploadComponent from '@/components/public/UploadComponent'       // 上传组件
+import DateSelect from '@/components/public/DateSelect'       // 上传组件
 
 Vue.extend({
   template: HighSearch
@@ -60,3 +61,8 @@ Vue.extend({
   template: GrayTitle
 })
 Vue.component('gray-title', GrayTitle)
+
+Vue.extend({
+  template: DateSelect
+})
+Vue.component('date-select', DateSelect)

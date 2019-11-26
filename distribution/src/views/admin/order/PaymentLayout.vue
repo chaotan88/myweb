@@ -29,18 +29,18 @@ export default {
      * 获取统计数据
      */
     getStatistics () {
-      this.$http.get('@ROOT_API/distributeApplyManage/applyListStatistics', {}).then((res) => {
-        let resData = res.data
-        if (parseInt(resData.status) !== 1) {
-          this.$message({
-            message: resData.msg,
-            type: 'error',
-            duration: 1500
-          })
-          return false
-        }
-        this.statistics = resData.data
-      })
+      // this.$http.get('@ROOT_API/distributeApplyManage/applyListStatistics', {}).then((res) => {
+      //   let resData = res.data
+      //   if (parseInt(resData.status) !== 1) {
+      //     this.$message({
+      //       message: resData.msg,
+      //       type: 'error',
+      //       duration: 1500
+      //     })
+      //     return false
+      //   }
+      //   this.statistics = resData.data
+      // })
     }
   }
 }

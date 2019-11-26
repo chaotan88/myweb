@@ -89,17 +89,20 @@ module.exports = {
     if (!val && parseInt(val) !== 0) return emptyTips
     let res = ''
     switch (parseInt(val)) {
-      case 0:
-        res = '未支付'
-        break
       case 1:
-        res = '支付成功'
+        res = '未付款'
         break
       case 2:
-        res = '支付失败'
+        res = '已付款'
         break
       case 3:
+        res = '已退款'
+        break
+      case 4:
         res = '付款审核中'
+        break
+      case 5:
+        res = '支付失败'
         break
     }
     return res
@@ -120,6 +123,20 @@ module.exports = {
         break
       case 3:
         res = '回退'
+        break
+    }
+    return res
+  },
+
+  filterMealStatus (val) {
+    if (!val) return emptyTips
+    let res = ''
+    switch (parseInt(val)) {
+      case 1:
+        res = '开启'
+        break
+      case 2:
+        res = '关闭'
         break
     }
     return res
@@ -464,6 +481,41 @@ module.exports = {
         break
       case 2:
         res = '女'
+        break
+    }
+    return res
+  },
+
+  filterOrderStatus (val) {
+    if (!val && parseInt(val) !== 0) return emptyTips
+    let res = ''
+    switch (parseInt(val)) {
+      case 1:
+        res = '待付款'
+        break
+      case 2:
+        res = '待发货'
+        break
+      case 3:
+        res = '待收货'
+        break
+      case 4:
+        res = '待评价'
+        break
+      case 5:
+        res = '已完成'
+        break
+      case 6:
+        res = '平台关闭'
+        break
+      case 7:
+        res = '取消订单'
+        break
+      case 8:
+        res = '退款中'
+        break
+      case 9:
+        res = '已退款'
         break
     }
     return res

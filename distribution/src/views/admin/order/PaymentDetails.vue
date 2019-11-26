@@ -1,6 +1,6 @@
 <!-- 共用详情页 -->
 <template>
-  <common-tpl class="manage-public-detail-wrap" footer back>
+  <common-tpl class="order-detail-wrap" footer back>
     <!-- 主体内容 -->
     <template slot="main">
       <div class="goods-common-details">
@@ -8,42 +8,44 @@
         <table>
           <tr>
             <td>订单状态：</td>
-            <td>{{detailsData.phone | filterEmpty}}</td>
+            <td>{{detailsData.orderStatus | filterOrderStatus}}</td>
           </tr>
           <tr>
             <td>订单号：</td>
-            <td>{{detailsData.currentIdentity}}</td>
+            <td>{{detailsData.orderNo | filterEmpty}}</td>
           </tr>
           <tr>
             <td>下单时间：</td>
-            <td>{{detailsData.cardType | filterCardType}}</td>
+            <td>{{detailsData.orderTime | filterDate}}</td>
           </tr>
           <tr>
             <td>支付时间：</td>
-            <td>{{detailsData.cardName | filterEmpty}}</td>
+            <td>{{detailsData.payTime | filterDate}}</td>
           </tr>
         </table>
 
         <el-table border :data="tableData" style="width: 100%" :summary-method="getSummaries" show-summary>
           <el-table-column
-            prop="id"
+            type="index"
             label="序号"
             width="180">
           </el-table-column>
-          <el-table-column prop="applyNo" label="主图">
-            <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
+          <el-table-column prop="mainImageUrl" label="主图">
+            <template slot-scope="scope">
+              <img :src="scope.row.mainImageUrl | filterImgUrl">
+            </template>
           </el-table-column>
-          <el-table-column prop="applyTime" label="套餐编码" width="180">
-            <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
+          <el-table-column prop="setMealNumber" label="套餐编码" width="180">
+            <template slot-scope="scope">{{scope.row.setMealNumber | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="phone" label="套餐名称" min-width="120">
-            <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
+          <el-table-column prop="setMealName" label="套餐名称" min-width="120">
+            <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="currentIdentity" label="套餐状态">
-            <template slot-scope="scope">{{scope.row.currentIdentity | filterEmpty}}</template>
+          <el-table-column prop="setMealStatus" label="套餐状态">
+            <template slot-scope="scope">{{scope.row.setMealStatus | filterMealStatus}}</template>
           </el-table-column>
-          <el-table-column prop="orderIdentity" label="套餐价">
-            <template slot-scope="scope">{{scope.row.orderIdentity | filterEmpty}}</template>
+          <el-table-column prop="setMealPrice" label="套餐价">
+            <template slot-scope="scope">{{scope.row.setMealPrice | filterMoney}}</template>
           </el-table-column>
           <div slot="empty">
             <no-data></no-data>
@@ -54,38 +56,56 @@
         <table>
           <tr>
             <td>买家姓名：</td>
-            <td>{{detailsData.applyNo | filterEmpty}}</td>
+            <td>{{detailsData.userName | filterEmpty}}</td>
           </tr>
           <tr>
             <td>买家手机号：</td>
-            <td>{{detailsData.orderIdentity | filterEmpty}}</td>
+            <td>{{detailsData.phone | filterEmpty}}</td>
           </tr>
         </table>
         <gray-title title="物流信息" class="ta-l"></gray-title>
         <table>
           <tr>
             <td>收件人：</td>
-            <td>{{detailsData.payAmount | filterEmpty}}</td>
+            <td v-if="detailsData.orderStatus === 2">
+              <el-input v-model="formData.customerName" clearable></el-input>
+            </td>
+            <td v-else>{{detailsData.customerName | filterEmpty}}</td>
           </tr>
           <tr>
             <td>联系方式：</td>
-            <td>{{detailsData.payType | filterEmpty}}</td>
+            <td v-if="detailsData.orderStatus === 2">
+              <el-input v-model="formData.customerPhone" clearable></el-input>
+            </td>
+            <td v-else>{{detailsData.customerPhone | filterEmpty}}</td>
           </tr>
           <tr>
             <td>收件人地址：</td>
-            <td>{{detailsData.payStatus | filterPayStatus(detailsData.payType)}}</td>
+            <td v-if="detailsData.orderStatus === 2">
+              <el-input v-model="formData.customerAddress" clearable></el-input>
+            </td>
+            <td v-else>{{detailsData.customerAddress | filterEmpty}}</td>
           </tr>
-          <tr v-if="parseInt(detailsData.payStatus) === 2">
+          <tr>
             <td>发货时间：</td>
-            <td>{{detailsData.payAuditInfo | filterEmpty}}</td>
+            <td v-if="detailsData.orderStatus === 2">
+              {{new Date() | filterDate}}
+            </td>
+            <td v-else>{{detailsData.sendGoodsTime | filterDate}}</td>
           </tr>
           <tr>
             <td>快递类型：</td>
-            <td>{{detailsData.payStatus | filterPayStatus(detailsData.payType)}}</td>
+            <td v-if="detailsData.orderStatus === 2">
+              <el-input v-model="formData.logisticsName" clearable></el-input>
+            </td>
+            <td v-else>{{detailsData.logisticsName | filterEmpty}}</td>
           </tr>
-          <tr v-if="parseInt(detailsData.payStatus) === 2">
+          <tr>
             <td>物流单号：</td>
-            <td>{{detailsData.payAuditInfo | filterEmpty}}</td>
+            <td v-if="detailsData.orderStatus === 2">
+              <el-input v-model="formData.logisticsNumber" clearable></el-input>
+            </td>
+            <td v-else>{{detailsData.logisticsNumber | filterEmpty}}</td>
           </tr>
         </table>
 
@@ -93,13 +113,39 @@
     </template>
 
     <template slot="other">
+      <!-- 添加/编辑 -->
+      <el-dialog class="dialog-left"
+        title="发货"
+        :visible.sync="passVisible"
+        width="500px">
+        <div class="ta-l view-authinfo-wrap">
+          <template>
+            <el-form :model="addForm" :rules="rules" ref="addForm" label-position="right" label-width='120px'>
+              <div>{{formData.customerPhone}}&nbsp;&nbsp;{{formData.customerName}}</div>
+              <div>{{formData.customerAddress}}</div>
+              <el-form-item inline label='快递类型：' prop='useType' class="address-wrap">
+                <el-select v-model="addForm.useType" size="medium" class="year-box"
+                  placeholder="请选择">
+                  <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in uses"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item inline label='快递单号：' prop='description'>
+                <el-input style="width: 200px;" placeholder='限20个字符,不含特殊字符' v-model="addForm.description"></el-input>
+              </el-form-item>
+              <div class="ta-c btn-wrap">
+                <el-button type="primary" class='confirm-btn' @click="submitForm('addForm')">确定</el-button>
+              </div>
+            </el-form>
+          </template>
+        </div>
+      </el-dialog>
     </template>
 
     <!-- 底部 -->
     <template slot="footer">
-      <!-- <template v-if="parseInt(detailsData.payStatus) === 1">
-        <el-button type="primary" @click="passVisible = true">审核</el-button>
-      </template> -->
+      <template v-if="parseInt(detailsData.orderStatus) === 2">
+        <el-button type="primary" @click="passVisible = true">发货</el-button>
+      </template>
     </template>
   </common-tpl>
 </template>
@@ -108,16 +154,22 @@
 export default {
   data () {
     return {
-      // 审核结果
       formData: {
-        checkResult: '2',       // 审核结果
-        description: ''
+        customerName: '',
+        customerPhone: '',
+        customerAddress: '',
+        logisticsName: '',
+        logisticsNo: '',
+        logisticsNumber: ''
       },
+      addForm: {},
+      uses: [],
+      rules: {},
       orderId: '',              // 申请id
       detailsData: {},          // 详情数据
       fxUserInfo: {},           // 用户信息
-      passVisible: false,        // 审核弹窗
-      tableData: [{}]
+      passVisible: false,        // 发货弹窗
+      tableData: []
     }
   },
   mounted () {
@@ -146,15 +198,20 @@ export default {
         }
         let results = resData.data
         if (results) {
-          if (results.paymentVoucher) {
-            results.paymentVoucher = results.paymentVoucher.split(',')
-          } else {
-            results.paymentVoucher = []
-          }
-          this.detailsData = resData.data
+          this.tableData = []
+          this.tableData.push({
+            mainImageUrl: results.mainImageUrl,
+            setMealNumber: results.setMealNumber,
+            setMealName: results.setMealName,
+            setMealStatus: results.setMealStatus,
+            setMealPrice: results.setMealPrice
+          })
+          this.detailsData = results
+          this.detailsData.orderStatus = 2
         }
       })
     },
+    submitForm () {},
     getSummaries (param) {
       const { columns, data } = param
       const sums = []
@@ -186,16 +243,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.manage-public-detail-wrap{
+.order-detail-wrap{
   
   .admin-gray-title{
     margin-bottom: 0;
   }
 
   .goods-common-details{
-
-    .title{
-    }
 
     table{
       width: 100%;
@@ -245,6 +299,9 @@ export default {
         }
       }
     }
+    .el-input {
+      width: 200px;
+    }
   }
   .el-table {
     margin-bottom: 20px;
@@ -252,10 +309,13 @@ export default {
 }
 </style>
 <style lang="less">
-.manage-public-detail-wrap{
+.order-detail-wrap{
   .el-dialog {
     .el-dialog__body {
       padding-bottom: 0;
+      .btn-wrap {
+        padding-bottom: 20px;
+      }
     }
   }
 }

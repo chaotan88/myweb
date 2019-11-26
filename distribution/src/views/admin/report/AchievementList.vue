@@ -5,16 +5,20 @@
     <template slot="main">
 
       <!-- 时间 -->
-      <el-form ref="form" :rules="rules" :model="formData.data" label-position="right" class="search-form" label-width="110px">
-        <div class="d-ib pos-a" style="width: 150px;">
+      <!-- <el-form ref="form" :rules="rules" :model="formData.data" label-position="right" class="search-form" label-width="110px"> -->
+        <!-- <div class="d-ib pos-a" style="width: 150px;">
           <el-select v-model="formData.curYear" size="medium" class="year-box" placeholder="选择年份" @change="selectYear" clearable>
             <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in yearArr"></el-option>
           </el-select>
-        </div>
-        <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
+        </div> -->
+        <!-- <div class="date-tabs">
+          <span v-for="(dt, index) in dateTabs" :key="index" @click="dateTypeChange(dt)" :class="selectDateType === dt.value ? 'dt-active' : ''">{{dt.label}}</span>
+        </div> -->
+        <!-- <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
           <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleFilterDate"></el-date-picker>
-        </el-form-item>
-      </el-form>
+        </el-form-item> -->
+      <!-- </el-form> -->
+      <date-select @dateChange="dateChange"></date-select>
 
       <!-- 统计 -->
       <div class="statistics-cen">
@@ -33,51 +37,10 @@
           </dd>
         </dl>
 
-        <template v-if="formData.accountType === 'bonus' || formData.accountType === 'cash'">
-          <dl class="ta-c fl-l cursor-p">
-            <dt class="d-ib va-m">
-              <svg class="icon icon-yueshengyuzonge" aria-hidden="true">
-                <use xlink:href="#icon-yueshengyuzonge"></use>
-              </svg>
-            </dt>
-            <dd class="d-ib va-m ta-c">
-              <h3 class="fw-n">
-                <template v-if="formData.accountType === 'bonus'">
-                  <span>{{statisticsData.sumBonusPoints | filterEmpty}}</span>
-                </template>
-                <template v-if="formData.accountType === 'cash'">
-                  <span>{{statisticsData.sumCashPoints | filterEmpty}}</span>
-                </template>
-              </h3>
-              <template v-if="formData.accountType === 'bonus'">
-                <h4 class="fw-n">消费积分剩余总数</h4>
-              </template>
-              <template v-if="formData.accountType === 'cash'">
-                <h4 class="fw-n">通用积分剩余总数</h4>
-              </template>
-            </dd>
-          </dl>
-        </template>
       </div>
 
       <div class="statistics-cen">
         <div class="date-and-chart-content">
-        <div class="statistics-revenue-t">
-          <!-- 时间 -->
-          <el-form ref="form" label-position="right" class="search-form" label-width="110px">
-            <div class="d-ib pos-a" style="width: 150px;">
-              <el-select v-model="formData.chartYear" size="medium" class="year-box" placeholder="选择年份" @change="selectChartYear" clearable>
-                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in chartYearArr"></el-option>
-              </el-select>
-            </div>
-            <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
-              <el-date-picker v-model.trim="formData.chartStatisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleChartFilterDate"></el-date-picker>
-            </el-form-item>
-          </el-form>
-        </div>
-        <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
-          <no-data style="padding: 100px 0;"></no-data>
-        </div> -->
         <div id="line-chart-achieve"></div>
       </div>
       </div>
@@ -97,8 +60,8 @@
           <div class="d-ib" style="width: 150px;">
             <el-select class="full-w" v-model="formData.payType" @change="subTypehandle()" placeholder="全部支付方式">
               <el-option label="全部支付方式" value=""></el-option>
-              <el-option label="微信未付" value="1"></el-option>
-              <el-option label="支付宝支付" value="2"></el-option>
+              <el-option label="微信未付" :value=1></el-option>
+              <el-option label="支付宝支付" :value=2></el-option>
             </el-select>
           </div>
         </div>
@@ -250,10 +213,8 @@ export default {
      * 获取统计数据
      */
     getStatisticsData () {
-      this.$http.post('@ROOT_API/buySellStaticReoprtController/getTotalPerformaceStatic', {
-        customerPhone: this.formData.customerPhone,   // 否 string  客户号码
-        ...this.handleDateArgs(),
-        payType: this.formData.payType                // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
+      this.$http.post('@ROOT_API/achievement/getOrderAchievementForPay', {
+        ...this.handleDateArgs()
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -264,7 +225,19 @@ export default {
           })
           return false
         }
-        this.statisticsData = resData.data
+        let { data } = resData
+        let sum = 0
+        data.forEach((da) => {
+          if (da.payType === 1) {
+            this.statisticsData.grabWxPayAmount = da.orderAmountSum
+          } else if (da.payType === 2) {
+            this.statisticsData.grabAliPayAmount = da.orderAmountSum
+          }
+          if (!isNaN(parseFloat(da.orderAmountSum))) {
+            sum += parseFloat(da.orderAmountSum)
+          }
+        })
+        this.statisticsData.grabTotalAmount = sum
       })
     },
 
@@ -274,13 +247,13 @@ export default {
     getListData (type) {
       let url = ''
       if (!type) {
-        url = '@ROOT_API/buySellStaticReoprtController/getGoodsPerformaceStatic'
+        url = '@ROOT_API/achievement/getOrderAchievementForUmbrella'
         this.loading = true
       } else {
-        url = 'buySellStaticReoprtController/exportBuySellStatic'
+        url = 'achievement/exportOrderAchievementForUmbrella'
       }
       let data = {
-        customerPhone: this.formData.customerPhone,
+        phone: this.formData.customerPhone,
         ...this.handleDateArgs(),
         payType: this.formData.payType
       }
@@ -358,57 +331,65 @@ export default {
      */
     handleDateArgs () {
       let res = {
-        beginDate: '',
-        endDate: ''
+        startTime: '',
+        endTime: ''
       }
       if (this.formData.statisticsDate) {
-        res.beginDate = this.$Utils.filterDate(this.formData.statisticsDate[0], 'YYYY-MM-DD')
-        res.endDate = this.$Utils.filterDate(this.formData.statisticsDate[1], 'YYYY-MM-DD')
+        res.startTime = this.$Utils.filterDate(this.formData.statisticsDate[0], 'YYYY-MM-DD')
+        res.endTime = this.$Utils.filterDate(this.formData.statisticsDate[1], 'YYYY-MM-DD')
       }
       return res
     },
 
-    /**
-     * 过滤选择时间
-     */
-    handleFilterDate (data) {
-      this.formData.curYear = ''
-      this.getApiData()
-    },
-
-    handleChartFilterDate (data) {
-      this.formData.chartYear = ''
-      this.getLineChartData()
-    },
-
     getLineChartData () {
-      let data = [
-        {
-          name: '1月',
-          value: 10000
-        },
-        {
-          name: '2月',
-          value: 15000
-        },
-        {
-          name: '3月',
-          value: 18000
-        },
-        {
-          name: '4月',
-          value: 20000
-        },
-        {
-          name: '5月',
-          value: 25000
-        },
-        {
-          name: '6月',
-          value: 28000
+      this.$http.post('@ROOT_API/achievement/getOrderAchievementForMonth', {
+        ...this.handleDateArgs()
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
         }
-      ]
-      this.buildChart(data)
+        let { data } = resData
+        let newData = []
+        data.forEach((da) => {
+          newData.push({
+            name: da.orderTimeMonth,
+            value: da.orderAmountSum
+          })
+        })
+        this.buildChart(newData)
+      })
+      // let data = [
+      //   {
+      //     name: '1月',
+      //     value: 10000
+      //   },
+      //   {
+      //     name: '2月',
+      //     value: 15000
+      //   },
+      //   {
+      //     name: '3月',
+      //     value: 18000
+      //   },
+      //   {
+      //     name: '4月',
+      //     value: 20000
+      //   },
+      //   {
+      //     name: '5月',
+      //     value: 25000
+      //   },
+      //   {
+      //     name: '6月',
+      //     value: 28000
+      //   }
+      // ]
     },
     buildChart (data) {
       let chart = echarts.init(document.getElementById('line-chart-achieve'))
@@ -474,6 +455,11 @@ export default {
         this.pageData.currentPage = page
         this.$router.push({query: {page: this.pageData.currentPage}})
       }
+    },
+    dateChange (params) {
+      this.formData.statisticsDate = params
+      this.getStatisticsData()
+      this.getLineChartData()
     }
   }
 }

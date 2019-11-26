@@ -55,7 +55,7 @@
           <template slot-scope="scope">
             <i class="required-icon-on-table" v-if="scope.row.rand === 4 || scope.row.rand === 5"></i>
             <el-input v-if="scope.row.rand === 4 || scope.row.rand === 5"
-              v-model="scope.row.needIdentityAmount" clearable  placeholder="限20个字符"  @change="colChange('rankName', scope.$index)"></el-input>
+              v-model="scope.row.feeDescription" clearable  placeholder="限20个字符"  @change="colChange('rankName', scope.$index)"></el-input>
             <span v-else>--</span>
           </template>
         </el-table-column>
@@ -113,7 +113,7 @@ export default {
       tableData: [],            // 列表数据
       loading: false,           // 加载loading
       formData: {
-        ruleName: '',           // 规则名称
+        rankName: '',           // 规则名称
         agentLowness: '',       // 价格低
         agentHigh: ''           // 价格高
       },
@@ -167,6 +167,13 @@ export default {
           return false
         }
         this.tableData = resData.data
+        this.tableData.forEach((da) => {
+          if (da.ruleIcon) {
+            da['ruleIconList'] = [
+              { url: da.ruleIcon }
+            ]
+          }
+        })
       }).finally(() => {
         this.loading = false
       })
@@ -182,16 +189,18 @@ export default {
           saveData.push({
             id: da.id,
             rand: da.rand,
-            ruleName: da.rankName,
-            ruleIcon: da.ruleIcon
+            rankName: da.rankName,
+            ruleIcon: da.ruleIcon,
+            ruleName: da.rankName
           })
         } else if (da.rand === 2) {
           saveData.push({
             id: da.id,
             rand: da.rand,
-            ruleName: da.rankName,
+            rankName: da.rankName,
             ruleIcon: da.ruleIcon,
-            setMealAmount: parseFloat(da.setMealAmount)
+            setMealAmount: parseFloat(da.setMealAmount),
+            ruleName: da.rankName
           })
           if (!da.setMealAmount) {
             this.errorArr.push(`第${index + 1}行购买套餐额为空！`)
@@ -203,9 +212,10 @@ export default {
           saveData.push({
             id: da.id,
             rand: da.rand,
-            ruleName: da.rankName,
+            rankName: da.rankName,
             ruleIcon: da.ruleIcon,
-            needIdentityAmount: parseFloat(da.needIdentityAmount)
+            needIdentityAmount: parseFloat(da.needIdentityAmount),
+            ruleName: da.rankName
           })
           if (!da.needIdentityAmount) {
             this.errorArr.push(`第${index + 1}行推荐推广大使数为空！`)
@@ -217,11 +227,12 @@ export default {
           saveData.push({
             id: da.id,
             rand: da.rand,
-            ruleName: da.rankName,
+            rankName: da.rankName,
             ruleIcon: da.ruleIcon,
-            feeDescription: da.feeDescription
+            feeDescription: da.feeDescription,
+            ruleName: da.rankName
           })
-          if (!da.needIdentityAmount) {
+          if (!da.feeDescription) {
             this.errorArr.push(`第${index + 1}行服务费为空！`)
           }
         }
