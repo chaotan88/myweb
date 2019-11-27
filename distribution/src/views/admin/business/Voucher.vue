@@ -6,7 +6,7 @@
       <!-- 高级搜索组件 -->
       <high-search @search="highSearch('form')" :textVisible = "false">
         <div class="pos-r" slot="search">
-          <el-input placeholder="输入推广大使手机" v-model.trim="formData.ruleName" @keyup.enter.native="searchHandle">
+          <el-input placeholder="输入推广大使手机" v-model.trim="formData.phone" @keyup.enter.native="searchHandle">
           </el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
@@ -67,22 +67,27 @@
       </div>
 
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="ruleName" label="推广大使手机">
-          <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
+        <el-table-column prop="phone" label="推广大使手机">
+          <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="agentFee" label="代金券金额">
-          <template slot-scope="scope">{{scope.row.agentFee | filterMoney}}</template>
+        <el-table-column prop="amount" label="代金券金额">
+          <template slot-scope="scope">{{scope.row.amount | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="consumePointRate" label="领取时间">
-          <template slot-scope="scope">{{scope.row.consumePointRate | filterEmpty('%')}}</template>
+        <el-table-column prop="createTime" label="领取时间">
+          <template slot-scope="scope">{{scope.row.createTime | filterDate}}</template>
         </el-table-column>
-        <el-table-column prop="cashRate" label="到期时间">
-          <template slot-scope="scope">{{scope.row.cashRate | filterEmpty('%')}}</template>
-        </el-table-column>
-        <el-table-column prop="directSubName" label="使用状态">
+        <el-table-column prop="nowTime" label="到期时间">
           <template slot-scope="scope">
-            <template v-if="parseInt(scope.row.rand) === 0">{{'' | filterEmpty}}</template>
-            <template v-else>{{scope.row.directSubName | filterEmpty}}</template>
+            {{new Date(scope.row.nowTime - scope.row.effectiveEndTime) | filterDate}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="couponStatus" label="使用状态">
+          <template slot-scope="scope">
+            <template v-if="(scope.row.nowTime > scope.row.effectiveEndTime) && parseInt(scope.row.couponStatus) === 0">已过期</template>
+            <template v-else-if="(scope.row.nowTime < scope.row.effectiveEndTime) && parseInt(scope.row.couponStatus) === 0">未使用</template>
+            <template v-else-if="parseInt(scope.row.couponStatus) === 1">使用中</template>
+            <template v-else-if="parseInt(scope.row.couponStatus) === 2">已使用</template>
+            <template v-else>--</template>
           </template>
         </el-table-column>
         <div slot="empty">
@@ -134,7 +139,7 @@
           <template>
             <el-form :model="addForm" :rules="rules" ref="addForm" label-position="right" label-width='120px'>
               <el-form-item inline label='赠送额度：' prop='amount'>
-                <el-input class='inp-name' placeholder='精确到百分位,限10个字符' v-model="addForm.amount"></el-input>
+                <el-input class='inp-name' placeholder='精确到百分位,限10个字符' v-model="addForm.amount" @change="inpBlur('amount')"></el-input>
               </el-form-item>
               <el-form-item inline label='用途：' prop='useType' class="address-wrap">
                 <el-select v-model="addForm.useType" size="medium" class="year-box"
@@ -186,11 +191,7 @@ export default {
       tableData: [],            // 列表数据
       loading: false,           // 加载loading
       formData: {
-        amount: '',
-        useType: '',
-        duration: '',
-        description: '',
-        status: 2
+        phone: ''
       },
       copyFormData: {},         // 拷贝数据
       deleteVisible: false,     // 删除弹框
@@ -246,7 +247,7 @@ export default {
     })
 
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
-    // this.getListData()
+    this.getListData()
     this.getVoucherList()
   },
   methods: {
@@ -254,7 +255,7 @@ export default {
      * 获取列表数据
      */
     getVoucherList () {
-      this.loading = true
+      // this.loading = true
       this.$http.post('@ROOT_API/coupon/getCouponList', {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
@@ -274,6 +275,30 @@ export default {
         let results = resData.data
         this.voucherALLList = results.list
         this.getShowVoucherList()
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    getListData () {
+      this.loading = true
+      this.$http.post('@ROOT_API/coupon/getCouponUserList', {
+        start: this.pageData.currentPage,
+        pageSize: this.pageData.pageSize,
+        phone: this.formData.phone
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          this.tableData = []
+          this.pageData.total = 0
+          return false
+        }
+        let results = resData.data
+        this.tableData = results.list
       }).finally(() => {
         this.loading = false
       })
@@ -299,6 +324,9 @@ export default {
         this.addDialogTitle = '添加代金券'
       }
       this.addDialogVisible = true
+      if (item) {
+        this.inpBlur('amount')
+      }
     },
     submitForm (formName) {
       let url = 'coupon/addCoupon'
@@ -373,7 +401,7 @@ export default {
           duration: 1000
         })
         this.deleteVisible = false
-        this.getListData()
+        this.getVoucherList()
       }).finally(() => {
         setTimeout(() => {
           this.confirmLoading = false
@@ -387,7 +415,7 @@ export default {
     },
 
     handleStop () {
-      this.updateCouponStatus(this.stopData.id, 1)
+      this.updateCouponStatus(this.stopData.id, 4)
     },
     updateCouponStatus (id, status) {
       if (!id || !status) return false
@@ -456,7 +484,7 @@ export default {
      * 自动补全百分位
      */
     inpBlur (type) {
-      this.$Utils.blurAutoCompletion(this.formData, type)
+      this.$Utils.blurAutoCompletion(this.addForm, type)
     },
 
     /**
@@ -486,7 +514,10 @@ export default {
         this.start += 1
         this.getShowVoucherList()
       } else {
-        console.log('没有下一页')
+        this.$message({
+          type: 'info',
+          message: '当前已是最后一页'
+        })
       }
     },
     toPre () {
@@ -494,7 +525,10 @@ export default {
         this.start -= 1
         this.getShowVoucherList()
       } else {
-        console.log('当前已经是第一页')
+        this.$message({
+          type: 'info',
+          message: '当前已是第一页'
+        })
       }
     },
     tabClick (tab) {

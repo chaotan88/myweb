@@ -18,7 +18,7 @@
                 @change="mealPriceChange"></el-input>
             </el-form-item>
             <el-form-item label="成本价：" prop="setMealCostPrice">
-              <el-input v-model="ruleForm.setMealCostPrice" placeholder="精确到百分位,限10个字符"></el-input>
+              <el-input v-model="ruleForm.setMealCostPrice" placeholder="精确到百分位,限10个字符" @change="inpBlur('setMealCostPrice')"></el-input>
             </el-form-item>
             <el-form-item label="简要说明：" prop="simpleDescription">
               <el-input v-model="ruleForm.simpleDescription" placeholder="限50个字符,不含特殊字符"></el-input>
@@ -262,7 +262,7 @@ export default {
       userInfo: {},             // 用户信息
       rules: {
         setMealName: [
-          { required: true, message: '请输入套餐', trigger: 'blur' },
+          { required: true, message: '请输入套餐名称', trigger: 'blur' },
           { max: 50, message: '长度在50个字符', trigger: 'blur' }
         ],
         setMealPrice: [
@@ -274,7 +274,6 @@ export default {
           { validator: validateSetMealPrice, trigger: 'blur' }
         ],
         simpleDescription: [
-          { required: true, message: '请输入简要说明', trigger: 'blur' },
           { max: 50, message: '长度在50个字符', trigger: 'blur' }
         ],
         uploadFiles: [{ required: true, message: '请上传图标', trigger: 'change' }],
@@ -380,6 +379,8 @@ export default {
             url: img
           })
         })
+        this.inpBlur('setMealPrice')
+        this.inpBlur('setMealCostPrice')
         let mainImgListArr = results.appendImageUri.split(',')
         mainImgListArr.forEach((img) => {
           this.mainImgList.push({
@@ -425,8 +426,12 @@ export default {
           couponHandsel: this.ruleForm.couponHandsel,
           couponDeduction: this.ruleForm.couponDeduction
         }
-        if (this.mealId) params.id = this.mealId
-        this.$http.post('@ROOT_API/meal/addSetMeal', params).then((res) => {
+        let url = 'meal/addSetMeal'
+        if (this.mealId) {
+          params.id = this.mealId
+          url = 'meal/updateSetMeal'
+        }
+        this.$http.post(`@ROOT_API/${url}`, params).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {
             this.$message({
@@ -443,7 +448,7 @@ export default {
             duration: 1000
           })
           setTimeout(() => {
-            this.$router.push('/admin/distribution/rule')
+            this.$router.push('/admin/business/package')
           }, 300)
         }).finally(() => {
           setTimeout(() => {
@@ -565,10 +570,11 @@ export default {
       if (!this.ruleForm.setMealPrice) {
         this.couponList = []
       } else {
-        this.couponList = this.vouchers.filter(vou => vou.amount <= this.ruleForm.setMealPrice)
+        this.couponList = this.vouchers.filter(vou => vou.amount <= parseFloat(this.ruleForm.setMealPrice))
       }
     },
     mealPriceChange () {
+      this.inpBlur('setMealPrice')
       this.getCouponList()
       this.changeAmount()
     },

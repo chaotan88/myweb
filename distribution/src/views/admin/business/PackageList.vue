@@ -38,10 +38,10 @@
             <template v-else>提货分佣</template>
           </template>
         </el-table-column>
-        <el-table-column prop="configurationMoney" label="已配置金额">
+        <el-table-column prop="configurationMoney" label="已配置金额" min-width="100">
           <template slot-scope="scope">{{scope.row.configurationMoney}}</template>
         </el-table-column>
-        <el-table-column prop="setMealStatus" label="套餐状态">
+        <el-table-column prop="setMealStatus" label="套餐状态" min-width="100">
           <template slot-scope="scope">
             <template v-if="parseInt(scope.row.setMealStatus) === 1">开启</template>
             <template v-else>关闭</template>

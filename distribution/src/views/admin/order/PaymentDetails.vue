@@ -96,7 +96,11 @@
           <tr>
             <td>快递类型：</td>
             <td v-if="detailsData.orderStatus === 2">
-              <el-input v-model="formData.logisticsName" clearable></el-input>
+              <!-- <el-input v-model="formData.logisticsName" clearable></el-input> -->
+              <el-select v-model="formData.logisticsName" size="medium" class="year-box"
+                placeholder="选择快递类型">
+                <el-option :label="logistics.logisticsName" :value="logistics.logisticsName" :key="index" v-for="(logistics, index) in logisticsList"></el-option>
+              </el-select>
             </td>
             <td v-else>{{detailsData.logisticsName | filterEmpty}}</td>
           </tr>
@@ -169,12 +173,14 @@ export default {
       detailsData: {},          // 详情数据
       fxUserInfo: {},           // 用户信息
       passVisible: false,        // 发货弹窗
-      tableData: []
+      tableData: [],
+      logisticsList: []
     }
   },
   mounted () {
     this.orderId = parseInt(this.$route.query.id) || ''
     this.fxUserInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
+    this.getLogisticsCompanylist()
     this.getDetails()
   },
   methods: {
@@ -237,6 +243,21 @@ export default {
         }
       })
       return sums
+    },
+    getLogisticsCompanylist () {
+      this.$http.get('@ROOT_API/meal/getLogisticsCompanylist', {}).then(res => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        let results = resData.data
+        this.logisticsList = results || []
+      })
     }
   }
 }
