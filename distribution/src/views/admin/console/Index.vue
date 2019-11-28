@@ -4,33 +4,21 @@
     <div class="statistics-wrap">
 
       <!-- 统计总数据 -->
-      <statistics-component></statistics-component>
+      <statistics-component :statisticalData="statisticalData"></statistics-component>
     </div>
 
     <!-- 营业额增长趋势 -->
     <div class="statistics-revenue-wrap">
       <title-public title="营业额增长趋势"></title-public>
       <div class="pos-r statistics-revenue-cen">
-        <div class="statistics-revenue-t">
-          <!-- 时间 -->
-          <el-form ref="form" :model="formData.data" label-position="right" class="search-form" label-width="110px">
-            <div class="d-ib pos-a" style="width: 150px;">
-              <el-select v-model="formData.curYear" size="medium" class="year-box" placeholder="选择年份" @change="selectYear" clearable>
-                <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in yearArr"></el-option>
-              </el-select>
-            </div>
-            <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
-              <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleFilterDate"></el-date-picker>
-            </el-form-item>
-          </el-form>
-        </div>
+        <date-select @dateChange="dateChange"></date-select>
         <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
           <no-data style="padding: 100px 0;"></no-data>
         </div> -->
-        <div id="line-chart-id" v-show="chartData.length > 0"></div>
-        <div v-show="!chartData || chartData.length === 0" class="chart-no-data">
+        <div id="line-chart-id"></div>
+        <!-- <div v-if="!chartData || chartData.length === 0" class="chart-no-data">
           <no-data></no-data>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -44,15 +32,17 @@
           <div class="latest-notice-wrap">
             <!-- <no-data style="padding: 120px 0;"></no-data> -->
             <div class="pos-r notice-list" v-for="item in listData">
-              <span class="d-ib truncate text">{{item.messageContent}}</span>
-              <span class="d-ib truncate text">{{item.identity}}</span>
-              <span class="d-ib pos-a time">{{item.operateTime}}</span>
+              <span class="d-ib truncate text">{{item.phone}}</span>
+              <span class="d-ib truncate text">成为{{item.rankName}}</span>
+              <span class="d-ib pos-a time">{{item.createTime | filterDate}}</span>
             </div>
           </div>
 
           <!-- 分页 -->
           <div class="ta-c common-bottom-wrap handleup-b">
-            <el-pagination background layout="prev, pager, next" :current-page="pageData.currentPage" :total="pageData.total" @current-change="pageChange" v-if="pageData.total"></el-pagination>
+            <el-pagination background layout="prev, pager, next"
+            :current-page="pageData.currentPage" :total="pageData.total"
+            @current-change="pageChange" v-if="pageData.total"></el-pagination>
           </div>
         </div>
       </div>
@@ -78,9 +68,6 @@
         </div>
       </div>
     </div>
-
-    <br>
-    <br>
   </div>
 </template>
 
@@ -93,38 +80,7 @@ export default{
   components: {StatisticsComponent, TitlePublic},
   data () {
     return {
-      formData: {
-        curYear: '',           // 选择日期
-        statisticsDate: [],    // 日期
-        endDate: ''            // 统计时间结束: '',           // 否 string  结束时间
-      },
-      listData: [
-        {
-          messageContent: '13576738373',               // 会员手机
-          identity: '成为VIP推广大使',                // 会员身份
-          operateTime: '2018.9.3  6:53:00'             // 申请时间
-        },
-        {
-          messageContent: '13576738373',               // 会员手机
-          identity: '成为VIP推广大使',                // 会员身份
-          operateTime: '2018.9.3  6:53:00'             // 申请时间
-        },
-        {
-          messageContent: '13576738373',               // 会员手机
-          identity: '成为VIP推广大使',                // 会员身份
-          operateTime: '2018.9.3  6:53:00'             // 申请时间
-        },
-        {
-          messageContent: '13576738373',               // 会员手机
-          identity: '成为VIP推广大使',                // 会员身份
-          operateTime: '2018.9.3  6:53:00'             // 申请时间
-        },
-        {
-          messageContent: '13576738373',               // 会员手机
-          identity: '成为VIP推广大使',                // 会员身份
-          operateTime: '2018.9.3  6:53:00'             // 申请时间
-        }
-      ],                     // 列表数据
+      listData: [],                     // 列表数据
       quickLinks: [
         {
           title: '套餐管理',
@@ -142,9 +98,9 @@ export default{
           url: '/admin/order/payment'
         },
         {
-          title: '推广大使管理',
+          title: '推广大使增长',
           icon: 'icon-jiedianhuiyuanfenzu',
-          url: '/admin/vip/center/index'
+          url: '/admin/report/vip/increase'
         }
       ],
       pageData: {
@@ -152,70 +108,59 @@ export default{
         pageSize: 5,        // 显示条数，不写的话默认为10
         total: 0            // 列表总条数
       },
-      yearArr: [              // 选择年
-        {
-          label: '近三个月',
-          value: 3
-        },
-        {
-          label: '近半年',
-          value: 6
-        },
-        {
-          label: '近一年',
-          value: 12
-        }
-      ],
-      chartData: []
+      queryDate: [],
+      chartData: [],
+      statisticalData: {
+        memberCount: 0,
+        setMealPriceSum: 0
+      }
     }
   },
 
   mounted () {
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
+    this.getTotalData()
+    this.getListData()
+    this.getLineChartData()
   },
 
   methods: {
-
-    /**
-     * json排序
-     */
-    sortByKey (array, key) {
-      return array.sort((a, b) => {
-        let x = a[key]
-        let y = b[key]
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0))
+    getTotalData () {
+      this.$http.post('@ROOT_API/homePage/getHomePageStatistics', {}).then((res) => {
+        let { data } = res.data
+        if (data) {
+          this.statisticalData.memberCount = data.memberCount
+          this.statisticalData.setMealPriceSum = data.setMealPriceSum
+        }
       })
     },
 
+    getListData () {
+      this.$http.post('@ROOT_API/member/getMemberUpgradeLog', {
+        start: this.pageData.currentPage,
+        pageSize: this.pageData.pageSize
+      }).then((res) => {
+        let { list, total } = res.data.data
+        this.listData = list
+        this.pageData.total = total
+      })
+    },
     getLineChartData () {
-      let data = [
-        {
-          name: '1月',
-          value: 10000
-        },
-        {
-          name: '2月',
-          value: 15000
-        },
-        {
-          name: '3月',
-          value: 18000
-        },
-        {
-          name: '4月',
-          value: 20000
-        },
-        {
-          name: '5月',
-          value: 25000
-        },
-        {
-          name: '6月',
-          value: 28000
-        }
-      ]
-      this.chartData = data
-      this.buildChart(data)
+      this.$http.post('@ROOT_API/achievement/getOrderAchievementForMonth', {
+        startTime: this.queryDate[0],
+        endTime: this.queryDate[1]
+      }).then((res) => {
+        let { data } = res.data
+        let newData = []
+        data.forEach((da) => {
+          newData.push({
+            name: da.orderTimeMonth,
+            value: da.orderAmountSum
+          })
+        })
+        this.chartData = newData
+        this.buildChart(newData)
+      })
     },
     buildChart (data) {
       let chart = echarts.init(document.getElementById('line-chart-id'))
@@ -235,51 +180,6 @@ export default{
         }]
       })
     },
-    /**
-     * 过滤选择时间
-     */
-    handleFilterDate (data) {
-      this.formData.curYear = ''
-      this.getLineChartData()
-    },
-
-    /**
-     * 时间改变
-     */
-    selectYear (value) {
-      if (!value) return false
-      var dt = new Date()
-      switch (value) {
-        case 3:
-          dt.setMonth(dt.getMonth() - 3)
-          break
-        case 6:
-          dt.setMonth(dt.getMonth() - 6)
-          break
-        case 12:
-          dt.setMonth(dt.getMonth() - 12)
-          break
-      }
-      this.formData.statisticsDate = [dt, new Date()]
-      this.getLineChartData()
-    },
-  /**
-    * 获取最新通知
-    */
-    getListData () {
-      // this.$router.push({query: {page: this.pageData.currentPage}})    // 地址栏追加当前分页（当你刷新的时候不会回到第一页）
-      // this.$http.post('@ROOT_API/', {
-      //   start: this.pageData.currentPage,
-      //   pageSize: this.pageData.pageSize
-      // }).then((res) => {
-      //   let resData = res.data
-      //   if (parseInt(resData.status) !== 1) {
-      //     return false
-      //   }
-      //   this.listData = resData.data.list
-      //   this.pageData.total = resData.data.total        // 自定义好的列表总条数为0，需要传值给后台数据，循环后台传回来的数据
-      // })
-    },
 
     /**
      * 分页改变
@@ -287,6 +187,10 @@ export default{
     pageChange (page) {             // 执行当页面分页改变时候的方法
       this.pageData.currentPage = page       // 重置当前分页
       this.getListData()            // 获取列表数据
+    },
+    dateChange (params) {
+      this.queryDate = params
+      this.getLineChartData()
     }
   }
 }
@@ -540,7 +444,7 @@ export default{
           }
 
           .time{
-            width: 145px;
+            width: 180px;
             padding: 0 10px;
             right: 0;
             top: 0;

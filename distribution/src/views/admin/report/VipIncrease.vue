@@ -7,7 +7,7 @@
         <div class="date-and-chart-content">
           <div class="statistics-revenue-t">
             <!-- 时间 -->
-            <el-form ref="form" label-position="right" class="search-form" label-width="110px">
+            <!-- <el-form ref="form" label-position="right" class="search-form" label-width="110px">
               <div class="d-ib pos-a" style="width: 150px;">
                 <el-select v-model="formData.chartYear" size="medium" class="year-box" placeholder="选择年份" @change="selectChartYear" clearable>
                   <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in chartYearArr"></el-option>
@@ -16,7 +16,8 @@
               <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
                 <el-date-picker v-model.trim="formData.chartStatisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleChartFilterDate"></el-date-picker>
               </el-form-item>
-            </el-form>
+            </el-form> -->
+            <date-select @dateChange="dateChange"></date-select>
           </div>
           <!-- <div class="statistics-revenue-c" v-if="!lineChartData || lineChartData.length === 0">
             <no-data style="padding: 100px 0;"></no-data>
@@ -88,54 +89,54 @@
         <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
           <el-table-column prop="disRuleName" label="推广大使等级">
             <template slot-scope="scope">
-              <template v-if="!scope.row.disRuleId">总计</template>
-              <template v-else>{{scope.row.disRuleName | filterEmpty}}</template>
+              <template v-if="!scope.row.rankId">总计</template>
+              <template v-else>{{scope.row.rankName | filterEmpty}}</template>
             </template>
           </el-table-column>
           <el-table-column prop="" label="推广大使总数">
             <template slot-scope="scope">
-              <template>{{scope.row.memberTotal | filterEmpty}}</template>
+              <template>{{scope.row.memberCount | filterEmpty}}</template>
             </template>
           </el-table-column>
           <el-table-column prop="" label="近7天">
             <el-table-column prop="" label="新增推广大使数">
               <template slot-scope="scope">
-                <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowSeven}}</template>
-                <template v-else>{{scope.row.memberGrowSeven | filterEmpty}}</template>
+                <template v-if="!scope.row.disRuleId">{{scope.row.before7DayMemberCount}}</template>
+                <template v-else>{{scope.row.before7DayMemberCount | filterEmpty}}</template>
               </template>
             </el-table-column>
             <el-table-column prop="" label="环比">
               <template slot-scope="scope">
-                <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowSevenRingRate | filterEmpty('%')}}</template>
-                <template v-else>{{scope.row.memberGrowSevenRingRate | filterEmpty('%')}}</template>
+                <template v-if="!scope.row.disRuleId">{{scope.row.before7DayMemberRatio | filterEmpty('%')}}</template>
+                <template v-else>{{scope.row.before7DayMemberRatio | filterEmpty('%')}}</template>
               </template>
             </el-table-column>
           </el-table-column>
           <el-table-column prop="" label="近30天">
             <el-table-column prop="" label="新增推广大使数">
               <template slot-scope="scope">
-                <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowThirty}}</template>
-                <template v-else>{{scope.row.memberGrowThirty | filterEmpty}}</template>
+                <template v-if="!scope.row.disRuleId">{{scope.row.before30DayMemberCount}}</template>
+                <template v-else>{{scope.row.before30DayMemberCount | filterEmpty}}</template>
               </template>
             </el-table-column>
             <el-table-column prop="" label="环比">
               <template slot-scope="scope">
-                <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowThirtyRingRate | filterEmpty('%')}}</template>
-                <template v-else>{{scope.row.memberGrowThirtyRingRate | filterEmpty('%')}}</template>
+                <template v-if="!scope.row.disRuleId">{{scope.row.before30DayMemberRatio | filterEmpty('%')}}</template>
+                <template v-else>{{scope.row.before30DayMemberRatio | filterEmpty('%')}}</template>
               </template>
             </el-table-column>
           </el-table-column>
           <el-table-column prop="" label="近90天">
             <el-table-column prop="" label="新增推广大使数">
               <template slot-scope="scope">
-                <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowNinety}}</template>
-                <template v-else>{{scope.row.memberGrowNinety | filterEmpty}}</template>
+                <template v-if="!scope.row.disRuleId">{{scope.row.before90DayMemberCount}}</template>
+                <template v-else>{{scope.row.before90DayMemberCount | filterEmpty}}</template>
               </template>
             </el-table-column>
             <el-table-column prop="" label="环比">
               <template slot-scope="scope">
-                <template v-if="!scope.row.disRuleId">{{scope.row.memberGrowNinetyRingRate | filterEmpty('%')}}</template>
-                <template v-else>{{scope.row.memberGrowNinetyRingRate | filterEmpty('%')}}</template>
+                <template v-if="!scope.row.disRuleId">{{scope.row.before90DayMemberRatio | filterEmpty('%')}}</template>
+                <template v-else>{{scope.row.before90DayMemberRatio | filterEmpty('%')}}</template>
               </template>
             </el-table-column>
           </el-table-column>
@@ -198,28 +199,10 @@ export default{
   },
   mounted () {
     this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
-    this.getStatisticsData()
     this.getListData()
   },
 
   methods: {
-    /**
-     * 获取统计数据
-     */
-    getStatisticsData () {
-      this.$http.post('@ROOT_API/memberGrowManageController/getMemberGrowTotal', {}).then((res) => {
-        let resData = res.data
-        if (parseInt(resData.status) !== 1) {
-          this.$message({
-            message: resData.msg,
-            type: 'error',
-            duration: 1500
-          })
-          return false
-        }
-        this.statisticsData = resData.data
-      })
-    },
 
     /**
      * 获取列表数据
@@ -227,10 +210,10 @@ export default{
     getListData (type) {
       let url = ''
       if (!type) {
-        url = '@ROOT_API/memberGrowManageController/getMemberGrowList'
+        url = '@ROOT_API/member/getMemberForRatio'
         this.loading = true
       } else {
-        url = 'memberGrowManageController/exportMemberGrowList'
+        url = 'meal/exportMemberForRatioList'
       }
       if (!type) {
         this.$http.post(url, {
@@ -245,7 +228,15 @@ export default{
             })
             return false
           }
-          this.tableData = resData.data
+          let { data } = resData
+          let totalItem = data.filter(li => li.rankName === '总数')
+          if (totalItem && totalItem.length > 0) {
+            this.statisticsData.memberTotal = totalItem[0].memberCount
+            this.statisticsData.memberGrowSeven = totalItem[0].before7DayMemberCount
+            this.statisticsData.memberGrowThirty = totalItem[0].before30DayMemberCount
+            this.statisticsData.memberGrowNinety = totalItem[0].before90DayMemberCount
+          }
+          this.tableData = data
         }).finally(() => {
           this.loading = false
         })
@@ -254,13 +245,6 @@ export default{
         window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
         this.$router.go(0)
       }
-    },
-
-    /**
-     * 过滤表格字段显示
-     */
-    filterTableField (id, arr) {
-      // return arr.filter((row) => row.disRuleId === id)[0] || ''
     },
 
     /**
@@ -275,56 +259,22 @@ export default{
         this.$router.push({query: {userId: this.userId, page: this.pageData.currentPage}})
       }
     },
-    selectChartYear (value) {
-      if (!value && value !== 0) return false
-      var dt = new Date()
-      switch (value) {
-        case 3:
-          dt.setMonth(dt.getMonth() - 3)
-          break
-        case 6:
-          dt.setMonth(dt.getMonth() - 6)
-          break
-        case 12:
-          dt.setMonth(dt.getMonth() - 12)
-          break
-      }
-      this.formData.statisticsChartDate = [dt, new Date()]
-      this.getLineChartData()
-    },
-    handleChartFilterDate (data) {
-      this.formData.chartYear = ''
-      this.getLineChartData()
-    },
-
     getLineChartData () {
-      let data = [
-        {
-          name: '1月',
-          value: 10000
-        },
-        {
-          name: '2月',
-          value: 15000
-        },
-        {
-          name: '3月',
-          value: 18000
-        },
-        {
-          name: '4月',
-          value: 20000
-        },
-        {
-          name: '5月',
-          value: 25000
-        },
-        {
-          name: '6月',
-          value: 28000
-        }
-      ]
-      this.buildChart(data)
+      this.$http.post('@ROOT_API/member/getMemberForMonth', {
+        startTime: this.formData.statisticsDate[0],
+        endTime: this.formData.statisticsDate[1]
+      }).then((res) => {
+        let { data } = res.data
+        let newData = []
+        data.forEach((da) => {
+          newData.push({
+            name: da.upgradeMonth,
+            value: da.memberCount
+          })
+        })
+        this.chartData = newData
+        this.buildChart(newData)
+      })
     },
     buildChart (data) {
       let chart = echarts.init(document.getElementById('line-chart-vip'))
@@ -343,6 +293,10 @@ export default{
           type: 'line'
         }]
       })
+    },
+    dateChange (params) {
+      this.formData.statisticsDate = params
+      this.getLineChartData()
     }
   }
 }

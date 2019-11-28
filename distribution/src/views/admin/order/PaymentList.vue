@@ -54,7 +54,7 @@
                 <span class="d-b va-m">...</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item><!-- v-if="parseInt(scope.row.orderStatus) === 2"-->
+                <el-dropdown-item v-if="parseInt(scope.row.orderStatus) === 2"><!-- v-if="parseInt(scope.row.orderStatus) === 2"-->
                   <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id}})"><i class="icon el-icon-edit"></i>发货</div>
                 </el-dropdown-item>
                 <el-dropdown-item>

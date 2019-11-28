@@ -5,31 +5,27 @@
     <template slot="main">
 
       <!-- 时间 -->
-      <el-form ref="form" :rules="rules" :model="formData.data" label-position="right" class="search-form" label-width="110px">
-        <!-- <div class="d-ib pos-a" style="width: 150px;">
-          <el-select v-model="formData.curYear" size="medium" class="year-box" placeholder="选择年份" @change="selectYear" clearable>
-            <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in yearArr"></el-option>
-          </el-select>
-        </div> -->
+      <date-select @dateChange="dateChange" :dateTabs="dateTabs" style="padding: 10px 0;"></date-select>
+      <!-- <el-form ref="form" :rules="rules" :model="formData.data" label-position="right" class="search-form" label-width="110px">
         <div class="date-tabs">
           <span v-for="(dt, index) in dateTabs" :key="index" @click="dateTypeChange(dt)" :class="selectDateType === dt.value ? 'dt-active' : ''">{{dt.label}}</span>
         </div>
         <el-form-item label="统计时间段：" class="pos-r apply-date-wrap">
           <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleFilterDate"></el-date-picker>
         </el-form-item>
-      </el-form>
+      </el-form> -->
 
       <!-- 统计 -->
       <div class="statistics-cen">
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.grabTotalAmount | filterEmpty('元')}}</span>
+              <span>{{statisticsData.orderTotalAmount | filterEmpty('元')}}</span>
             </h3>
             <h4 class="fw-n">收入金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
               <i class="d-ib va-t small-box"></i>
-              <span>套餐订购 &nbsp;{{statisticsData.grabWxPayAmount || 0}}</span>
+              <span>套餐订购 &nbsp;{{statisticsData.orderTotalAmount || 0}}</span>
             </div>
           </dd>
         </dl>
@@ -37,55 +33,29 @@
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.purchaseTotalAmount | filterEmpty('元')}}</span>
+              <span>{{(statisticsData.orderCostAmount + statisticsData.orderCommissionAmount) | filterEmpty('元')}}</span>
             </h3>
             <h4 class="fw-n">应付金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
               <i class="d-ib va-t small-box"></i>
-              <span>套餐成本 &nbsp;{{statisticsData.purchaseAliPayAmount || 0}}</span>
+              <span>套餐成本 &nbsp;{{statisticsData.orderCostAmount || 0}}</span>
               <i class="d-ib va-t small-box" style="background: red; margin-left: 15px;"></i>
-              <span>佣金分配 &nbsp;{{statisticsData.purchaseCashPointPayAmount || 0}}</span>
+              <span>佣金分配 &nbsp;{{statisticsData.orderCommissionAmount || 0}}</span>
             </div>
           </dd>
         </dl>
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.withDrawalAmount | filterEmpty('元')}}</span>
+              <span>{{statisticsData.orderWithdrawalAmount | filterEmpty('元')}}</span>
             </h3>
             <h4 class="fw-n">支出金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
               <i class="d-ib va-t small-box"></i>
-              <span>提现已付金额 &nbsp;{{statisticsData.purchaseAliPayAmount || 0}}</span>
+              <span>提现已付金额 &nbsp;{{statisticsData.orderWithdrawalAmount || 0}}</span>
             </div>
           </dd>
         </dl>
-
-        <template v-if="formData.accountType === 'bonus' || formData.accountType === 'cash'">
-          <dl class="ta-c fl-l cursor-p">
-            <dt class="d-ib va-m">
-              <svg class="icon icon-yueshengyuzonge" aria-hidden="true">
-                <use xlink:href="#icon-yueshengyuzonge"></use>
-              </svg>
-            </dt>
-            <dd class="d-ib va-m ta-c">
-              <h3 class="fw-n">
-                <template v-if="formData.accountType === 'bonus'">
-                  <span>{{statisticsData.sumBonusPoints | filterEmpty}}</span>
-                </template>
-                <template v-if="formData.accountType === 'cash'">
-                  <span>{{statisticsData.sumCashPoints | filterEmpty}}</span>
-                </template>
-              </h3>
-              <template v-if="formData.accountType === 'bonus'">
-                <h4 class="fw-n">消费积分剩余总数</h4>
-              </template>
-              <template v-if="formData.accountType === 'cash'">
-                <h4 class="fw-n">通用积分剩余总数</h4>
-              </template>
-            </dd>
-          </dl>
-        </template>
       </div>
 
       <!-- 高级搜索组件 -->
@@ -219,10 +189,10 @@ export default {
         total: 20
       },
       dateTabs: [
-        { label: '今天', value: 0 },
-        { label: '昨天', value: 1 },
-        { label: '近一周', value: 7 },
-        { label: '近15天', value: 15 },
+        { label: '今天', value: '0' },
+        { label: '昨天', value: '1_day' },
+        { label: '近一周', value: '7_day' },
+        { label: '近15天', value: '15_day' },
         { label: '自定义', value: 999 }
       ],
       selectDateType: 0,
@@ -240,26 +210,23 @@ export default {
     this.$Utils.filterSearchData('/admin/report/sale/list', (res) => {
       this.formData = res
     })
-    this.formData.statisticsDate = (this.formData.statisticsDate || this.$Utils.filterDate(new Date(), 'YYYY-MM-DD')) + ' 00:00:00'
-    this.getTableData()
-    this.getStatisticsData()
   },
 
   methods: {
     getTableData () {
-      this.$http.post('@ROOT_API/buyBusinessAccount/getBusinessAccountList', {
+      this.$http.post('@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountList', {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
         businessType: this.pageType
-      }).then((res) => {
-        debugger
-      })
+      }).then((res) => {})
     },
     /**
      * 获取统计数据
      */
     getStatisticsData () {
-      this.$http.post('@ROOT_API/buyBusinessAccount/getBusinessAccountStatistics', {}).then((res) => {
+      this.$http.post('@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountStatistics', {
+        ...this.handleDateArgs()
+      }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
           this.$message({
@@ -274,128 +241,18 @@ export default {
     },
 
     /**
-     * 获取抢购列表数据
-     */
-    getListData (type) {
-      let url = ''
-      if (!type) {
-        url = '@ROOT_API/buySellStaticReoprtController/getGoodsGrabStatic'
-        this.loading = true
-      } else {
-        url = 'buySellStaticReoprtController/exportGoodsGrabStatic'
-      }
-      let data = {
-        ...this.handleDateArgs()
-      }
-      if (!type) {
-        this.tableData = []
-        this.$http.post(url, data).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
-          }
-          let data = resData.data
-          this.tableData = data
-          this.pageData.total = data.total
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        let filterParams = []
-        for (let key in data) {
-          filterParams.push(key + '=' + data[key])
-        }
-        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
-      }
-    },
-
-    /**
-     * 获取批发列表数据
-     */
-    getWholesaleListData (type) {
-      let url = ''
-      if (!type) {
-        url = '@ROOT_API/buySellStaticReoprtController/getGoodsPurchaseStatic'
-        this.loading = true
-      } else {
-        url = 'buySellStaticReoprtController/exportGoodsPurchaseStatic'
-      }
-      let data = {
-        customerPhone: '',   // 否 string  客户号码
-        ...this.handleDateArgs()
-      }
-      if (!type) {
-        this.$http.post(url, data).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
-          }
-          let data = resData.data
-          this.tableData = data
-          this.pageData.total = data.total
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        let filterParams = []
-        for (let key in data) {
-          filterParams.push(key + '=' + data[key])
-        }
-        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
-      }
-    },
-
-    /**
-     * 时间改变
-     */
-    selectYear (value) {
-      if (!value) return false
-      var dt = new Date()
-      switch (value) {
-        // case 0:
-          // dt.setDate(dt.getDate())
-          // break
-        case 1:
-          dt.setDate(dt.getDate() - 1)
-          break
-        case 2:
-          dt.setDate(dt.getDate() - 2)
-          break
-      }
-      this.formData.statisticsDate = dt
-    },
-
-    /**
      * 时间方法
      */
     handleDateArgs () {
       let res = {
-        beginDate: '',
-        endDate: ''
+        startTime: '',
+        endTime: ''
       }
       if (this.formData.statisticsDate) {
-        res.beginDate = this.$Utils.filterDate(this.formData.statisticsDate, 'YYYY-MM-DD HH:mm:ss')
-        res.endDate = this.$Utils.completionEndDate(res.beginDate, 'YYYY-MM-DD HH:mm:ss')
+        res.startTime = this.$Utils.filterDate(this.formData.statisticsDate, 'YYYY-MM-DD HH:mm:ss')
+        res.endTime = this.$Utils.completionEndDate(res.startTime, 'YYYY-MM-DD HH:mm:ss')
       }
       return res
-    },
-
-    /**
-     * 过滤选择时间
-     */
-    handleFilterDate (data) {
-      this.formData.statisticsDate = this.$Utils.filterDate(data, 'YYYY-MM-DD')
-      localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
     },
 
     /**
@@ -418,37 +275,21 @@ export default {
     pageChange (page) {
       localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
       if (this.pageData.currentPage === page) {
-        this.getListData()
       } else {
         this.pageData.currentPage = page
         this.$router.push({query: {page: this.pageData.currentPage}})
       }
     },
-    dateTypeChange (item) {
-      this.selectDateType = item.value
-      var dt = new Date()
-      switch (item.value) {
-        case 0:
-          dt.setDate(dt.getDate())
-          break
-        case 1:
-          dt.setDate(dt.getDate() - 1)
-          break
-        case 7:
-          dt.setDate(dt.getDate() - 7)
-          break
-        case 15:
-          dt.setDate(dt.getDate() - 15)
-          break
-      }
-      this.formData.statisticsDate = [dt, new Date()]
-      console.log(this.formData.statisticsDate, 66666)
-    },
     showDetail (row) {
       this.detailData = row
       this.financeReconVisible = true
     },
-    handleSuccess () {}
+    handleSuccess () {},
+    dateChange (param) {
+      this.formData.statisticsDate = param
+      this.getTableData()
+      this.getStatisticsData()
+    }
   },
   components: { FinanceReconDialog }
 }

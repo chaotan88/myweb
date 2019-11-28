@@ -6,7 +6,7 @@
         <dt class="d-b pos-a"> 
         </dt>
         <dd>
-          <strong class="fw-n d-b">{{statisticalData.memberNum | filterEmpty}}</strong>
+          <strong class="fw-n d-b">{{statisticalData.memberCount | filterEmpty}}</strong>
           <p>推广大使总数</p>
         </dd>
       </dl>
@@ -15,7 +15,7 @@
       <dl class="pos-r">
         <dt class="d-b pos-a dt2"></dt>
         <dd>
-          <strong class="fw-n d-b">{{statisticalData.agentNum | filterEmpty}}</strong>
+          <strong class="fw-n d-b">{{statisticalData.setMealPriceSum | filterEmpty}}</strong>
           <p>总营业额</p>
         </dd>
       </dl>
@@ -26,15 +26,17 @@
 <script>
 export default{
   data () {
-    return {
-      statisticalData: {
-        memberNum: 0,
-        agentNum: 0,
-        orderAmount: 0
-      }                                // 统计数据
+    return {}
+  },
+  props: {
+    statisticalData: {
+      type: Object,
+      default: () => ({
+        memberCount: 0,
+        setMealPriceSum: 0
+      })
     }
   },
-
   mounted () {
   },
 

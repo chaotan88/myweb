@@ -126,42 +126,6 @@ export default {
     }
     return {
       loading: false,                 // loading
-      yearArr: [          // 选择年
-        {
-          label: '今天',
-          value: 0
-        },
-        {
-          label: '近三天',
-          value: 1
-        },
-        {
-          label: '近三个月',
-          value: 3
-        },
-        {
-          label: '近半年',
-          value: 6
-        },
-        {
-          label: '近一年',
-          value: 12
-        }
-      ],
-      chartYearArr: [          // 选择年
-        {
-          label: '近三个月',
-          value: 3
-        },
-        {
-          label: '近半年',
-          value: 6
-        },
-        {
-          label: '近一年',
-          value: 12
-        }
-      ],
       nowdatestr: '',           // 当前日期
       tableData: [{
         transferName: 111
@@ -178,9 +142,6 @@ export default {
       },
       statisticsData: {},     // 统计数据
       rules: {
-        // 查询条件
-        // customerPhone: { validator: validatePhone, trigger: 'blur' },
-        // 会员手机
         customerPhone: { validator: validatePhone, trigger: 'blur' }
       },
       pageData: {             // 分页
@@ -254,8 +215,10 @@ export default {
       }
       let data = {
         phone: this.formData.customerPhone,
-        ...this.handleDateArgs(),
-        payType: this.formData.payType
+        // ...this.handleDateArgs(),
+        payType: this.formData.payType,
+        start: this.pageData.currentPage,
+        pageSize: this.pageData.pageSize
       }
       if (!type) {
         this.tableData = []
@@ -282,48 +245,6 @@ export default {
         }
         window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
       }
-    },
-
-    /**
-     * 时间改变
-     */
-    selectYear (value) {
-      if (!value && value !== 0) return false
-      var dt = new Date()
-      switch (value) {
-        case 1:
-          dt.setDate(dt.getDate() - 1)
-          break
-        case 3:
-          dt.setMonth(dt.getMonth() - 3)
-          break
-        case 6:
-          dt.setMonth(dt.getMonth() - 6)
-          break
-        case 12:
-          dt.setMonth(dt.getMonth() - 12)
-          break
-      }
-      this.formData.statisticsDate = [dt, new Date()]
-      this.getApiData()
-    },
-
-    selectChartYear (value) {
-      if (!value && value !== 0) return false
-      var dt = new Date()
-      switch (value) {
-        case 3:
-          dt.setMonth(dt.getMonth() - 3)
-          break
-        case 6:
-          dt.setMonth(dt.getMonth() - 6)
-          break
-        case 12:
-          dt.setMonth(dt.getMonth() - 12)
-          break
-      }
-      this.formData.statisticsChartDate = [dt, new Date()]
-      this.getLineChartData()
     },
 
     /**
@@ -364,32 +285,6 @@ export default {
         })
         this.buildChart(newData)
       })
-      // let data = [
-      //   {
-      //     name: '1月',
-      //     value: 10000
-      //   },
-      //   {
-      //     name: '2月',
-      //     value: 15000
-      //   },
-      //   {
-      //     name: '3月',
-      //     value: 18000
-      //   },
-      //   {
-      //     name: '4月',
-      //     value: 20000
-      //   },
-      //   {
-      //     name: '5月',
-      //     value: 25000
-      //   },
-      //   {
-      //     name: '6月',
-      //     value: 28000
-      //   }
-      // ]
     },
     buildChart (data) {
       let chart = echarts.init(document.getElementById('line-chart-achieve'))

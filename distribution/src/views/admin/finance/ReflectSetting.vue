@@ -16,22 +16,23 @@
                   </template>
                 </el-select>
             </el-form-item>
-            <el-form-item label="周期内允许提现次数：" prop="cycleNumber">
-              <el-input v-model="ruleForm.cycleNumber" placeholder="请输入0或正整数"></el-input><span class="recommendSpan">元</span>
+            <el-form-item label="提现次数：" prop="cycleNumber">
+              <el-input v-model="ruleForm.cycleNumber" placeholder="0或正整数,0表示不限制"></el-input>
+              <span class="recommendSpan">次/周期</span>
             </el-form-item>
-            <el-form-item label="提现条件：" prop="conditionValue">
-              <span class="recommendSpan">累计通用积分账户沉淀资金的</span>
-              <el-input v-model="ruleForm.conditionValue" placeholder="填写大于0的正整数"></el-input>
-              <span class="recommendSpan">% ，不可提现。</span>
+            <el-form-item label="提现手续费：" prop="conditionValue">
+              <!-- <span class="recommendSpan">累计通用积分账户沉淀资金的</span> -->
+              <el-input v-model="ruleForm.conditionValue" placeholder="0-100.00正数" @change="inpBlur('conditionValue')"></el-input>
+              <span class="recommendSpan">% </span>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
               <span class="recommendSpan setting-desc">
                 1.指的是通用积分提现时，按设置的百分比计算出来当前账户可提现的通用积分，
               计算规则：当前账户可提现通用积分=当前账户通用积分结余-累计通用积分*设置的沉淀资金百分比(计算完后四舍五入，保留整数)；
               当计算出来的可提现通用积分大于“0”时为可提现金额，可操作提现；当计算出来的可提现通用积分小于等于“0”时不可操作提现，
               给出提现“无可提现金额”
               </span>
-            </el-form-item>
+            </el-form-item> -->
           </div>
         </el-form>
       </div>
@@ -48,6 +49,11 @@
 export default {
   data () {
     let validateNumber = (rule, value, callback) => {
+      let reg = /^\d{0,7}\.\d{2}$/gi
+      if ((value && !value.toString().match(reg) || parseFloat(value) > 100)) return callback(new Error('只能输入0-100.00正数'))
+      callback()
+    }
+    let validateCycleNumber = (rule, value, callback) => {
       let reg = /^\d{0,10}$/gi
       if (value && !value.toString().match(reg)) return callback(new Error('只能输入0或正整数'))
       callback()
@@ -62,7 +68,7 @@ export default {
       },
       rules: {
         cycleNumber: [
-          { validator: validateNumber, trigger: 'blur' }
+          { validator: validateCycleNumber, trigger: 'blur' }
         ],
         conditionValue: [
           { validator: validateNumber, trigger: 'blur' }
@@ -133,6 +139,9 @@ export default {
           }, 500)
         })
       })
+    },
+    inpBlur (type) {
+      this.$Utils.blurAutoCompletion(this.ruleForm, type)
     }
   }
 }

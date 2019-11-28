@@ -81,8 +81,10 @@
           </tr>
           <tr>
             <td>收件人地址：</td>
-            <td v-if="detailsData.orderStatus === 2">
-              <el-input v-model="formData.customerAddress" clearable></el-input>
+            <td v-if="detailsData.orderStatus === 2" style="display: flex;">
+              <!-- <el-input v-model="formData.customerAddress" clearable></el-input> -->
+              <region-select @change="regionChange"></region-select>
+              <el-input v-model="formData.customerAddress" clearable placeholder="详细地址" style="margin-left: 10px;"></el-input>
             </td>
             <td v-else>{{detailsData.customerAddress | filterEmpty}}</td>
           </tr>
@@ -97,9 +99,9 @@
             <td>快递类型：</td>
             <td v-if="detailsData.orderStatus === 2">
               <!-- <el-input v-model="formData.logisticsName" clearable></el-input> -->
-              <el-select v-model="formData.logisticsName" size="medium" class="year-box"
+              <el-select v-model="formData.logisticsNo" size="medium" class="year-box"
                 placeholder="选择快递类型">
-                <el-option :label="logistics.logisticsName" :value="logistics.logisticsName" :key="index" v-for="(logistics, index) in logisticsList"></el-option>
+                <el-option :label="logistics.logisticsName" :value="logistics.logisticsNo" :key="index" v-for="(logistics, index) in logisticsList"></el-option>
               </el-select>
             </td>
             <td v-else>{{detailsData.logisticsName | filterEmpty}}</td>
@@ -125,16 +127,16 @@
         <div class="ta-l view-authinfo-wrap">
           <template>
             <el-form :model="addForm" :rules="rules" ref="addForm" label-position="right" label-width='120px'>
-              <div>{{formData.customerPhone}}&nbsp;&nbsp;{{formData.customerName}}</div>
-              <div>{{formData.customerAddress}}</div>
+              <div class="customer-info">{{formData.customerPhone}}&nbsp;&nbsp;{{formData.customerName}}</div>
+              <div class="customer-info">{{getCustomerDetailAddress()}}</div>
               <el-form-item inline label='快递类型：' prop='useType' class="address-wrap">
-                <el-select v-model="addForm.useType" size="medium" class="year-box"
-                  placeholder="请选择">
-                  <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in uses"></el-option>
+                <el-select v-model="addForm.logisticsNo" size="medium" class="year-box"
+                  placeholder="选择快递类型">
+                  <el-option :label="logistics.logisticsName" :value="logistics.logisticsNo" :key="index" v-for="(logistics, index) in logisticsList"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item inline label='快递单号：' prop='description'>
-                <el-input style="width: 200px;" placeholder='限20个字符,不含特殊字符' v-model="addForm.description"></el-input>
+              <el-form-item inline label='快递单号：' prop='logisticsNumber'>
+                <el-input style="width: 200px;" placeholder='限20个字符,不含特殊字符' v-model="addForm.logisticsNumber"></el-input>
               </el-form-item>
               <div class="ta-c btn-wrap">
                 <el-button type="primary" class='confirm-btn' @click="submitForm('addForm')">确定</el-button>
@@ -148,13 +150,15 @@
     <!-- 底部 -->
     <template slot="footer">
       <template v-if="parseInt(detailsData.orderStatus) === 2">
-        <el-button type="primary" @click="passVisible = true">发货</el-button>
+        <el-button type="primary" @click="sendOrder">发货</el-button>
       </template>
     </template>
   </common-tpl>
 </template>
 
 <script>
+import RegionSelect from '@/components/utils/RegionSelect'
+
 export default {
   data () {
     return {
@@ -164,7 +168,21 @@ export default {
         customerAddress: '',
         logisticsName: '',
         logisticsNo: '',
-        logisticsNumber: ''
+        logisticsNumber: '',
+        region: {
+          province: {
+            code: '',
+            name: ''
+          },
+          city: {
+            code: '',
+            name: ''
+          },
+          area: {
+            code: '',
+            name: ''
+          }
+        }
       },
       addForm: {},
       uses: [],
@@ -217,7 +235,49 @@ export default {
         }
       })
     },
-    submitForm () {},
+    submitForm () {
+      let logistics = this.logisticsList.filter(logi => logi.logisticsNo === this.addForm.logisticsNo)
+      if (!logistics || logistics.length === 0) logistics = [{}]
+      let params = {
+        orderId: this.detailsData.orderId,
+        customerName: this.formData.customerName,
+        customerPhone: this.formData.customerPhone,
+        addressId: this.detailsData.addressId,
+        province: this.formData.region.province.name,
+        provinceCode: this.formData.region.province.code,
+        city: this.formData.region.city.name,
+        cityCode: this.formData.region.city.code,
+        zone: this.formData.region.area.name,
+        zoneCode: this.formData.region.area.code,
+        address: this.formData.customerAddress,
+        logisticsNo: logistics[0].logisticsNo,
+        logisticsName: logistics[0].logisticsName,
+        logisticsNumber: this.addForm.logisticsNumber
+      }
+      this.submitLoading = true
+      this.$http.post('@ROOT_API/meal/updateSetMealOrderShip', params).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        this.$message({
+          message: resData.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.dialogVisible = false
+        this.$router.back()
+      }).finally(() => {
+        setTimeout(() => {
+          this.submitLoading = false
+        }, 1000)
+      })
+    },
     getSummaries (param) {
       const { columns, data } = param
       const sums = []
@@ -258,8 +318,22 @@ export default {
         let results = resData.data
         this.logisticsList = results || []
       })
+    },
+    regionChange (results) {
+      this.formData.region = results
+    },
+    sendOrder () {
+      this.addForm.logisticsNo = this.formData.logisticsNo
+      this.addForm.logisticsNumber = this.formData.logisticsNumber
+      this.passVisible = true
+    },
+    getCustomerDetailAddress () {
+      return `${this.formData.region.province.name}
+        ${this.formData.region.city.name}${this.formData.region.area.name}
+          ${this.formData.customerAddress}`
     }
-  }
+  },
+  components: { RegionSelect }
 }
 </script>
 
@@ -337,6 +411,17 @@ export default {
       .btn-wrap {
         padding-bottom: 20px;
       }
+    }
+    .customer-info {
+      margin-left: 35px;
+      font-size: 12px;
+      line-height: 20px;
+    }
+  }
+  .region-select-wrap {
+    justify-content: flex-start !important;
+    .el-select, .el-input, input {
+      width: 150px !important;
     }
   }
 }

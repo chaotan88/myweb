@@ -26,9 +26,9 @@ export default {
     dateTabs: {
       type: Array,
       default: () => ([
-        { label: '近三个月', value: 3 },
-        { label: '近半年', value: 6 },
-        { label: '近一年', value: 12 },
+        { label: '近三个月', value: '3_month' },
+        { label: '近半年', value: '6_month' },
+        { label: '近一年', value: '12_month' },
         { label: '自定义', value: 999 }
       ])
     }
@@ -36,31 +36,42 @@ export default {
   data () {
     return {
       formData: {
-        statisticsDate: [new Date().setMonth(new Date().getMonth() - 3), new Date()]
+        statisticsDate: []
       },
       selectDateType: 3
     }
   },
   watch: {},
   mounted () {
-    this.dateChange()
+    this.selectDateType = this.dateTabs[0]
+    this.dateTypeChange(this.dateTabs[0])
   },
   methods: {
     dateTypeChange (item) {
       this.selectDateType = item.value
       var dt = new Date()
       switch (item.value) {
-        case 3:
+        case '3_month':
           dt.setMonth(dt.getMonth() - 3)
           break
-        case 6:
+        case '6_month':
           dt.setMonth(dt.getMonth() - 6)
           break
-        case 12:
+        case '12_month':
           dt.setMonth(dt.getMonth() - 12)
+          break
+        case '1_day':
+          dt.setDate(dt.getDate() - 1)
+          break
+        case '7_day':
+          dt.setDate(dt.getDate() - 7)
+          break
+        case '15_day':
+          dt.setDate(dt.getDate() - 15)
           break
       }
       this.formData.statisticsDate = [dt, new Date()]
+      this.dateChange()
     },
     /**
      * 过滤选择时间
@@ -68,6 +79,7 @@ export default {
     handleFilterDate (data) {
       this.formData.statisticsDate[0] = this.$Utils.filterDate(data[0], 'YYYY-MM-DD')
       this.formData.statisticsDate[1] = this.$Utils.filterDate(data[1], 'YYYY-MM-DD')
+      this.dateChange()
     },
     dateChange () {
       this.$emit('dateChange', this.formData.statisticsDate)
@@ -76,12 +88,17 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
   .date-select-tabs {
+    background: #fff;
+    padding: 10px;
     .el-form {
       display: flex;
       font-size: 13px;
       color: #333;
+      background: #D6EBFF;
+      line-height: 62px;
+      padding-left: 10px;
       .date-tabs {
         span {
           display: inline-block;
@@ -98,6 +115,12 @@ export default {
         }
         .dt-active {
           background: rgba(193, 224, 255, 1);
+        }
+      }
+      .apply-date-wrap {
+        margin-bottom: 0;
+        .el-form-item__content {
+          margin-top: 11px;
         }
       }
     }
