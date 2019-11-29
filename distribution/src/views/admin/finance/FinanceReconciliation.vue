@@ -72,35 +72,34 @@
       </high-search>
       <el-table :data="tableData" class="full-w" v-loading="loading" element-loading-text="加载中">
         <template>
-          <el-table-column prop="" label="交易编号">
-            <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
+          <el-table-column prop="orderNo" label="交易编号" width="220">
+            <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="推广大使手机">
-            <template slot-scope="scope">{{scope.row.grabPrice | filterEmpty}}</template>
+          <el-table-column prop="phone" label="推广大使手机" width="150">
+            <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="推广大使身份" width="160">
-            <template slot-scope="scope">{{scope.row.configGrabNum | filterEmpty}}</template>
+          <el-table-column prop="ruleName" label="推广大使身份" width="160">
+            <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="交易时间">
-            <template slot-scope="scope">{{scope.row.grabNum | filterEmpty}}</template>
+          <el-table-column prop="addTime" label="交易时间" width="200">
+            <template slot-scope="scope">{{scope.row.addTime | filterDate}}</template>
           </el-table-column>
-          <el-table-column prop="" label="交易类型">
-            <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
+          <el-table-column prop="propertyType" label="交易类型">
+            <template slot-scope="scope">
+              <span>{{scope.row.propertyType | filterDate}}</span>
+            </template>
           </el-table-column>
-          <el-table-column prop="" label="交易内容">
-            <template slot-scope="scope">{{scope.row.grabAliPayAmount | filterEmpty}}</template>
+          <el-table-column prop="addSource" label="交易内容" width="100">
+            <template slot-scope="scope">{{scope.row.addSource | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="交易额">
-            <template slot-scope="scope">{{scope.row.grabWxPayAmount | filterEmpty}}</template>
+          <el-table-column prop="propertyAmount" label="交易额" width="100">
+            <template slot-scope="scope">{{scope.row.propertyAmount | filterMoney}}</template>
           </el-table-column>
-          <el-table-column prop="" label="交易状态">
-            <template slot-scope="scope">{{scope.row.grabCashPointPayAmount | filterEmpty}}</template>
+          <el-table-column prop="businessType" label="交易科目" width="120">
+            <template slot-scope="scope">{{scope.row.businessType | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="" label="交易科目">
-            <template slot-scope="scope">{{scope.row.grabCashPointPayAmount | filterEmpty}}</template>
-          </el-table-column>
-          <el-table-column prop="" label="交易属性">
-            <template slot-scope="scope">{{scope.row.grabCashPointPayAmount | filterEmpty}}</template>
+          <el-table-column prop="businessAttr" label="交易属性" width="120">
+            <template slot-scope="scope">{{scope.row.businessAttr | filterEmpty}}</template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">
@@ -218,7 +217,11 @@ export default {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
         businessType: this.pageType
-      }).then((res) => {})
+      }).then((res) => {
+        let { data, total } = res.data
+        this.tableData = data.list
+        this.pageData.total = total
+      })
     },
     /**
      * 获取统计数据

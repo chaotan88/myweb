@@ -87,13 +87,15 @@ export default {
     }
   },
   computed: {},
-  mounted () {},
+  mounted () {
+    this.getDetailsData()
+  },
   methods: {
     /**
      * 获取详情数据
      */
     getDetailsData () {
-      this.$http.post('@ROOT_API/rule/getRuleDetail', {
+      this.$http.post('@ROOT_API/withdrawalManageController/getWithdrawalDetail', {
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -104,6 +106,8 @@ export default {
           })
           return false
         }
+        this.ruleForm = resData.data
+        this.inpBlur('conditionValue')
       })
     },
     /**
@@ -114,6 +118,10 @@ export default {
         if (!valid) return false
         this.confirmLoading = true
         this.$http.post('@ROOT_API/withdrawalManageController/settingWithdrawal', {
+          withdrawalCycle: this.ruleForm.withdrawalCycle,
+          cycleNumber: this.ruleForm.cycleNumber,
+          conditionType: this.ruleForm.conditionType,
+          conditionValue: parseFloat(this.ruleForm.conditionValue)
         }).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {

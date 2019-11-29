@@ -216,6 +216,36 @@ export default {
           component: r => require(['@/views/admin/vip/examineDetails'], r)
         }
       ]
+    },
+    // 推荐网络
+    {
+      path: '/admin/vip/recommendNet',
+      redirect: '/admin/vip/recommendNet/index',
+      meta: {
+        nav: '推荐网络',
+        icon: 'icon-huiyuanguanli',
+        auth: true,
+        authCode: 601062
+      },
+      component: r => require(['@/views/admin/vip/recommendNetLayout'], r),
+      children: [
+        {
+          path: '/admin/vip/recommendNet/index',
+          meta: {
+            title: '推荐网络',
+            pageBack: true,
+            // refresh: false,
+            auth: true,
+            authCode: 601062,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '推广大使', path: '/admin/vip/' },
+              { title: '推荐网络', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/vip/RecommendNet.vue'], r)
+        }
+      ]
     }
   ]
 }
