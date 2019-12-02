@@ -14,8 +14,8 @@
     <!-- 列表 -->
     <template slot="main">
         <VipDetails :data="userDetail"></VipDetails>
-        <div class="net-work-chart">
-          <canvas width="1000" height="800" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas>
+        <div class="net-work-chart" id="net-work-chart">
+          <!-- <canvas width="1000" :height="canvasHeight" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas> -->
         </div>
     </template>
   </common-tpl>
@@ -23,6 +23,8 @@
 
 <script>
 import VipDetails from '@/views/admin/vip/vipDetails.vue'
+let echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/tree')
 export default {
   data () {
     return {
@@ -36,12 +38,14 @@ export default {
         pageSize: 10,
         total: 0
       },
-      userDetail: {}
+      userDetail: {},
+      start: 0,
+      canvasHeight: 1000
     }
   },
   mounted () {
     this.getRootRecommendPhone()
-    this.draw()
+    // this.draw()
   },
   methods: {
     getRootRecommendPhone () {
@@ -65,49 +69,69 @@ export default {
      * 获取列表数据
      * @param  {[type]} type [数据类型，type存在表示获取导出数据]
      */
-    getListData (type) {
-      let url = ''
-      if (!type) {
-        url = '@ROOT_API/buyMemberAccountManageController/getUpgradeList'
-        this.loading = true
-      } else {
-        url = 'distributeApplyManage/exportPayAuditList'
-      }
-      let data = {
-        dealWithStatus: this.pageType,           // 否 int 审核状态（1：待审核 2：审核通过 3：已打回 ）
-        phone: this.formData.phone,                // 否 string  申请编号
-        start: this.pageData.currentPage,
-        pageSize: this.pageData.pageSize
-      }
-      if (!type) {
-        this.$http.post(url, data).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            this.tableData = []
-            this.pageData.total = 0
-            return false
-          }
-          let results = resData.data
-          this.pageData.total = results.total
-          results.list.forEach((row) => {
-            row.paymentVoucher = row.paymentVoucher ? row.paymentVoucher.split(',') : row.paymentVoucher ? [row.paymentVoucher] : []
+    getListData (phone) {
+      this.$http.post('@ROOT_API/buyMemberAccountManageController/getMemberRecommendNet', {
+        // start: this.start,
+        phone: phone
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
           })
-          this.tableData = results.list
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        let filterParams = []
-        for (let key in data) {
-          filterParams.push(key + '=' + data[key])
+          return false
         }
-        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+        let results = resData.data
+        this.buildData(results)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    buildData (data) {
+      const rootData = {
+        invitationCode: this.userDetail.invitationCode,
+        invitationName: this.userDetail.invitationName,
+        ruleName: this.userDetail.ruleName,
+        userName: this.userDetail.invitationName,
+        customerPhone: this.userDetail.customerPhone,
+        level: baseLevel,
+        x: baseX,
+        y: baseY,
+        umbrellaCount: 100,
+        userId: this.userDetail.customerId
       }
+      if (!data || data.length === 0) {
+        this.drawChart([], rootData, 0)
+        return false
+      }
+      let datas = []
+      let baseX = 200
+      let baseY = 40
+      let baseLevel = data[0].level - 1
+      let level1Datas = data.filter(da => da.level - 1 === baseLevel) || []
+      let level2Datas = data.filter(da => da.level - 2 === baseLevel) || []
+      let len = level1Datas.length + level2Datas.length + 1
+      this.canvasHeight = len * 30
+      baseY = this.canvasHeight / 2
+      data.forEach((da, index) => {
+        datas.push({
+          invitationCode: da.invitationCode,
+          invitationName: da.invitationName || '',
+          ruleName: da.disRuleName,
+          userName: da.invitationName || '',
+          customerPhone: da.phone,
+          level: da.level,
+          x: baseX + 400,
+          y: 20 + (10 * index),
+          umbrellaCount: da.umbrellaCount,
+          userId: da.userId,
+          parentId: da.parentId
+        })
+      })
+      // this.draw(datas, rootData, baseLevel)
+      this.drawChart(datas, rootData, baseLevel)
     },
     getMemberDetail (phone) {
       this.$http.post('@ROOT_API/buyMemberAccountManageController/getMemberList', {
@@ -130,6 +154,7 @@ export default {
         } else {
           this.userDetail = {}
         }
+        this.getListData(phone)
       }).finally(() => {
         this.loading = false
       })
@@ -139,22 +164,26 @@ export default {
      * 搜索
      */
     searchHandle () {
-      this.pageChange(1)
+      this.getMemberDetail(this.formData.phone)
     },
-    draw () {
+    draw (datas, rootData, baseLevel) {
       let canvas = document.getElementById('canvas')
       let stage = new JTopo.Stage(canvas)
-      let scene = new JTopo.Scene()
-      function node (x, y, img, height, width, obj) {
-        let node = new JTopo.Node(name, obj)
-        node.setLocation(x, y)
-        node.setSize(height, width)
+      let scene = new JTopo.Scene(stage)
+      let height = 40
+      let width = 200
+      function node (obj, isRoot) {
+        let node = new JTopo.Node(obj.ruleName + ' ' + obj.customerPhone)
+        if (isRoot) {
+          node.setLocation(obj.x, obj.y)
+        }
+        node.setSize(width, height)
         node.fillColor = '242, 242, 242'
         node.fontColor = '0, 0, 0'
-        node.dragable = false
+        node.dragable = true
         node.textPosition = 'Top_Left'
         node.textOffsetY = 40
-        node.textOffsetX = 10 * name.length + 15
+        node.textOffsetX = 160
         node.click(() => {
           console.log(obj)
         })
@@ -163,15 +192,15 @@ export default {
         scene.translate = false
         scene.add(node)
 
-        let node2 = new JTopo.Node(name, obj)
-        node2.setLocation(x + 250, y)
-        node2.setSize(50, 50)
-        node2.fillColor = '242, 242, 242'
+        let node2 = new JTopo.Node(obj.umbrellaCount)
+        // node2.setLocation(obj.x + 250, obj.y)
+        node2.setSize(40, 40)
+        node2.fillColor = '102,204,51'
         node2.fontColor = '0, 0, 0'
         node2.dragable = false
         node2.textPosition = 'Top_Left'
         node2.textOffsetY = 40
-        node2.textOffsetX = 10 * name.length + 15
+        node2.textOffsetX = 25
         scene.add(node2)
         return node
       }
@@ -182,22 +211,90 @@ export default {
         scene.add(link)
         return link
       }
-      let r1 = node(40, 40, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r2 = node(40, 110, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r3 = node(40, 180, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r4 = node(40, 300, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r5 = node(40, 370, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r6 = node(40, 440, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r7 = node(40, 350, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      let r8 = node(40, 270, '', 'A0002 李连杰', 250, 50, { level: '广州市市级运营中心', count: 20 })
-      linkNode(r1, r2, '26, 191, 94')
-      linkNode(r1, r3, '26, 191, 94')
-      linkNode(r1, r4, '26, 191, 94')
-      linkNode(r1, r5, '26, 191, 94')
-      linkNode(r1, r6, '26, 191, 94')
-      linkNode(r1, r7, '26, 191, 94')
-      linkNode(r1, r8, '26, 191, 94')
-      stage.add(scene)
+      const rootNode = node(rootData, true)
+      const color = '26, 191, 94'
+      datas.forEach((da, index) => {
+        if (da.level === baseLevel + 1) {
+          linkNode(rootNode, node(da), color)
+        }
+      })
+      scene.doLayout(JTopo.layout.TreeLayout('right', 40, 300))
+    },
+    drawChart (datas, rootData, baseLevel) {
+      let chart = echarts.init(document.getElementById('net-work-chart'))
+      let chartData = {
+        name: rootData.invitationName,
+        children: []
+      }
+      const setChild = (da) => {
+        chartData.children.forEach(cd => {
+          if (da.parentId === cd.userId) {
+            cd.children = cd.children || []
+            cd.children.push({
+              name: da.ruleName + '  ' + da.customerPhone,
+              children: [],
+              phone: da.customerPhone
+            })
+          }
+        })
+      }
+      datas.forEach((da, index) => {
+        if (da.level === baseLevel + 1) {
+          chartData.children.push({
+            name: da.ruleName + '  ' + da.customerPhone,
+            children: [],
+            userId: da.userId,
+            phone: da.customerPhone
+          })
+        } else {
+          setChild(da)
+        }
+      })
+      chart.setOption({
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove'
+        },
+        series: [
+          {
+            type: 'tree',
+            data: [chartData],
+            top: '1%',
+            left: '7%',
+            bottom: '1%',
+            right: '20%',
+            symbolSize: 7,
+            label: {
+              normal: {
+                position: 'left',
+                verticalAlign: 'middle',
+                align: 'right',
+                fontSize: 9
+              }
+            },
+            leaves: {
+              label: {
+                normal: {
+                  position: 'right',
+                  verticalAlign: 'middle',
+                  align: 'left'
+                }
+              }
+            },
+            expandAndCollapse: false,
+            animationDuration: 550,
+            animationDurationUpdate: 750
+          }
+        ]
+      })
+      let that = this
+      chart.on('click', function (params) {
+        console.log(params)
+        chart.clear()
+        that.formData.phone = params.data.phone
+        that.searchHandle()
+        return false
+      })
     }
   },
   components: { VipDetails }
@@ -321,6 +418,8 @@ export default {
     }
   }
   .net-work-chart {
+    width: 100%;
+    height: 2000px;
     margin-top: 20px;
   }
 }

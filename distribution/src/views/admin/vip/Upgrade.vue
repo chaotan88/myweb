@@ -30,14 +30,15 @@
             </el-select>
           </el-form-item>
           <el-form-item inline label='选择地区：' prop='address' class="address-wrap">
-            <region-select :assignData="detailsData.region" @change="regionChange" v-if="formData.rankId === 4 || formData.rankId === 5"></region-select>
+            <region-select :assignData="detailsData.region" @change="regionChange"
+              v-if="formData.rankId === 4 || formData.rankId === 5" :showArea="showArea"></region-select>
             <span v-else>--</span>
           </el-form-item>
           <el-form-item label="服务费：">
             {{detailsData.upgradeAmount | filterEmpty}}
           </el-form-item>
           <el-form-item label="实际支付金额：">
-            <el-input placeholder="输入整数,限20个字符" v-model="detailsData.amount"></el-input>
+            <el-input placeholder="输入整数,限20个字符" v-model="detailsData.realPayAmount"></el-input>
           </el-form-item>
           
           <el-form-item label="上传凭证：">
@@ -102,6 +103,20 @@
         infoVisible: false,     // 弹窗
         addVisible: false,      // 弹窗
         detailsData: {},        // 详情信息
+        region: {
+          province: {
+            code: '',
+            name: ''
+          },
+          city: {
+            code: '',
+            name: ''
+          },
+          area: {
+            code: '',
+            name: ''
+          }
+        },
         rowData: {},            // 当前行信息
         pageData: {      // 分页数据
           currentPage: 1,
@@ -109,7 +124,8 @@
           total: 0
         },
         coverImgList: [],
-        userInfo: {}
+        userInfo: {},
+        showArea: false
       }
     },
     computed: {
@@ -148,222 +164,48 @@
 
       rankIdChange (val) {
         this.detailsData.rankList.forEach(item => {
-          if (item.rankId === val) this.$set(this.detailsData, 'upgradeAmount', item.upgradeAmount)
+          if (item.rand === val) this.$set(this.detailsData, 'upgradeAmount', item.ruleDesc)
         })
-      },
-      /**
-       * 行内前操作
-       */
-      handleBefore (row, type) {
-        this.rowData = row
-        if (type === 'details') {
-          this.$http.get('@ROOT_API/buyMemberAccountManageController/getDeductionDetailList', {
-            params: {
-              deductionId: this.rowData.deductionId
-            }
-          }).then((res) => {
-            let resData = res.data
-            if (parseInt(resData.status) !== 1) {
-              this.$message({
-                message: resData.msg,
-                type: 'error',
-                duration: 1500
-              })
-              this.tableData = []
-              return false
-            }
-            this.infoVisible = true
-            this.tableData = resData.data
-          }).finally(() => {
-            this.dialogLoading = false
-          })
-        } else {
-          this.deleteVisible = true
+        if (this.formData.rankId === 5) {
+          this.showArea = false
+        } else if (this.formData.rankId === 4) {
+          this.showArea = true
         }
-      },
-
-      /**
-       * 添加前操作
-       */
-      handleAddBefore () {
-        this.formData.deductionAmount = ''
-       // this.formData.phone = ''
-        this.checkedRevenue = ''
-        this.formData.imgs = []
-        this.formKey = new Date().getTime()
-        this.tableData = [{upgradeAmount: this.detailsData.upgradeAmount, deductionAmountTotal: this.detailsData.deductionAmountTotal}]
-        this.$http.post('@ROOT_API//buyMemberAccountManageController/initDeductionInfo', {
-          deductionType: this.formData.deductionType,
-          userId: this.userId,
-          phone: this.formData.phone
-        }).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
-          }
-          if (this.formData.deductionType === 1) {
-            this.cashPoints = resData.data.cashPoints
-          } else {
-            this.formData.deductionGoods = resData.data
-            this.formData.deductionGoods.forEach(item => {
-              this.$set(item, 'ifDeduction', false)
-            })
-          }
-          this.addVisible = true
-        }).finally(() => {
-          this.dialogLoading = false
-        })
-      },
-      /**
-       * 删除操作
-       */
-      handleDelete () {
-        this.$http.get('@ROOT_API/buyMemberAccountManageController/deleteDeductionInfo', {
-          params: {deductionId: this.rowData.deductionId}
-        }).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
-          }
-          this.deleteVisible = false
-        }).finally(() => {
-          this.dialogLoading = false
-        })
-      },
-      /**
-       * 商品图片上传成功
-       */
-      uploadImgSuccess (url, imgsList, type) {
-        this.$set(this.formData, 'imgs', [{url: this.$Utils.filterImgUrl(url), img: url}])
-      //  this.formKey = new Date().getTime()
-        this.formData.deductionVoucher = url
-      },
-      /**
-       * 商品图片删除
-       */
-      deleteImg (val, type) {
-        this.formData.deductionVoucher = ''
-      //  this.formKey = new Date().getTime()
-      },
-      /**
-       * 打开添加弹框初始化数据
-       */
-      initData () {
-        this.$nextTick(function () {
-          // DOM 更新了
-          this.resetForm('formData')
-        })
-        this.formData.deductionVoucher = ''
-        this.formData.phone = ''
-        this.formData.deductionType = 1
-        this.formData.imgs = []
-      },
-      /**
-       * 计算剩余通用积分
-       */
-      getIntegral (all) {
-        let data = this.deductionList.filter(item => item.deductionType === 1)
-        if (data.length) {
-          let pointArr = data.map(item => item.deductionAmount)
-          let deductionAmount = pointArr.reduce(function (prev, cur) {
-            return prev + cur
-          })
-          return all - deductionAmount
-        } else {
-          return all
-        }
-      },
-      /**
-       * 获取已选择最大收益
-       */
-      getCheckedRevenue () {
-        this.checkedRevenue = 0
-        this.formData.deductionGoods.forEach(item => {
-          if (item.ifDeduction) {
-            this.checkedRevenue += parseInt(item.expectedProfit)
-          }
-        })
-      },
-      resetForm (formName) {
-        this.$refs[formName].clearValidate()
-      },
-      deductionTypeChange () {
-        this.formData.phone = ''
-        this.handleAddBefore()
-      },
-      /**
-       * 添加提交操作
-       */
-      submitFormData (formName) {
-        this.$refs[formName].validate(valid => {
-          if (!valid) return false
-          this.submitLoading = true
-          this.formData.userId = this.userId
-          let total = this.formData.deductionType === 1 ? this.cashPoints : this.checkedRevenue
-          let msg = this.formData.deductionType === 1 ? '不能大于剩余待扣金额和剩余通用积数' : '不能大于剩余待扣金额和预计最大收益'
-          if (this.formData.deductionAmount > this.tableData[0].upgradeAmount - this.tableData[0].deductionAmountTotal || this.formData.deductionAmount > total) {
-            this.$message({
-              message: msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
-          }
-          let data = JSON.parse(JSON.stringify(this.formData))
-          if (this.formData.deductionType === 2 || this.formData.deductionType === 3) {
-            data.laveAmount = this.checkedRevenue ? this.checkedRevenue - data.deductionAmount : ''
-            data.deductionGoods = data.deductionGoods.filter(item => item.ifDeduction === true)
-            data.deductionGoods.forEach(item => {
-              this.$delete(item, 'ifDeduction')
-            })
-          } else {
-            data.deductionGoods = []
-          }
-          delete data.imgs
-          this.$http.post('@ROOT_API/buyMemberAccountManageController/addDeductionInfo', data).then((res) => {
-            let resData = res.data
-            if (parseInt(resData.status) !== 1) {
-              this.$message({
-                message: resData.msg,
-                type: 'error',
-                duration: 1500
-              })
-              return false
-            }
-            this.$message({
-              message: resData.msg,
-              type: 'success',
-              duration: 1000
-            })
-            this.deductionList = resData.data.deductionList
-            this.detailsData.deductionAmountTotal = resData.data.deductionAmountTotal
-            this.addVisible = false
-          }).finally(() => {
-            setTimeout(() => {
-              this.submitLoading = false
-            }, 1000)
-          })
-        })
       },
       /**
        * 提交操作
        */
       handleSubmit () {
         this.submitLoading = true
-        this.$http.post('@ROOT_API//buyMemberAccountManageController/submitMemberUpgrade', {
-          id: this.formData.upgradeId,
-          rankId: this.detailsData.rankId
-        }).then((res) => {
+        let params = {
+          upgradeId: this.formData.upgradeId,
+          rankId: this.formData.rankId,
+          // upgradeAmount: '',
+          paymentVoucher: this.ruleForm.uploadFiles,
+          serviceAmount: this.detailsData.upgradeAmount,
+          realPayAmount: this.detailsData.realPayAmount,
+          agentZone: this.detailsData.region.area.name,
+          agentZoneCode: this.detailsData.region.area.code,
+          agentCity: this.detailsData.region.city.name,
+          agentCityCode: this.detailsData.region.city.code,
+          agentProvince: this.detailsData.region.province.name,
+          agentProvinceCode: this.detailsData.province.area.code,
+          userName: this.detailsData.userName,
+          userPhone: this.detailsData.userPhone
+        }
+        this.detailsData.rankList.forEach(item => {
+          if (item.rand === this.formData.rankId) {
+            params.rankName = item.ruleName
+          }
+        })
+        if (this.formData.rankId === 1 || this.formData.rankId === 2 || this.formData.rankId === 3) {
+          params.agentRand = 1
+        } else if (this.formData.rankId === 4) {
+          params.agentRand = 2
+        } else if (this.formData.rankId === 5) {
+          params.agentRand = 3
+        }
+        this.$http.post('@ROOT_API/buyMemberAccountManageController/submitMemberUpgrade', params).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {
             this.$message({

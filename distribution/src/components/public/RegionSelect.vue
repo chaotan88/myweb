@@ -36,7 +36,7 @@
         </el-option>
       </template>
     </el-select>
-    <el-select v-model="area" placeholder="请选择区" @change="areaChange" clearable>
+    <el-select v-model="area" placeholder="请选择区" @change="areaChange" clearable v-show="showArea">
       <template v-for="item in areaData">
         <el-option
           :key="item.code"
@@ -71,6 +71,10 @@ export default {
           }
         }
       }
+    },
+    showArea: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
