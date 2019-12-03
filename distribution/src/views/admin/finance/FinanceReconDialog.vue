@@ -10,28 +10,32 @@
 
           <el-form-item label="交易编号：">
             <strong>
-              {{initData.withdrawalAmount| filterEmpty}}
+              {{initData.orderNo| filterEmpty}}
               <span class="fw-n" style="color: #bbb; font-size: 14px;"></span>
             </strong>
           </el-form-item>
 
           <el-form-item label="推广大使手机：">
-            <strong>{{initData.withdrawalAmount | filterMoney | filterEmpty('元')}}</strong>
+            <strong>{{initData.phone | filterEmpty}}</strong>
           </el-form-item>
 
           <el-form-item label="推广大使身份：">
-            <strong>{{initData.withdrawalFees | filterMoney | filterEmpty('元')}}</strong>
+            <strong>{{initData.ruleName | filterEmpty}}</strong>
           </el-form-item>
           <template>
-            <el-form-item label="交易时间：">{{initData.bankName | filterEmpty}}</el-form-item>
-            <el-form-item label="交易类型：">{{initData.cardNum | filterEmpty}}</el-form-item>
+            <el-form-item label="交易时间：">{{initData.addTime | filterDate}}</el-form-item>
+            <el-form-item label="交易类型：">
+              <span v-if="initData.propertyType === 1">余额</span>
+              <span v-else-if="initData.propertyType === 2">现金</span>
+              <span v-else>--</span>
+            </el-form-item>
             <el-form-item label="支付宝订单号：">{{initData.cardNum | filterEmpty}}</el-form-item>
             <el-form-item label="微信支付订单号：">{{initData.cardNum | filterEmpty}}</el-form-item>
-            <el-form-item label="交易内容：">{{initData.idCard | filterEmpty}}</el-form-item>
-            <el-form-item label="收益值：">{{initData.alipayNum | filterEmpty}}</el-form-item>
+            <el-form-item label="交易内容：">{{initData.addSource | filterEmpty}}</el-form-item>
+            <el-form-item label="收益值：">{{initData.propertyAmount | filterMoney}}</el-form-item>
             <el-form-item label="交易状态：">{{initData.cardholder | filterEmpty}}</el-form-item>
-            <el-form-item label="交易科目：">{{initData.alipayNum | filterEmpty}}</el-form-item>
-            <el-form-item label="交易属性：">{{initData.cardholder | filterEmpty}}</el-form-item>
+            <el-form-item label="交易科目：">{{initData.businessType | filterEmpty}}</el-form-item>
+            <el-form-item label="交易属性：">{{initData.businessAttr | filterEmpty}}</el-form-item>
           </template>
         </div>
       </el-form>

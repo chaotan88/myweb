@@ -60,7 +60,7 @@
           <div class="d-ib" style="width: 150px;">
             <el-select class="full-w" v-model="formData.payType" @change="subTypehandle()" placeholder="全部支付方式">
               <el-option label="全部支付方式" value=""></el-option>
-              <el-option label="微信未付" :value=1></el-option>
+              <el-option label="微信支付" :value=1></el-option>
               <el-option label="支付宝支付" :value=2></el-option>
             </el-select>
           </div>
@@ -72,22 +72,22 @@
 
       <el-table :data="tableData" class="full-w" v-loading="loading" element-loading-text="加载中">
        <el-table-column prop="" label="套餐名称">
-          <template slot-scope="scope">{{scope.row.goodsName | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="" label="套餐金额">
-          <template slot-scope="scope">{{scope.row.grabPrice | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.setMealPriceSum | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="" label="套餐成本">
-          <template slot-scope="scope">{{scope.row.buyingPrice | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.setMealCostPriceSum | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="" label="订购数量">
-          <template slot-scope="scope">{{scope.row.hangSellNum | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.setMealNum | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="" label="实付金额">
-          <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.orderAmountSum | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="" label="订购总金额">
-          <template slot-scope="scope">{{scope.row.grabAmount | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.orderTotalAmountSum | filterMoney}}</template>
         </el-table-column>
         <div slot="empty">
           <no-data></no-data>
@@ -127,9 +127,7 @@ export default {
     return {
       loading: false,                 // loading
       nowdatestr: '',           // 当前日期
-      tableData: [{
-        transferName: 111
-      }],
+      tableData: [],
       formData: {
         curYear: '',           // 选择日期
         statisticsDate: [],    // 日期
@@ -232,9 +230,9 @@ export default {
             })
             return false
           }
-          let data = resData.data
-          this.tableData = data
-          this.pageData.total = data.total
+          let { list, total } = resData.data
+          this.tableData = list
+          this.pageData.total = total
         }).finally(() => {
           this.loading = false
         })

@@ -3,37 +3,37 @@
   <common-tpl class="finance-index-wrap">
     <template slot="header">
       <!-- 高级搜索组件 -->
-      <high-search :textVisible="false">
+      <high-search @search="highSearch('form')" :close="highSearchClose">
         <div class="pos-r" slot="search">
-          <!-- <div class="d-ib" style="width: 160px;">
-            <el-select class="full-w" v-model="formData.accountType">
-              <el-option label="全部" value=""></el-option>
-              <el-option label="提现到支付宝账户" value="2"></el-option>
-              <el-option label="提现到银行卡" value="1"></el-option>
-            </el-select>
-          </div>
-          &nbsp; -->
           <div class="d-ib pos-r" style="width: 250px;">
             <el-input placeholder="输入交易编号/手机号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
           </div>
         </div>
-        <!-- <div class="pos-r" slot="search">
-          <div class="d-ib" style="width: 120px;">
-            <el-select class="full-w" v-model="formData.topNum">
-              <el-option label="Top10" value="ten"></el-option>
-              <el-option label="Top50" value="fifty"></el-option>
-              <el-option label="Top100" value="hundred"></el-option>
-              <el-option label="Top200" value="twoHundred"></el-option>
-              <el-option label="所有" value="all"></el-option>
-            </el-select>
-          </div>
-           <div class="d-ib pos-r">
-          </div>
-        </div> -->
-        <!-- <template slot="edit">
-          <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
-        </template> -->
+        <div slot="main" class="senior">
+          <el-form ref="form" :rules="rules" :model="formData" label-position="right" label-width="140px" class="search-form">
+            <el-form-item label="推广大使姓名：" prop="cardName">
+              <el-input v-model.trim="formData.cardName" placeholder="20个字符以内" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="推广大使手机号：" prop="customerPhone">
+              <el-input v-model.trim="formData.customerPhone" placeholder="手机格式，限11个字符" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="身份证号：" prop="idCard">
+              <el-input v-model.trim="formData.idCard" placeholder="仅限输入数字和字母，20个字符以内" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="交易内容：">
+              <el-select v-model="formData.addSource" size="medium" placeholder="选择交易内容">
+                <el-option label="全部" value=""></el-option>
+                <el-option label="推荐奖" :value="101"></el-option>
+                <el-option label="大使管理奖" :value="102"></el-option>
+                <el-option label="区域管理奖" :value="103"></el-option>
+                <el-option label="VIP提货奖" :value="104"></el-option>
+                <el-option label="运营提货奖" :value="105"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <div class="clear"></div>
+        </div>
       </high-search>
     </template>
 
@@ -53,23 +53,25 @@
         </el-table-column>
         <el-table-column prop="propertyType" label="交易类型">
           <template slot-scope="scope">
-            <span v-if="scope.row.propertyType === 1">消费积分</span>
+            {{scope.row.propertyTypeVal | filterEmpty}}
+            <!-- <span v-if="scope.row.propertyType === 1">消费积分</span>
             <span v-else-if="scope.row.propertyType === 2">现金积分</span>
             <span v-else-if="scope.row.propertyType === 3">金额</span>
             <span v-else-if="scope.row.propertyType === 4">服务积分</span>
-            <span v-else>--</span>
+            <span v-else>--</span> -->
           </template>
         </el-table-column>
         <el-table-column prop="addSource" label="交易内容" min-width="130">
           <template slot-scope="scope">
-            <span v-if="scope.row.addSource === 1">购买商品</span>
+            {{scope.row.addSourceVal | filterEmpty}}
+            <!-- <span v-if="scope.row.addSource === 1">购买商品</span>
             <span v-else-if="scope.row.addSource === 2">购买商品</span>
             <span v-else-if="scope.row.addSource === 3">推荐用户</span>
             <span v-else-if="scope.row.addSource === 4">支出积分</span>
             <span v-else-if="scope.row.addSource === 5">注册获取积分</span>
             <span v-else-if="scope.row.addSource === 6">每日登录获取积分</span>
             <span v-else-if="scope.row.addSource === 7">退回积分</span>
-            <span v-else>--</span>
+            <span v-else>--</span> -->
           </template>
         </el-table-column>
         <el-table-column prop="propertyAmount" label="交易额（元）" min-width="150">
@@ -129,8 +131,11 @@ export default{
       loading: false,         // 加载loading
       pageType: '',            // 页面类型 [0、全部 1、待处理 2、已处理 3、回退]
       formData: {             // 表单数据
-        accountType: '',      // 账户类型（1：银行卡、2：支付宝）
-        searchText: ''        // 会员姓名/手机号
+        customerPhone: '',
+        cardName: '',
+        idCard: '',
+        addSource: '',
+        searchText: ''
       },
       detailData: {},        // 提现数据
       showDetailVisible: false,  // 提现弹窗
@@ -140,7 +145,8 @@ export default{
         pageSize: 10,
         total: 0
       },
-      userInfo: {}            // 用户信息
+      userInfo: {},            // 用户信息
+      rules: []
     }
   },
 
@@ -182,6 +188,10 @@ export default{
         pageSize: this.pageData.pageSize,
         dealWithStatus: this.pageType,
         condition: this.formData.searchText,
+        customerPhone: this.formData.customerPhone,
+        cardName: this.formData.cardName,
+        idCard: this.formData.idCard,
+        addSource: this.formData.addSource,
         accountType: this.formData.accountType
       }
       if (!type) {

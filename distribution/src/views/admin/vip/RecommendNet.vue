@@ -222,6 +222,7 @@ export default {
     },
     drawChart (datas, rootData, baseLevel) {
       let chart = echarts.init(document.getElementById('net-work-chart'))
+      chart.off('click')
       let chartData = {
         name: rootData.invitationName,
         children: []
@@ -287,12 +288,10 @@ export default {
           }
         ]
       })
-      let that = this
-      chart.on('click', function (params) {
+      chart.on('click', (params) => {
         console.log(params)
-        chart.clear()
-        that.formData.phone = params.data.phone
-        that.searchHandle()
+        this.formData.phone = params.data.phone
+        this.searchHandle()
         return false
       })
     }

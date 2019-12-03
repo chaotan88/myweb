@@ -14,10 +14,10 @@
         <div class="reset-btn" slot="btn" @click="resetForm()">清空</div>
         <div slot="main" class="senior">
           <el-form ref="form" :rules="rules" :model="formData" label-position="right" label-width="140px" class="search-form">
-            <el-form-item label="会员姓名：" prop="cardName">
+            <el-form-item label="推广大使姓名：" prop="cardName">
               <el-input v-model.trim="formData.cardName" placeholder="20个字符以内" clearable></el-input>
             </el-form-item>
-            <el-form-item label="会员手机：" prop="customerPhone">
+            <el-form-item label="推广大使手机：" prop="customerPhone">
               <el-input v-model.trim="formData.customerPhone" placeholder="手机格式，限11个字符" clearable></el-input>
             </el-form-item>
             <el-form-item label="身份证号：" prop="idCard">
@@ -30,17 +30,17 @@
               </el-select>
             </el-form-item>
             <el-form-item label="身份等级：">
-              <el-select v-model="formData.identityLevel" placeholder="选择身份等级" style="width: 300px;">
+              <el-select v-model="formData.disRuleId" placeholder="选择身份等级" style="width: 300px;">
                 <template v-for="item in identityLevelData">
                   <el-option :value="item.id" :label="item.ruleName"></el-option>
                 </template>
               </el-select>
             </el-form-item>
-            <el-form-item label="会员类型：">
+            <el-form-item label="级别产生方式：">
               <el-select v-model="formData.memberType" size="medium" placeholder="选择会员类型">
                 <el-option label="全部" value=""></el-option>
-                <el-option label="正常会员" :value="1"></el-option>
-                <el-option label="特批会员" :value="2"></el-option>
+                <el-option label="在线升级" :value="1"></el-option>
+                <el-option label="手动升级" :value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="首锁推荐人：">
@@ -188,69 +188,7 @@ export default {
         // 代理费高
         agentHigh: { validator: validateAgent, trigger: 'blur' }
       },
-      userInfo: {},             // 用户信息
-      tableFieldName: [
-        {
-          title: '会员姓名',
-          key: 'cardName'
-        },
-        {
-          title: '会员手机',
-          key: 'customerPhone'
-        },
-        {
-          title: '会员ID',
-          key: 'invitationCode'
-        },
-        {
-          title: '会员身份',
-          key: 'ruleName'
-        },
-        {
-          title: '性别',
-          key: 'sexVal'
-        },
-        {
-          title: '身份证',
-          key: 'idCard'
-        },
-        {
-          title: '注册时间',
-          key: 'registerTimeVal'
-        },
-        {
-          title: '地区',
-          key: 'userAddress'
-        },
-        {
-          title: '可用余额',
-          key: 'balance'
-        },
-        {
-          title: '消费积分',
-          key: 'bonusPoints'
-        },
-        {
-          title: '通用积分',
-          key: 'cashPoints'
-        },
-        {
-          title: '推荐人姓名',
-          key: 'inviterCardName'
-        },
-        {
-          title: '推荐人手机号',
-          key: 'inviterPhone'
-        },
-        {
-          title: '推荐人ID',
-          key: 'inviterInvitationCode'
-        },
-        {
-          title: '推荐人级别',
-          key: 'inviterDisRuleName'
-        }
-      ]
+      userInfo: {}
     }
   },
   mounted () {

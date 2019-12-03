@@ -231,7 +231,6 @@ export default {
             setMealPrice: results.setMealPrice
           })
           this.detailsData = results
-          this.detailsData.orderStatus = 2
         }
       })
     },

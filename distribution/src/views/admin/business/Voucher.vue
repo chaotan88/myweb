@@ -642,6 +642,11 @@ export default {
       }
     }
   }
+  .third-nav-wrap {
+    a {
+      cursor: pointer;
+    }
+  }
 }
 </style>
 <style lang="less">

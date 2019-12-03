@@ -43,10 +43,10 @@
           
           <el-form-item label="上传凭证：">
             <el-upload class="upload-picture fl-l pos-r"
-              :class="{uploadHide: coverImgList.length === 1}"
+              :class="{uploadHide: fileList.length === 1}"
               list-type="picture-card"
               :action="uploadUrl"
-              :file-list="coverImgList"
+              :file-list="fileList"
               :limit="1"
               :on-exceed="exceedHandle"
               :before-upload="beforeAvatarUpload"
@@ -123,9 +123,10 @@
           pageSize: 10,
           total: 0
         },
-        coverImgList: [],
         userInfo: {},
-        showArea: false
+        showArea: false,
+        uploadFiles: '',
+        fileList: []
       }
     },
     computed: {
@@ -164,7 +165,7 @@
 
       rankIdChange (val) {
         this.detailsData.rankList.forEach(item => {
-          if (item.rand === val) this.$set(this.detailsData, 'upgradeAmount', item.ruleDesc)
+          if (item.rand === val) this.$set(this.detailsData, 'upgradeAmount', item.feeDescription)
         })
         if (this.formData.rankId === 5) {
           this.showArea = false
@@ -181,15 +182,15 @@
           upgradeId: this.formData.upgradeId,
           rankId: this.formData.rankId,
           // upgradeAmount: '',
-          paymentVoucher: this.ruleForm.uploadFiles,
+          paymentVoucher: this.uploadFiles,
           serviceAmount: this.detailsData.upgradeAmount,
           realPayAmount: this.detailsData.realPayAmount,
-          agentZone: this.detailsData.region.area.name,
-          agentZoneCode: this.detailsData.region.area.code,
-          agentCity: this.detailsData.region.city.name,
-          agentCityCode: this.detailsData.region.city.code,
-          agentProvince: this.detailsData.region.province.name,
-          agentProvinceCode: this.detailsData.province.area.code,
+          agentZone: this.region.area.name,
+          agentZoneCode: this.region.area.code,
+          agentCity: this.region.city.name,
+          agentCityCode: this.region.city.code,
+          agentProvince: this.region.province.name,
+          agentProvinceCode: this.region.province.code,
           userName: this.detailsData.userName,
           userPhone: this.detailsData.userPhone
         }
@@ -271,14 +272,14 @@
           return false
         }
         this.fileList.push({url: this.$Utils.filterImgUrl(res.data)})  // 绝对路径
-        this.ruleForm.uploadFiles = res.data                     // 相对路径
+        this.uploadFiles = res.data                     // 相对路径
       },
 
       /**
        * 文件被移除
        */
       removeHandle (file, fileList) {
-        this.ruleForm.uploadFiles = ''      // 移除的时候清空对象
+        this.uploadFiles = ''      // 移除的时候清空对象
         this.fileList = []
       }
     },

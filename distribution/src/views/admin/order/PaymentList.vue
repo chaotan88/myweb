@@ -6,7 +6,7 @@
       <!-- 高级搜索组件 -->
       <high-search @search="highSearch('form')" :textVisible = "false">
         <div class="pos-r" slot="search">
-          <el-input placeholder="输入手机号码" v-model.trim=formData.condition @keyup.enter.native="searchHandle">
+          <el-input placeholder="输入手机号码" v-model.trim=formData.phone @keyup.enter.native="searchHandle">
           </el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
@@ -120,17 +120,7 @@ export default {
       // 列表数据
       tableData: [],
       formData: {
-        condition: '',
-        customerPhone: '',      // 输入交易编号/手机号
-        applyNo: '',            // 申请编号
-        agencyFeeStart: '',     // 应付金额开始值
-        agencyFeeEnd: '',       // 应付金额结束值
-        cardName: '',           // 会员姓名
-        phone: '',              // 会员手机
-        idCard: '',             // 身份证号
-        applyTimeStart: '',     // 申请开始时间
-        applyTimeEnd: '',       // 申请结束时间
-        payStatus: ''           // 支付状态
+        phone: ''
       },
       payTypes: [              // 付款方式
         {label: '微信支付', value: 1},
@@ -219,7 +209,6 @@ export default {
       let data = {
         start: type ? 1 : this.pageData.currentPage,
         pageSize: type ? this.pageData.total : this.pageData.pageSize,
-        condition: this.formData.condition,
         phone: this.formData.phone,
         orderStatus: this.pageType || this.formData.payStatus
       }

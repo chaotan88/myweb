@@ -6,9 +6,9 @@
       <el-table border :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
         <el-table-column prop="ruleIcon" label="级别图标">
           <template slot-scope="scope">
-            <div @click="beforeUploadClick(scope.$index)">
+            <div @click="beforeUploadClick(scope.$index)" style="width: 80px; height: 80px;">
               <el-upload class="upload-picture fl-l pos-r"
-                :class="{uploadHide: scope.row.ruleIconList && scope.row.ruleIconList.length === 1}"
+                :class="{uploadHide: scope.row.ruleIcon}"
                 list-type="picture-card"
                 :action="uploadUrl"
                 :file-list="scope.row.ruleIconList"
@@ -256,6 +256,7 @@ export default {
           type: 'success',
           duration: 1000
         })
+        this.getListData()
       }).finally(() => {
         setTimeout(() => {
           this.submitLoading = false
@@ -299,34 +300,38 @@ export default {
      * 文件上传成功
      */
     uploadSuccessHandle (res) {
-      if (res.status !== '1') {
-        this.$message({
-          message: res.msg,
-          type: 'error',
-          duration: 1000
-        })
-        return false
-      }
-      let item = this.tableData[this.uploadIndex]
-      if (!item) return false
-      let ruleIconList = []
-      ruleIconList.push({url: this.$Utils.filterImgUrl(res.data)})
-      item['ruleIconList'] = ruleIconList
-      item['ruleIcon'] = res.data
-      this.$set(this.tableData, item, this.uploadIndex)
-      console.log(this.tableData)
+      setTimeout(() => {
+        if (res.status !== '1') {
+          this.$message({
+            message: res.msg,
+            type: 'error',
+            duration: 1000
+          })
+          return false
+        }
+        let item = this.tableData[this.uploadIndex]
+        if (!item) return false
+        let ruleIconList = []
+        ruleIconList.push({url: this.$Utils.filterImgUrl(res.data)})
+        item['ruleIconList'] = ruleIconList
+        item['ruleIcon'] = res.data
+        this.$set(this.tableData, item, this.uploadIndex)
+        console.log(this.tableData)
+      }, 1000)
     },
 
     /**
      * 文件被移除
      */
     removeHandle (file, fileList) {
-      let item = this.tableData[this.uploadIndex]
-      let ruleIconList = []
-      item['ruleIconList'] = ruleIconList
-      item['ruleIcon'] = ''
-      this.$set(this.tableData, item, this.uploadIndex)
-      console.log(this.tableData)
+      setTimeout(() => {
+        let item = this.tableData[this.uploadIndex]
+        let ruleIconList = []
+        item['ruleIconList'] = ruleIconList
+        item['ruleIcon'] = ''
+        this.$set(this.tableData, item, this.uploadIndex)
+        console.log(this.tableData[this.uploadIndex])
+      }, 1000)
     },
     beforeUploadClick (index) {
       this.uploadIndex = index
@@ -409,6 +414,10 @@ export default {
   }
   .el-table td:first-child {
     border-left: 0;
+}
+.el-upload-list--picture-card .el-upload-list__item {
+  width: 80px !important;
+  height: 80px !important;
 }
 }
 </style>

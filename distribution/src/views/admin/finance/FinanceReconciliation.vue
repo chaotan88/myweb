@@ -86,7 +86,9 @@
           </el-table-column>
           <el-table-column prop="propertyType" label="交易类型">
             <template slot-scope="scope">
-              <span>{{scope.row.propertyType | filterDate}}</span>
+              <span v-if="scope.row.propertyType === 1">余额</span>
+              <span v-else-if="scope.row.propertyType === 2">现金</span>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column prop="addSource" label="交易内容" width="100">
@@ -252,8 +254,8 @@ export default {
         endTime: ''
       }
       if (this.formData.statisticsDate) {
-        res.startTime = this.$Utils.filterDate(this.formData.statisticsDate, 'YYYY-MM-DD HH:mm:ss')
-        res.endTime = this.$Utils.completionEndDate(res.startTime, 'YYYY-MM-DD HH:mm:ss')
+        res.startTime = this.$Utils.filterDate(this.formData.statisticsDate[0], 'YYYY-MM-DD HH:mm:ss')
+        res.endTime = this.$Utils.filterDate(this.formData.statisticsDate[1], 'YYYY-MM-DD HH:mm:ss')
       }
       return res
     },
@@ -262,7 +264,8 @@ export default {
      * 页面类型转换
      */
     pageTypeHandle (val) {
-      this.$router.replace({path: this.$route.path, query: {type: val}})
+      // this.$router.replace({path: this.$route.path, query: {type: val}})
+      this.getTableData()
     },
 
     /**
