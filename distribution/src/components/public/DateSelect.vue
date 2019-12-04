@@ -109,6 +109,7 @@ export default {
           border: 1px solid rgba(193, 224, 255, 1);
           border-right: 0;
           cursor: pointer;
+          background: #FFF;
         }
         span:last-child {
           border-right: 1px solid rgba(193, 224, 255, 1);

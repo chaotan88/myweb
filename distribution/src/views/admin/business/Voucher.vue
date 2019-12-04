@@ -30,7 +30,7 @@
         <div class="voucher-card-content">
           <div class="to-pre-icon"><i class="icon-font el-icon-caret-left" @click="toPre()"></i></div>
           <div class="voucher-items" v-if="voucherShowList.length > 0">
-            <div v-for="(item, index) in voucherShowList" :key="index" class="voucher-item">
+            <div v-for="(item, index) in voucherShowList" :key="index" :class="['voucher-item', selectIndex === index ? 'voucher-item-active': '']" @click="selectVoucher(item, index)">
               <img src="../../../assets/img/voucher-bg.png"/>
               <div class="item-amount">&yen;<span>{{item.amount}}</span></div>
               <div class="item-use">{{item.useType === 1 ? '抵扣现金' : ''}}</div>
@@ -235,7 +235,8 @@ export default {
         { label: '15天', value: 1 }, { label: '一个月', value: 2 }, { label: '三个月', value: 3 },
         { label: '半年', value: 4 }, { label: '一年', value: 5 }
       ],
-      currentTab: 1
+      currentTab: 1,
+      selectIndex: ''
     }
   },
   mounted () {
@@ -534,6 +535,10 @@ export default {
     tabClick (tab) {
       this.currentTab = tab
       this.getVoucherList()
+    },
+    selectVoucher (item, index) {
+      this.selectIndex = index
+      this.getListData()
     }
   }
 }
@@ -541,7 +546,6 @@ export default {
 
 <style lang="less" scoped>
 .distribution-list-wrap{
-
   .search-form{
     .el-form-item{
 
@@ -635,7 +639,7 @@ export default {
           .voucher-item:nth-child(3) {
             margin-right: 0;
           }
-          .voucher-item:hover {
+          .voucher-item-active {
             border: 3px solid #C1E0FF;
           }
         }

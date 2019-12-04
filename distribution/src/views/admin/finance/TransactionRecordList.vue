@@ -127,6 +127,16 @@ import TransactionDialog from './TransactionDialog'
 export default{
   components: {TransactionDialog},
   data () {
+     // 验证手机
+    let validatePhone = (rule, value, callback) => {
+      if (!value) return callback()
+      if ((value && value.match(/\D/g)) || (value.length >= 11 && !value.toString().match(/^1\d{10}$/gi))) return callback(new Error('手机号格式错误'))
+      callback()
+    }
+    let validateIdCard = (rule, value, callback) => {
+      if (value && !value.toString().match(/^[0-9a-zA-Z]{0,20}$/g)) return callback(new Error('仅限输入数字和字母，20个字符以内'))
+      callback()
+    }
     return {
       loading: false,         // 加载loading
       pageType: '',            // 页面类型 [0、全部 1、待处理 2、已处理 3、回退]
@@ -146,7 +156,11 @@ export default{
         total: 0
       },
       userInfo: {},            // 用户信息
-      rules: []
+      rules: {
+        cardName: { max: 20, trigger: 'blur', message: '限20个字符以内' },
+        customerPhone: { validator: validatePhone, trigger: 'blur' },
+        idCard: { validator: validateIdCard, trigger: 'blur' }
+      }
     }
   },
 
