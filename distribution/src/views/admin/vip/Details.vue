@@ -20,7 +20,7 @@
             <tr>
               <td>级别产生方式：</td>
               <td>
-                <template v-if="pageType === 1">{{datailsData.memberType | filterMemberType}}</template>
+                <template v-if="pageType === 1 || formData.ruleId === 1">{{datailsData.memberType | filterMemberType}}</template>
                 <template v-else>
                   <el-radio-group v-model="formData.memberType">
                     <el-radio :label="1">在线升级</el-radio>

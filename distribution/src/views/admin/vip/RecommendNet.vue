@@ -15,7 +15,7 @@
     <template slot="main">
         <VipDetails :data="userDetail"></VipDetails>
         <div class="net-work-chart" id="net-work-chart">
-          <!-- <canvas width="1000" :height="canvasHeight" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas> -->
+          <canvas width="1000" :height="canvasHeight" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas>
         </div>
     </template>
   </common-tpl>
@@ -40,7 +40,7 @@ export default {
       },
       userDetail: {},
       start: 0,
-      canvasHeight: 1000
+      canvasHeight: 3000
     }
   },
   mounted () {
@@ -90,6 +90,15 @@ export default {
       })
     },
     buildData (data) {
+      let datas = []
+      let baseX = 200
+      let baseY = 40
+      let baseLevel = data[0].level - 1
+      let level1Datas = data.filter(da => da.level - 1 === baseLevel) || []
+      // let level2Datas = data.filter(da => da.level - 2 === baseLevel) || []
+      // let len = level1Datas.length + level2Datas.length + 1
+      let len = level1Datas.length + 1
+      this.canvasHeight = len * 60
       const rootData = {
         invitationCode: this.userDetail.invitationCode,
         invitationName: this.userDetail.invitationName,
@@ -102,18 +111,10 @@ export default {
         umbrellaCount: 100,
         userId: this.userDetail.customerId
       }
-      if (!data || data.length === 0) {
-        this.drawChart([], rootData, 0)
-        return false
-      }
-      let datas = []
-      let baseX = 200
-      let baseY = 40
-      let baseLevel = data[0].level - 1
-      let level1Datas = data.filter(da => da.level - 1 === baseLevel) || []
-      let level2Datas = data.filter(da => da.level - 2 === baseLevel) || []
-      let len = level1Datas.length + level2Datas.length + 1
-      this.canvasHeight = len * 30
+      // if (!data || data.length === 0) {
+      //   this.drawChart([], rootData, 0)
+      //   return false
+      // }
       baseY = this.canvasHeight / 2
       data.forEach((da, index) => {
         datas.push({
@@ -124,14 +125,14 @@ export default {
           customerPhone: da.phone,
           level: da.level,
           x: baseX + 400,
-          y: 20 + (10 * index),
+          y: 200,
           umbrellaCount: da.umbrellaCount,
           userId: da.userId,
           parentId: da.parentId
         })
       })
-      // this.draw(datas, rootData, baseLevel)
-      this.drawChart(datas, rootData, baseLevel)
+      this.draw(datas, rootData, baseLevel)
+      // this.drawChart(datas, rootData, baseLevel)
     },
     getMemberDetail (phone) {
       this.$http.post('@ROOT_API/buyMemberAccountManageController/getMemberList', {
@@ -192,16 +193,16 @@ export default {
         scene.translate = false
         scene.add(node)
 
-        let node2 = new JTopo.Node(obj.umbrellaCount)
+        // let node2 = new JTopo.Node(obj.umbrellaCount)
         // node2.setLocation(obj.x + 250, obj.y)
-        node2.setSize(40, 40)
-        node2.fillColor = '102,204,51'
-        node2.fontColor = '0, 0, 0'
-        node2.dragable = false
-        node2.textPosition = 'Top_Left'
-        node2.textOffsetY = 40
-        node2.textOffsetX = 25
-        scene.add(node2)
+        // node2.setSize(40, 40)
+        // node2.fillColor = '102,204,51'
+        // node2.fontColor = '0, 0, 0'
+        // node2.dragable = false
+        // node2.textPosition = 'Top_Left'
+        // node2.textOffsetY = 40
+        // node2.textOffsetX = 25
+        // scene.add(node2)
         return node
       }
       function linkNode (nodeA, nodeZ, color) {
@@ -214,7 +215,7 @@ export default {
       const rootNode = node(rootData, true)
       const color = '26, 191, 94'
       datas.forEach((da, index) => {
-        if (da.level === baseLevel + 1) {
+        if ((da.level === baseLevel + 1) && index < 100) {
           linkNode(rootNode, node(da), color)
         }
       })
@@ -418,7 +419,7 @@ export default {
   }
   .net-work-chart {
     width: 100%;
-    height: 2000px;
+    // height: 2000px;
     margin-top: 20px;
   }
 }

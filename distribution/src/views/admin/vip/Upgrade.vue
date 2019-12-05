@@ -224,7 +224,7 @@
         })
       },
       regionChange (results) {
-        this.detailsData.region = results
+        this.region = results
       },
       /**
        * 文件上传前的格式和大小校验

@@ -104,7 +104,7 @@
                   <el-dropdown-item>
                     <div @click="handleBefore(scope.row, 'details')"><i class="icon el-icon-view"></i>详情</div>
                   </el-dropdown-item>
-                  <el-dropdown-item v-if="scope.row.ifUpgrade === 1 && scope.row.rank !== 8">
+                  <el-dropdown-item v-if="scope.row.ifUpgrade === 1 && scope.row.rank !== 8 && scope.row.ruleId !== 1">
                     <div @click="handleUpgradeBefore(scope.row)"><i class="icon el-icon-view"></i>账户升级</div>
                   </el-dropdown-item>
                 </el-dropdown-menu>

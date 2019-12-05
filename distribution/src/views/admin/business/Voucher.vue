@@ -236,7 +236,8 @@ export default {
         { label: '半年', value: 4 }, { label: '一年', value: 5 }
       ],
       currentTab: 1,
-      selectIndex: ''
+      selectIndex: '',
+      selectItem: {}
     }
   },
   mounted () {
@@ -285,7 +286,8 @@ export default {
       this.$http.post('@ROOT_API/coupon/getCouponUserList', {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
-        phone: this.formData.phone
+        phone: this.formData.phone,
+        couponId: this.selectItem.id || ''
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -538,6 +540,7 @@ export default {
     },
     selectVoucher (item, index) {
       this.selectIndex = index
+      this.selectItem = item
       this.getListData()
     }
   }
