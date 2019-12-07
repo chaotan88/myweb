@@ -5,7 +5,7 @@ export default {
     nav: '订单管理',
     icon: 'icon-jiesuan',
     auth: true,
-    authCode: 601030
+    authCode: 601040
   },
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [
@@ -17,7 +17,7 @@ export default {
         nav: '套餐订单',
         icon: 'icon-fukuanshenhe',
         auth: true,
-        authCode: 601031
+        authCode: 601041
       },
       component: r => require(['@/views/admin/order/PaymentLayout'], r),
       children: [
@@ -29,7 +29,7 @@ export default {
             title: '套餐订单 - 全部',
             pageBack: true,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },
@@ -45,7 +45,7 @@ export default {
             title: '套餐订单 - 待付款',
             pageBack: true,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },
@@ -62,7 +62,7 @@ export default {
             title: '套餐订单 - 待发货',
             pageBack: true,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },
@@ -80,7 +80,7 @@ export default {
             title: '套餐订单 - 待收货',
             pageBack: true,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },
@@ -97,7 +97,7 @@ export default {
             title: '套餐订单 - 已完成',
             pageBack: true,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },
@@ -115,7 +115,7 @@ export default {
             title: '套餐订单 - 详情',
             thirdMenu: false,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },
@@ -131,7 +131,7 @@ export default {
             title: '套餐订单 - 发货',
             thirdMenu: false,
             auth: true,
-            authCode: 601031,
+            authCode: 601041,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '订单管理', path: '/admin/order' },

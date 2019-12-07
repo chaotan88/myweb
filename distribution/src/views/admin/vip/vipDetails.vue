@@ -80,6 +80,7 @@ export default {
 <style lang="less" scoped>
 .user-details-info {
   border: 1px solid #ddd;
+  margin-bottom: 20px;
   .form-row {
     display: flex;
     border-bottom: 1px solid #ddd;

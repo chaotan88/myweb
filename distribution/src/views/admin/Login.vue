@@ -23,8 +23,8 @@
       return {
         loading: false,       // 加载中
         formData: {
-          userName: 'dadmin',       // 账户名
-          password: '111111'        // 密码
+          userName: '',       // 账户名
+          password: ''        // 密码
         },
         rules: {
           userName: {required: true, message: '请输入账户名', trigger: 'blur'},

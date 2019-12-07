@@ -151,11 +151,11 @@ export default {
      * 分页操作
      */
     pageChange (page) {
-      if (this.pageData.currentPage === page) {
+      if (this.currentPage === page) {
         this.getListData()
       } else {
-        this.pageData.currentPage = page
-        this.$router.push({query: {page: this.pageData.currentPage}})
+        this.currentPage = page
+        this.$router.push({query: {page: this.currentPage}})
       }
     }
   }

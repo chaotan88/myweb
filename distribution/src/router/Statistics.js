@@ -6,7 +6,7 @@ export default {
     icon: '',
     visible: false,
     auth: true,
-    authCode: 601040
+    authCode: 601060
   },
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [

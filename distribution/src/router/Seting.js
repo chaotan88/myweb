@@ -5,7 +5,7 @@ export default {
     nav: '设置',
     icon: 'icon-changyonggongju2',
     auth: true,
-    authCode: 601070
+    authCode: 601080
   },
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [
@@ -18,7 +18,7 @@ export default {
         nav: '账户设置',
         icon: 'icon-zhanghuziliao',
         auth: true,
-        authCode: 601071
+        authCode: 601081
       },
       component: r => require(['@/views/admin/seting/AccountLayout'], r),
       children: [
@@ -27,7 +27,7 @@ export default {
           meta: {
             title: '账户设置',
             auth: true,
-            authCode: 601071,
+            authCode: 601081,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -41,7 +41,7 @@ export default {
           meta: {
             title: '账户安全',
             auth: true,
-            authCode: 601071,
+            authCode: 601081,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -62,7 +62,7 @@ export default {
         nav: '管理员',
         icon: 'icon-proj-user',
         auth: true,
-        authCode: 601072
+        authCode: 601082
       },
       component: r => require(['@/views/admin/seting/AuthLayout'], r),
       children: [
@@ -72,7 +72,7 @@ export default {
           meta: {
             title: '管理员',
             auth: true,
-            authCode: 601072,
+            authCode: 601082,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -86,7 +86,7 @@ export default {
           meta: {
             title: '',
             auth: true,
-            authCode: 601072,
+            authCode: 601082,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -102,7 +102,7 @@ export default {
           meta: {
             title: '',
             auth: true,
-            authCode: 601072,
+            authCode: 601082,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -120,7 +120,7 @@ export default {
           meta: {
             title: '账户列表',
             auth: true,
-            authCode: 601072,
+            authCode: 601082,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -135,7 +135,7 @@ export default {
           meta: {
             title: '',
             auth: true,
-            authCode: 601072,
+            authCode: 601082,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },
@@ -151,7 +151,7 @@ export default {
           meta: {
             title: '',
             auth: true,
-            authCode: 601072,
+            authCode: 601082,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '设置', path: '/admin/seting' },

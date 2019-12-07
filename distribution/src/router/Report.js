@@ -6,7 +6,7 @@ export default {
     nav: '数据统计',
     icon: 'icon-weibiaoti4',
     auth: true,
-    authCode: 601050
+    authCode: 601060
   },
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [
@@ -18,7 +18,7 @@ export default {
         nav: '业绩统计',
         icon: 'icon-paiming',
         auth: true,
-        authCode: 601050,
+        authCode: 601061,
         visible: true
       },
       component: r => require(['@/views/admin/report/AchievementLayout'], r),
@@ -31,7 +31,7 @@ export default {
             title: '业绩统计',
             pageBack: true,
             auth: true,
-            authCode: 601050,
+            authCode: 601061,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '数据统计', path: '/admin/report/' },
@@ -51,7 +51,7 @@ export default {
         nav: '推广大使增长',
         icon: 'icon-tianjiayonghu',
         auth: true,
-        authCode: 601050,
+        authCode: 601062,
         visible: true
       },
       component: r => require(['@/views/admin/report/VipLayout'], r),
@@ -64,7 +64,7 @@ export default {
             title: '数据统计',
             pageBack: true,
             auth: true,
-            authCode: 601050,
+            authCode: 601062,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '数据统计', path: '/admin/report/' },

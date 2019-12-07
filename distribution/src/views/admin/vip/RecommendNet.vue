@@ -14,8 +14,14 @@
     <!-- 列表 -->
     <template slot="main">
         <VipDetails :data="userDetail"></VipDetails>
+        <div class="chart-split-top"></div>
+        <button type="button"
+          @click="toPre()"
+          style="border-radius: 20px; margin-top: 20px;"
+          :class="['el-button', 'el-button--default', !historyStep || historyStep.length === 0 ? 'disabled-btn' : '']">
+        <span>返回</span></button>
         <div class="net-work-chart" id="net-work-chart">
-          <canvas width="1000" :height="canvasHeight" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas>
+          <!-- <canvas width="1200" :height="canvasHeight" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas> -->
         </div>
     </template>
   </common-tpl>
@@ -40,7 +46,8 @@ export default {
       },
       userDetail: {},
       start: 0,
-      canvasHeight: 3000
+      canvasHeight: 1550,
+      historyStep: []
     }
   },
   mounted () {
@@ -95,9 +102,9 @@ export default {
       let baseY = 40
       let baseLevel = data[0].level - 1
       let level1Datas = data.filter(da => da.level - 1 === baseLevel) || []
-      // let level2Datas = data.filter(da => da.level - 2 === baseLevel) || []
-      // let len = level1Datas.length + level2Datas.length + 1
-      let len = level1Datas.length + 1
+      let level2Datas = data.filter(da => da.level - 2 === baseLevel) || []
+      let len = level1Datas.length + level2Datas.length + 1
+      // let len = level1Datas.length + 1
       this.canvasHeight = len * 60
       const rootData = {
         invitationCode: this.userDetail.invitationCode,
@@ -111,10 +118,10 @@ export default {
         umbrellaCount: 100,
         userId: this.userDetail.customerId
       }
-      // if (!data || data.length === 0) {
-      //   this.drawChart([], rootData, 0)
-      //   return false
-      // }
+      if (!data || data.length === 0) {
+        this.drawChart([], rootData, 0)
+        return false
+      }
       baseY = this.canvasHeight / 2
       data.forEach((da, index) => {
         datas.push({
@@ -131,8 +138,8 @@ export default {
           parentId: da.parentId
         })
       })
-      this.draw(datas, rootData, baseLevel)
-      // this.drawChart(datas, rootData, baseLevel)
+      // this.draw(datas, rootData, baseLevel)
+      this.drawChart(datas, rootData, baseLevel)
     },
     getMemberDetail (phone) {
       this.$http.post('@ROOT_API/buyMemberAccountManageController/getMemberList', {
@@ -174,7 +181,7 @@ export default {
       let height = 40
       let width = 200
       function node (obj, isRoot) {
-        let node = new JTopo.Node(obj.ruleName + ' ' + obj.customerPhone)
+        let node = new JTopo.Node(obj.ruleName + ' ' + obj.customerPhone + '')
         if (isRoot) {
           node.setLocation(obj.x, obj.y)
         }
@@ -215,7 +222,7 @@ export default {
       const rootNode = node(rootData, true)
       const color = '26, 191, 94'
       datas.forEach((da, index) => {
-        if ((da.level === baseLevel + 1) && index < 100) {
+        if ((da.level === baseLevel + 1) && index < 30) {
           linkNode(rootNode, node(da), color)
         }
       })
@@ -290,11 +297,16 @@ export default {
         ]
       })
       chart.on('click', (params) => {
-        console.log(params)
+        this.historyStep.push(this.formData.phone)
         this.formData.phone = params.data.phone
         this.searchHandle()
         return false
       })
+    },
+    toPre () {
+      this.formData.phone = this.historyStep[this.historyStep.length - 1]
+      this.searchHandle()
+      this.historyStep.splice(this.historyStep.length - 1, 1)
     }
   },
   components: { VipDetails }
@@ -330,6 +342,25 @@ export default {
       border: 1px solid #ebeef5;
       border-bottom: none;
     }
+  }
+  .chart-split-top {
+    height: 20px;
+    margin-left: -40px;
+    width: 110%;
+    background: #eee;
+  }
+  .disabled-btn {
+    cursor: not-allowed;
+  }
+  .disabled-btn:hover {
+    background: #fff !important;
+    border: 1px solid #DCDFE6 !important;
+    color:#606266 !important;
+  }
+  .disabled-btn:active {
+    background: #fff !important;
+    border: 1px solid #DCDFE6 !important;
+    color:#606266 !important;
   }
 }
 </style>
@@ -419,8 +450,9 @@ export default {
   }
   .net-work-chart {
     width: 100%;
-    // height: 2000px;
+    height: 2000px;
     margin-top: 20px;
+    // overflow: hidden;
   }
 }
 </style>

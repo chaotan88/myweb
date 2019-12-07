@@ -5,7 +5,7 @@ export default {
     nav: '业务管理',
     icon: 'icon-fenxiao2',
     auth: true,
-    authCode: 601020
+    authCode: 601030
   },
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [
@@ -18,7 +18,7 @@ export default {
         nav: '套餐管理',
         icon: 'icon-rule',
         auth: true,
-        authCode: 601021
+        authCode: 601031
       },
       component: r => require(['@/views/admin/business/BusinessLayout'], r),
       children: [
@@ -30,7 +30,7 @@ export default {
             title: '套餐管理',
             pageBack: true,
             auth: true,
-            authCode: 601021,
+            authCode: 601031,
             breadcrumb: [
               { title: '首页', path: '/admin' },
               { title: '业务管理', path: '/admin/business' },
@@ -46,7 +46,7 @@ export default {
           meta: {
             title: '添加套餐',
             auth: true,
-            authCode: 601021,
+            authCode: 601031,
             breadcrumb: [
               { title: '首页', path: '/admin' },
               { title: '业务管理', path: '/admin/business' },
@@ -63,7 +63,7 @@ export default {
           meta: {
             title: '编辑套餐',
             auth: true,
-            authCode: 601021,
+            authCode: 601031,
             breadcrumb: [
               { title: '首页', path: '/admin' },
               { title: '业务管理', path: '/admin/business' },
@@ -84,7 +84,7 @@ export default {
         nav: '代金券管理',
         icon: 'icon-rule',
         auth: true,
-        authCode: 601021
+        authCode: 601032
       },
       component: r => require(['@/views/admin/business/VoucherLayout'], r),
       children: [
@@ -96,7 +96,7 @@ export default {
             title: '代金券管理',
             pageBack: true,
             auth: true,
-            authCode: 601021,
+            authCode: 601032,
             breadcrumb: [
               { title: '首页', path: '/admin' },
               { title: '业务管理', path: '/admin/business' },

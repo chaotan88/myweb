@@ -6,7 +6,7 @@ export default {
     icon: 'icon-huiyuan',
     visible: true,
     auth: true,
-    authCode: 601060
+    authCode: 601070
   },
   component: r => require(['@/components/admin/ChildLayout'], r),
   children: [
@@ -19,7 +19,7 @@ export default {
         nav: '推广大使管理',
         icon: 'icon-huiyuanguanli',
         auth: true,
-        authCode: 601061
+        authCode: 601071
       },
       component: r => require(['@/views/admin/vip/IndexLayout'], r),
       children: [
@@ -32,7 +32,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601061,
+            authCode: 601071,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -48,7 +48,7 @@ export default {
           meta: {
             title: '修改信息',
             auth: true,
-            authCode: 601061,
+            authCode: 601071,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -65,7 +65,7 @@ export default {
           meta: {
             title: '详情',
             auth: true,
-            authCode: 601061,
+            authCode: 601071,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -82,7 +82,7 @@ export default {
           meta: {
             title: '账户升级',
             auth: true,
-            authCode: 601061,
+            authCode: 601071,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -103,7 +103,7 @@ export default {
         nav: '升级审核',
         icon: 'icon-huiyuanguanli',
         auth: true,
-        authCode: 601062
+        authCode: 601072
       },
       component: r => require(['@/views/admin/vip/auditLayout'], r),
       children: [
@@ -116,7 +116,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601062,
+            authCode: 601072,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -134,7 +134,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601062,
+            authCode: 601072,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -152,7 +152,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601062,
+            authCode: 601072,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -170,7 +170,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601062,
+            authCode: 601072,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
@@ -186,7 +186,7 @@ export default {
           meta: {
             title: '详情',
             auth: true,
-            authCode: 601062,
+            authCode: 601072,
             thirdMenu: false,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
@@ -204,7 +204,7 @@ export default {
           meta: {
             title: '审核',
             auth: true,
-            authCode: 601062,
+            authCode: 601072,
             thirdMenu: false,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
@@ -225,7 +225,7 @@ export default {
         nav: '推荐网络',
         icon: 'icon-huiyuanguanli',
         auth: true,
-        authCode: 601062
+        authCode: 601073
       },
       component: r => require(['@/views/admin/vip/recommendNetLayout'], r),
       children: [
@@ -236,7 +236,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601062,
+            authCode: 601073,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '推广大使', path: '/admin/vip/' },
