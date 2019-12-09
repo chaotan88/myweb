@@ -111,6 +111,9 @@ export default {
           cursor: pointer;
           background: #FFF;
         }
+        span:hover {
+          background: #D6EBFF;
+        }
         span:last-child {
           border-right: 1px solid rgba(193, 224, 255, 1);
         }

@@ -31,11 +31,11 @@
             </el-form-item>
             <el-form-item label="支付宝订单号：">{{initData.cardNum | filterEmpty}}</el-form-item>
             <el-form-item label="微信支付订单号：">{{initData.cardNum | filterEmpty}}</el-form-item>
-            <el-form-item label="交易内容：">{{initData.addSource | filterEmpty}}</el-form-item>
+            <el-form-item label="交易内容：">{{initData.addSource | filterAddSource}}</el-form-item>
             <el-form-item label="收益值：">{{initData.propertyAmount | filterMoney}}</el-form-item>
             <el-form-item label="交易状态：">{{initData.cardholder | filterEmpty}}</el-form-item>
-            <el-form-item label="交易科目：">{{initData.businessType | filterEmpty}}</el-form-item>
-            <el-form-item label="交易属性：">{{initData.businessAttr | filterEmpty}}</el-form-item>
+            <el-form-item label="交易科目：">{{initData.businessType | filterBusinessType}}</el-form-item>
+            <el-form-item label="交易属性：">{{initData.businessAttr | filterBusinessAttr}}</el-form-item>
           </template>
         </div>
       </el-form>

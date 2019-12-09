@@ -92,16 +92,16 @@
             </template>
           </el-table-column>
           <el-table-column prop="addSource" label="交易内容" width="100">
-            <template slot-scope="scope">{{scope.row.addSource | filterEmpty}}</template>
+            <template slot-scope="scope">{{scope.row.addSource | filterAddSource}}</template>
           </el-table-column>
           <el-table-column prop="propertyAmount" label="交易额" width="100">
             <template slot-scope="scope">{{scope.row.propertyAmount | filterMoney}}</template>
           </el-table-column>
           <el-table-column prop="businessType" label="交易科目" width="120">
-            <template slot-scope="scope">{{scope.row.businessType | filterEmpty}}</template>
+            <template slot-scope="scope">{{scope.row.businessType | filterBusinessType}}</template>
           </el-table-column>
           <el-table-column prop="businessAttr" label="交易属性" width="120">
-            <template slot-scope="scope">{{scope.row.businessAttr | filterEmpty}}</template>
+            <template slot-scope="scope">{{scope.row.businessAttr | filterBusinessAttr}}</template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="scope">

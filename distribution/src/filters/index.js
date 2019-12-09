@@ -199,153 +199,6 @@ module.exports = {
   },
 
   /**
-   * 过滤交易记录交易内容
-   */
-  filterAddSource (val) {
-    if (!val && parseInt(val) !== 0) return emptyTips
-    let res = ''
-    switch (parseInt(val)) {
-      case 1:
-        res = '购买商品'
-        break
-      case 2:
-        res = '销售商品'
-        break
-      case 3:
-        res = '推荐用户'
-        break
-      case 4:
-        res = '支出积分'
-        break
-      case 5:
-        res = '注册获取积分'
-        break
-      case 6:
-        res = '每日登录获取积分'
-        break
-      case 7:
-        res = '退回积分'
-        break
-      case 8:
-        res = '充值'
-        break
-      case 9:
-        res = '账户余额支出'
-        break
-      case 10:
-        res = '分销派送'
-        break
-      case 11:
-        res = '全球加权分红'
-        break
-      case 12:
-        res = '商品收益'
-        break
-      case 13:
-        res = '办公场地补贴'
-        break
-      case 14:
-        res = '芯片销售收益'
-        break
-      case 15:
-        res = '提现'
-        break
-      case 16:
-        res = '商品消费'
-        break
-      case 17:
-        res = '升级'
-        break
-      case 18:
-        res = '扣款（对账调整（不计入业绩））'
-        break
-      case 19:
-        res = '店补'
-        break
-      case 20:
-        res = '预付充值'
-        break
-      case 21:
-        res = '兑换通证'
-        break
-      case 22:
-        res = '购票'
-        break
-      case 23:
-        res = '分享'
-        break
-      case 26:
-        res = '购票分佣'
-        break
-      case 27:
-        res = '管理奖'
-        break
-      case 28:
-        res = '店补'
-        break
-      case 29:
-        res = '签到'
-        break
-      case 30:
-        res = '浏览'
-        break
-      case 32:
-        res = '评价'
-        break
-      case 33:
-        res = '扣款（兑换通正（不计入业绩）'
-        break
-      case 34:
-        res = '扣款（对账调账（计入业绩）'
-        break
-      case 35:
-        res = '充值（商品消费（计入业绩）'
-        break
-      case 36:
-        res = '充值（对账调账（不计入业绩）'
-        break
-      case 37:
-        res = '充值（对账调账（计入业绩）'
-        break
-      case 38:
-        res = '充值（商城退款（不计入业绩）'
-        break
-      case 39:
-        res = '大转盘抽奖'
-        break
-      case 41:
-        res = '提现退回'
-        break
-      case 42:
-        res = '转赠'
-        break
-      case 43:
-        res = '好友赠送'
-        break
-      case 44:
-        res = '交易所兑换'
-        break
-      case 45:
-        res = '抢购商品'
-        break
-      case 46:
-        res = '批发商品'
-        break
-      case 47:
-        res = '出售批发商品'
-        break
-      case 48:
-        res = '买卖仓直推奖励'
-        break
-      case 49:
-        res = '批发券福利'
-        break
-      default: res = emptyTips
-    }
-    return res
-  },
-
-  /**
    * 过滤结算状态
    */
   filterDisStatus (val) {
@@ -481,6 +334,87 @@ module.exports = {
         break
       case 2:
         res = '女'
+        break
+    }
+    return res
+  },
+
+  filterAddSource (val) {
+    if (!val && parseInt(val) !== 0) return emptyTips
+    let res = ''
+    switch (parseInt(val)) {
+      case 101:
+        res = '推荐奖'
+        break
+      case 102:
+        res = '大使管理奖'
+        break
+      case 103:
+        res = '区域管理奖'
+        break
+      case 104:
+        res = '市级管理奖'
+        break
+      case 105:
+        res = '跨区管理奖'
+        break
+      case 106:
+        res = '大使提货奖'
+        break
+      case 107:
+        res = '区县提货奖'
+        break
+      case 108:
+        res = '市级提货奖'
+        break
+      case 109:
+        res = '跨区提货奖'
+        break
+      case 200:
+        res = '套餐实付金额'
+        break
+      case 201:
+        res = '套餐成本金额'
+        break
+      case 202:
+        res = '提现付款金额'
+        break
+    }
+    return res
+  },
+
+  filterBusinessType (val) {
+    if (!val && parseInt(val) !== 0) return emptyTips
+    let res = ''
+    switch (parseInt(val)) {
+      case 1:
+        res = '应付金额'
+        break
+      case 2:
+        res = '收入金额'
+        break
+      case 3:
+        res = '支出金额'
+        break
+    }
+    return res
+  },
+
+  filterBusinessAttr (val) {
+    if (!val && parseInt(val) !== 0) return emptyTips
+    let res = ''
+    switch (parseInt(val)) {
+      case 1:
+        res = '套餐订购'
+        break
+      case 2:
+        res = '套餐成本'
+        break
+      case 3:
+        res = '佣金分配'
+        break
+      case 4:
+        res = '提现已付金额'
         break
     }
     return res

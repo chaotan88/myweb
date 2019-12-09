@@ -213,7 +213,7 @@ export default {
           { required: true, message: '请选择有效时长', trigger: 'blur' }
         ],
         description: [
-          { max: 20, message: '请选择代金券状态', trigger: 'blur' }
+          { max: 20, message: '限20个字符,不含特殊字符', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择代金券状态', trigger: 'blur' }
@@ -249,7 +249,6 @@ export default {
     })
 
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
-    this.getListData()
     this.getVoucherList()
   },
   methods: {
@@ -511,6 +510,9 @@ export default {
     },
     getShowVoucherList () {
       this.voucherShowList = this.voucherALLList.slice(this.start * this.len, (this.start * this.len) + this.len)
+      this.selectItem = this.voucherShowList[0]
+      this.selectIndex = 0
+      this.getListData()
     },
     toNext () {
       if (((this.start + 1) * this.len) < this.voucherALLList.length) {

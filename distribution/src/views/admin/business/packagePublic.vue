@@ -107,8 +107,8 @@
               </el-input>&nbsp;/ 人
             </el-form-item>
             </div>
-            <el-form-item label="套餐类型 ：" prop="commissionType" @change="changeAmount">
-              <el-radio-group v-model="ruleForm.commissionType">
+            <el-form-item label="套餐类型 ：" prop="commissionType">
+              <el-radio-group v-model="ruleForm.commissionType" @change="changeAmount('commissionType')">
                 <el-radio :label="1">礼包分佣</el-radio>
                 <el-radio :label="2">提货分佣</el-radio>
               </el-radio-group>
@@ -132,48 +132,61 @@
             </el-form-item>
             <div v-if="ruleForm.commissionType === 1">
               <el-form-item label="推荐奖：" prop="giftRecommendReward">
-                <el-input v-model="ruleForm.giftRecommendReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                <el-input v-model="ruleForm.giftRecommendReward" placeholder="精确到百分位，限10个字符"
+                  @change="changeAmount('giftRecommendReward')"></el-input>
               </el-form-item>
               <el-form-item label="大使管理奖：" prop="giftRecommendRankReward">
-                <el-input v-model="ruleForm.giftRecommendRankReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                <el-input v-model="ruleForm.giftRecommendRankReward" placeholder="精确到百分位，限10个字符"
+                  @change="changeAmount('giftRecommendRankReward')"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
               <el-form-item label="区域级管理奖：" prop="giftManageAreaReward">
                 <div style="margin-bottom: 10px;">
                   <span class="readonly-text">区县运营中心</span>
-                  <el-input v-model="ruleForm.giftManageAreaReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                  <el-input v-model="ruleForm.giftManageAreaReward" placeholder="精确到百分位，限10个字符"
+                    @change="changeAmount('giftManageAreaReward')"></el-input>
                   <span class="recommendSpan">元/人</span>
                 </div>
+              </el-form-item>
+              <el-form-item label="" prop="giftManageCityReward" style="border-top: 0; margin-top: -10px;">
                 <div>
                   <span class="readonly-text">市级运营中心</span>
-                  <el-input v-model="ruleForm.giftManageCityReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                  <el-input v-model="ruleForm.giftManageCityReward" placeholder="精确到百分位，限10个字符"
+                    @change="changeAmount('giftManageCityReward')"></el-input>
                   <span class="recommendSpan">元/人</span>
                 </div>
               </el-form-item>
               <el-form-item label="跨区管理奖：" prop="giftManageCrossReward">
                 <span class="readonly-text">市级运营中心</span>
-                <el-input v-model="ruleForm.giftManageCrossReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                <el-input v-model="ruleForm.giftManageCrossReward" placeholder="精确到百分位，限10个字符"
+                  @change="changeAmount('giftManageCrossReward')"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
             </div>
             <div v-else>
               <el-form-item label="大使提货奖：" prop="pickReward">
-                <el-input v-model="ruleForm.pickReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                <el-input v-model="ruleForm.pickReward" placeholder="精确到百分位，限10个字符"
+                  @change="changeAmount('pickReward')"></el-input>
                 <span class="recommendSpan">元/人</span>
               </el-form-item>
               <el-form-item label="运营提货奖：" prop="pickAreaReward">
                 <div style="margin-bottom: 10px;">
                   <span class="readonly-text">区县运营中心</span>
-                  <el-input v-model="ruleForm.pickAreaReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                  <el-input v-model="ruleForm.pickAreaReward" placeholder="精确到百分位，限10个字符"
+                    @change="changeAmount('pickAreaReward')"></el-input>
                 </div>
+              </el-form-item>
+              <el-form-item label="" prop="pickCityReward" style="border-top: 0; margin-top: -10px;">
                 <div>
                   <span class="readonly-text">市级运营中心</span>
-                  <el-input v-model="ruleForm.pickCityReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                  <el-input v-model="ruleForm.pickCityReward" placeholder="精确到百分位，限10个字符"
+                    @change="changeAmount('pickCityReward')"></el-input>
                 </div>
               </el-form-item>
               <el-form-item label="跨区提货奖：" prop="pickCrossReward">
                 <span class="readonly-text">市级运营中心</span>
-                <el-input v-model="ruleForm.pickCrossReward" placeholder="精确到百分位，限10个字符" @change="changeAmount"></el-input>
+                <el-input v-model="ruleForm.pickCrossReward" placeholder="精确到百分位，限10个字符"
+                  @change="changeAmount('pickCrossReward')"></el-input>
               </el-form-item>
             </div>
           </div>
@@ -209,11 +222,11 @@
 <script>
 export default {
   data () {
-    let validateNumber = (rule, value, callback) => {
-      let reg = /^\d{0,10}$/gi
-      if (value && !value.toString().match(reg)) return callback(new Error('只能输入10个字符以内的正整数'))
-      callback()
-    }
+    // let validateNumber = (rule, value, callback) => {
+    //   let reg = /^\d{0,10}$/gi
+    //   if (value && !value.toString().match(reg)) return callback(new Error('只能输入10个字符以内的正整数'))
+    //   callback()
+    // }
     let validateWhetherNumberLimit = (rule, value, callback) => {
       let reg = /^\d{0,10}$/gi
       if ((value && !value.toString().match(reg)) || value > 100) return callback(new Error('只能输入0-100以内的正整数'))
@@ -286,15 +299,15 @@ export default {
         ],
         commissionType: [{ required: true, message: '请选择套餐类型', trigger: 'blur' }],
         // whetherNeetGift: [{ required: true, message: '请选择礼包套餐', trigger: 'blur' }],
-        giftRecommendReward: [{ validator: validateNumber, trigger: 'blur' }],
-        giftRecommendRankReward: [{ validator: validateNumber, trigger: 'blur' }],
-        giftManageAreaReward: [{ validator: validateNumber, trigger: 'blur' }],
-        giftManageCityReward: [{ validator: validateNumber, trigger: 'blur' }],
-        giftManageCrossReward: [{ validator: validateNumber, trigger: 'blur' }],
-        pickReward: [{ validator: validateNumber, trigger: 'blur' }],
-        pickAreaReward: [{ validator: validateNumber, trigger: 'blur' }],
-        pickCityReward: [{ validator: validateNumber, trigger: 'blur' }],
-        pickCrossReward: [{ validator: validateNumber, trigger: 'blur' }]
+        giftRecommendReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        giftRecommendRankReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        giftManageAreaReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        giftManageCityReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        giftManageCrossReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        pickReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        pickAreaReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        pickCityReward: [{ validator: validateSetMealPrice, trigger: 'blur' }],
+        pickCrossReward: [{ validator: validateSetMealPrice, trigger: 'blur' }]
       },
       mealId: '',
       content: `<p>hello world</p>`,
@@ -312,7 +325,8 @@ export default {
         // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
         serverUrl: 'http://35.201.165.105:8000/controller.php',
         // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-        UEDITOR_HOME_URL: '/lzwl-distribute/static/ueditor/'
+        // UEDITOR_HOME_URL: '/lzwl-distribute/static/ueditor/'
+        UEDITOR_HOME_URL: './static/ueditor/'
       }
     }
   },
@@ -389,6 +403,9 @@ export default {
         })
         this.ruleForm.appendImageUri = results.appendImageUri
         this.ruleForm.uploadFiles = results.appendImageUri
+        const amounts = ['giftRecommendReward', 'giftRecommendRankReward', 'giftManageAreaReward', 'giftManageCityReward',
+          'giftManageCrossReward', 'pickReward', 'pickAreaReward', 'pickCityReward', 'pickCrossReward']
+        amounts.forEach(amo => this.inpBlur(amo))
       })
     },
 
@@ -562,7 +579,7 @@ export default {
       }).then((res) => {
         let { list } = res.data.data
         if (!list) list = []
-        this.vouchers = list
+        this.vouchers = list.filter(da => da.status === 2)
         this.getCouponList()
       })
     },
@@ -576,9 +593,9 @@ export default {
     mealPriceChange () {
       this.inpBlur('setMealPrice')
       this.getCouponList()
-      this.changeAmount()
+      this.changeAmount('setMealPrice')
     },
-    changeAmount () {
+    changeAmount (prop) {
       let configurationMoney = 0
       let keys = []
       if (this.ruleForm.commissionType === 1) {
@@ -590,7 +607,28 @@ export default {
         let data = parseFloat(this.ruleForm[key])
         if (!isNaN(data)) configurationMoney += data
       })
+      if (prop && prop !== 'commissionType') {
+        if (configurationMoney > this.ruleForm.setMealPrice) {
+          this.$message({
+            type: 'error',
+            message: '配置金额不能大于套餐销售价'
+          })
+          if (prop === 'setMealPrice') {
+            this.$set(this.ruleForm, 'setMealPrice', configurationMoney)
+          } else {
+            const currentAmount = this.ruleForm[prop]
+            this.$set(this.ruleForm, prop, 0)
+            configurationMoney -= parseFloat(currentAmount)
+          }
+        }
+        this.inpBlur(prop)
+      }
       this.ruleForm.configurationMoney = configurationMoney
+      if (prop === 'commissionType') {
+        const amounts = ['giftRecommendReward', 'giftRecommendRankReward', 'giftManageAreaReward', 'giftManageCityReward',
+          'giftManageCrossReward', 'pickReward', 'pickAreaReward', 'pickCityReward', 'pickCrossReward']
+        amounts.forEach(amo => this.inpBlur(amo))
+      }
     }
   }
 }
