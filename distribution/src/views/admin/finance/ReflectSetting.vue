@@ -67,10 +67,15 @@ export default {
         conditionType: 1
       },
       rules: {
+        withdrawalCycle: [
+          { required: true, message: '请选择提现周期', trigger: 'blur' }
+        ],
         cycleNumber: [
+          { required: true, message: '请输入提现次数', trigger: 'blur' },
           { validator: validateCycleNumber, trigger: 'blur' }
         ],
         conditionValue: [
+          { required: true, message: '请输入提现手续费', trigger: 'blur' },
           { validator: validateNumber, trigger: 'blur' }
         ]
       },

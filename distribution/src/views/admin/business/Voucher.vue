@@ -1,6 +1,6 @@
 <!-- 分销规则列表页 -->
 <template>
-  <common-tpl class="distribution-list-wrap" :footer="false">
+  <common-tpl class="voucher-list-wrap" :footer="false">
     <!-- 头部 -->
     <template slot="header">
       <!-- 高级搜索组件 -->
@@ -550,7 +550,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.distribution-list-wrap{
+.voucher-list-wrap{
   .search-form{
     .el-form-item{
 
@@ -659,7 +659,7 @@ export default {
 }
 </style>
 <style lang="less">
-.distribution-list-wrap{
+.voucher-list-wrap{
   .search-form{
     .agent{
       .el-form-item__content{

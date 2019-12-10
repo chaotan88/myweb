@@ -67,7 +67,7 @@ export default {
           return false
         }
         let { phone } = resData.data
-        this.getMemberDetail('12110000001' || phone)
+        this.getMemberDetail(phone)
       }).finally(() => {
         this.loading = false
       })
@@ -91,6 +91,8 @@ export default {
           return false
         }
         let results = resData.data
+        let chartHeight = results.length * 50 < 500 ? 500 : results.length * 50
+        document.getElementById('net-work-chart').style.height = `${chartHeight}px`
         this.buildData(results)
       }).finally(() => {
         this.loading = false
@@ -100,7 +102,7 @@ export default {
       let datas = []
       let baseX = 200
       let baseY = 40
-      let baseLevel = data[0].level - 1
+      let baseLevel = data.length > 0 ? data[0].level - 1 : 0
       let level1Datas = data.filter(da => da.level - 1 === baseLevel) || []
       let level2Datas = data.filter(da => da.level - 2 === baseLevel) || []
       let len = level1Datas.length + level2Datas.length + 1
@@ -260,9 +262,43 @@ export default {
         }
       })
       chart.setOption({
+        // tooltip: {
+        //   trigger: 'item',
+        //   triggerOn: 'mousemove'
+        // },
         tooltip: {
+          show: true,
           trigger: 'item',
-          triggerOn: 'mousemove'
+          triggerOn: 'mousemove',
+          axisPointer: {
+            'type': 'shadow'
+          },
+          formatter: function (params) {
+            debugger
+            var relVal = params[0].name + '<br/>'
+            return relVal
+          },
+          position: function (point, params, dom, rect, size) {
+            return [point[0], '10%']
+          }
+        },
+        itemStyle: {
+          normal: {
+            label: {
+              show: true,
+              formatter: '{b}: {c}'
+            },
+            borderWidth: 1,
+            borderColor: '#ccc'
+          },
+          emphasis: {
+            label: {
+              show: true
+            },
+            color: '#cc99cc',
+            borderWidth: 3,
+            borderColor: '#996699'
+          }
         },
         series: [
           {
@@ -450,8 +486,8 @@ export default {
   }
   .net-work-chart {
     width: 100%;
-    height: 2000px;
     margin-top: 20px;
+    background: #AFD7FF;
     // overflow: hidden;
   }
 }

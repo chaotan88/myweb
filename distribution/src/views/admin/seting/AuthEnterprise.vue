@@ -18,6 +18,7 @@
             :on-success="uploadSuccessHandle"
             :on-remove="removeHandle"
             :file-list="fileList"
+            :before-upload="beforeAvatarUpload"
             class="upload-wrap">
               <el-button>上传营业执照</el-button>
           </el-upload>
@@ -67,7 +68,7 @@ export default {
         ],
         address: [
           { required: true, message: '请输入详细地址', trigger: 'blur' },
-          { min: 1, max: 100, message: '详细地址(15-18)个字符', trigger: 'blur' }
+          { min: 1, max: 100, message: '详细地址(1-100)个字符', trigger: 'blur' }
         ],
         enclosure: [{ required: true, message: '请上传营业执照', trigger: 'blur' }]
       },
@@ -134,6 +135,22 @@ export default {
         return false
       }
       this.formData.enclosure = res.data
+    },
+    /**
+     * 文件上传前的格式和大小校验
+     */
+    beforeAvatarUpload (file) {
+      const pattern = /(jpg|jpeg|png)$/ig
+      const isLegalPhoto = pattern.test(file.type)
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isLegalPhoto) {
+        this.$message.error('上传图片的格式不合法，请重新上传')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      return isLegalPhoto && isLt2M
     }
   }
 }

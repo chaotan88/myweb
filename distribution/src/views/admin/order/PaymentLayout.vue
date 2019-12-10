@@ -20,7 +20,7 @@ export default {
   },
 
   mounted () {
-    let path = this.$route.path.match(/all|examine|pass|reject/gi)
+    let path = this.$route.path.match(/all|examine|pass|reject|finished/gi)
     if (path) this.getStatistics()
   },
 

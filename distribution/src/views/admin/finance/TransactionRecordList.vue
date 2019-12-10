@@ -6,7 +6,7 @@
       <high-search @search="highSearch('form')" :close="highSearchClose">
         <div class="pos-r" slot="search">
           <div class="d-ib pos-r" style="width: 250px;">
-            <el-input placeholder="输入交易编号/手机号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
+            <el-input placeholder="输入交易编号/推广大使手机号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
           </div>
         </div>

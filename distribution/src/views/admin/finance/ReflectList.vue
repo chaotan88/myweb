@@ -8,9 +8,8 @@
           <div class="d-ib" style="width: 160px;">
             <el-select class="full-w" v-model="formData.accountType">
               <el-option label="全部" value=""></el-option>
-              <el-option label="银行卡" value="2"></el-option>
-              <el-option label="支付宝" value="1"></el-option>
-              <el-option label="微信支付" value="3"></el-option>
+              <el-option label="银行卡" value="1"></el-option>
+              <el-option label="支付宝" value="2"></el-option>
             </el-select>
           </div>
           &nbsp;
@@ -38,8 +37,8 @@
         </el-table-column>
         <el-table-column prop="accountType" label="提现方式">
           <template slot-scope="scope">
-            <span v-if="scope.row.accountType === 1">银行卡</span>
-            <span v-else-if="scope.row.accountType === 1">支付宝</span>
+            <span v-if="parseFloat(scope.row.accountType) === 1">银行卡</span>
+            <span v-else-if="parseFloat(scope.row.accountType) === 2">支付宝</span>
             <span v-else>--</span>
           </template>
         </el-table-column>
@@ -148,7 +147,6 @@ export default{
      * @param  {[type]} type [数据类型，type存在表示获取导出数据]
      */
     getListData (type) {
-      this.tableData = [{}]
       let url = ''
       if (!type) {
         url = '@ROOT_API/withdrawalManageController/getWithdrawalList'

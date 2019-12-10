@@ -78,7 +78,7 @@
 
       <high-search :textVisible="false">
         <template slot="edit">
-          <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
+          <el-button :disabled="!tableData || tableData.length === 1" @click="getListData('export')">导出</el-button>
         </template>
       </high-search>
     </template>

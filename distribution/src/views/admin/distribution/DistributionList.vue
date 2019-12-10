@@ -419,5 +419,10 @@ export default {
   width: 80px !important;
   height: 80px !important;
 }
+  .el-table {
+    input {
+      background: #C1E0FF;
+    }
+  }
 }
 </style>

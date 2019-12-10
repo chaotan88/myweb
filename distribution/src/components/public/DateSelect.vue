@@ -8,11 +8,12 @@
         <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange"
           range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
           clearable @change="handleFilterDate"
+          format="yyyy 年 MM 月 dd 日"
           v-if="selectDateType === 999"></el-date-picker>
           <div v-else>
-            <span>{{formData.statisticsDate[0] | filterDate('YYYY-MM-DD')}}</span>
+            <span>{{formData.statisticsDate[0] | filterDate('YYYY 年 MM 月 DD 日')}}</span>
             -
-            <span>{{formData.statisticsDate[1] | filterDate('YYYY-MM-DD')}}</span>
+            <span>{{formData.statisticsDate[1] | filterDate('YYYY 年 MM 月 DD 日')}}</span>
           </div>
       </el-form-item>
     </el-form>
@@ -68,6 +69,9 @@ export default {
           break
         case '15_day':
           dt.setDate(dt.getDate() - 15)
+          break
+        case 999:
+          dt.setDate(dt.getDate() - 90)
           break
       }
       this.formData.statisticsDate = [dt, new Date()]

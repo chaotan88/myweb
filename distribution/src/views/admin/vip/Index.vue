@@ -72,9 +72,9 @@
         </el-table-column>
         <el-table-column prop="memberType" label="级别产生方式" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.memberType == 1">线上升级</span>
             <span v-if="scope.row.memberType == 2">手动升级</span>
-            <span v-else>--</span>
+            <!-- <span v-else-if="scope.row.memberType == 2"></span> -->
+            <span v-else>在线升级</span>
           </template>
         </el-table-column>
         <el-table-column prop="region" label="所属地区" min-width="200">

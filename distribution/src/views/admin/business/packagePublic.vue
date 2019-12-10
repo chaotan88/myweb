@@ -199,12 +199,14 @@
                 placeholder="选择代金券">
                 <el-option :label="item.description" :value="item.id" :key="index" v-for="(item, index) in vouchers"></el-option>
               </el-select>
+              <span style="margin-left: 20px; font-size: 12px; color: #333;">注：只能选择开启的代金券，不限制选择的代金券金额</span>
             </el-form-item>
             <el-form-item label="抵扣：" prop="couponDeduction">
               <el-select v-model="ruleForm.couponDeduction" size="medium" class="year-box"
                 placeholder="选择代金券">
                 <el-option :label="item.description" :value="item.id" :key="index" v-for="(item, index) in couponList"></el-option>
               </el-select>
+              <span style="margin-left: 20px; font-size: 12px; color: #333;">注：只显示小于或等于套餐销售价的代金券</span>
             </el-form-item>
           </div>
 
@@ -325,8 +327,8 @@ export default {
         // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
         serverUrl: 'http://35.201.165.105:8000/controller.php',
         // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-        // UEDITOR_HOME_URL: '/lzwl-distribute/static/ueditor/'
-        UEDITOR_HOME_URL: './static/ueditor/'
+        UEDITOR_HOME_URL: '/lzwl-distribute/static/ueditor/'
+        // UEDITOR_HOME_URL: './static/ueditor/'
       }
     }
   },

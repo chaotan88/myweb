@@ -160,7 +160,7 @@ export default {
   },
   mounted () {
     this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
-    let pathType = this.$route.path.match(/all|examine|pass|reject/gi)[0]
+    let pathType = this.$route.path.match(/all|examine|pass|reject|finished/gi)[0]
     switch (pathType) {
       case 'all':
         this.pageType = ''
@@ -198,7 +198,6 @@ export default {
      * @param  {[type]} type [数据类型，type存在表示获取导出数据]
      */
     getListData (type) {
-      this.tableData = [{}]
       let url = ''
       if (!type) {
         url = '@ROOT_API/meal/getSetMealOrderList'
@@ -210,7 +209,7 @@ export default {
         start: type ? 1 : this.pageData.currentPage,
         pageSize: type ? this.pageData.total : this.pageData.pageSize,
         phone: this.formData.phone,
-        orderStatus: this.pageType || this.formData.payStatus
+        orderStatus: this.pageType
       }
       if (!type) {
         this.$http.post(url, data).then((res) => {

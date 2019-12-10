@@ -7,7 +7,7 @@
       </div>
       <div class="form-col">
         <span class="col-label">证件类型</span>
-        <span class="col-val">{{data.customerPhone | filterEmpty}}</span>
+        <span class="col-val">{{data.cardTypeVal | filterEmpty}}</span>
       </div>
       <div class="form-col">
         <span class="col-label">地区</span>
@@ -31,7 +31,7 @@
     <div class="form-row">
       <div class="form-col">
         <span class="col-label">级别产生方式</span>
-        <span class="col-val">{{data.memberType === 1 ? '线上升级' : '手动升级'}}</span>
+        <span class="col-val">{{data.memberType === 2 ? '手动升级' : '线上升级'}}</span>
       </div>
       <div class="form-col">
         <span class="col-label">身份证</span>
