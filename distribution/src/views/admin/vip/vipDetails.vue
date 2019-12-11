@@ -31,7 +31,11 @@
     <div class="form-row">
       <div class="form-col">
         <span class="col-label">级别产生方式</span>
-        <span class="col-val">{{data.memberType === 2 ? '手动升级' : '线上升级'}}</span>
+        <span class="col-val">
+          <span v-if="data.memberType === 2">手动升级</span>
+          <span v-else-if="!data.customerPhone">--</span>
+          <span v-else>在线升级</span>
+        </span>
       </div>
       <div class="form-col">
         <span class="col-label">身份证</span>

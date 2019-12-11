@@ -6,7 +6,7 @@
       <high-search @search="highSearch('form')" :close="highSearchClose">
         <div class="pos-r" slot="search">
           <div class="d-ib pos-r" style="width: 250px;">
-            <el-input placeholder="输入交易编号/推广大使手机号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
+            <el-input placeholder="输入推广大使手机号/姓名" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
           </div>
         </div>
@@ -27,8 +27,10 @@
                 <el-option label="推荐奖" :value="101"></el-option>
                 <el-option label="大使管理奖" :value="102"></el-option>
                 <el-option label="区域管理奖" :value="103"></el-option>
-                <el-option label="VIP提货奖" :value="104"></el-option>
-                <el-option label="运营提货奖" :value="105"></el-option>
+                <el-option label="跨区管理奖" :value="105"></el-option>
+                <el-option label="大使提货奖" :value="106"></el-option>
+                <el-option label="运营提货奖" :value="107"></el-option>
+                <el-option label="跨区提货奖" :value="109"></el-option>
               </el-select>
             </el-form-item>
           </el-form>

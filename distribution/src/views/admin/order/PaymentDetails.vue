@@ -32,7 +32,7 @@
           </el-table-column>
           <el-table-column prop="mainImageUrl" label="主图">
             <template slot-scope="scope">
-              <img :src="scope.row.mainImageUrl | filterImgUrl">
+              <img :src="scope.row.mainImageUrl | filterImgUrl" style="width: 100%;">
             </template>
           </el-table-column>
           <el-table-column prop="setMealNumber" label="套餐编码" width="180">
@@ -83,7 +83,7 @@
             <td>收件人地址：</td>
             <td v-if="detailsData.orderStatus === 2" style="display: flex;">
               <!-- <el-input v-model="formData.customerAddress" clearable></el-input> -->
-              <region-select @change="regionChange"></region-select>
+              <region-select @change="regionChange" :initData="region"></region-select>
               <el-input v-model="formData.customerAddress" clearable placeholder="详细地址" style="margin-left: 10px;"></el-input>
             </td>
             <td v-else>{{detailsData.customerAddress | filterEmpty}}</td>
@@ -91,7 +91,7 @@
           <tr>
             <td>发货时间：</td>
             <td v-if="detailsData.orderStatus === 2">
-              {{new Date() | filterDate}}
+              --
             </td>
             <td v-else>{{detailsData.sendGoodsTime | filterDate}}</td>
           </tr>
@@ -99,17 +99,19 @@
             <td>快递类型：</td>
             <td v-if="detailsData.orderStatus === 2">
               <!-- <el-input v-model="formData.logisticsName" clearable></el-input> -->
-              <el-select v-model="formData.logisticsNo" size="medium" class="year-box"
+              --
+              <!-- <el-select v-model="formData.logisticsNo" size="medium" class="year-box"
                 placeholder="选择快递类型">
                 <el-option :label="logistics.logisticsName" :value="logistics.logisticsNo" :key="index" v-for="(logistics, index) in logisticsList"></el-option>
-              </el-select>
+              </el-select> -->
             </td>
             <td v-else>{{detailsData.logisticsName | filterEmpty}}</td>
           </tr>
           <tr>
             <td>物流单号：</td>
             <td v-if="detailsData.orderStatus === 2">
-              <el-input v-model="formData.logisticsNumber" clearable></el-input>
+              --
+              <!-- <el-input v-model="formData.logisticsNumber" clearable></el-input> -->
             </td>
             <td v-else>{{detailsData.logisticsNumber | filterEmpty}}</td>
           </tr>
@@ -184,7 +186,10 @@ export default {
           }
         }
       },
-      addForm: {},
+      addForm: {
+        logisticsNo: '',
+        logisticsNumber: ''
+      },
       uses: [],
       rules: {},
       orderId: '',              // 申请id
@@ -192,7 +197,21 @@ export default {
       fxUserInfo: {},           // 用户信息
       passVisible: false,        // 发货弹窗
       tableData: [],
-      logisticsList: []
+      logisticsList: [],
+      region: {
+        province: {
+          code: '',
+          name: ''
+        },
+        city: {
+          code: '',
+          name: ''
+        },
+        area: {
+          code: '',
+          name: ''
+        }
+      }
     }
   },
   mounted () {
@@ -231,6 +250,36 @@ export default {
             setMealPrice: results.setMealPrice
           })
           this.detailsData = results
+          this.formData.customerName = results.customerName
+          this.formData.customerPhone = results.customerPhone
+          this.region.province = {
+            code: results.provinceCode,
+            name: results.province
+          }
+          this.region.city = {
+            code: results.cityCode,
+            name: results.city
+          }
+          this.region.area = {
+            code: results.zoneCode,
+            name: results.zone
+          }
+          // this.formData.region = {
+          //   province: {
+          //     code: results.provinceCode,
+          //     name: results.province
+          //   },
+          //   city: {
+          //     code: results.cityCode,
+          //     name: results.city
+          //   },
+          //   area: {
+          //     code: results.zoneCode,
+          //     name: results.zone
+          //   }
+          // }
+          console.log(this.formData.region)
+          this.formData.customerAddress = results.address
         }
       })
     },

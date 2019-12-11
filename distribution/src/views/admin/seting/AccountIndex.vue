@@ -18,7 +18,7 @@
         <el-form-item label="邮　　箱：" prop="email">
           <el-input v-model="formData.email" placeholder='输入邮箱格式（0-150）'></el-input>
         </el-form-item>
-        <el-form-item label="身份认证：">
+        <!-- <el-form-item label="身份认证：">
           <div v-if="!formData.name">
             <span class="uncertified">未认证</span>
             <el-button @click="showDialogHandle('身份认证', 'showAuthId')">认证</el-button>
@@ -37,7 +37,7 @@
             <span class="uncertified">未认证</span>
             <el-button @click="showDialogHandle('企业认证', 'showAuthEnterprise')">认证</el-button>
           </template>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="所 在 地：" class="select-wrap">
           <region-select :initData="formData.region" @change="regionChange"></region-select>
         </el-form-item>
@@ -200,7 +200,7 @@ export default {
      * 获取用户信息
      */
     getUserInfoHandle () {
-      this.$http.post('@ROOT_API/accountSetController/viewUser', {
+      this.$http.post('@ROOT_API/accountSetController/getUserAccountDetail', {
         id: this.userInfo.userId
       }).then((res) => {
         let resData = res.data

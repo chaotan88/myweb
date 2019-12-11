@@ -5,7 +5,7 @@
       <!-- 高级搜索组件 -->
       <high-search @search="highSearch('form')" :close="highSearchClose">
         <div class="pos-r" slot="search">
-          <el-input v-model.trim="formData.condition" placeholder="输入手机/推荐人" @keyup.enter.native="searchHandle"></el-input>
+          <el-input v-model.trim="formData.condition" placeholder="输入推广大使手机号/姓名" @keyup.enter.native="searchHandle"></el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
         <div slot="edit">

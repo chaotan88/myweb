@@ -131,6 +131,7 @@ export default {
      * 初始化
      */
     init () {
+      debugger
       this.province = this.initData.province.code
       this.city = this.initData.city.code
       this.area = this.initData.area.code

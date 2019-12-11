@@ -31,6 +31,8 @@
 import VipDetails from '@/views/admin/vip/vipDetails.vue'
 let echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/tree')
+require('echarts/lib/component/tooltip')
+
 export default {
   data () {
     return {
@@ -112,7 +114,7 @@ export default {
         invitationCode: this.userDetail.invitationCode,
         invitationName: this.userDetail.invitationName,
         ruleName: this.userDetail.ruleName,
-        userName: this.userDetail.invitationName,
+        userName: this.userDetail.cardName,
         customerPhone: this.userDetail.customerPhone,
         level: baseLevel,
         x: baseX,
@@ -130,7 +132,7 @@ export default {
           invitationCode: da.invitationCode,
           invitationName: da.invitationName || '',
           ruleName: da.disRuleName,
-          userName: da.invitationName || '',
+          userName: da.cardName || '',
           customerPhone: da.phone,
           level: da.level,
           x: baseX + 400,
@@ -234,17 +236,26 @@ export default {
       let chart = echarts.init(document.getElementById('net-work-chart'))
       chart.off('click')
       let chartData = {
-        name: rootData.invitationName,
-        children: []
+        name: rootData.userName,
+        children: [],
+        phone: rootData.customerPhone,
+        userName: rootData.userName,
+        ruleName: rootData.ruleName,
+        customerPhone: rootData.customerPhone,
+        umbrellaCount: rootData.umbrellaCount || '--'
       }
       const setChild = (da) => {
         chartData.children.forEach(cd => {
           if (da.parentId === cd.userId) {
             cd.children = cd.children || []
             cd.children.push({
-              name: da.ruleName + '  ' + da.customerPhone,
+              name: da.userName + '  ' + da.ruleName + '  ' + da.customerPhone,
               children: [],
-              phone: da.customerPhone
+              phone: da.customerPhone,
+              userName: da.userName,
+              ruleName: da.ruleName,
+              customerPhone: da.customerPhone,
+              umbrellaCount: da.umbrellaCount
             })
           }
         })
@@ -252,10 +263,14 @@ export default {
       datas.forEach((da, index) => {
         if (da.level === baseLevel + 1) {
           chartData.children.push({
-            name: da.ruleName + '  ' + da.customerPhone,
+            name: da.userName + '  ' + da.ruleName + '  ' + da.customerPhone,
             children: [],
             userId: da.userId,
-            phone: da.customerPhone
+            phone: da.customerPhone,
+            userName: da.userName,
+            ruleName: da.ruleName,
+            customerPhone: da.customerPhone,
+            umbrellaCount: da.umbrellaCount
           })
         } else {
           setChild(da)
@@ -266,38 +281,30 @@ export default {
         //   trigger: 'item',
         //   triggerOn: 'mousemove'
         // },
+        // tooltip: {
+          // show: true,
+          // trigger: 'item',
+          // triggerOn: 'mousemove'
+          // axisPointer: {
+          //   'type': 'shadow'
+          // },
+          // formatter: function (params) {
+          //   return 'aaaaa'
+          // }
+          // position: function (point, params, dom, rect, size) {
+          //   return [point[0], '10%']
+          // }
+        // },
         tooltip: {
-          show: true,
           trigger: 'item',
           triggerOn: 'mousemove',
-          axisPointer: {
-            'type': 'shadow'
-          },
           formatter: function (params) {
-            debugger
-            var relVal = params[0].name + '<br/>'
-            return relVal
-          },
-          position: function (point, params, dom, rect, size) {
-            return [point[0], '10%']
-          }
-        },
-        itemStyle: {
-          normal: {
-            label: {
-              show: true,
-              formatter: '{b}: {c}'
-            },
-            borderWidth: 1,
-            borderColor: '#ccc'
-          },
-          emphasis: {
-            label: {
-              show: true
-            },
-            color: '#cc99cc',
-            borderWidth: 3,
-            borderColor: '#996699'
+            let { data } = params
+            let str = `姓名: ${data.userName}</br>
+              当前等级：${data.ruleName}</br>
+              电话：${data.phone}</br>
+              下级会员数：${data.umbrellaCount} 人`
+            return str
           }
         },
         series: [
