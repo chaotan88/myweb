@@ -94,8 +94,8 @@
           <el-table-column prop="addSource" label="交易内容" width="100">
             <template slot-scope="scope">{{scope.row.addSource | filterAddSource}}</template>
           </el-table-column>
-          <el-table-column prop="propertyAmount" label="交易额" width="100">
-            <template slot-scope="scope">{{scope.row.propertyAmount | filterMoney}}</template>
+          <el-table-column prop="businessAmount" label="交易额" width="100">
+            <template slot-scope="scope">{{scope.row.businessAmount | filterMoney}}</template>
           </el-table-column>
           <el-table-column prop="businessType" label="交易科目" width="120">
             <template slot-scope="scope">{{scope.row.businessType | filterBusinessType}}</template>
@@ -218,7 +218,8 @@ export default {
       this.$http.post('@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountList', {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
-        businessType: this.pageType
+        businessAttr: this.pageType
+        // ...this.handleDateArgs()
       }).then((res) => {
         let { data, total } = res.data
         this.tableData = data.list

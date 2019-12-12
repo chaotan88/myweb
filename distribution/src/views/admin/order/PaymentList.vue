@@ -58,7 +58,7 @@
                   <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id}})"><i class="icon el-icon-edit"></i>发货</div>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id}})"><i class="icon el-icon-view"></i>详情</div>
+                  <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id, pageType: 1}})"><i class="icon el-icon-view"></i>详情</div>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

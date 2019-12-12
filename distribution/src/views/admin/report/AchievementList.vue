@@ -213,7 +213,7 @@ export default {
       }
       let data = {
         phone: this.formData.customerPhone,
-        // ...this.handleDateArgs(),
+        ...this.handleDateArgs(),
         payType: this.formData.payType,
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize
@@ -353,6 +353,7 @@ export default {
       this.formData.statisticsDate = params
       this.getStatisticsData()
       this.getLineChartData()
+      this.getListData()
     }
   }
 }

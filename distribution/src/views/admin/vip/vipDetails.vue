@@ -11,7 +11,7 @@
       </div>
       <div class="form-col">
         <span class="col-label">地区</span>
-        <span class="col-val">{{(`${data.userProvince || ''}${data.userCityCode || ''}${data.userZoneCode || ''}`) | filterEmpty}}</span>
+        <span class="col-val">{{(`${data.userProvince || ''}${data.userCity || ''}${data.userZone || ''}${data.userAddress || ''}`) | filterEmpty}}</span>
       </div>
     </div>
     <div class="form-row">

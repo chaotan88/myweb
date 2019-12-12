@@ -227,7 +227,7 @@ export default {
         idCard: this.formData.idCard,                   // 否 Sting 身份证号
         invitationName: this.formData.invitationName,   // 首锁推荐人
         cardStatus: this.formData.cardStatus,           // 身份认证 0 认证 1未认证
-        disRuleId: this.formData.identityLevel,         // 否 int 身份等级
+        disRuleId: this.formData.disRuleId,         // 否 int 身份等级
         registerTimeStart: this.formData.registerTimeStart ? this.$Utils.filterDate(this.formData.registerTimeStart, 'YYYY-MM-DD') : '', // 申请时间起始值
         registerTimeEnd: this.formData.registerTimeEnd ? this.$Utils.filterDate(this.formData.registerTimeEnd, 'YYYY-MM-DD') : ''        // 申请时间结束值
       }

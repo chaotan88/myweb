@@ -19,11 +19,8 @@
      * 因此，UEditor提供了针对不同页面的编辑器可单独配置的根路径，具体来说，在需要实例化编辑器的页面最顶部写上如下代码即可。当然，需要令此处的URL等于对应的配置。
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
-       window.UEDITOR_HOME_URL = "/admin/static/ueditor/";
-       
-    // window.UEDITOR_HOME_URL = "/static/ueditor/";
     var URL = window.UEDITOR_HOME_URL || getUEBasePath();
-    
+
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
      */
@@ -33,16 +30,9 @@
         UEDITOR_HOME_URL: URL
 
         // 服务器统一请求接口路径
-        // , serverUrl: URL + "jsp/controller.jsp"
-    //   , serverUrl: "http://www.linkedfarm.cn/ueditor/utf8-jsp/jsp/controller.jsp"
-    //   , serverUrl: "http://linkedfarm.cn:8083/ueditor/utf8-jsp/jsp/controller.jsp"
-    , serverUrl: "http://120.79.46.116:8080/ueditor/utf8-jsp/jsp/controller.jsp"
-    // , serverUrl: "http://linkedfarm.cn:8083/dnfLinkedfarm/admin/operate/operateAdmin/uploadImgForRichTxtFrom.do"
-      // , serverUrl: "http://192.168.8.161:8080/bigImage-admin/sys/ueditor/exec"
+        // , serverUrl: URL + "php/controller.php"
 
-      // , serverUrl: "http://www.7bhealth.com:8080/ueditor/jsp/controller.jsp"
-
-      //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
+        //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         , toolbars: [[
             'fullscreen', 'source', '|', 'undo', 'redo', '|',
             'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
@@ -50,11 +40,26 @@
             'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
             'directionalityltr', 'directionalityrtl', 'indent', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
-            'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-            'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
-            'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
-            'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
-            'print', 'preview', 'searchreplace', 'drafts', 'help'
+            'link', 'unlink', 'anchor', '|',
+            // 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+            // 'simpleupload',
+            // 'insertimage',
+            // 'emotion',
+            // 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap',
+            // 'insertframe', 'insertcode',
+            // 'webapp',
+            // 'pagebreak',
+            // 'template',
+            // 'background',
+            // '|',
+            // 'horizontal', 'date', 'time',
+            // 'spechars',
+            //  'snapscreen',
+            // 'wordimage', '|',
+            // 'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+            // 'print', 'preview', 'searchreplace',
+            // 'drafts',
+            // 'help', '|'
         ]]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
         //,labelMap:{
@@ -362,7 +367,7 @@
 
         //默认过滤规则相关配置项目
         //,disabledTableInTable:true  //禁止表格嵌套
-        //,allowDivTransToP:true      //允许进入编辑器的div标签自动变成p标签
+        ,allowDivTransToP:false      //允许进入编辑器的div标签自动变成p标签
         //,rgb2Hex:true               //默认产出的数据中的color自动从rgb格式变成16进制格式
 
 		// xss 过滤是否开启,inserthtml等操作
@@ -503,5 +508,5 @@
     window.UE = {
         getUEBasePath: getUEBasePath
     };
-    
+
 })();

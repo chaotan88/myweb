@@ -1,25 +1,25 @@
 <!-- 会员列表 -->
 <template>
   <common-tpl class="order-index-wrap recommend-net">
+    <!-- <template slot="other">
+      
+    </template> -->
     <template slot="header">
-      <!-- 高级搜索组件 -->
+      <VipDetails :data="userDetail"></VipDetails>
       <high-search @search="highSearch('form')" :textVisible="false">
         <div class="pos-r" slot="search">
-          <el-input v-model.trim="formData.phone" placeholder="输入申请人手机号" @keyup.enter.native="searchHandle"></el-input>
-          <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
+          <el-input v-model.trim="formData.phone" placeholder="输入申请人手机号" @keyup.enter.native="searchHandle(true)"></el-input>
+          <i class="ta-c pos-a el-icon-search" @click="searchHandle(true)"></i>
+        </div>
+        <div slot="edit">
+          <el-button :disabled="!historyStep || historyStep.length === 0" @click="toPre()">返回上级</el-button>
         </div>
       </high-search>
     </template>
 
-    <!-- 列表 -->
     <template slot="main">
-        <VipDetails :data="userDetail"></VipDetails>
-        <div class="chart-split-top"></div>
-        <button type="button"
-          @click="toPre()"
-          style="border-radius: 20px; margin-top: 20px;"
-          :class="['el-button', 'el-button--default', !historyStep || historyStep.length === 0 ? 'disabled-btn' : '']">
-        <span>返回</span></button>
+        
+        <!-- <div class="chart-split-top"></div> -->
         <div class="net-work-chart" id="net-work-chart">
           <!-- <canvas width="1200" :height="canvasHeight" id="canvas" style="background: #afd7ff; border: 1px solid #ddd;"></canvas> -->
         </div>
@@ -49,7 +49,8 @@ export default {
       userDetail: {},
       start: 0,
       canvasHeight: 1550,
-      historyStep: []
+      historyStep: [],
+      firstHeight: 0
     }
   },
   mounted () {
@@ -94,6 +95,8 @@ export default {
         }
         let results = resData.data
         let chartHeight = results.length * 50 < 500 ? 500 : results.length * 50
+        if (chartHeight < this.firstHeight) chartHeight = this.firstHeight
+        else this.firstHeight = chartHeight
         document.getElementById('net-work-chart').style.height = `${chartHeight}px`
         this.buildData(results)
       }).finally(() => {
@@ -119,7 +122,7 @@ export default {
         level: baseLevel,
         x: baseX,
         y: baseY,
-        umbrellaCount: 100,
+        umbrellaCount: this.userDetail.umbrellaCount,
         userId: this.userDetail.customerId
       }
       if (!data || data.length === 0) {
@@ -175,7 +178,8 @@ export default {
     /**
      * 搜索
      */
-    searchHandle () {
+    searchHandle (isClick) {
+      if (isClick) this.historyStep = []
       this.getMemberDetail(this.formData.phone)
     },
     draw (datas, rootData, baseLevel) {
@@ -234,6 +238,7 @@ export default {
     },
     drawChart (datas, rootData, baseLevel) {
       let chart = echarts.init(document.getElementById('net-work-chart'))
+      chart.clear()
       chart.off('click')
       let chartData = {
         name: rootData.userName,
@@ -300,10 +305,10 @@ export default {
           triggerOn: 'mousemove',
           formatter: function (params) {
             let { data } = params
-            let str = `姓名: ${data.userName}</br>
-              当前等级：${data.ruleName}</br>
-              电话：${data.phone}</br>
-              下级会员数：${data.umbrellaCount} 人`
+            let str = `姓名: ${data.userName || ''}</br>
+              当前等级：${data.ruleName || ''}</br>
+              电话：${data.phone || ''}</br>
+              下级会员数：${data.umbrellaCount || '--'} 人`
             return str
           }
         },
@@ -340,7 +345,9 @@ export default {
         ]
       })
       chart.on('click', (params) => {
-        this.historyStep.push(this.formData.phone)
+        if (this.historyStep.indexOf(this.formData.phone) === -1) {
+          this.historyStep.push(this.formData.phone)
+        }
         this.formData.phone = params.data.phone
         this.searchHandle()
         return false
@@ -409,7 +416,6 @@ export default {
 </style>
 <style lang="less">
 .recommend-net{
-
   .search-head-wrap{
     .el-input__inner{
       width: 250px;
@@ -493,6 +499,7 @@ export default {
   }
   .net-work-chart {
     width: 100%;
+    height: 500px;
     margin-top: 20px;
     background: #AFD7FF;
     // overflow: hidden;

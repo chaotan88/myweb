@@ -86,7 +86,7 @@
                     @blur="onEditorBlur($event)" @focus="onEditorFocus($event)"
                     @change="onEditorChange($event)">
                 </quill-editor> -->
-                <vue-ueditor-wrap v-model="ruleForm.textDescription" :config="myConfig"></vue-ueditor-wrap>
+                <vue-ueditor-wrap v-model="ruleForm.textDescription" ref="ueditor" :config="editorConfig" @ready="editorReady" :init="editorInit"></vue-ueditor-wrap>
               </div> 
             </el-form-item>
             <el-form-item label="套餐状态：" prop="setMealStatus">
@@ -217,7 +217,26 @@
     <template slot="footer">
       <el-button type="primary" :loading="confirmLoading" @click="submitForm('ruleForm')">提交</el-button>
     </template>
-
+    <template slot="other">
+      <el-dialog
+        title="图片上传"
+        :visible.sync="dialogVisible"
+        width="30%">
+        <el-upload
+          :action="uploadUrl"
+          :multiple="true"
+          :file-list="uploadList"
+          :on-remove="handleRemoveImg"
+          :on-success="handleUploadSuccess"
+          list-type="picture-card">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handlePushImg">确 定</el-button>
+        </span>
+      </el-dialog>
+    </template>
   </common-tpl>
 </template>
 
@@ -317,19 +336,20 @@ export default {
       vouchers: [], // 赠送代金券，不限金额
       couponList: [], // 抵扣金额 只显示小于或等于套餐销售价的代金券
       packages: [],
-      myConfig: {
+      editorConfig: {
+        // 你的UEditor资源存放的路径,相对于打包后的index.html
+        // UEDITOR_HOME_URL: './static/UEditor/',
+        UEDITOR_HOME_URL: '/lzwl-distribute/static/UEditor/',
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
         // 初始容器高度
-        initialFrameHeight: 180,
+        initialFrameHeight: 500,
         // 初始容器宽度
-        initialFrameWidth: '100%',
-        // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-        serverUrl: 'http://35.201.165.105:8000/controller.php',
-        // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-        UEDITOR_HOME_URL: '/lzwl-distribute/static/ueditor/'
-        // UEDITOR_HOME_URL: './static/ueditor/'
-      }
+        initialFrameWidth: '100%'
+      },
+      uploadList: [],           // 上传列表
+      dialogVisible: false,     // 上传图片弹窗
+      editorObj: null          // 存储editor对象
     }
   },
   computed: {
@@ -631,6 +651,69 @@ export default {
           'giftManageCrossReward', 'pickReward', 'pickAreaReward', 'pickCityReward', 'pickCrossReward']
         amounts.forEach(amo => this.inpBlur(amo))
       }
+    },
+    editorChange (data) {
+      this.formData.editorText = data.html
+    },
+    // 5、 你可以在ready方法中拿到editorInstance实例,之后的所有API就和官方的实例一样了,Just Do What You Want! http://fex.baidu.com/ueditor/#api-common
+    editorReady (editorInstance) {
+      this.editorObj = editorInstance
+    },
+
+    // 7. 结合init方法,自定义按钮
+    editorInit () {
+      // console.log('this.$refs.ueditor: ', this.$refs.ueditor)
+      this.$refs.ueditor.registerButton({
+        name: 'upload',
+        icon: require('@/../static/UEditor/img/upload.png'),
+        tip: '上传图片',
+        handler: (editor, name) => {
+          this.dialogVisible = true
+        }
+      })
+    },
+    /**
+     * 移除图片
+     */
+    handleRemoveImg (file, fileList) {
+      this.uploadList = []
+      fileList.forEach((row) => {
+        this.uploadList.push({
+          url: row.url
+        })
+      })
+    },
+
+    /**
+     * 上传成功操作
+     */
+    handleUploadSuccess (res, file, fileList) {
+      setTimeout(() => {
+        if (parseInt(res.status) !== 1) {
+          this.$message({
+            message: res.msg,
+            type: 'error',
+            duration: 1000
+          })
+          return false
+        }
+        this.uploadList.push({
+          url: this.$Utils.filterImgUrl(res.data)
+        })
+      }, 30)
+    },
+
+    /**
+     * 将图片插入编辑器
+     */
+    handlePushImg () {
+      let res = ''
+      this.uploadList.forEach((row) => {
+        res += ('<img src="' + row.url + '"/>')
+      })
+      this.editorObj.execCommand('inserthtml', res)
+      this.dialogVisible = false
+      this.uploadList = []
     }
   }
 }
@@ -825,20 +908,24 @@ export default {
         }
       }
     }
-    .edit_container {
-      height: 400px;
-      .quill-editor {
-        height: 200px;
-      }
-      .edui-editor {
-        z-index: 1;
-      }
-    }
   }
 }
 </style>
 <style lang="less">
 .package-public-detail-wrap{
+  .edit_container {
+    height: 400px;
+    .quill-editor {
+      height: 200px;
+    }
+    .edui-editor {
+      z-index: 1;
+      height: 400px;
+    }
+    .edui-editor-iframeholder {
+      height: 270px !important;
+    }
+  }
   .el-dialog {
     .el-dialog__body {
       padding-bottom: 0;

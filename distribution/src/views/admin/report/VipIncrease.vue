@@ -217,7 +217,9 @@ export default{
       }
       if (!type) {
         this.$http.post(url, {
-          timeout: 5000
+          timeout: 5000,
+          startTime: this.formData.statisticsDate[0],
+          endTime: this.formData.statisticsDate[1]
         }).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {
@@ -297,6 +299,7 @@ export default{
     dateChange (params) {
       this.formData.statisticsDate = params
       this.getLineChartData()
+      this.getListData()
     }
   }
 }
