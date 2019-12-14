@@ -14,7 +14,7 @@
     <!-- 列表 -->
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column fixed prop="customerPhone" label="申请编号" min-width="170">
+        <el-table-column fixed prop="customerPhone" label="申请编号" min-width="220">
           <template slot-scope="scope">{{scope.row.upgradeNo}}</template>
         </el-table-column>
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">

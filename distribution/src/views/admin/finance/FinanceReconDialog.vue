@@ -25,15 +25,15 @@
           <template>
             <el-form-item label="交易时间：">{{initData.addTime | filterDate}}</el-form-item>
             <el-form-item label="交易类型：">
-              <span v-if="initData.propertyType === 1">余额</span>
-              <span v-else-if="initData.propertyType === 2">现金</span>
+              <span v-if="otherData.payType === '1'">微信</span>
+              <span v-else-if="otherData.payType === '2'">支付宝</span>
               <span v-else>--</span>
             </el-form-item>
-            <el-form-item label="支付宝订单号：">{{initData.cardNum | filterEmpty}}</el-form-item>
-            <el-form-item label="微信支付订单号：">{{initData.cardNum | filterEmpty}}</el-form-item>
+            <el-form-item label="支付宝订单号：" v-if="otherData.payType === '2'">{{otherData.transactionId | filterEmpty}}</el-form-item>
+            <el-form-item label="微信支付订单号：" v-if="otherData.payType === '1'">{{otherData.transactionId | filterEmpty}}</el-form-item>
             <el-form-item label="交易内容：">{{initData.addSource | filterAddSource}}</el-form-item>
-            <el-form-item label="收益值：">{{initData.propertyAmount | filterMoney}}</el-form-item>
-            <el-form-item label="交易状态：">{{initData.cardholder | filterEmpty}}</el-form-item>
+            <el-form-item label="交易额：">{{initData.businessAmount | filterMoney}}</el-form-item>
+            <!-- <el-form-item label="交易状态：">{{initData.cardholder | filterEmpty}}</el-form-item> -->
             <el-form-item label="交易科目：">{{initData.businessType | filterBusinessType}}</el-form-item>
             <el-form-item label="交易属性：">{{initData.businessAttr | filterBusinessAttr}}</el-form-item>
           </template>
@@ -75,7 +75,8 @@ export default {
       },
       dialogImageUrl: '',     // 预览图片地址
       dialogVisible: false,   // 预览显示弹窗
-      fxUserInfo: {}   // 用户信息
+      fxUserInfo: {},   // 用户信息
+      otherData: {}
     }
   },
 
@@ -86,6 +87,7 @@ export default {
         this.formData.uploadFileList = []
         this.formData.voucherImg = ''
         this.formData.dealWithStatus = this.initData.dealWithStatus
+        this.getDetails()
       },
       deep: true
     }
@@ -108,6 +110,15 @@ export default {
      */
     handleBeforeClose () {
       this.$emit('close')
+    },
+    getDetails () {
+      this.$http.get('@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountExtraDetails', {
+        params: { orderNo: this.initData.orderNo }
+      }).then((res) => {
+        let { data } = res.data
+        if (!data) data = {}
+        this.otherData = data
+      })
     }
   }
 }

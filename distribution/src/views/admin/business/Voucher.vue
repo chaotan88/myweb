@@ -15,7 +15,7 @@
 
     <!-- 主体 -->
     <template slot="main">
-      <div style="margin-bottom: 20px;margin-top: -20px;" class="voucher-card-list">
+      <div style="margin-bottom: 20px;margin-top: -20px; margin-left: -30px; margin-right: -30px;" class="voucher-card-list">
         <div class="switch-wrap" style="display: flex; border-bottom: 1px solid #dddddd;">
           <div class="pos-r third-nav-wrap">
             <a :class="['d-ib', 'ta-c', currentTab === 1 ? 'active' : '']"

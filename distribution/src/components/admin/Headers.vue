@@ -3,7 +3,7 @@
   <div class="pos-a header-layout-wrap">
     <div class="fl-l ta-c logo-wrap">
       <img src="../../assets/img/admin-logo.png">
-      <span>亮知物联渠道管理系统</span>
+      <span>亮知物联渠道运营系统</span>
     </div>
     <div class="fl-r user-info-wrap">
       <dl class="d-ib">

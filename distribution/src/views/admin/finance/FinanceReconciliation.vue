@@ -84,14 +84,14 @@
           <el-table-column prop="addTime" label="交易时间" width="200">
             <template slot-scope="scope">{{scope.row.addTime | filterDate}}</template>
           </el-table-column>
-          <el-table-column prop="propertyType" label="交易类型">
+          <el-table-column prop="propertyType" label="交易类型" width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.propertyType === 1">余额</span>
-              <span v-else-if="scope.row.propertyType === 2">现金</span>
+              <span v-if="scope.row.propertyType === 1">微信</span>
+              <span v-else-if="scope.row.propertyType === 2">支付宝</span>
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column prop="addSource" label="交易内容" width="100">
+          <el-table-column prop="addSource" label="交易内容" width="120">
             <template slot-scope="scope">{{scope.row.addSource | filterAddSource}}</template>
           </el-table-column>
           <el-table-column prop="businessAmount" label="交易额" width="100">
@@ -185,7 +185,7 @@ export default {
         customerPhone: { validator: validatePhone, trigger: 'blur' }
       },
       pageData: {             // 分页
-        currentPage: 3,
+        currentPage: 1,
         pageSize: 10,
         total: 20
       },
@@ -205,12 +205,13 @@ export default {
     this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
     this.copyFormData = this.$Utils.deepCopy(this.formData)
     this.pageData.currentPage = parseInt(this.$route.query.page) || 1
-    this.pageType = parseInt(this.$route.query.type) || 1
+    // this.pageType = parseInt(this.$route.query.type) || 1
 
     // 判断是否同一模块，带出搜索记录
     this.$Utils.filterSearchData('/admin/report/sale/list', (res) => {
       this.formData = res
     })
+    this.getTableData()
   },
 
   methods: {
@@ -221,9 +222,9 @@ export default {
         businessAttr: this.pageType
         // ...this.handleDateArgs()
       }).then((res) => {
-        let { data, total } = res.data
+        let { data } = res.data
         this.tableData = data.list
-        this.pageData.total = total
+        this.pageData.total = data.total
       })
     },
     /**
@@ -266,6 +267,7 @@ export default {
      */
     pageTypeHandle (val) {
       // this.$router.replace({path: this.$route.path, query: {type: val}})
+      this.pageData.currentPage = 1
       this.getTableData()
     },
 
@@ -284,8 +286,9 @@ export default {
       if (this.pageData.currentPage === page) {
       } else {
         this.pageData.currentPage = page
-        this.$router.push({query: {page: this.pageData.currentPage}})
+        // this.$router.push({query: {page: this.pageData.currentPage}})
       }
+      this.getTableData()
     },
     showDetail (row) {
       this.detailData = row
@@ -294,7 +297,7 @@ export default {
     handleSuccess () {},
     dateChange (param) {
       this.formData.statisticsDate = param
-      this.getTableData()
+      // this.getTableData()
       this.getStatisticsData()
     }
   },

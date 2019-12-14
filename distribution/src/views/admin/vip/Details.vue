@@ -22,10 +22,11 @@
               <td>
                 <template v-if="pageType === 1 || formData.ruleId === 1">{{datailsData.memberType | filterMemberType}}</template>
                 <template v-else>
-                  <el-radio-group v-model="formData.memberType">
+                  {{datailsData.memberType | filterMemberType}}
+                  <!-- <el-radio-group v-model="formData.memberType">
                     <el-radio :label="1">在线升级</el-radio>
                     <el-radio :label="2">手动升级</el-radio>
-                  </el-radio-group>
+                  </el-radio-group> -->
                 </template>
               </td>
             </tr>

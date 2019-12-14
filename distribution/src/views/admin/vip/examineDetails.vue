@@ -19,7 +19,10 @@
             </tr>
             <tr>
               <td>当前身份：</td>
-              <td>{{upgradeDetail.currentRankName | filterEmpty}}</td>
+              <td v-if="upgradeDetail.dealWithStatus === 1 || upgradeDetail.dealWithStatus === 3">
+                {{upgradeDetail.beforeRankName | filterEmpty}}</td>
+              <td v-else>
+                {{upgradeDetail.rankName | filterEmpty}}</td>
             </tr>
           </table>
 
@@ -32,11 +35,11 @@
             </tr>
             <tr>
               <td>选择地区：</td>
-              <td>{{upgradeDetail.rankName | filterEmpty}}</td>
+              <td>{{(upgradeDetail.agentProvince + upgradeDetail.agentCity + upgradeDetail.agentZone) | filterEmpty}}</td>
             </tr>
             <tr>
               <td>服务费：</td>
-              <td>{{upgradeDetail.serviceAmount | filterMoney | filterEmpty('元')}}</td>
+              <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td>
             </tr>
             <tr>
               <td>实际支付金额：</td>
@@ -44,7 +47,8 @@
             </tr>
             <tr>
               <td>上传凭证：</td>
-              
+              <td v-if="upgradeDetail.paymentVoucher"><img :src="upgradeDetail.paymentVoucher" style="width: 100px; height: 100px;"/></td>
+              <td v-else>--</td>
               <!-- <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td> -->
             </tr>
           </table>
@@ -69,7 +73,8 @@
             </el-form>
             <div v-else>
               <span>处理结果：</span>
-              <span>{{upgradeDetail.dealWithStatus | filterDealWith}}</span>
+              <span>{{upgradeDetail.dealWithStatus | filterDealWith}}
+                <span v-if="upgradeDetail.dealWithStatus === 3">({{upgradeDetail.returnExplanation}})</span></span>
             </div>
           </div>
         </el-form>
@@ -207,7 +212,7 @@ export default {
         if (!valid) return false
         this.submitLoading = true
         var parm = {
-          id: parseInt(this.upgradeId),                   // 审核id
+          upgradeId: parseInt(this.upgradeId),                   // 审核id
           dealWithStatus: parseInt(this.updateDate.dealWithStatus)          // 处理结果状态 2：审核通过 3：已打回
         }
         if (this.updateDate.returnExplanation) {

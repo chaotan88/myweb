@@ -5,7 +5,7 @@
     <template slot="main">
       <div class="goods-common-details">
 
-        <el-form :model="formData" class="" label-width="160px">
+        <el-form :model="detailsData" class="" ref="formData" label-width="160px" :rules="rules">
           <!-- 会员基本信息 -->
           <gray-title title="会员基本信息"></gray-title>
           <el-form-item label="推广大使手机：">
@@ -19,25 +19,26 @@
           </el-form-item>
 
           <gray-title title="升级内容"></gray-title>
-          <el-form-item label="升级成为：">
-            <el-select v-model="formData.rankId" placeholder="请选择" @change="rankIdChange">
+          <el-form-item label="升级成为：" prop="rankId" style="margin-bottom: 20px;">
+            <el-select v-model="detailsData.rankId" placeholder="请选择" @change="rankIdChange">
               <el-option
                 v-for="item in detailsData.rankList"
                 :key="item.ruleId"
                 :label="item.ruleName"
-                :value="item.ruleId">
+                :value="item.ruleId"
+                v-if="item.ruleId !== 3">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item inline label='选择地区：' prop='address' class="address-wrap">
             <region-select :assignData="detailsData.region" @change="regionChange"
-              v-if="formData.rankId === 4 || formData.rankId === 5" :showArea="showArea"></region-select>
+              v-if="detailsData.rankId === 4 || detailsData.rankId === 5" :showArea="showArea"></region-select>
             <span v-else>--</span>
           </el-form-item>
           <el-form-item label="服务费：">
             {{detailsData.upgradeAmount | filterEmpty}}
           </el-form-item>
-          <el-form-item label="实际支付金额：">
+          <el-form-item label="实际支付金额：" prop="realPayAmount" style="margin-bottom: 20px;">
             <el-input placeholder="输入整数,限20个字符" v-model="detailsData.realPayAmount"></el-input>
           </el-form-item>
           
@@ -61,7 +62,7 @@
     </template>
     <!-- 底部 -->
     <template slot="footer">
-      <el-button type="primary" @click="handleSubmit()">提交审核</el-button>
+      <el-button type="primary" @click="handleSubmit('formData')">提交审核</el-button>
     </template>
   </common-tpl>
 </template>
@@ -74,7 +75,7 @@
      //  校验0-100000
       let validateInt = (rule, value, callback) => {
         if (!value) return callback(new Error('不能为空'))
-        if (value && (isNaN(value) || value < 0 || value > 100000 || !value.toString().match(/^\d{0,10}$/gi))) return callback(new Error('限制0~100000正整数'))
+        if (value && (isNaN(value) || value < 0 || !value.toString().match(/^\d{0,20}$/gi))) return callback(new Error('输入整数,限20个字符'))
         callback()
       }
       return {
@@ -102,7 +103,9 @@
         deleteVisible: false,   // 取消分享弹窗
         infoVisible: false,     // 弹窗
         addVisible: false,      // 弹窗
-        detailsData: {},        // 详情信息
+        detailsData: {
+          rankId: ''
+        },        // 详情信息
         region: {
           province: {
             code: '',
@@ -126,7 +129,12 @@
         userInfo: {},
         showArea: false,
         uploadFiles: '',
-        fileList: []
+        fileList: [],
+        rules: {
+          rankId: [{required: true, message: '升级等级不能为空', trigger: 'blur'}],
+          realPayAmount: [{required: true, message: '实际支付金额不能为空', trigger: 'blur'},
+          {required: true, validator: validateInt, trigger: 'blur'}]
+        }
       }
     },
     computed: {
@@ -164,63 +172,67 @@
       },
 
       rankIdChange (val) {
+        if (this.detailsData.rankId === 5) {
+          this.showArea = false
+        } else if (this.detailsData.rankId === 4) {
+          this.showArea = true
+        }
         this.detailsData.rankList.forEach(item => {
           if (item.rand === val) this.$set(this.detailsData, 'upgradeAmount', item.feeDescription)
         })
-        if (this.formData.rankId === 5) {
-          this.showArea = false
-        } else if (this.formData.rankId === 4) {
-          this.showArea = true
-        }
       },
       /**
        * 提交操作
        */
-      handleSubmit () {
-        this.submitLoading = true
-        let params = {
-          upgradeId: this.formData.upgradeId,
-          rankId: this.formData.rankId,
-          // upgradeAmount: '',
-          paymentVoucher: this.uploadFiles,
-          serviceAmount: parseFloat(this.detailsData.upgradeAmount),
-          realPayAmount: parseFloat(this.detailsData.realPayAmount),
-          agentZone: this.region.area.name,
-          agentZoneCode: this.region.area.code,
-          agentCity: this.region.city.name,
-          agentCityCode: this.region.city.code,
-          agentProvince: this.region.province.name,
-          agentProvinceCode: this.region.province.code,
-          userName: this.detailsData.userName,
-          userPhone: this.detailsData.userPhone
-        }
-        this.detailsData.rankList.forEach(item => {
-          if (item.rand === this.formData.rankId) {
-            params.rankName = item.ruleName
+      handleSubmit (formName) {
+        this.$refs[formName].validate(valid => {
+          if (!valid) return false
+          this.submitLoading = true
+          let params = {
+            upgradeId: this.formData.upgradeId,
+            rankId: this.detailsData.rankId,
+            // upgradeAmount: '',
+            paymentVoucher: this.uploadFiles,
+            serviceAmount: parseFloat(this.detailsData.upgradeAmount),
+            realPayAmount: parseFloat(this.detailsData.realPayAmount),
+            agentZone: this.region.area.name,
+            agentZoneCode: this.region.area.code,
+            agentCity: this.region.city.name,
+            agentCityCode: this.region.city.code,
+            agentProvince: this.region.province.name,
+            agentProvinceCode: this.region.province.code,
+            userName: this.detailsData.userName,
+            userPhone: this.detailsData.userPhone
           }
-        })
-        if (this.formData.rankId === 1 || this.formData.rankId === 2 || this.formData.rankId === 3) {
-          params.agentRand = 1
-        } else if (this.formData.rankId === 4) {
-          params.agentRand = 2
-        } else if (this.formData.rankId === 5) {
-          params.agentRand = 3
-        }
-        this.$http.post('@ROOT_API/buyMemberAccountManageController/submitMemberUpgrade', params).then((res) => {
-          let resData = res.data
-          if (parseInt(resData.status) !== 1) {
-            this.$message({
-              message: resData.msg,
-              type: 'error',
-              duration: 1500
-            })
-            return false
+          this.detailsData.rankList.forEach(item => {
+            if (item.rand === this.detailsData.rankId) {
+              params.rankName = item.ruleName
+              params.rank = item.rand
+            }
+          })
+          if (this.detailsData.rankId === 1 || this.detailsData.rankId === 2 || this.detailsData.rankId === 3) {
+            params.agentRand = 1
+          } else if (this.detailsData.rankId === 4) {
+            params.agentRand = 2
+          } else if (this.detailsData.rankId === 5) {
+            params.agentRand = 3
           }
-          this.$router.back()
-        }).finally(() => {
-          setTimeout(() => {
-            this.submitLoading = false
-          }, 1000)
+          this.$http.post('@ROOT_API/buyMemberAccountManageController/submitMemberUpgrade', params).then((res) => {
+            let resData = res.data
+            if (parseInt(resData.status) !== 1) {
+              this.$message({
+                message: resData.msg,
+                type: 'error',
+                duration: 1500
+              })
+              return false
+            }
+            this.$router.back()
+          }).finally(() => {
+            setTimeout(() => {
+              this.submitLoading = false
+            }, 1000)
+          })
         })
       },
       regionChange (results) {

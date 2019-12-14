@@ -290,11 +290,11 @@ module.exports = {
    * 过滤会员类型
    */
   filterMemberType (val) {
-    if (!val) return emptyTips
+    if (!val) return '在线升级'
     let res = ''
     switch (parseInt(val)) {
       case 1:
-        res = '线上升级'
+        res = '在线升级'
         break
       case 2:
         res = '手动升级'
