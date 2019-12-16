@@ -109,8 +109,8 @@
             </div>
             <el-form-item label="套餐类型 ：" prop="commissionType">
               <el-radio-group v-model="ruleForm.commissionType" @change="changeAmount('commissionType')">
-                <el-radio :label="1">礼包分佣</el-radio>
-                <el-radio :label="2">提货分佣</el-radio>
+                <el-radio :label="1">礼包套餐</el-radio>
+                <el-radio :label="2">提货套餐</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="订购要求 ：" prop="whetherNeetGift" v-if="ruleForm.commissionType === 2">

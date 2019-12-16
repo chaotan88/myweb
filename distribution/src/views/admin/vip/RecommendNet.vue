@@ -365,6 +365,7 @@ export default {
 
 <style lang="less" scoped>
 .recommend-net{
+  height: 75%;
   .w50{
     width: 50%;
     .el-form-item{
@@ -416,6 +417,15 @@ export default {
 </style>
 <style lang="less">
 .recommend-net{
+  ::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0);
+  }
+  ::-webkit-scrollbar-thumb{
+    background: rgba(12, 39, 57, .3);
+    border-radius: 10px;
+  }
   .search-head-wrap{
     .el-input__inner{
       width: 250px;
@@ -497,10 +507,22 @@ export default {
       width: 100%;
     }
   }
+  .admin-common-tpl-header {
+    .search-wrap {
+      .search-head-wrap {
+        padding: 10px 30px;
+      }
+    }
+  }
+  .admin-common-main {
+    height: calc(~"100% - 240px") !important;
+    overflow: scroll;
+    padding: 0;
+  }
   .net-work-chart {
     width: 100%;
     height: 500px;
-    margin-top: 20px;
+    margin-top: -30px;
     background: #AFD7FF;
     // overflow: hidden;
   }

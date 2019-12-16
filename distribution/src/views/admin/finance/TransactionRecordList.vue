@@ -41,13 +41,13 @@
 
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="cardName" label="交易编号" min-width="100">
-          <template slot-scope="scope">{{scope.row.cardName | filterEmpty}}</template>
+        <el-table-column prop="orderNo" label="交易编号" min-width="100">
+          <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="invitationCode" label="推广大使身份">
+        <el-table-column prop="invitationCode" label="推广大使身份" min-width="120">
           <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="addTime" label="交易时间" min-width="100">
@@ -55,12 +55,12 @@
         </el-table-column>
         <el-table-column prop="propertyType" label="交易类型">
           <template slot-scope="scope">
-            {{scope.row.propertyTypeVal | filterEmpty}}
-            <!-- <span v-if="scope.row.propertyType === 1">消费积分</span>
-            <span v-else-if="scope.row.propertyType === 2">现金积分</span>
-            <span v-else-if="scope.row.propertyType === 3">金额</span>
-            <span v-else-if="scope.row.propertyType === 4">服务积分</span>
-            <span v-else>--</span> -->
+            <!-- {{scope.row.propertyTypeVal | filterEmpty}} -->
+            <!-- <span v-if="scope.row.propertyType === 1">消费积分</span> -->
+            <span v-if="scope.row.propertyType === 2">余额</span>
+            <span v-else-if="scope.row.propertyType === 3">现金</span>
+            <!-- <span v-else-if="scope.row.propertyType === 4">服务积分</span> -->
+            <span v-else>--</span>
           </template>
         </el-table-column>
         <el-table-column prop="addSource" label="交易内容" min-width="130">
@@ -162,7 +162,8 @@ export default{
         cardName: { max: 20, trigger: 'blur', message: '限20个字符以内' },
         customerPhone: { validator: validatePhone, trigger: 'blur' },
         idCard: { validator: validateIdCard, trigger: 'blur' }
-      }
+      },
+      highSearchClose: false
     }
   },
 

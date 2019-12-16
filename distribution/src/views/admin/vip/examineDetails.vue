@@ -39,7 +39,7 @@
             </tr>
             <tr>
               <td>服务费：</td>
-              <td>{{upgradeDetail.upgradeAmount | filterMoney | filterEmpty('元')}}</td>
+              <td>{{upgradeDetail.serviceAmount | filterMoney | filterEmpty('元')}}</td>
             </tr>
             <tr>
               <td>实际支付金额：</td>

@@ -9,14 +9,14 @@
 
           <div class="box">
             <gray-title title="提现设置"></gray-title>
-            <el-form-item label="提现周期：" prop="withdrawalCycle">
+            <el-form-item label="提现周期：" prop="withdrawalCycle" v-show="false">
               <el-select v-model="ruleForm.withdrawalCycle" placeholder="选择提现周期" @change="ruleChange">
                   <template v-for="(ruleList, index) in cycles">
                     <el-option :label="ruleList.ruleName" :value="ruleList.ruleId"></el-option>
                   </template>
                 </el-select>
             </el-form-item>
-            <el-form-item label="提现次数：" prop="cycleNumber">
+            <el-form-item label="提现次数：" prop="cycleNumber" v-show="false">
               <el-input v-model="ruleForm.cycleNumber" placeholder="0或正整数,0表示不限制"></el-input>
               <span class="recommendSpan">次/周期</span>
             </el-form-item>

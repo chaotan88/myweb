@@ -77,8 +77,8 @@
             <span v-else>在线升级</span>
           </template>
         </el-table-column>
-        <el-table-column prop="region" label="所属地区" min-width="200">
-          <template slot-scope="scope">{{scope.row.region | filterEmpty}}</template>
+        <el-table-column prop="userAddress" label="所属地区" min-width="200">
+          <template slot-scope="scope">{{scope.row.userAddress | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="registerTime" label="注册时间" width="180"></el-table-column>
         <el-table-column prop="invitationName" label="首锁推荐人" width="120">

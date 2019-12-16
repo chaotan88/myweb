@@ -32,7 +32,7 @@
           </el-form-item>
           <el-form-item inline label='选择地区：' prop='address' class="address-wrap">
             <region-select :assignData="detailsData.region" @change="regionChange"
-              v-if="detailsData.rankId === 4 || detailsData.rankId === 5" :showArea="showArea"></region-select>
+              v-if="detailsData.rankId === 4 || detailsData.rankId === 5" :ifArea="showArea"></region-select>
             <span v-else>--</span>
           </el-form-item>
           <el-form-item label="服务费：">
@@ -193,7 +193,7 @@
             rankId: this.detailsData.rankId,
             // upgradeAmount: '',
             paymentVoucher: this.uploadFiles,
-            serviceAmount: parseFloat(this.detailsData.upgradeAmount),
+            serviceAmount: this.detailsData.upgradeAmount,
             realPayAmount: parseFloat(this.detailsData.realPayAmount),
             agentZone: this.region.area.name,
             agentZoneCode: this.region.area.code,

@@ -25,8 +25,12 @@
           <template>
             <el-form-item label="交易时间：">{{initData.addTime | filterDate}}</el-form-item>
             <el-form-item label="账户结余：">{{initData.currentAmount | filterMoney}}</el-form-item>
-            <el-form-item label="交易类型：">{{initData.propertyTypeVal | filterEmpty}}</el-form-item>
-            <el-form-item label="交易状态：">{{initData.addSourceVal | filterEmpty}}</el-form-item>
+            <el-form-item label="交易类型：">
+              <span v-if="initData.propertyType === 2">余额</span>
+              <span v-else-if="initData.propertyType === 3">现金</span>
+              <span v-else>--</span>
+            </el-form-item>
+            <el-form-item label="交易状态：">{{initData.cashPoints | filterEmpty}}</el-form-item>
           </template>
           <template>
             <el-form-item label="收益值：">+{{initData.propertyAmount | filterMoney}}</el-form-item>

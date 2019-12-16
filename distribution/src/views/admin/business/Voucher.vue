@@ -23,7 +23,7 @@
             <a :class="['d-ib', 'ta-c', currentTab === 2 ? 'active' : '']"
               @click="tabClick(2)">回收站</a>
           </div>
-          <div class="user-define-add-btn">
+          <div class="user-define-add-btn" style="margin-right: 20px;">
             <el-button @click="handleLink()">添加代金券</el-button>
           </div>
         </div>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="second-line">
                   <span v-if="item.status === 2" class="opened">开启</span>
-                  <span v-else-if="item.status === 1" class="closed">关闭</span>
+                  <span v-else-if="item.status === 1" class="closed">未开启</span>
                   <span v-else-if="item.status === 4" class="stoped">停止</span>
                   <span v-else-if="item.status === 3" class="stoped">已删除</span>
                   <span class="aging">时效：
@@ -78,7 +78,7 @@
         </el-table-column>
         <el-table-column prop="nowTime" label="到期时间">
           <template slot-scope="scope">
-            {{new Date(scope.row.nowTime - scope.row.effectiveEndTime) | filterDate}}
+            {{new Date(scope.row.effectiveEndTime) | filterDate}}
           </template>
         </el-table-column>
         <el-table-column prop="couponStatus" label="使用状态">
@@ -580,6 +580,7 @@ export default {
         .voucher-items {
           display: flex;
           width: calc(100% - 100px);
+          // padding: 3px;
           .voucher-item {
             width: 32%;
             // border: 3px solid #C1E0FF;
@@ -588,6 +589,8 @@ export default {
             position: relative;
             display: flex;
             justify-content: space-between;
+            box-sizing: border-box;
+            padding: 3px;
             .item-amount {
               position: absolute;
               top: 25px;

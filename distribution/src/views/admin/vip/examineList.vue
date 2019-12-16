@@ -23,17 +23,17 @@
         <el-table-column prop="lastLoginTime" label="申请日期" width="180">
           <template slot-scope="scope">{{scope.row.upgradeTime | filterDate}}</template>
         </el-table-column>
-        <el-table-column prop="ruleName" label="当前会员身份" min-width="120">
+        <el-table-column prop="ruleName" label="当前身份" min-width="120">
           <template slot-scope="scope">{{scope.row.currentRankName | filterEmpty }}</template>
         </el-table-column>
         <el-table-column prop="region" label="申请成为" min-width="120">
           <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="cardName" label="服务费" min-width="120">
-          <template slot-scope="scope">{{scope.row.upgradeAmount | filterMoney | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.serviceAmount | filterMoney | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="invitationName" label="实际付款金额" width="120">
-          <template slot-scope="scope">{{scope.row.deductionAmount | filterMoney | filterEmpty}}</template>
+          <template slot-scope="scope">{{scope.row.realPayAmount | filterMoney | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="inviterInvitationCode" label="审核状态" width="120">
           <template slot-scope="scope">{{scope.row.dealWithStatus | filterDealWith}}</template>

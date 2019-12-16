@@ -76,6 +76,7 @@ import StatisticsComponent from '@/components/admin/Statistics'
 import TitlePublic from './TitlePublic'
 let echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/line')
+require('echarts/lib/component/tooltip')
 export default{
   components: {StatisticsComponent, TitlePublic},
   data () {
@@ -152,11 +153,38 @@ export default{
       }).then((res) => {
         let { data } = res.data
         let newData = []
-        data.forEach((da) => {
-          newData.push({
-            name: da.orderTimeMonth,
-            value: da.orderAmountSum
+        // let startMonth = this.queryDate[0].getMonth()
+        // let endMonth = this.queryDate[1].getMonth()
+        // newData.push({
+        //   name: this.$Utils.filterDate(data[0], 'YYYY年MM月')
+        // })
+        let i = 0
+        let startYear = new Date(this.queryDate[0]).getFullYear()
+        let startMonth = new Date(this.queryDate[0]).getMonth() + 1
+        let endYear = new Date(this.queryDate[1]).getFullYear()
+        let endMonth = new Date(this.queryDate[1]).getMonth() + 1
+        while (true) {
+          if (i > 36) break
+          let date = new Date(`${endYear}-${endMonth}-01`).setMonth(new Date(`${endYear}-${endMonth}-01`).getMonth() - i)
+          if (date >= new Date(`${startYear}-${startMonth}-01 00:00:00`).getTime()) {
+            i++
+            newData.push({
+              name: date,
+              value: 0
+            })
+          } else {
+            break
+          }
+        }
+        newData.sort((a, b) => (a.name - b.name))
+        newData.forEach((nd) => {
+          data.forEach((da) => {
+            console.log(this.$Utils.filterDate(nd.name, 'YYYYMM'))
+            if (this.$Utils.filterDate(nd.name, 'YYYYMM') === da.orderTimeMonth + '') {
+              nd.value = da.orderAmountSum
+            }
           })
+          nd.name = this.$Utils.filterDate(new Date(nd.name), 'YYYY年MM月')
         })
         this.chartData = newData
         this.buildChart(newData)
@@ -167,6 +195,10 @@ export default{
       let xData = data.map(da => da.name)
       let yData = data.map(da => da.value)
       chart.setOption({
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove'
+        },
         xAxis: {
           type: 'category',
           data: xData

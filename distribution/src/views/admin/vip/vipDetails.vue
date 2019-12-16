@@ -10,9 +10,14 @@
         <span class="col-val">{{data.cardTypeVal | filterEmpty}}</span>
       </div>
       <div class="form-col">
-        <span class="col-label">地区</span>
-        <span class="col-val">{{(`${data.userProvince || ''}${data.userCity || ''}${data.userZone || ''}${data.userAddress || ''}`) | filterEmpty}}</span>
+        <span class="col-label">性别</span>
+        <span class="col-val">{{data.sex | filterSex}}</span>
       </div>
+      <div class="form-col">
+        <span class="col-label">首锁推荐人</span>
+        <span class="col-val">{{data.invitationName | filterEmpty}}</span>
+      </div>
+      
     </div>
     <div class="form-row">
       <div class="form-col">
@@ -24,22 +29,8 @@
         <span class="col-val">{{data.cardName | filterEmpty}}</span>
       </div>
       <div class="form-col">
-        <span class="col-label">首锁推荐人</span>
-        <span class="col-val">{{data.invitationName | filterEmpty}}</span>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-col">
-        <span class="col-label">级别产生方式</span>
-        <span class="col-val">
-          <span v-if="data.memberType === 2">手动升级</span>
-          <span v-else-if="!data.customerPhone">--</span>
-          <span v-else>在线升级</span>
-        </span>
-      </div>
-      <div class="form-col">
-        <span class="col-label">身份证</span>
-        <span class="col-val">{{data.idCard | filterEmpty}}</span>
+        <span class="col-label">当前身份</span>
+        <span class="col-val">{{data.ruleName | filterEmpty}}</span>
       </div>
       <div class="form-col">
         <span class="col-label">注册时间</span>
@@ -48,12 +39,20 @@
     </div>
     <div class="form-row">
       <div class="form-col">
-        <span class="col-label">当前身份</span>
-        <span class="col-val">{{data.ruleName | filterEmpty}}</span>
+        <span class="col-label">地区</span>
+        <span class="col-val">{{(`${data.userAddress || ''}`) | filterEmpty}}</span>
       </div>
       <div class="form-col">
-        <span class="col-label">性别</span>
-        <span class="col-val">{{data.sex | filterSex}}</span>
+        <span class="col-label">身份证</span>
+        <span class="col-val">{{data.idCard | filterEmpty}}</span>
+      </div>
+      <div class="form-col">
+        <span class="col-label">级别产生方式</span>
+        <span class="col-val">
+          <span v-if="data.memberType === 2">手动升级</span>
+          <span v-else-if="!data.customerPhone">--</span>
+          <span v-else>在线升级</span>
+        </span>
       </div>
       <div class="form-col">
         <span class="col-label">最后登录时间</span>
@@ -84,7 +83,8 @@ export default {
 <style lang="less" scoped>
 .user-details-info {
   border: 1px solid #ddd;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  background: #fff;
   .form-row {
     display: flex;
     border-bottom: 1px solid #ddd;
@@ -93,15 +93,12 @@ export default {
       border-right: 1px;
       font-size: 12px;
       .col-label {
-        width: 160px;
+        width: 100px;
         background: #C1E0FF;
         display: inline-block;
         padding: 10px 0;
         text-align: right;
         padding-right: 20px;
-      }
-      .col-val {
-
       }
     }
   }
