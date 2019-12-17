@@ -41,15 +41,15 @@
 
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <el-table-column prop="orderNo" label="交易编号" min-width="100">
+        <!-- <el-table-column prop="orderNo" label="交易编号" min-width="100">
           <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="invitationCode" label="推广大使身份" min-width="120">
+        <!-- <el-table-column prop="invitationCode" label="推广大使身份" min-width="120">
           <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="addTime" label="交易时间" min-width="100">
           <template slot-scope="scope">{{scope.row.addTime | filterDate}}</template>
         </el-table-column>
@@ -79,9 +79,9 @@
         <el-table-column prop="propertyAmount" label="交易额（元）" min-width="150">
           <template slot-scope="scope">{{scope.row.propertyAmount | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="cashPoints" label="交易状态" min-width="160">
+        <!-- <el-table-column prop="cashPoints" label="交易状态" min-width="160">
           <template slot-scope="scope">{{scope.row.cashPoints | filterEmpty}}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="currentAmount" label="账户结余" min-width="160">
           <template slot-scope="scope">{{scope.row.currentAmount | filterMoney}}</template>
         </el-table-column>
@@ -163,7 +163,7 @@ export default{
         customerPhone: { validator: validatePhone, trigger: 'blur' },
         idCard: { validator: validateIdCard, trigger: 'blur' }
       },
-      highSearchClose: false
+      highSearchClose: true
     }
   },
 

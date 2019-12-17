@@ -20,7 +20,7 @@
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.orderTotalAmount | filterEmpty('元')}}</span>
+              <span>{{statisticsData.orderTotalAmount | filterAmountFixed('元')}}</span>
             </h3>
             <h4 class="fw-n">收入金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
@@ -33,7 +33,7 @@
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{(statisticsData.orderCostAmount + statisticsData.orderCommissionAmount) | filterEmpty('元')}}</span>
+              <span>{{(statisticsData.orderCostAmount + statisticsData.orderCommissionAmount) | filterAmountFixed('元')}}</span>
             </h3>
             <h4 class="fw-n">应付金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">
@@ -47,7 +47,7 @@
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.orderWithdrawalAmount | filterEmpty('元')}}</span>
+              <span>{{statisticsData.orderWithdrawalAmount | filterAmountFixed('元')}}</span>
             </h3>
             <h4 class="fw-n">支出金额</h4>
             <div class="va-m small-box-wrap" style="margin-top: 10px;">

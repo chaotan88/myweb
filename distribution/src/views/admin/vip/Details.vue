@@ -34,10 +34,14 @@
               <td>当前身份：</td>
               <td>
                 <el-row type="flex">
-                  <span style="margin-right: 20px; line-height: 38px;">{{datailsData.ruleName | filterEmpty}}</span>
+                  <span style="margin-right: 20px; line-height: 38px;">{{datailsData.rankName | filterEmpty}}</span>
                   <el-button type="primary"   v-if="(datailsData.ifUpgrade === 1 && datailsData.rank !== 8) && pageType === 2 && formData.memberType === 2" @click="handleUpgradeBefore(datailsData)">账户升级</el-button>
                 </el-row>
               </td>
+            </tr>
+            <tr>
+              <td>身份所属地区：</td>
+              <td>{{datailsData.agentAddress | filterEmpty}}</td>
             </tr>
             <tr>
               <td>证件类型：</td>

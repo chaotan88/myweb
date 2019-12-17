@@ -80,7 +80,7 @@ function ShowAlert()
  
 <body onload="ShowAlert();wuisync()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
- <DIV id="div_bar" class="Bar">
+ <!-- <DIV id="div_bar" class="Bar">
     <table id="t1" CELLSPACING="0" CELLPADDING="0" BORDER="0" width="100%">
         <tr>
             <td>
@@ -103,9 +103,13 @@ function ShowAlert()
             </td>
         </tr>
     </table>
+  </DIV> -->
+  <DIV id="div_bar" class="Bar" style="margin-top: 20px;">
+    <span id="title" style="position:relative;left:10px">
+        Recording
+    </span>
   </DIV>
-
-  <DIV id="div_setup" class="Setup">
+  <!-- <DIV id="div_setup" class="Setup">
       <table CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
           <tr>
             <Td align="left" style="BACKGROUND:url(../image/page_L.gif);WIDTH:3px"></TD>
@@ -113,7 +117,7 @@ function ShowAlert()
             <Td style="BACKGROUND:url(../image/page_R.gif);WIDTH:3px"></TD>
           </tr>
       </table>
-  </DIV>
+  </DIV> -->
 
   <DIV id="div_content" class="Content" style="overflow-x:hidden;overflow-y:auto;">
       <table id="t2" CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="100%">
@@ -269,8 +273,10 @@ function ShowAlert()
           </tr>  
       </table>
   </DIV>
-  
-<DIV id="bottom" class="bottom">
+  <DIV id="bottom" class="bottom" style="top: 200px;left: -20px;position: static;margin-top: -20px">
+        <input type="button" align="right" class="submit-button" name="Submit" BORDER="0" onClick="Formsubmit()" value="<%HTMLPRINTTEXT(SPEED_DIAL_BUTTON_SUBMIT, general.lang)%>">
+    </DIV>
+<!-- <DIV id="bottom" class="bottom">
     <table id="t3" CELLSPACING="0" CELLPADDING="0" BORDER="0" HEIGHT="100%" WIDTH="100%">
                     <TR>
                         <Td style="background:url(../image/page_L.gif);width:3px;height:30"></TD>
@@ -291,6 +297,6 @@ function ShowAlert()
         	  	</td>
         	  </tr>
     </table>
-  </DIV>
+  </DIV> -->
 </body>
 </html>

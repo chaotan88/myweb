@@ -609,6 +609,8 @@ export default {
               font-size: 14px;
               padding: 10px 0;
               width: 170px;
+              margin-right: auto;
+              margin-left: 10px;
               .first-line {
                 i {
                   float: right;
@@ -616,6 +618,8 @@ export default {
                   margin-right: 10px;
                   font-size: 23px;
                   cursor: pointer;
+                  position: absolute;
+                  right: 0;
                 }
               }
               .second-line {
@@ -635,6 +639,10 @@ export default {
                   text-align: center;
                   padding: 2px 4px;
                   border-radius: 2px;
+                }
+                .el-icon-edit {
+                  position: absolute;
+                  right:  10px;
                 }
                 span:nth-child(3) {
                   float: right;

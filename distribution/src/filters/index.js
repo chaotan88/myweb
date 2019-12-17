@@ -740,6 +740,10 @@ module.exports = {
     if (!value && parseInt(value) !== 0) return emptyTips
     return value + unit
   },
+  filterAmountFixed (value, unit = '') {
+    if (!value && parseInt(value) !== 0) return emptyTips
+    return parseFloat(value).toFixed(2) + unit
+  },
   /**
    * 审核状态
    */

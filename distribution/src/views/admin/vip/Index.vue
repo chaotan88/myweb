@@ -67,8 +67,11 @@
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="ruleName" label="当前身份" min-width="120">
-          <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
+        <el-table-column prop="rankName" label="当前身份" min-width="120">
+          <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
+        </el-table-column>
+        <el-table-column prop="agentAddress" label="身份所属地区" min-width="200">
+          <template slot-scope="scope">{{scope.row.agentAddress | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="memberType" label="级别产生方式" min-width="120">
           <template slot-scope="scope">
@@ -164,7 +167,9 @@ export default {
         identityLevel: '',      // 身份等级
         invitationName: '',     // 首锁推荐人
         registerTimeStart: '',  // 申请时间起始值
-        registerTimeEnd: ''     // 申请时间结束值
+        registerTimeEnd: '',     // 申请时间结束值
+        memberType: '',
+        disRuleId: ''
       },
       identityLevelData: [],    // 身份等级列表
       fxVipDatails: {},         // 详情信息

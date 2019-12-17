@@ -23,7 +23,7 @@
             <el-form-item label="简要说明：" prop="simpleDescription">
               <el-input v-model="ruleForm.simpleDescription" placeholder="限50个字符,不含特殊字符"></el-input>
             </el-form-item>
-            <el-form-item label="套餐主图：" prop="uploadFiles" style="padding-bottom: 50px;">
+            <el-form-item label="套餐主图：" prop="uploadFiles" style="padding-bottom: 65px;" class="upload-item-css">
               <div style="display: flex;">
                 <div class="package-cover-img">
                 <el-upload class="upload-picture pos-r"
@@ -128,7 +128,7 @@
             <gray-title title="分佣配置"></gray-title>
             <el-form-item label="已配置金额：">
               <div><span class="red-cnt">{{ruleForm.configurationMoney || 0}}</span> 元,剩余 
-                <span class="red-cnt">{{(ruleForm.setMealPrice - ruleForm.configurationMoney) || 0}}</span> 元</div>
+                <span class="red-cnt">{{getShowAmount(ruleForm.setMealPrice, ruleForm.configurationMoney) || 0}}</span> 元</div>
             </el-form-item>
             <div v-if="ruleForm.commissionType === 1">
               <el-form-item label="推荐奖：" prop="giftRecommendReward">
@@ -197,14 +197,25 @@
             <el-form-item label="赠送：" prop="couponHandsel">
               <el-select v-model="ruleForm.couponHandsel" size="medium" class="year-box"
                 placeholder="选择代金券">
-                <el-option :label="item.description" :value="item.id" :key="index" v-for="(item, index) in vouchers"></el-option>
+                <el-option :label="item.showDescription" :value="item.id" :key="index" v-for="(item, index) in vouchers">
+                  <span style="font-size: 13px" v-if="item.amount"><span style="color: red; ">&yen;{{ item.amount }}</span>
+                    <span style="margin-left: 5px;">{{item.description}}</span>
+                  </span>
+                </el-option>
+                
+                <!-- <el-option :label="item.id = 9999 ? item.description : `￥${item.amount} ${item.description}`" :value="item.id" :key="index" v-for="(item, index) in vouchers"></el-option> -->
               </el-select>
               <span style="margin-left: 20px; font-size: 12px; color: #333;">注：只能选择开启的代金券，不限制选择的代金券金额</span>
             </el-form-item>
             <el-form-item label="抵扣：" prop="couponDeduction">
               <el-select v-model="ruleForm.couponDeduction" size="medium" class="year-box"
                 placeholder="选择代金券">
-                <el-option :label="item.description" :value="item.id" :key="index" v-for="(item, index) in couponList"></el-option>
+                <el-option :label="item.showDescription" :value="item.id" :key="index" v-for="(item, index) in couponList">
+                  <span style="font-size: 13px" v-if="item.amount"><span style="color: red; ">&yen;{{ item.amount }}</span>
+                    <span style="margin-left: 5px;">{{item.description}}</span>
+                  </span>
+                </el-option>
+                <!-- <el-option :label="item.id = 9999 ? item.description : `￥${item.amount} ${item.description}`" :value="item.id" :key="index" v-for="(item, index) in couponList"></el-option> -->
               </el-select>
               <span style="margin-left: 20px; font-size: 12px; color: #333;">注：只显示小于或等于套餐销售价的代金券</span>
             </el-form-item>
@@ -462,8 +473,8 @@ export default {
           pickAreaReward: this.ruleForm.pickAreaReward || 0,
           pickCityReward: this.ruleForm.pickCityReward || 0,
           pickCrossReward: this.ruleForm.pickCrossReward || 0,
-          couponHandsel: this.ruleForm.couponHandsel,
-          couponDeduction: this.ruleForm.couponDeduction
+          couponHandsel: this.ruleForm.couponHandsel === '选择代金券' ? '' : this.ruleForm.couponHandsel,
+          couponDeduction: this.ruleForm.couponDeduction === '选择代金券' ? '' : this.ruleForm.couponDeduction
         }
         let url = 'meal/addSetMeal'
         if (this.mealId) {
@@ -601,7 +612,12 @@ export default {
       }).then((res) => {
         let { list } = res.data.data
         if (!list) list = []
-        this.vouchers = list.filter(da => da.status === 2)
+        let empyData = [{id: '选择代金券', showDescription: '不赠送代金券'}]
+        let vouchers = list.filter(da => da.status === 2)
+        vouchers.forEach((cou) => {
+          cou.showDescription = `￥${cou.amount} ${cou.description}`
+        })
+        this.vouchers = empyData.concat(vouchers)
         this.getCouponList()
       })
     },
@@ -609,7 +625,12 @@ export default {
       if (!this.ruleForm.setMealPrice) {
         this.couponList = []
       } else {
-        this.couponList = this.vouchers.filter(vou => vou.amount <= parseFloat(this.ruleForm.setMealPrice))
+        let empyData = [{id: '选择代金券', showDescription: '不抵扣代金券'}]
+        let couponList = this.vouchers.filter(vou => vou.amount <= parseFloat(this.ruleForm.setMealPrice))
+        couponList.forEach((cou) => {
+          cou.showDescription = `￥${cou.amount} ${cou.description}`
+        })
+        this.couponList = empyData.concat(couponList)
       }
     },
     mealPriceChange () {
@@ -627,25 +648,25 @@ export default {
       }
       keys.forEach((key) => {
         let data = parseFloat(this.ruleForm[key])
-        if (!isNaN(data)) configurationMoney += data
+        if (!isNaN(data)) configurationMoney += (data * 1000)
       })
       if (prop && prop !== 'commissionType') {
-        if (configurationMoney > this.ruleForm.setMealPrice) {
+        if (configurationMoney / 1000 > this.ruleForm.setMealPrice) {
           this.$message({
             type: 'error',
             message: '配置金额不能大于套餐销售价'
           })
           if (prop === 'setMealPrice') {
-            this.$set(this.ruleForm, 'setMealPrice', configurationMoney)
+            this.$set(this.ruleForm, 'setMealPrice', configurationMoney / 1000)
           } else {
             const currentAmount = this.ruleForm[prop]
             this.$set(this.ruleForm, prop, 0)
-            configurationMoney -= parseFloat(currentAmount)
+            configurationMoney -= parseFloat(currentAmount * 1000)
           }
         }
         this.inpBlur(prop)
       }
-      this.ruleForm.configurationMoney = configurationMoney
+      this.ruleForm.configurationMoney = configurationMoney / 1000
       if (prop === 'commissionType') {
         const amounts = ['giftRecommendReward', 'giftRecommendRankReward', 'giftManageAreaReward', 'giftManageCityReward',
           'giftManageCrossReward', 'pickReward', 'pickAreaReward', 'pickCityReward', 'pickCrossReward']
@@ -714,6 +735,9 @@ export default {
       this.editorObj.execCommand('inserthtml', res)
       this.dialogVisible = false
       this.uploadList = []
+    },
+    getShowAmount (a, b) {
+      return (a * 1000 - b * 1000) / 1000
     }
   }
 }
@@ -1051,6 +1075,11 @@ export default {
   }
   .edui-editor {
     z-index: 1 !important;
+  }
+  .upload-item-css {
+    .el-form-item__error {
+      top: 140%;
+    }
   }
 }
 </style>
