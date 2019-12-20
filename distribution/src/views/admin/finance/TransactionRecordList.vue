@@ -36,20 +36,23 @@
           </el-form>
           <div class="clear"></div>
         </div>
+        <template slot="edit">
+          <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
+        </template>
       </high-search>
     </template>
 
     <template slot="main">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" element-loading-text="加载中">
-        <!-- <el-table-column prop="orderNo" label="交易编号" min-width="100">
+        <el-table-column prop="orderNo" label="交易编号" min-width="200">
           <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>
-        <!-- <el-table-column prop="invitationCode" label="推广大使身份" min-width="120">
-          <template slot-scope="scope">{{scope.row.invitationCode | filterEmpty}}</template>
-        </el-table-column> -->
+        <el-table-column prop="rankName" label="推广大使身份" min-width="120">
+          <template slot-scope="scope">{{scope.row.rankName | filterEmpty}}</template>
+        </el-table-column>
         <el-table-column prop="addTime" label="交易时间" min-width="100">
           <template slot-scope="scope">{{scope.row.addTime | filterDate}}</template>
         </el-table-column>

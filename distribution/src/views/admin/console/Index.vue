@@ -153,11 +153,6 @@ export default{
       }).then((res) => {
         let { data } = res.data
         let newData = []
-        // let startMonth = this.queryDate[0].getMonth()
-        // let endMonth = this.queryDate[1].getMonth()
-        // newData.push({
-        //   name: this.$Utils.filterDate(data[0], 'YYYY年MM月')
-        // })
         let i = 0
         let startYear = new Date(this.queryDate[0]).getFullYear()
         let startMonth = new Date(this.queryDate[0]).getMonth() + 1
@@ -179,7 +174,6 @@ export default{
         newData.sort((a, b) => (a.name - b.name))
         newData.forEach((nd) => {
           data.forEach((da) => {
-            console.log(this.$Utils.filterDate(nd.name, 'YYYYMM'))
             if (this.$Utils.filterDate(nd.name, 'YYYYMM') === da.orderTimeMonth + '') {
               nd.value = da.orderAmountSum
             }

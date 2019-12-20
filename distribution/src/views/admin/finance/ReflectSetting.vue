@@ -10,7 +10,7 @@
           <div class="box">
             <gray-title title="提现设置"></gray-title>
             <el-form-item label="提现周期：" prop="withdrawalCycle" v-show="false">
-              <el-select v-model="ruleForm.withdrawalCycle" placeholder="选择提现周期" @change="ruleChange">
+              <el-select v-model="ruleForm.withdrawalCycle" placeholder="选择提现周期">
                   <template v-for="(ruleList, index) in cycles">
                     <el-option :label="ruleList.ruleName" :value="ruleList.ruleId"></el-option>
                   </template>
@@ -24,6 +24,10 @@
               <!-- <span class="recommendSpan">累计通用积分账户沉淀资金的</span> -->
               <el-input v-model="ruleForm.conditionValue" placeholder="0-100.00正数" @change="inpBlur('conditionValue')"></el-input>
               <span class="recommendSpan">% </span>
+            </el-form-item>
+            <el-form-item label="提现起始金额：" prop="withdrawalMinamount">
+              <el-input v-model="ruleForm.withdrawalMinamount" placeholder="0-1000.00正数" @change="inpBlur('withdrawalMinamount')"></el-input>
+              <span class="recommendSpan">元</span>
             </el-form-item>
             <!-- <el-form-item>
               <span class="recommendSpan setting-desc">
@@ -53,6 +57,11 @@ export default {
       if ((value && !value.toString().match(reg) || parseFloat(value) > 100)) return callback(new Error('只能输入0-100.00正数'))
       callback()
     }
+    let validateWithdrawalMinamount = (rule, value, callback) => {
+      let reg = /^\d{0,7}\.\d{2}$/gi
+      if ((value && !value.toString().match(reg) || parseFloat(value) > 1000)) return callback(new Error('只能输入0-1000.00正数'))
+      callback()
+    }
     let validateCycleNumber = (rule, value, callback) => {
       let reg = /^\d{0,10}$/gi
       if (value && !value.toString().match(reg)) return callback(new Error('只能输入0或正整数'))
@@ -77,6 +86,10 @@ export default {
         conditionValue: [
           { required: true, message: '请输入提现手续费', trigger: 'blur' },
           { validator: validateNumber, trigger: 'blur' }
+        ],
+        withdrawalMinamount: [
+          { required: true, message: '请输入提现起始金额', trigger: 'blur' },
+          { validator: validateWithdrawalMinamount, trigger: 'blur' }
         ]
       },
       cycles: [{
@@ -113,6 +126,7 @@ export default {
         }
         this.ruleForm = resData.data
         this.inpBlur('conditionValue')
+        this.inpBlur('withdrawalMinamount')
       })
     },
     /**
@@ -123,9 +137,10 @@ export default {
         if (!valid) return false
         this.confirmLoading = true
         this.$http.post('@ROOT_API/withdrawalManageController/settingWithdrawal', {
-          withdrawalCycle: this.ruleForm.withdrawalCycle,
-          cycleNumber: this.ruleForm.cycleNumber,
-          conditionType: this.ruleForm.conditionType,
+          // withdrawalCycle: this.ruleForm.withdrawalCycle,
+          // cycleNumber: this.ruleForm.cycleNumber,
+          // conditionType: this.ruleForm.conditionType,
+          withdrawalMinamount: this.ruleForm.withdrawalMinamount,
           conditionValue: parseFloat(this.ruleForm.conditionValue)
         }).then((res) => {
           let resData = res.data

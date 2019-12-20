@@ -116,14 +116,15 @@ export default {
       const rootData = {
         invitationCode: this.userDetail.invitationCode,
         invitationName: this.userDetail.invitationName,
-        ruleName: this.userDetail.ruleName,
+        ruleName: this.userDetail.rankName,
         userName: this.userDetail.cardName,
         customerPhone: this.userDetail.customerPhone,
         level: baseLevel,
         x: baseX,
         y: baseY,
         umbrellaCount: this.userDetail.umbrellaCount,
-        userId: this.userDetail.customerId
+        userId: this.userDetail.customerId,
+        agentAddress: this.userDetail.agentAddress
       }
       if (!data || data.length === 0) {
         this.drawChart([], rootData, 0)
@@ -142,7 +143,8 @@ export default {
           y: 200,
           umbrellaCount: da.umbrellaCount,
           userId: da.userId,
-          parentId: da.parentId
+          parentId: da.parentId,
+          agentAddress: `${da.agentProvince || ''}${da.agentCity || ''}${da.agentZone || ''}`
         })
       })
       // this.draw(datas, rootData, baseLevel)
@@ -247,7 +249,8 @@ export default {
         userName: rootData.userName,
         ruleName: rootData.ruleName,
         customerPhone: rootData.customerPhone,
-        umbrellaCount: rootData.umbrellaCount || '--'
+        umbrellaCount: rootData.umbrellaCount || '--',
+        agentAddress: rootData.agentAddress || '--'
       }
       const setChild = (da) => {
         chartData.children.forEach(cd => {
@@ -260,7 +263,8 @@ export default {
               userName: da.userName,
               ruleName: da.ruleName,
               customerPhone: da.customerPhone,
-              umbrellaCount: da.umbrellaCount
+              umbrellaCount: da.umbrellaCount,
+              agentAddress: da.agentAddress || '--'
             })
           }
         })
@@ -275,7 +279,8 @@ export default {
             userName: da.userName,
             ruleName: da.ruleName,
             customerPhone: da.customerPhone,
-            umbrellaCount: da.umbrellaCount
+            umbrellaCount: da.umbrellaCount,
+            agentAddress: da.agentAddress || '--'
           })
         } else {
           setChild(da)
@@ -308,6 +313,7 @@ export default {
             let str = `姓名: ${data.userName || ''}</br>
               当前等级：${data.ruleName || ''}</br>
               电话：${data.phone || ''}</br>
+              身份所属区域：${data.agentAddress || '--'}
               下级会员数：${data.umbrellaCount || '--'} 人`
             return str
           }
@@ -316,17 +322,28 @@ export default {
           {
             type: 'tree',
             data: [chartData],
-            top: '1%',
-            left: '7%',
-            bottom: '1%',
-            right: '20%',
+            top: '2%',
+            left: '30%',
+            bottom: '2%',
+            right: '30%',
             symbolSize: 7,
             label: {
               normal: {
                 position: 'left',
                 verticalAlign: 'middle',
                 align: 'right',
-                fontSize: 9
+                fontSize: 14
+              }
+            },
+            itemStyle: {
+              normal: {
+                label: {
+                  formatter: function (params) {
+                    let { data } = params
+                    let str = `${data.userName || ''}-${data.ruleName || ''}`
+                    return str
+                  }
+                }
               }
             },
             leaves: {
@@ -515,12 +532,11 @@ export default {
     }
   }
   .admin-common-main {
-    height: calc(~"100% - 240px") !important;
+    height: calc(~"100% - 280px") !important;
     overflow: scroll;
     padding: 0;
   }
   .net-work-chart {
-    width: 100%;
     height: 500px;
     margin-top: -30px;
     background: #AFD7FF;

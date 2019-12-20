@@ -10,7 +10,7 @@
 
           <el-form-item label="交易编号：">
             <strong>
-              {{initData.withdrawalAmount| filterEmpty}}
+              {{initData.orderNo| filterEmpty}}
               <span class="fw-n" style="color: #bbb; font-size: 14px;"></span>
             </strong>
           </el-form-item>
@@ -20,7 +20,7 @@
           </el-form-item>
 
           <el-form-item label="推广大使身份：">
-            <strong>{{initData.withdrawalFees | filterEmpty}}</strong>
+            <strong>{{initData.rankName | filterEmpty}}</strong>
           </el-form-item>
           <template>
             <el-form-item label="交易时间：">{{initData.addTime | filterDate}}</el-form-item>
@@ -30,10 +30,10 @@
               <span v-else-if="initData.propertyType === 3">现金</span>
               <span v-else>--</span>
             </el-form-item>
-            <el-form-item label="交易状态：">{{initData.cashPoints | filterEmpty}}</el-form-item>
+            <!-- <el-form-item label="交易状态：">{{initData.cashPoints | filterEmpty}}</el-form-item> -->
           </template>
           <template>
-            <el-form-item label="收益值：">+{{initData.propertyAmount | filterMoney}}</el-form-item>
+            <el-form-item label="交易额：">+{{initData.propertyAmount | filterMoney}}</el-form-item>
             <el-form-item label="交易内容：">{{initData.addSourceVal | filterEmpty}}</el-form-item>
           </template>
         </div>

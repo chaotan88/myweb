@@ -69,41 +69,44 @@
             <el-radio-button label="4">提现已付金额</el-radio-button>
           </el-radio-group>
         </div>
+        <template slot="edit">
+          <el-button :disabled="!tableData.length" @click="getTableData('export')">导出</el-button>
+        </template>
       </high-search>
       <el-table :data="tableData" class="full-w" v-loading="loading" element-loading-text="加载中">
         <template>
-          <el-table-column prop="orderNo" label="交易编号" width="220">
+          <el-table-column prop="orderNo" label="交易编号" min-width="220">
             <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="phone" label="推广大使手机" width="150">
+          <el-table-column prop="phone" label="推广大使手机" min-width="150">
             <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="ruleName" label="推广大使身份" width="160">
+          <el-table-column prop="ruleName" label="推广大使身份" min-width="160">
             <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="addTime" label="交易时间" width="200">
+          <el-table-column prop="addTime" label="交易时间" min-width="200">
             <template slot-scope="scope">{{scope.row.addTime | filterDate}}</template>
           </el-table-column>
-          <el-table-column prop="propertyType" label="交易类型" width="100">
+          <el-table-column prop="propertyType" label="交易类型" min-width="100">
             <template slot-scope="scope">
               <span v-if="scope.row.propertyType === 1">微信</span>
               <span v-else-if="scope.row.propertyType === 2">支付宝</span>
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column prop="addSource" label="交易内容" width="120">
+          <el-table-column prop="addSource" label="交易内容" min-width="120">
             <template slot-scope="scope">{{scope.row.addSource | filterAddSource}}</template>
           </el-table-column>
-          <el-table-column prop="businessAmount" label="交易额" width="100">
+          <el-table-column prop="businessAmount" label="交易额" min-width="100">
             <template slot-scope="scope">{{scope.row.businessAmount | filterMoney}}</template>
           </el-table-column>
-          <el-table-column prop="businessType" label="交易科目" width="120">
+          <el-table-column prop="businessType" label="交易科目" min-width="120">
             <template slot-scope="scope">{{scope.row.businessType | filterBusinessType}}</template>
           </el-table-column>
-          <el-table-column prop="businessAttr" label="交易属性" width="120">
+          <el-table-column prop="businessAttr" label="交易属性" min-width="120">
             <template slot-scope="scope">{{scope.row.businessAttr | filterBusinessAttr}}</template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="80">
+          <el-table-column fixed="right" label="操作" min-width="80">
           <template slot-scope="scope">
             <el-dropdown class="d-b">
               <div class="ta-c d-b el-dropdown-link">
@@ -215,17 +218,44 @@ export default {
   },
 
   methods: {
-    getTableData () {
-      this.$http.post('@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountList', {
+    getTableData (type) {
+      let url = ''
+      if (!type) {
+        url = '@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountList'
+        this.loading = true
+      } else {
+        url = 'buyBusinessAccount/exportBusinessAccountList'
+      }
+      let data = {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
         businessAttr: this.pageType
-        // ...this.handleDateArgs()
-      }).then((res) => {
-        let { data } = res.data
-        this.tableData = data.list
-        this.pageData.total = data.total
-      })
+      }
+      if (!type) {
+        this.$http.post(url, data).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            this.tableData = []
+            this.pageData.total = 0
+            return false
+          }
+          this.tableData = resData.data.list
+          this.pageData.total = resData.data.total
+        }).finally(() => {
+          this.loading = false
+        })
+      } else {
+        let filterParams = []
+        for (let key in data) {
+          filterParams.push(key + '=' + data[key])
+        }
+        window.open(this.$dm.ROOT_API_EXP + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+      }
     },
     /**
      * 获取统计数据
@@ -288,7 +318,6 @@ export default {
         this.pageData.currentPage = page
         // this.$router.push({query: {page: this.pageData.currentPage}})
       }
-      this.getTableData()
     },
     showDetail (row) {
       this.detailData = row

@@ -164,6 +164,8 @@
 <script>
 let echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/line')
+require('echarts/lib/component/tooltip')
+
 export default{
   data () {
     return {
@@ -268,11 +270,34 @@ export default{
       }).then((res) => {
         let { data } = res.data
         let newData = []
-        data.forEach((da) => {
-          newData.push({
-            name: da.upgradeMonth,
-            value: da.memberCount
+        let i = 0
+        let startDate = this.formData.statisticsDate[0]
+        let endDate = this.formData.statisticsDate[1]
+        let startYear = new Date(startDate).getFullYear()
+        let startMonth = new Date(startDate).getMonth() + 1
+        let endYear = new Date(endDate).getFullYear()
+        let endMonth = new Date(endDate).getMonth() + 1
+        while (true) {
+          if (i > 36) break
+          let date = new Date(`${endYear}-${endMonth}-01`).setMonth(new Date(`${endYear}-${endMonth}-01`).getMonth() - i)
+          if (date >= new Date(`${startYear}-${startMonth}-01 00:00:00`).getTime()) {
+            i++
+            newData.push({
+              name: date,
+              value: 0
+            })
+          } else {
+            break
+          }
+        }
+        newData.sort((a, b) => (a.name - b.name))
+        newData.forEach((nd) => {
+          data.forEach((da) => {
+            if (this.$Utils.filterDate(nd.name, 'YYYYMM') === da.upgradeMonth + '') {
+              nd.value = da.memberCount
+            }
           })
+          nd.name = this.$Utils.filterDate(new Date(nd.name), 'YYYY年MM月')
         })
         this.chartData = newData
         this.buildChart(newData)
@@ -283,6 +308,11 @@ export default{
       let xData = data.map(da => da.name)
       let yData = data.map(da => da.value)
       chart.setOption({
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove',
+          extraCssText: 'height:30px;'
+        },
         xAxis: {
           type: 'category',
           data: xData
@@ -381,9 +411,5 @@ export default{
     }
   }
 
-  /*------------表单-----------*/
-  .table-wrap{
-
-  }
 }
 </style>

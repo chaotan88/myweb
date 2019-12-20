@@ -3,21 +3,6 @@
   <common-tpl class="achievement-list-wrap" :footer="false">
     <!-- 主体 -->
     <template slot="main">
-
-      <!-- 时间 -->
-      <!-- <el-form ref="form" :rules="rules" :model="formData.data" label-position="right" class="search-form" label-width="110px"> -->
-        <!-- <div class="d-ib pos-a" style="width: 150px;">
-          <el-select v-model="formData.curYear" size="medium" class="year-box" placeholder="选择年份" @change="selectYear" clearable>
-            <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in yearArr"></el-option>
-          </el-select>
-        </div> -->
-        <!-- <div class="date-tabs">
-          <span v-for="(dt, index) in dateTabs" :key="index" @click="dateTypeChange(dt)" :class="selectDateType === dt.value ? 'dt-active' : ''">{{dt.label}}</span>
-        </div> -->
-        <!-- <el-form-item label="统计时间段：" class="pos-r apply-date-wrap" style="left: 200px">
-          <el-date-picker v-model.trim="formData.statisticsDate"  type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable @change="handleFilterDate"></el-date-picker>
-        </el-form-item> -->
-      <!-- </el-form> -->
       <date-select @dateChange="dateChange"></date-select>
 
       <!-- 统计 -->
@@ -115,6 +100,7 @@
 <script>
 let echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/line')
+require('echarts/lib/component/tooltip')
 
 export default {
   data () {
@@ -273,14 +259,38 @@ export default {
           })
           return false
         }
-        let { data } = resData
+        let { data } = res.data
         let newData = []
-        data.forEach((da) => {
-          newData.push({
-            name: da.orderTimeMonth,
-            value: da.orderAmountSum
+        let i = 0
+        let startDate = this.handleDateArgs().startTime
+        let endDate = this.handleDateArgs().endTime
+        let startYear = new Date(startDate).getFullYear()
+        let startMonth = new Date(startDate).getMonth() + 1
+        let endYear = new Date(endDate).getFullYear()
+        let endMonth = new Date(endDate).getMonth() + 1
+        while (true) {
+          if (i > 36) break
+          let date = new Date(`${endYear}-${endMonth}-01`).setMonth(new Date(`${endYear}-${endMonth}-01`).getMonth() - i)
+          if (date >= new Date(`${startYear}-${startMonth}-01 00:00:00`).getTime()) {
+            i++
+            newData.push({
+              name: date,
+              value: 0
+            })
+          } else {
+            break
+          }
+        }
+        newData.sort((a, b) => (a.name - b.name))
+        newData.forEach((nd) => {
+          data.forEach((da) => {
+            if (this.$Utils.filterDate(nd.name, 'YYYYMM') === da.orderTimeMonth + '') {
+              nd.value = da.orderAmountSum
+            }
           })
+          nd.name = this.$Utils.filterDate(new Date(nd.name), 'YYYY年MM月')
         })
+        this.chartData = newData
         this.buildChart(newData)
       })
     },
@@ -289,6 +299,10 @@ export default {
       let xData = data.map(da => da.name)
       let yData = data.map(da => da.value)
       chart.setOption({
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove'
+        },
         xAxis: {
           type: 'category',
           data: xData
