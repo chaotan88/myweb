@@ -476,6 +476,10 @@ export default {
           couponHandsel: this.ruleForm.couponHandsel === '选择代金券' ? '' : this.ruleForm.couponHandsel,
           couponDeduction: this.ruleForm.couponDeduction === '选择代金券' ? '' : this.ruleForm.couponDeduction
         }
+        if (this.ruleForm.commissionType === 1) {
+          params.whetherNeetGift = null
+          params.neetGiftMealId = null
+        }
         let url = 'meal/addSetMeal'
         if (this.mealId) {
           params.id = this.mealId

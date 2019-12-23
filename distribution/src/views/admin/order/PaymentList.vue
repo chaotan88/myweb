@@ -6,7 +6,14 @@
       <!-- 高级搜索组件 -->
       <high-search @search="highSearch('form')" :textVisible = "false">
         <div class="pos-r" slot="search">
-          <el-input placeholder="输入手机号码" v-model.trim=formData.phone @keyup.enter.native="searchHandle">
+          <el-date-picker v-model.trim="formData.queryDate"  type="daterange"
+            style="width: 300px;"
+            range-separator="至" start-placeholder="订单开始日期" end-placeholder="订单结束日期"
+            clearable @change="searchHandle"
+            format="yyyy-MM-dd">
+          </el-date-picker>
+          <el-input placeholder="输入手机号码" v-model.trim=formData.phone @keyup.enter.native="searchHandle"
+            style="float: right; width: auto; margin-left: 20px;">
           </el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
@@ -23,7 +30,7 @@
         <el-table-column prop="orderNo" label="订单编号" min-width="220">
           <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="setMealName" label="套餐名称" min-width="150">
+        <el-table-column prop="setMealName" label="套餐名称" min-width="250">
           <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="setMealNumber" label="套餐编号" width="220">
@@ -35,13 +42,13 @@
         <el-table-column prop="phone" label="买家手机号" width="150">
           <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="customerName" label="收货人姓名" width="150">
+        <el-table-column prop="customerName" label="收货人姓名" min-width="150">
           <template slot-scope="scope">{{scope.row.customerName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="payStatus" label="支付状态">
+        <el-table-column prop="payStatus" label="支付状态" min-width="100">
           <template slot-scope="scope">{{scope.row.payStatus | filterPayStatus(scope.row.payType)}}</template>
         </el-table-column>
-        <el-table-column prop="orderAmount" label="实收款">
+        <el-table-column prop="orderAmount" label="实收款" min-width="100">
           <template slot-scope="scope">{{scope.row.orderAmount | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="orderTime" label="下单时间" width="220">
@@ -120,7 +127,8 @@ export default {
       // 列表数据
       tableData: [],
       formData: {
-        phone: ''
+        phone: '',
+        queryDate: []
       },
       payTypes: [              // 付款方式
         {label: '微信支付', value: 1},
@@ -209,7 +217,8 @@ export default {
         start: type ? 1 : this.pageData.currentPage,
         pageSize: type ? this.pageData.total : this.pageData.pageSize,
         phone: this.formData.phone,
-        orderStatus: this.pageType
+        orderStatus: this.pageType,
+        ...this.getQueryDate()
       }
       if (!type) {
         this.$http.post(url, data).then((res) => {
@@ -241,7 +250,18 @@ export default {
         window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
       }
     },
-
+    getQueryDate () {
+      let startTime = ''
+      let endTime = ''
+      if (this.formData.queryDate && this.formData.queryDate.length > 1) {
+        startTime = this.$Utils.filterDate(this.formData.queryDate[0], 'YYYY-MM-DD 00:00:00')
+        endTime = this.$Utils.filterDate(this.formData.queryDate[1], 'YYYY-MM-DD 23:59:59')
+      }
+      return {
+        startTime: startTime,
+        endTime: endTime
+      }
+    },
     /**
      * 自动补全百分位
      */
@@ -325,6 +345,9 @@ export default {
   .search-head-wrap{
     .el-input__inner{
       width: 250px;
+    }
+    .el-range-separator {
+      line-height: 28px;
     }
   }
 

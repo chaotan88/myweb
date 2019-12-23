@@ -25,10 +25,8 @@
           <template>
             <el-form-item label="交易时间：">{{initData.addTime | filterDate}}</el-form-item>
             <el-form-item label="交易类型：">
-              <span v-if="initData.payType === 1">微信</span>
-              <span v-else-if="initData.payType === 2">支付宝</span>
-              <span v-else-if="initData.payType === 3">银行卡</span>
-              <span v-else-if="initData.payType === 4">余额</span>
+              <span v-if="initData.propertyType === 1">余额</span>
+              <span v-else-if="initData.propertyType === 2">现金</span>
               <span v-else>--</span>
             </el-form-item>
             <el-form-item label="支付宝订单号：" v-if="otherData.payType === '2'">{{otherData.transactionId | filterEmpty}}</el-form-item>

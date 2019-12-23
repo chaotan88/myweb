@@ -13,6 +13,13 @@
             </el-select>
           </div>
           &nbsp;
+          <el-date-picker v-model.trim="formData.queryDate"  type="daterange"
+            style="width: 300px; padding-top: 0px;"
+            range-separator="至" start-placeholder="申请开始日期" end-placeholder="申请结束日期"
+            clearable @change="searchHandle"
+            format="yyyy-MM-dd">
+          </el-date-picker>
+          &nbsp;
           <div class="d-ib pos-r" style="width: 250px;">
             <el-input placeholder="输入会员姓名/手机号/身份证号" v-model.trim="formData.searchText" @keyup.enter.native="searchHandle"></el-input>
             <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
@@ -107,7 +114,8 @@ export default{
       pageType: '',            // 页面类型 [0、全部 1、待处理 2、已处理 3、回退]
       formData: {             // 表单数据
         accountType: '',      // 账户类型（1：银行卡、2：支付宝）
-        searchText: ''        // 会员姓名/手机号
+        searchText: '',        // 会员姓名/手机号
+        queryDate: []
       },
       reflectData: {},        // 提现数据
       reflectVisible: false,  // 提现弹窗
@@ -159,7 +167,8 @@ export default{
         pageSize: this.pageData.pageSize,
         dealWithStatus: this.pageType,
         condition: this.formData.searchText,
-        accountType: this.formData.accountType
+        accountType: this.formData.accountType,
+        ...this.getQueryDate()
       }
       if (!type) {
         this.$http.post(url, data).then((res) => {
@@ -185,6 +194,18 @@ export default{
           filterParams.push(key + '=' + data[key])
         }
         window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+      }
+    },
+    getQueryDate () {
+      let startTime = ''
+      let endTime = ''
+      if (this.formData.queryDate && this.formData.queryDate.length > 1) {
+        startTime = this.$Utils.filterDate(this.formData.queryDate[0], 'YYYY-MM-DD 00:00:00')
+        endTime = this.$Utils.filterDate(this.formData.queryDate[1], 'YYYY-MM-DD 23:59:59')
+      }
+      return {
+        startTime: startTime,
+        endTime: endTime
       }
     },
     /**
