@@ -229,7 +229,10 @@ export default {
       let data = {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
-        businessAttr: this.pageType
+        businessAttr: this.pageType,
+        // ...this.handleDateArgs()
+        startTime: new Date(this.formData.statisticsDate[0]),
+        endTime: new Date(new Date(this.formData.statisticsDate[1]).setDate(new Date(this.formData.statisticsDate[1]).getDate() + 1))
       }
       if (!type) {
         this.$http.post(url, data).then((res) => {
@@ -312,12 +315,13 @@ export default {
      * 分页操作
      */
     pageChange (page) {
-      localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
-      if (this.pageData.currentPage === page) {
-      } else {
-        this.pageData.currentPage = page
-        // this.$router.push({query: {page: this.pageData.currentPage}})
-      }
+      // localStorage.setItem(this.$global.FORM_DATA, JSON.stringify(this.formData))
+      // if (this.pageData.currentPage === page) {
+      // } else {
+      //   this.pageData.currentPage = page
+      // }
+      this.pageData.currentPage = page
+      this.getTableData()
     },
     showDetail (row) {
       this.detailData = row
@@ -326,7 +330,7 @@ export default {
     handleSuccess () {},
     dateChange (param) {
       this.formData.statisticsDate = param
-      // this.getTableData()
+      this.getTableData()
       this.getStatisticsData()
     }
   },
