@@ -51,6 +51,7 @@ export default {
     dateTypeChange (item) {
       this.selectDateType = item.value
       var dt = new Date()
+      var end = new Date()
       switch (item.value) {
         case '3_month':
           dt.setMonth(dt.getMonth() - 3)
@@ -63,6 +64,7 @@ export default {
           break
         case '1_day':
           dt.setDate(dt.getDate() - 1)
+          end.setDate(end.getDate() - 1)
           break
         case '7_day':
           dt.setDate(dt.getDate() - 7)
@@ -74,7 +76,7 @@ export default {
           dt.setDate(dt.getDate() - 90)
           break
       }
-      this.formData.statisticsDate = [dt, new Date()]
+      this.formData.statisticsDate = [dt, end]
       this.dateChange()
     },
     /**

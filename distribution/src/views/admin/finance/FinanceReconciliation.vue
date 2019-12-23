@@ -89,8 +89,10 @@
           </el-table-column>
           <el-table-column prop="propertyType" label="交易类型" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.propertyType === 1">微信</span>
-              <span v-else-if="scope.row.propertyType === 2">支付宝</span>
+              <span v-if="scope.row.payType === 1">微信</span>
+              <span v-else-if="scope.row.payType === 2">支付宝</span>
+              <span v-else-if="scope.row.payType === 3">银行卡</span>
+              <span v-else-if="scope.row.payType === 4">余额</span>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -226,13 +228,17 @@ export default {
       } else {
         url = 'buyBusinessAccount/exportBusinessAccountList'
       }
+      let startDate = new Date(this.formData.statisticsDate[0])
+      let endDate = new Date(this.formData.statisticsDate[1])
+      let startStr = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()} 00:00:00`
+      let endStr = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()} 23:59:59`
       let data = {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
         businessAttr: this.pageType,
         // ...this.handleDateArgs()
-        startTime: new Date(this.formData.statisticsDate[0]),
-        endTime: new Date(new Date(this.formData.statisticsDate[1]).setDate(new Date(this.formData.statisticsDate[1]).getDate() + 1))
+        startTime: new Date(startStr).getTime(),
+        endTime: new Date(endStr).getTime()
       }
       if (!type) {
         this.$http.post(url, data).then((res) => {
