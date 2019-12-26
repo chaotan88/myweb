@@ -352,12 +352,17 @@ export default {
                     if (data.phone) arr.push(data.phone)
                     if (data.ruleName) {
                       if (data.agentAddress) {
-                        arr.push(`${data.ruleName}(${data.agentAddress})`)
+                        arr.push(`${data.ruleName}\n(${data.agentAddress})`)
                       } else {
                         arr.push(data.ruleName)
                       }
                     }
-                    let str = arr.join('-')
+                    let str = ''
+                    if (arr.length === 3) {
+                      str = `${arr[0]}-${arr[1]}-${arr[2]}`
+                    } else {
+                      str = arr.join('-')
+                    }
                     return str
                   }
                 }

@@ -25,12 +25,14 @@ module.exports.global = {
 switch (process.env.NODE_ENV) {
   case 'production':
     module.exports.domain = { // 正式环境
-      // ROOT_API: 'https://www.lzmalls.cn/lzwlbehinddistribute/distribute/',    // 测试服
-      // ROOT_PUBLIC: 'https://www.lzmalls.cn/lzwlbehinddistribute/',            // 测试服 - 登录
-      // ROOT_IMG: 'https://www.lzmalls.cn/'
-      ROOT_API: 'http://120.76.250.165/lzwlbehinddistribute/distribute/',    // 测试服
-      ROOT_PUBLIC: 'http://120.76.250.165/lzwlbehinddistribute/',            // 测试服 - 登录
-      ROOT_IMG: 'http://120.76.250.165/',
+      ROOT_API: 'https://www.lzmalls.cn/lzwlbehinddistribute/distribute/',    // 正式服
+      ROOT_API_EXP: 'https://www.lzmalls.cn/lzwlbehinddistribute/',           // 正式服
+      ROOT_PUBLIC: 'https://www.lzmalls.cn/lzwlbehinddistribute/',            // 正式服 - 登录
+      ROOT_IMG: 'https://www.lzmalls.cn/'
+      // ROOT_API: 'http://120.76.250.165/lzwlbehinddistribute/distribute/',    // 测试服
+      // ROOT_API_EXP: 'http://120.76.250.165/lzwlbehinddistribute/',    // 测试服
+      // ROOT_PUBLIC: 'http://120.76.250.165/lzwlbehinddistribute/',            // 测试服 - 登录
+      // ROOT_IMG: 'http://120.76.250.165/',
     }
     break
   case 'testing':
@@ -43,6 +45,7 @@ switch (process.env.NODE_ENV) {
   default:
     module.exports.domain = { // 开发环境
       ROOT_API: 'http://120.76.250.165/lzwlbehinddistribute/distribute/',    // 测试服
+      ROOT_API_EXP: 'http://120.76.250.165/lzwlbehinddistribute/',    // 测试服
       ROOT_PUBLIC: 'http://120.76.250.165/lzwlbehinddistribute/',            // 测试服 - 登录
       ROOT_IMG: 'http://120.76.250.165/'
   }
