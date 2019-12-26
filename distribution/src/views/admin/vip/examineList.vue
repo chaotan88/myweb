@@ -17,6 +17,9 @@
         <el-table-column fixed prop="customerPhone" label="申请编号" min-width="220">
           <template slot-scope="scope">{{scope.row.upgradeNo}}</template>
         </el-table-column>
+        <el-table-column prop="customerPhone" label="地区" min-width="150">
+          <template slot-scope="scope">{{(scope.row.agentProvince + scope.row.agentCity + scope.row.agentZone) | filterEmpty}}</template>
+        </el-table-column>
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.userPhone | filterEmpty}}</template>
         </el-table-column>

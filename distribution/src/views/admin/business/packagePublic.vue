@@ -117,6 +117,7 @@
               <el-checkbox v-model="ruleForm.whetherNeetGift" :true-label="1" :false-label="2"></el-checkbox>
               优先购买礼包套餐，才能购买此套餐
               <el-select v-model="ruleForm.neetGiftMealId" size="medium" class="year-box"
+              v-if="ruleForm.whetherNeetGift === 1"
                 placeholder="选择礼包套餐">
                 <el-option :label="item.setMealName" :value="item.id" :key="index" v-for="(item, index) in packages"></el-option>
               </el-select>
@@ -350,7 +351,7 @@ export default {
       editorConfig: {
         // 你的UEditor资源存放的路径,相对于打包后的index.html
         // UEDITOR_HOME_URL: './static/UEditor/',
-        UEDITOR_HOME_URL: '/lzwl-distribute/static/UEditor/',
+        UEDITOR_HOME_URL: '/lzwl-distribute/static/ueditor/',
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
         // 初始容器高度
@@ -475,6 +476,10 @@ export default {
           pickCrossReward: this.ruleForm.pickCrossReward || 0,
           couponHandsel: this.ruleForm.couponHandsel === '选择代金券' ? '' : this.ruleForm.couponHandsel,
           couponDeduction: this.ruleForm.couponDeduction === '选择代金券' ? '' : this.ruleForm.couponDeduction
+        }
+        if (this.ruleForm.whetherNeetGift !== 1) {
+          params.whetherNeetGift = null
+          params.neetGiftMealId = null
         }
         if (this.ruleForm.commissionType === 1) {
           params.whetherNeetGift = null

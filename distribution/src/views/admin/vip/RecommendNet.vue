@@ -50,7 +50,8 @@ export default {
       start: 0,
       canvasHeight: 1550,
       historyStep: [],
-      firstHeight: 0
+      firstHeight: 0,
+      rootPhone: ''
     }
   },
   mounted () {
@@ -70,6 +71,7 @@ export default {
           return false
         }
         let { phone } = resData.data
+        this.rootPhone = phone
         this.getMemberDetail(phone)
       }).finally(() => {
         this.loading = false
@@ -182,7 +184,11 @@ export default {
      */
     searchHandle (isClick) {
       if (isClick) this.historyStep = []
-      this.getMemberDetail(this.formData.phone)
+      if (this.formData.phone) {
+        this.getMemberDetail(this.formData.phone)
+      } else {
+        this.getRootRecommendPhone()
+      }
     },
     draw (datas, rootData, baseLevel) {
       let canvas = document.getElementById('canvas')
@@ -249,8 +255,8 @@ export default {
         userName: rootData.userName,
         ruleName: rootData.ruleName,
         customerPhone: rootData.customerPhone,
-        umbrellaCount: rootData.umbrellaCount || '--',
-        agentAddress: rootData.agentAddress || '--'
+        umbrellaCount: rootData.umbrellaCount || '',
+        agentAddress: rootData.agentAddress || ''
       }
       const setChild = (da) => {
         chartData.children.forEach(cd => {
@@ -264,7 +270,7 @@ export default {
               ruleName: da.ruleName,
               customerPhone: da.customerPhone,
               umbrellaCount: da.umbrellaCount,
-              agentAddress: da.agentAddress || '--'
+              agentAddress: da.agentAddress || ''
             })
           }
         })
@@ -280,7 +286,7 @@ export default {
             ruleName: da.ruleName,
             customerPhone: da.customerPhone,
             umbrellaCount: da.umbrellaCount,
-            agentAddress: da.agentAddress || '--'
+            agentAddress: da.agentAddress || ''
           })
         } else {
           setChild(da)
@@ -310,11 +316,12 @@ export default {
           triggerOn: 'mousemove',
           formatter: function (params) {
             let { data } = params
-            let str = `姓名: ${data.userName || ''}</br>
-              当前等级：${data.ruleName || ''}</br>
-              电话：${data.phone || ''}</br>
-              身份所属区域：${data.agentAddress || '--'}
-              下级会员数：${data.umbrellaCount || '--'} 人`
+            let str = ''
+            if (data.userName) str += `姓名: ${data.userName || ''}</br>`
+            if (data.phone) str += `电话：${data.phone || ''}</br>`
+            if (data.ruleName) str += `当前等级：${data.ruleName || ''}</br>`
+            if (data.agentAddress) str += `身份所属区域：${data.agentAddress || '--'}`
+            if (data.umbrellaCount) str += `下级会员数：${data.umbrellaCount || '--'} 人`
             return str
           }
         },
@@ -340,7 +347,17 @@ export default {
                 label: {
                   formatter: function (params) {
                     let { data } = params
-                    let str = `${data.userName || ''}-${data.ruleName || ''}`
+                    let arr = []
+                    if (data.userName) arr.push(data.userName)
+                    if (data.phone) arr.push(data.phone)
+                    if (data.ruleName) {
+                      if (data.agentAddress) {
+                        arr.push(`${data.ruleName}(${data.agentAddress})`)
+                      } else {
+                        arr.push(data.ruleName)
+                      }
+                    }
+                    let str = arr.join('-')
                     return str
                   }
                 }
