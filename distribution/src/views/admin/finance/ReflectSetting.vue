@@ -9,14 +9,19 @@
 
           <div class="box">
             <gray-title title="提现设置"></gray-title>
-            <el-form-item label="提现周期：" prop="withdrawalCycle" v-show="false">
+            <el-form-item label="提现入口：" prop="conditionValue">
+              <el-checkbox v-model="withdrawalWx" :true-label="1" :false-label="2">微信</el-checkbox>
+              <el-checkbox v-model="withdrawalAli" :true-label="1" :false-label="2">支付宝</el-checkbox>
+              <el-checkbox v-model="withdrawalBank" :true-label="1" :false-label="2">银行卡</el-checkbox>
+            </el-form-item>
+            <el-form-item label="提现周期：" prop="withdrawalCycle">
               <el-select v-model="ruleForm.withdrawalCycle" placeholder="选择提现周期">
                   <template v-for="(ruleList, index) in cycles">
                     <el-option :label="ruleList.ruleName" :value="ruleList.ruleId"></el-option>
                   </template>
                 </el-select>
             </el-form-item>
-            <el-form-item label="提现次数：" prop="cycleNumber" v-show="false">
+            <el-form-item label="提现次数：" prop="cycleNumber">
               <el-input v-model="ruleForm.cycleNumber" placeholder="0或正整数,0表示不限制"></el-input>
               <span class="recommendSpan">次/周期</span>
             </el-form-item>
@@ -33,8 +38,8 @@
               <span class="recommendSpan setting-desc">
                 1.指的是通用积分提现时，按设置的百分比计算出来当前账户可提现的通用积分，
               计算规则：当前账户可提现通用积分=当前账户通用积分结余-累计通用积分*设置的沉淀资金百分比(计算完后四舍五入，保留整数)；
-              当计算出来的可提现通用积分大于“0”时为可提现金额，可操作提现；当计算出来的可提现通用积分小于等于“0”时不可操作提现，
-              给出提现“无可提现金额”
+              当计算出来的可提现通用积分大于‘0”时为可提现金额，可操作提现；当计算出来的可提现通用积分小于等于‘0”时不可操作提现，
+              给出提现‘无可提现金额”
               </span>
             </el-form-item> -->
           </div>
@@ -101,7 +106,10 @@ export default {
       }, {
         ruleId: 3,
         ruleName: '每月'
-      }]
+      }],
+      withdrawalWx: 2,
+      withdrawalAli: 2,
+      withdrawalBank: 2
     }
   },
   computed: {},
@@ -125,6 +133,9 @@ export default {
           return false
         }
         this.ruleForm = resData.data
+        this.withdrawalWx = this.ruleForm.withdrawalWx
+        this.withdrawalAli = this.ruleForm.withdrawalAli
+        this.withdrawalBank = this.ruleForm.withdrawalBank
         this.inpBlur('conditionValue')
         this.inpBlur('withdrawalMinamount')
       })
@@ -133,15 +144,33 @@ export default {
      * 提交
      */
     submitForm (formName) {
+      if (this.withdrawalWx !== 1 && this.withdrawalAli !== 1 && this.withdrawalBank !== 1) {
+        this.$message({
+          message: '请勾选提现入口',
+          type: 'error',
+          duration: 1500
+        })
+        return false
+      }
       this.$refs[formName].validate((valid) => {
         if (!valid) return false
         this.confirmLoading = true
         this.$http.post('@ROOT_API/withdrawalManageController/settingWithdrawal', {
-          // withdrawalCycle: this.ruleForm.withdrawalCycle,
-          // cycleNumber: this.ruleForm.cycleNumber,
-          // conditionType: this.ruleForm.conditionType,
+          withdrawalCycle: this.ruleForm.withdrawalCycle,
+          cycleNumber: this.ruleForm.cycleNumber,
+          conditionType: this.ruleForm.conditionType,
           withdrawalMinamount: this.ruleForm.withdrawalMinamount,
-          conditionValue: parseFloat(this.ruleForm.conditionValue)
+          conditionValue: parseFloat(this.ruleForm.conditionValue),
+          withdrawalWx: this.withdrawalWx,
+          withdrawalAli: this.withdrawalAli,
+          withdrawalBank: this.withdrawalBank
+          // 'withdrawalCycle': 1,
+          // 'withdrawalMinamount': 0.02,
+          // 'cycleNumber': 0,
+          // 'conditionValue': 4,
+          // 'withdrawalWx': 0,
+          // 'withdrawalAli': 0,
+          // 'withdrawalBank': 0
         }).then((res) => {
           let resData = res.data
           if (parseInt(resData.status) !== 1) {

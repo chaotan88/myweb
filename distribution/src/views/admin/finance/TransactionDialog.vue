@@ -15,6 +15,10 @@
             </strong>
           </el-form-item>
 
+          <el-form-item label="订单编号：">
+            <strong>{{initData.outOrderNo | filterEmpty}}</strong>
+          </el-form-item>
+          
           <el-form-item label="推广大使手机：">
             <strong>{{initData.customerPhone | filterEmpty}}</strong>
           </el-form-item>

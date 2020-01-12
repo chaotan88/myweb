@@ -126,6 +126,42 @@ export default {
             ]
           },
           component: r => require(['@/views/admin/finance/ReflectList'], r)
+        },
+
+        {
+          path: '/admin/finance/reflect/exception',
+          meta: {
+            title: '打款异常',
+            pageBack: true,
+            // refresh: false,
+            auth: true,
+            authCode: 601052,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '财务管理', path: '/admin/finance' },
+              { title: '提现管理', path: '/admin/finance/reflect' },
+              { title: '打款异常', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/finance/ReflectList'], r)
+        },
+
+        {
+          path: '/admin/finance/reflect/transfer',
+          meta: {
+            title: '打款中',
+            pageBack: true,
+            // refresh: false,
+            auth: true,
+            authCode: 601052,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '财务管理', path: '/admin/finance' },
+              { title: '提现管理', path: '/admin/finance/reflect' },
+              { title: '打款中', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/finance/ReflectList'], r)
         }
       ]
     },
@@ -195,6 +231,90 @@ export default {
             ]
           },
           component: r => require(['@/views/admin/finance/FinanceReconciliation'], r)
+        }
+      ]
+    },
+
+    // 账户管理
+    {
+      path: '/admin/finance/account',
+      redirect: '/admin/finance/account/index',
+      meta: {
+        nav: '账户管理',
+        icon: 'icon-yuetixian',
+        // refresh: false,           // 刷新页面
+        auth: true,
+        authCode: 601053
+      },
+      component: r => require(['@/views/admin/finance/AccountLayout'], r),
+      children: [
+        {
+          path: '/admin/finance/account/index',
+          meta: {
+            title: '账户管理',
+            pageBack: true,
+            // refresh: false,
+            auth: true,
+            authCode: 601053,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '财务管理', path: '/admin/finance' },
+              { title: '账户管理', path: '/admin/finance/account' }
+            ]
+          },
+          component: r => require(['@/views/admin/finance/Account'], r)
+        },
+        {
+          path: '/admin/finance/account/detail',
+          meta: {
+            title: '账户管理',
+            pageBack: true,
+            // refresh: false,
+            auth: false,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '财务管理', path: '/admin/finance' },
+              { title: '账户管理', path: '/admin/finance/detail' }
+            ]
+          },
+          component: r => require(['@/views/admin/finance/AccountDetail'], r)
+        }
+      ]
+    },
+
+    // 推广大使详情
+    {
+      path: '/admin/finance/detail',
+      redirect: '/admin/finance/detail/index',
+      meta: {
+        title: '推广大使详情',
+        nav: '推广大使详情',
+        icon: 'icon-shenhe1',
+        auth: false,
+        // authCode: 601049,
+        breadcrumb: [
+          { title: '首页', path: '' }
+        ]
+      },
+      component: r => require(['@/views/admin/finance/AccountDetailLayout.vue'], r),
+      children: [
+        // 推广大使详情
+        {
+          path: '/admin/finance/detail/index',
+          meta: {
+            title: '推广大使详情',
+            pageBack: true,
+            // refresh: false,
+            auth: false,
+            // authCode: 601049,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '财务管理', path: '/admin/finance' },
+              { title: '账户管理', path: '/admin/finance/account' },
+              { title: '推广大使详情', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/finance/AccountDetail'], r)
         }
       ]
     }

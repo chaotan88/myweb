@@ -33,14 +33,17 @@
         <el-table-column prop="setMealName" label="套餐名称" min-width="250">
           <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
         </el-table-column>
+        <el-table-column prop="phone" label="推广大使手机" min-width="150">
+          <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
+        </el-table-column>
         <el-table-column prop="setMealNumber" label="套餐编号" width="220">
           <template slot-scope="scope">{{scope.row.setMealNumber | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="orderStatus" label="订单状态">
           <template slot-scope="scope">{{scope.row.orderStatus | filterOrderStatus}}</template>
         </el-table-column>
-        <el-table-column prop="phone" label="买家手机号" width="150">
-          <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
+        <el-table-column prop="addressPhone" label="收件人手机" width="150">
+          <template slot-scope="scope">{{scope.row.addressPhone | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="customerName" label="收货人姓名" min-width="150">
           <template slot-scope="scope">{{scope.row.customerName | filterEmpty}}</template>
@@ -64,7 +67,10 @@
                 <el-dropdown-item v-if="parseInt(scope.row.orderStatus) === 2"><!-- v-if="parseInt(scope.row.orderStatus) === 2"-->
                   <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id}})"><i class="icon el-icon-edit"></i>发货</div>
                 </el-dropdown-item>
-                <el-dropdown-item>
+                <el-dropdown-item v-if="parseInt(scope.row.orderStatus) === 2"><!-- v-if="parseInt(scope.row.orderStatus) === 2"-->
+                  <div @click="updateAddress(scope.row)"><i class="icon el-icon-edit"></i>修改地址</div>
+                </el-dropdown-item>
+                <el-dropdown-item v-if="parseInt(scope.row.orderStatus) !== 2">
                   <div @click="$router.push({path: '/admin/order/payment/details', query: {id: scope.row.id, pageType: 1}})"><i class="icon el-icon-view"></i>详情</div>
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -88,13 +94,36 @@
       </el-pagination>
     </template>
 
+    <template slot="other">
+      <!-- 删除 -->
+      <el-dialog title="修改地址" :visible.sync="updateVisible" width="580px">
+        <el-form label-position="right" label-width="120px" class="ta-l" :model="updateData" ref="form">
+          <el-form-item label="收件人：" prop="addressName" style="margin-bottom: 20px;">
+            <el-input placeholder="输入整数,限20个字符" v-model="updateData.addressName"></el-input>
+          </el-form-item>
+          <el-form-item label="收件人手机：" prop="addressPhone" style="margin-bottom: 20px;">
+            <el-input placeholder="输入整数,限20个字符" v-model="updateData.addressPhone"></el-input>
+          </el-form-item>
+          <el-form-item label="收件人地址：" prop="address" style="margin-bottom: 20px;">
+            <region-select @change="regionChange" :initData="region"></region-select>
+            <el-input v-model="updateData.address" clearable placeholder="详细地址" style="margin-top: 10px;"></el-input>
+          </el-form-item>
+      </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="updateVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="confirmLoading" @click="handleUpdate">确 定</el-button>
+        </span>
+      </el-dialog>
+    </template>
+
   </common-tpl>
 </template>
 
 <script>
 import PaymentExamine from './PaymentExamine'
+import RegionSelect from '@/components/utils/RegionSelect'
 export default {
-  components: {PaymentExamine},
+  components: {PaymentExamine, RegionSelect},
   data () {
     // 验证会员姓名
     let validateCardName = (rule, value, callback) => {
@@ -163,7 +192,24 @@ export default {
         // 代理费结束值
         agencyFeeEnd: { validator: validateAgent, trigger: 'blur' }
       },
-      userInfo: {}              // 用户信息
+      userInfo: {},              // 用户信息
+      updateVisible: false,
+      updateData: {},
+      confirmLoading: false,
+      region: {
+        province: {
+          code: '',
+          name: ''
+        },
+        city: {
+          code: '',
+          name: ''
+        },
+        area: {
+          code: '',
+          name: ''
+        }
+      }
     }
   },
   mounted () {
@@ -317,6 +363,62 @@ export default {
     resetForm () {
       this.formData = this.$Utils.deepCopy(this.copyFormData)
       localStorage.removeItem(this.$global.FORM_DATA)
+    },
+    updateAddress (row) {
+      this.updateData = row
+      this.region.province = {
+        code: row.addressProvinceCode,
+        name: row.addressProvince
+      }
+      this.region.city = {
+        code: row.addressCityCode,
+        name: row.addressCity
+      }
+      this.region.area = {
+        code: row.addressZoneCode,
+        name: row.addressZone
+      }
+      this.updateVisible = true
+    },
+    handleUpdate () {
+      let params = {
+        orderId: this.updateData.id,
+        addressId: this.updateData.addressId,
+        addressProvince: this.region.province.name,
+        addressProvinceCode: this.region.province.code,
+        addressCity: this.region.city.name,
+        addressCityCode: this.region.city.code,
+        addressZone: this.region.area.name,
+        addressZoneCode: this.region.area.code,
+        addressName: this.updateData.addressName,
+        addressPhone: this.updateData.addressPhone,
+        address: this.updateData.address
+      }
+      this.$http.post('@ROOT_API/meal/updateSetMealOrderAddress', params).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        this.$message({
+          message: resData.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.updateVisible = false
+        this.getListData()
+      }).finally(() => {
+        setTimeout(() => {
+          this.submitLoading = false
+        }, 1000)
+      })
+    },
+    regionChange (results) {
+      this.region = results
     }
   }
 }

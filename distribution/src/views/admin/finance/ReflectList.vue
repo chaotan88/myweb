@@ -44,10 +44,11 @@
         </el-table-column>
         <el-table-column prop="accountType" label="提现方式">
           <template slot-scope="scope">
-            <span v-if="parseFloat(scope.row.accountType) === 1">银行卡</span>
-            <span v-else-if="parseFloat(scope.row.accountType) === 2">支付宝</span>
-            <span v-else>--</span>
+            {{scope.row.accountType | filterAccountType}}
           </template>
+        </el-table-column>
+        <el-table-column prop="cashPoints" label="提现前余额（元）" min-width="130">
+          <template slot-scope="scope">{{scope.row.cashPoints | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="withdrawalAmount" label="提现金额（元）" min-width="130">
           <template slot-scope="scope">{{scope.row.withdrawalAmount | filterMoney}}</template>
@@ -58,8 +59,8 @@
         <el-table-column prop="withdrawalAmount" label="提现应付金额（元）" min-width="150">
           <template slot-scope="scope">{{(scope.row.withdrawalAmount - scope.row.withdrawalFees) | filterMoney}}</template>
         </el-table-column>
-        <el-table-column prop="cashPoints" label="账户结余（元）" min-width="150">
-          <template slot-scope="scope">{{scope.row.cashPoints | filterMoney}}</template>
+        <el-table-column prop="afterCashPoints" label="账户结余（元）" min-width="150">
+          <template slot-scope="scope">{{scope.row.afterCashPoints | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="applyTime" label="提现申请时间" min-width="160">
           <template slot-scope="scope">{{scope.row.applyTime | filterDate}}</template>
@@ -72,7 +73,16 @@
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
-                  <div @click="handleReflectBefore(scope.row)"><i class="icon" :class="{'el-icon-edit': scope.row.dealWithStatus === 1, 'el-icon-view': scope.row.dealWithStatus === 2 || scope.row.dealWithStatus === 3}"></i>{{scope.row.dealWithStatus === 1 ? '打款' : '详情'}}</div>
+                  <div @click="handleReflectBefore(scope.row)" v-if="scope.row.dealWithStatus === 1">
+                    <i class="icon el-icon-edit"></i>打款</div>
+                  <div @click="handleDetailBefore(scope.row)" v-else-if="scope.row.dealWithStatus === 2">
+                    <i class="icon el-icon-view"></i>详情</div>
+                  <div @click="handleDetailBefore(scope.row)" v-else-if="scope.row.dealWithStatus === 3">
+                    <i class="icon el-icon-view"></i>回退详情</div>
+                  <div @click="handleReflectBefore(scope.row)" v-else-if="scope.row.dealWithStatus === 4">
+                    <i class="icon el-icon-edit"></i>继续打款</div>
+                  <div @click="handleDetailBefore(scope.row)" v-else-if="scope.row.dealWithStatus === 5">
+                    <i class="icon el-icon-view"></i>打款详情</div>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -97,7 +107,21 @@
 
     <template slot="other">
 
-      <reflect-dialog :visible="reflectVisible" :initData="reflectData" @close="reflectVisible = false" @success="handleSuccess"></reflect-dialog>
+      <reflect-dialog :visible="reflectVisible" :initData="reflectData" @close="reflectVisible = false"
+        @success="handleSuccess" @error="showErrorMsg"></reflect-dialog>
+      <reflect-detail :visible="detailVisible" :initData="reflectData" @close="detailVisible = false"
+        @success="handleSuccess"></reflect-detail>
+      <el-dialog
+        title="提示"
+        :visible.sync="msgVisible"
+        width="30%">
+        <div class="message-content">
+          <div>{{errorMsg}}</div>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="msgVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
 
     </template>
   </common-tpl>
@@ -105,9 +129,10 @@
 
 <script>
 import ReflectDialog from './ReflectDialog'
+import ReflectDetail from './ReflectDetail'
 
 export default{
-  components: {ReflectDialog},
+  components: { ReflectDialog, ReflectDetail },
   data () {
     return {
       loading: false,         // 加载loading
@@ -125,7 +150,10 @@ export default{
         pageSize: 10,
         total: 0
       },
-      userInfo: {}            // 用户信息
+      userInfo: {},            // 用户信息
+      msgVisible: false,
+      errorMsg: '',
+      detailVisible: false
     }
   },
 
@@ -135,6 +163,8 @@ export default{
     if (this.$route.path.match(/index/gi)) this.pageType = 1
     if (this.$route.path.match(/processed/gi)) this.pageType = 2
     if (this.$route.path.match(/back/gi)) this.pageType = 3
+    if (this.$route.path.match(/exception/gi)) this.pageType = 4
+    if (this.$route.path.match(/transfer/gi)) this.pageType = 5
 
     // 获取tab标签类型
     let getPagetype = localStorage.getItem(this.$global.SYSTEM + 'PageType', this.pageType)
@@ -242,6 +272,12 @@ export default{
       }
     },
 
+    showErrorMsg (msg) {
+      this.errorMsg = msg
+      this.msgVisible = true
+      this.reflectVisible = false
+      this.getListData()
+    },
     /**
      * 提现前操作
      */
@@ -250,11 +286,16 @@ export default{
       this.reflectData = row || {}
     },
 
+    handleDetailBefore (row) {
+      this.detailVisible = true
+      this.reflectData = row || {}
+    },
     /**
      * 成功操作
      */
     handleSuccess () {
       this.reflectVisible = false
+      this.detailVisible = false
       this.getListData()
     },
 

@@ -23,13 +23,13 @@
         <el-table-column prop="setMealNumber" label="套餐编号" width="220px">
           <template slot-scope="scope">{{scope.row.setMealNumber | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="200px">
+        <el-table-column prop="createTime" label="创建时间" width="180px">
           <template slot-scope="scope">{{scope.row.createTime | filterDate}}</template>
         </el-table-column>
-        <el-table-column prop="setMealName" label="套餐名称" width="230px">
+        <el-table-column prop="setMealName" label="套餐名称" width="180px">
           <template slot-scope="scope">{{scope.row.setMealName | filterEmpty}}</template>
         </el-table-column>
-        <el-table-column prop="setMealPrice" label="销售价" width="120px">
+        <el-table-column prop="setMealPrice" label="销售价" width="100px">
           <template slot-scope="scope">{{scope.row.setMealPrice | filterEmpty}}</template>
         </el-table-column>
         <el-table-column prop="commissionType" label="分佣类型" min-width="100">
@@ -41,10 +41,16 @@
         <el-table-column prop="configurationMoney" label="已配置金额" min-width="100">
           <template slot-scope="scope">{{scope.row.configurationMoney}}</template>
         </el-table-column>
-        <el-table-column prop="setMealStatus" label="套餐状态" min-width="100">
+        <el-table-column prop="setMealStatus" label="套餐状态" min-width="80">
           <template slot-scope="scope">
-            <template v-if="parseInt(scope.row.setMealStatus) === 1">开启</template>
-            <template v-else>关闭</template>
+            <template v-if="parseInt(scope.row.setMealStatus) === 1">
+              <span style="color: #2eaaf7; cursor: pointer;" @click="handleCloseBefore(scope.row)">开启</span></template>
+            <template v-else><span style="color: #2eaaf7; cursor: pointer;" @click="handleCloseBefore(scope.row)">关闭</span></template>
+          </template>
+        </el-table-column>
+        <el-table-column prop="setMealSort" label="排序" min-width="120">
+          <template slot-scope="scope">
+            <el-input placeholder="请输入数字"  @change="sortChange(scope.$index)" v-model="scope.row.setMealSort"></el-input>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
@@ -95,8 +101,8 @@
       </el-dialog>
 
       <!-- 关闭 -->
-      <el-dialog title="关闭套餐" :visible.sync="closeVisible" width="480px">
-        确定是否关闭此套餐？
+      <el-dialog :title="`${updateLabel}套餐`" :visible.sync="closeVisible" width="480px">
+        确定是否{{updateLabel}}此套餐？
         <span slot="footer" class="dialog-footer">
           <el-button @click="closeVisible = false">取 消</el-button>
           <el-button type="primary" :loading="confirmLoading" @click="handleClose">确 定</el-button>
@@ -141,7 +147,8 @@ export default {
 
         // 代理费高
         agentHigh: { validator: validateAgent, trigger: 'blur' }
-      }
+      },
+      updateLabel: '关闭'
     }
   },
   mounted () {
@@ -246,6 +253,7 @@ export default {
     handleCloseBefore (row) {
       this.closeVisible = true
       this.closeData = row
+      this.updateLabel = row.setMealStatus === 1 ? '关闭' : '开启'
     },
 
     /**
@@ -253,8 +261,9 @@ export default {
     */
     handleClose () {
       this.confirmLoading = true
-      this.$http.post('@ROOT_API/meal/closeSetMeal', {
-        id: this.closeData.id
+      this.$http.post('@ROOT_API/meal/updateSetMealStatus', {
+        mealId: this.closeData.id,
+        setMealStatus: this.closeData.setMealStatus === 1 ? 2 : 1
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -325,6 +334,38 @@ export default {
      */
     resetForm () {
       this.formData = this.$Utils.deepCopy(this.copyFormData)
+    },
+    sortChange (index) {
+      let item = this.tableData[index]
+      if (Number.isNaN(parseFloat(item.setMealSort))) {
+        item.setMealSort = 0
+        this.$set(this.tableData, item, index)
+      } else {
+        this.$http.post('@ROOT_API/meal/updateSetMealSort', {
+          mealId: item.id,
+          setMealSort: item.setMealSort
+        }).then((res) => {
+          let resData = res.data
+          if (parseInt(resData.status) !== 1) {
+            this.$message({
+              message: resData.msg,
+              type: 'error',
+              duration: 1500
+            })
+            return false
+          }
+          this.$message({
+            message: resData.msg,
+            type: 'success',
+            duration: 1000
+          })
+          this.getListData()
+        }).finally(() => {
+          setTimeout(() => {
+            this.confirmLoading = false
+          }, 1000)
+        })
+      }
     }
   }
 }
@@ -358,6 +399,10 @@ export default {
         margin-right: 100px;
       }
     }
+  }
+  .link-name {
+    color: #2eaaf7;
+    cursor: pointer;
   }
 }
 </style>

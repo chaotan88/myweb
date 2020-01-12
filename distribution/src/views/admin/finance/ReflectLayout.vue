@@ -3,9 +3,11 @@
   <third-menu>
     <template slot="main">
       <router-link class='d-ib ta-c' to="/admin/finance/reflect/all">全部({{statistics.allNum ? statistics.allNum : 0}})</router-link>
-      <router-link class='d-ib ta-c' to="/admin/finance/reflect/index">待处理({{statistics.waitDeal ? statistics.waitDeal : 0}})</router-link>
-      <router-link class='d-ib ta-c' to="/admin/finance/reflect/processed">已处理({{statistics.hasDeal ? statistics.hasDeal : 0}})</router-link>
-      <router-link class='d-ib ta-c' to="/admin/finance/reflect/back">回退({{statistics.back ? statistics.back : 0}})</router-link>
+      <router-link class='d-ib ta-c' to="/admin/finance/reflect/index">待打款({{statistics.waitDeal ? statistics.waitDeal : 0}})</router-link>
+      <router-link class='d-ib ta-c' to="/admin/finance/reflect/processed">已打款({{statistics.hasDeal ? statistics.hasDeal : 0}})</router-link>
+      <router-link class='d-ib ta-c' to="/admin/finance/reflect/back">已回退({{statistics.back ? statistics.back : 0}})</router-link>
+      <router-link class='d-ib ta-c' to="/admin/finance/reflect/transfer">打款中({{statistics.transfer ? statistics.transfer : 0}})</router-link>
+      <router-link class='d-ib ta-c' to="/admin/finance/reflect/exception">打款异常({{statistics.exception ? statistics.exception : 0}})</router-link>
       <!-- <router-link class='tab-right-btn' to="/admin/finance/reflect/reflectSetting">提现设置</router-link> -->
       <div class='user-define-add-btn' @click="toSetting" style="float: right;">
         <el-button @click="toSetting()">提现设置</el-button>
@@ -23,7 +25,7 @@ export default {
   },
 
   mounted () {
-    let path = this.$route.path.match(/all|index|processed|back/gi)
+    let path = this.$route.path.match(/all|index|processed|back|transfer|exception/gi)
     if (path) this.getStatistics()
   },
 

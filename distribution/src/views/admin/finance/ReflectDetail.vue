@@ -124,37 +124,30 @@
             </el-form-item>
           </template>
 
-          <template v-else-if="initData.accountType !== 1">
-            <el-form-item label="流水号：" prop="paymentNo">
+          <template v-else-if="initData.accountType !== 1 && initData.dealWithStatus !== 3">
+            <el-form-item label="流水号：" prop="paymentNo" v-if="initData.dealWithStatus !== 2">
               <template>未获取</template>
             </el-form-item>
-            <el-form-item label="上传打款凭证：" class="voucherImg" v-if="initData.dealWithStatus === 4">
-              <template  v-if="initData.dealWithStatus === 4">
-                <el-upload
-                  :class="{'upload-max': formData.uploadFileList.length === 1}"
-                  list-type="picture-card"
-                  :action="uploadUrl"
-                  :limit="1"
-                  :file-list="formData.uploadFileList"
-                  :on-exceed="exceedHandle"
-                  :before-upload="beforeAvatarUpload"
-                  :on-preview="pictureCardPreviewHandle"
-                  :on-success="uploadSuccessHandle"
-                  :on-remove="removeHandle">
-                  <i class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-                <el-input v-model="formData.voucherImg" class="d-n"></el-input>
-              </template>
-              <span style="color: red;">请通过线下核查打款结果后上传凭证，完成此次打款</span>
+            <el-form-item label="流水号：" prop="paymentNo" v-else>
+              <template>{{initData.paymentNo | filterEmpty}}</template>
+            </el-form-item>
+            <el-form-item label="打款凭证：" prop="paymentVoucher"  v-if="initData.dealWithStatus !== 2">
+              <template>未获取</template>
             </el-form-item>
             <el-form-item label="打款凭证：" prop="paymentVoucher"  v-else>
-              <template>未获取</template>
+              <template v-if="initData.paymentVoucher">
+                  <a :href="initData.paymentVoucher | filterImgUrl" target="_blank">
+                    <img :src="initData.paymentVoucher | filterImgUrl" class="full-wrap">
+                  </a>
+                </template>
+                <template v-else-if="initData.accountType === 2">{{'支付宝商户号打款成功' | filterEmpty}}</template>
+                <template v-else-if="initData.accountType === 3">{{'微信商户号打款成功' | filterEmpty}}</template>
             </el-form-item>
           </template>
 
           <template v-if="formData.dealWithStatus === 3">
             <el-form-item label="回退说明：" prop="description" :style="{padding: initData.dealWithStatus === 1 ? '10px 0' : ''}">
-              <template v-if="initData.dealWithStatus === 3">{{initData.description}}</template>
+              <template v-if="initData.dealWithStatus === 3">{{initData.description | filterEmpty}}</template>
               <template v-else>
                 <el-input placeholder="限20个字符" v-model="formData.description"></el-input>
               </template>
@@ -166,7 +159,7 @@
 
       <div class="btns-wrap">
         <el-button :type="initData.dealWithStatus === 2 ? 'primary' : ''" @click="$emit('close')">{{initData.dealWithStatus === 1 ? '取消' : '关闭'}}</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
-        <el-button type="primary" @click="handlePayment('form')" :loading="loading" v-if="initData.dealWithStatus === 1 || initData.dealWithStatus === 4">确定</el-button>
+        <el-button type="primary" @click="handlePayment('form')" :loading="loading" v-if="initData.dealWithStatus === 1">确定</el-button>
       </div>
     </el-dialog>
 

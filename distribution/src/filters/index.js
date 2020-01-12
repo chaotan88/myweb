@@ -29,6 +29,22 @@ module.exports = {
     return res
   },
 
+  filterAccountType (val) {
+    if (!val && parseInt(val) !== 0) return emptyTips
+    let res = ''
+    switch (parseInt(val)) {
+      case 1:
+        res = '银行卡'
+        break
+      case 2:
+        res = '支付宝'
+        break
+      case 3:
+        res = '微信'
+        break
+    }
+    return res
+  },
   /**
    * 过滤充值审核状态
    */
@@ -70,13 +86,19 @@ module.exports = {
     let res = ''
     switch (parseInt(val)) {
       case 1:
-        res = '未处理'
+        res = '待打款'
         break
       case 2:
         res = '已打款'
         break
       case 3:
-        res = '回退'
+        res = '已回退'
+        break
+      case 4:
+        res = '打款异常'
+        break
+      case 5:
+        res = '打款中'
         break
     }
     return res
@@ -112,17 +134,23 @@ module.exports = {
    * 过滤提现状态
    */
   filterdealwithStatus (val, payType) {
-    if (!val) return emptyTips
+    if (!val && parseInt(val) !== 0) return emptyTips
     let res = ''
     switch (parseInt(val)) {
       case 1:
-        res = '待处理'
+        res = '待打款'
         break
       case 2:
-        res = '已处理'
+        res = '已打款'
         break
       case 3:
-        res = '回退'
+        res = '已回退'
+        break
+      case 4:
+        res = '打款异常'
+        break
+      case 5:
+        res = '打款中'
         break
     }
     return res

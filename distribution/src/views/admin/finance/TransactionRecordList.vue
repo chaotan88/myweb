@@ -47,6 +47,9 @@
         <el-table-column prop="orderNo" label="交易编号" min-width="200">
           <template slot-scope="scope">{{scope.row.orderNo | filterEmpty}}</template>
         </el-table-column>
+        <el-table-column prop="outOrderNo" label="订单编号" min-width="200">
+          <template slot-scope="scope">{{scope.row.outOrderNo | filterEmpty}}</template>
+        </el-table-column>
         <el-table-column prop="customerPhone" label="推广大使手机" min-width="120">
           <template slot-scope="scope">{{scope.row.customerPhone | filterEmpty}}</template>
         </el-table-column>

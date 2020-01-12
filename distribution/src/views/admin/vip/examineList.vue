@@ -8,6 +8,9 @@
           <el-input v-model.trim="formData.phone" placeholder="输入申请人手机号" @keyup.enter.native="searchHandle"></el-input>
           <i class="ta-c pos-a el-icon-search" @click="searchHandle"></i>
         </div>
+        <template slot="edit">
+          <el-button :disabled="!tableData.length" @click="getListData('export')">导出</el-button>
+        </template>
       </high-search>
     </template>
 
@@ -139,7 +142,7 @@ export default {
         url = '@ROOT_API/buyMemberAccountManageController/getUpgradeList'
         this.loading = true
       } else {
-        url = 'distributeApplyManage/exportPayAuditList'
+        url = 'buyMemberAccountManageController/exportMemberUpgradeList'
       }
       let data = {
         dealWithStatus: this.pageType,           // 否 int 审核状态（1：待审核 2：审核通过 3：已打回 ）
