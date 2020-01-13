@@ -300,7 +300,7 @@ module.exports = {
   /**
    * 过滤证件类型
    */
-  filterCardType (val) {
+  filterCardTypeCardType (val) {
     if (!val) return emptyTips
     let res = ''
     switch (parseInt(val)) {

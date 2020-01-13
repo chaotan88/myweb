@@ -9,24 +9,24 @@
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.orderTotalAmount | filterAmountFixed('元')}}</span>
+              <span>{{statisticsData.cashPoints | filterAmountFixed('元')}}</span>
             </h3>
-            <h4 class="fw-n">账户总余额</h4>
+            <h4 class="fw-n">当前账户总余额</h4>
           </dd>
         </dl>
 
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{(statisticsData.orderCostAmount + statisticsData.orderCommissionAmount) | filterAmountFixed('元')}}</span>
+              <span>{{(statisticsData.cashPointsTotal) | filterAmountFixed('元')}}</span>
             </h3>
-            <h4 class="fw-n">总累计佣金</h4>
+            <h4 class="fw-n">累计账户总余额</h4>
           </dd>
         </dl>
         <dl class="ta-c fl-l cursor-p">
           <dd class="d-ib va-m ta-c">
             <h3 class="fw-n">
-              <span>{{statisticsData.orderWithdrawalAmount | filterAmountFixed('元')}}</span>
+              <span>{{statisticsData.withdrawalAmountTotal | filterAmountFixed('元')}}</span>
             </h3>
             <h4 class="fw-n">已提现总金额</h4>
           </dd>
@@ -50,30 +50,28 @@
           <el-table-column prop="phone" label="推广大使手机" min-width="150">
             <template slot-scope="scope">{{scope.row.phone | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="ruleName" label="当前身份" min-width="160">
-            <template slot-scope="scope">{{scope.row.ruleName | filterEmpty}}</template>
+          <el-table-column prop="disRuleName" label="当前身份" min-width="160">
+            <template slot-scope="scope">{{scope.row.disRuleName | filterEmpty}}</template>
           </el-table-column>
           <el-table-column prop="addTime" label="身份所属区域" min-width="200">
-            <template slot-scope="scope">{{scope.row.addTime | filterDate}}</template>
+            <template slot-scope="scope">{{scope.row.agentAddress | filterEmpty}}</template>
           </el-table-column>
-          <el-table-column prop="propertyType" label="级别产生方式" min-width="100">
+          <el-table-column prop="memberType" label="级别产生方式" min-width="100">
             <template slot-scope="scope">
-              <span v-if="scope.row.propertyType === 1">余额</span>
-              <span v-else-if="scope.row.propertyType === 2">现金</span>
-              <span v-else>--</span>
+              <span>{{scope.row.memberType | filterEmpty}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="addSource" label="所属地区" min-width="120">
-            <template slot-scope="scope">{{scope.row.addSource | filterAddSource}}</template>
+          <el-table-column prop="userAddress " label="所属地区" min-width="120">
+            <template slot-scope="scope">{{scope.row.userAddress  | filterAddSource}}</template>
           </el-table-column>
-          <el-table-column prop="businessAmount" label="当前账户余额" min-width="100">
-            <template slot-scope="scope">{{scope.row.businessAmount | filterMoney}}</template>
+          <el-table-column prop="cashPoints " label="当前账户余额" min-width="120">
+            <template slot-scope="scope">{{scope.row.cashPoints  | filterMoney}}</template>
           </el-table-column>
-          <el-table-column prop="businessType" label="累计佣金" min-width="120">
-            <template slot-scope="scope">{{scope.row.businessType | filterBusinessType}}</template>
+          <el-table-column prop="cashPointsTotal " label="累计账户余额" min-width="120">
+            <template slot-scope="scope">{{scope.row.cashPointsTotal  | filterMoney}}</template>
           </el-table-column>
-          <el-table-column prop="businessAttr" label="已提现金额" min-width="120">
-            <template slot-scope="scope">{{scope.row.businessAttr | filterBusinessAttr}}</template>
+          <el-table-column prop="withdrawalAmount " label="申请提现金额" min-width="120">
+            <template slot-scope="scope">{{scope.row.withdrawalAmount  | filterMoney}}</template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" min-width="80">
           <template slot-scope="scope">
@@ -179,29 +177,23 @@ export default {
     this.$Utils.filterSearchData('/admin/report/sale/list', (res) => {
       this.formData = res
     })
-    // this.getTableData()
+    this.getTableData()
+    this.getStatisticsData()
   },
 
   methods: {
     getTableData (type) {
       let url = ''
       if (!type) {
-        url = '@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountList'
+        url = '@ROOT_API/buyMemberAccountManageController/getAccountList'
         this.loading = true
       } else {
-        url = 'buyBusinessAccount/exportBusinessAccountList'
+        url = 'buyMemberAccountManageController/exportAccountList'
       }
-      let startDate = new Date(this.formData.statisticsDate[0])
-      let endDate = new Date(this.formData.statisticsDate[1])
-      let startStr = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()} 00:00:00`
-      let endStr = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()} 23:59:59`
       let data = {
         start: this.pageData.currentPage,
         pageSize: this.pageData.pageSize,
-        businessAttr: this.pageType,
-        // ...this.handleDateArgs()
-        startTime: new Date(startStr).getTime(),
-        endTime: new Date(endStr).getTime()
+        condition: this.formData.searchText
       }
       if (!type) {
         this.$http.post(url, data).then((res) => {
@@ -226,15 +218,14 @@ export default {
         for (let key in data) {
           filterParams.push(key + '=' + data[key])
         }
-        window.open(this.$dm.ROOT_API_EXP + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
+        window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
       }
     },
     /**
      * 获取统计数据
      */
     getStatisticsData () {
-      this.$http.post('@ROOT_PUBLIC/buyBusinessAccount/getBusinessAccountStatistics', {
-        ...this.handleDateArgs()
+      this.$http.post('@ROOT_API/buyMemberAccountManageController/getAccountStatistics', {
       }).then((res) => {
         let resData = res.data
         if (parseInt(resData.status) !== 1) {
@@ -297,15 +288,10 @@ export default {
       this.getTableData()
     },
     showDetail (row) {
+      localStorage.setItem('account-info', JSON.stringify(row))
       this.$router.push({
-        path: '/admin/finance/detail'
+        path: `/admin/finance/detail/index/${row.customerId}`
       })
-    },
-    handleSuccess () {},
-    dateChange (param) {
-      this.formData.statisticsDate = param
-      this.getTableData()
-      this.getStatisticsData()
     }
   }
 }

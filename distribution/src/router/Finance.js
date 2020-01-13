@@ -300,7 +300,7 @@ export default {
       children: [
         // 推广大使详情
         {
-          path: '/admin/finance/detail/index',
+          path: '/admin/finance/detail/index/:customerId',
           meta: {
             title: '推广大使详情',
             pageBack: true,

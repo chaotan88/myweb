@@ -83,6 +83,7 @@
                 <el-radio :label="3">回退</el-radio>
               </el-radio-group>
             </template>
+            <template v-else-if="initData.dealWithStatus === 4">{{initData.remark | filterEmpty}}</template>
             <template v-else>{{initData.dealWithStatus | filterDealWithStatus}}</template>
           </el-form-item>
 
@@ -126,7 +127,10 @@
 
           <template v-else-if="initData.accountType !== 1">
             <el-form-item label="流水号：" prop="paymentNo">
-              <template>未获取</template>
+              <template v-if="formData.dealWithStatus === 4">
+                <el-input placeholder="限20个字符" v-model="formData.paymentNo"></el-input>
+              </template>
+              <template v-else>未获取</template>
             </el-form-item>
             <el-form-item label="上传打款凭证：" class="voucherImg" v-if="initData.dealWithStatus === 4">
               <template  v-if="initData.dealWithStatus === 4">
@@ -166,7 +170,8 @@
 
       <div class="btns-wrap">
         <el-button :type="initData.dealWithStatus === 2 ? 'primary' : ''" @click="$emit('close')">{{initData.dealWithStatus === 1 ? '取消' : '关闭'}}</el-button>&nbsp;&nbsp;&nbsp;&nbsp;
-        <el-button type="primary" @click="handlePayment('form')" :loading="loading" v-if="initData.dealWithStatus === 1 || initData.dealWithStatus === 4">确定</el-button>
+        <el-button type="primary" @click="handlePayment('form')" :loading="loading" v-if="initData.dealWithStatus === 1">确定</el-button>
+        <el-button type="primary" @click="handlePaymentRel('form')" :loading="loading" v-if="initData.dealWithStatus === 4">确定</el-button>
       </div>
     </el-dialog>
 
@@ -297,6 +302,30 @@ export default {
       })
     },
 
+    handlePaymentRel () {
+      this.loading = true
+      this.$http.post('@ROOT_API/withdrawalManageController/withdrawalUpdatePayException', {
+        withdrawalId: this.initData.id,
+        paymentVoucher: this.formData.voucherImg,
+        paymentNo: this.formData.paymentNo
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$emit('error', resData.msg)
+          return false
+        }
+        this.$message({
+          message: resData.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.$emit('success')
+      }).finally(() => {
+        setTimeout(() => {
+          this.loading = false
+        }, 1000)
+      })
+    },
     /**
      * 弹窗关闭前操作
      */
