@@ -57,7 +57,9 @@
           <template slot-scope="scope">{{scope.row.withdrawalFees | filterMoney}}</template>
         </el-table-column>
         <el-table-column prop="withdrawalAmount" label="提现应付金额（元）" min-width="150">
-          <template slot-scope="scope">{{(scope.row.withdrawalAmount - scope.row.withdrawalFees) | filterMoney}}</template>
+          <template slot-scope="scope">
+            {{(parseFloat(scope.row.withdrawalAmount * 1000) - parseFloat(scope.row.withdrawalFees * 1000)) / 1000 | filterMoney | filterEmpty()}}
+          </template>
         </el-table-column>
         <el-table-column prop="afterCashPoints" label="账户结余（元）" min-width="150">
           <template slot-scope="scope">{{scope.row.afterCashPoints | filterMoney}}</template>

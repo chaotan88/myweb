@@ -96,7 +96,7 @@
 
     <template slot="other">
       <!-- 删除 -->
-      <el-dialog title="修改地址" :visible.sync="updateVisible" width="580px">
+      <el-dialog title="修改地址" :visible.sync="updateVisible" width="580px" v-if="updateVisible">
         <el-form label-position="right" label-width="120px" class="ta-l" :model="updateData" ref="form">
           <el-form-item label="收件人：" prop="addressName" style="margin-bottom: 20px;">
             <el-input placeholder="输入整数,限20个字符" v-model="updateData.addressName"></el-input>
@@ -197,6 +197,20 @@ export default {
       updateData: {},
       confirmLoading: false,
       region: {
+        province: {
+          code: '',
+          name: ''
+        },
+        city: {
+          code: '',
+          name: ''
+        },
+        area: {
+          code: '',
+          name: ''
+        }
+      },
+      submitRegion: {
         province: {
           code: '',
           name: ''
@@ -384,12 +398,12 @@ export default {
       let params = {
         orderId: this.updateData.id,
         addressId: this.updateData.addressId,
-        addressProvince: this.region.province.name,
-        addressProvinceCode: this.region.province.code,
-        addressCity: this.region.city.name,
-        addressCityCode: this.region.city.code,
-        addressZone: this.region.area.name,
-        addressZoneCode: this.region.area.code,
+        addressProvince: this.submitRegion.province.name,
+        addressProvinceCode: this.submitRegion.province.code,
+        addressCity: this.submitRegion.city.name,
+        addressCityCode: this.submitRegion.city.code,
+        addressZone: this.submitRegion.area.name,
+        addressZoneCode: this.submitRegion.area.code,
         addressName: this.updateData.addressName,
         addressPhone: this.updateData.addressPhone,
         address: this.updateData.address
@@ -418,7 +432,7 @@ export default {
       })
     },
     regionChange (results) {
-      this.region = results
+      this.submitRegion = results
     }
   }
 }

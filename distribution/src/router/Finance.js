@@ -244,7 +244,7 @@ export default {
         icon: 'icon-yuetixian',
         // refresh: false,           // 刷新页面
         auth: true,
-        authCode: 601053
+        authCode: 601054
       },
       component: r => require(['@/views/admin/finance/AccountLayout'], r),
       children: [
@@ -255,7 +255,7 @@ export default {
             pageBack: true,
             // refresh: false,
             auth: true,
-            authCode: 601053,
+            authCode: 601054,
             breadcrumb: [
               { title: '首页', path: '/admin/console' },
               { title: '财务管理', path: '/admin/finance' },

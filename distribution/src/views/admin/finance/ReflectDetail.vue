@@ -22,7 +22,7 @@
 
           <el-form-item label="提现应付金额：">
             <strong>
-              {{(parseFloat(initData.withdrawalAmount) - parseFloat(initData.withdrawalFees)) | filterMoney | filterEmpty('元')}}
+              {{(parseFloat(initData.withdrawalAmount * 1000) - parseFloat(initData.withdrawalFees * 1000)) / 1000 | filterMoney | filterEmpty('元')}}
               <span class="fw-n" style="color: #bbb; font-size: 14px;">（提现金额 - 提现手续费）</span>
             </strong>
           </el-form-item>

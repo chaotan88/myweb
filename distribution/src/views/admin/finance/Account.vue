@@ -141,7 +141,8 @@ export default {
       formData: {
         customerPhone: '',     // 否 string  客户号码
         statisticsDate: [],    // 日期
-        payType: ''            // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
+        payType: '',            // 否 int 支付方式（1：微信，2：支付宝，5：通用积分）
+        searchText: ''
       },
       statisticsData: {},     // 统计数据
       rules: {
