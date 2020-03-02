@@ -48,7 +48,9 @@
     <Footer></Footer>
     <div class="site-info">
       <div>服务热线：{{$config.phone}}      公司地址：{{$config.address}}</div>
-      <div>粤ICP备19115371号-1    {{$config.companyName}}</div>
+      <div>
+        <span>Copyright © 2019-2020 {{$config.companyName}}</span>
+        <span style="cursor: pointer; margin-left: 10px" @click="toBeian()">粤ICP备19115371号-1</span></div>
     </div>
     <div class="concat-tips">
       <!-- <el-dialog
@@ -200,6 +202,9 @@ export default {
     },
     showConcat() {
 
+    },
+    toBeian() {
+      window.open('http://www.beian.miit.gov.cn/');
     }
     // executeSearch() {
     //   if (!this.keyword) return false

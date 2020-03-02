@@ -1,0 +1,37 @@
+body{
+  margin: 0;
+}
+
+body, html, #app, #admin-wrap, #nav-wrap, #admin-center-wrap{
+  height: 100%;
+}
+
+#app{
+  padding-top: 70px;
+  box-sizing: border-box;
+}
+
+#admin-center-wrap{
+  display: flex;
+}
+
+#header-wrap{
+  height: 70px;
+  margin-top: -70px;
+  background: #222;
+}
+
+#header-wrap h1{
+  color: #fff;
+  width: 240px;
+  line-height: 70px;
+  text-align: center;
+  font-weight: normal;
+  font-size: 24px;
+  margin: 0;
+}
+
+#nav-wrap{
+  width: 240px;
+  background: #222;
+}
