@@ -119,9 +119,9 @@
               <p>{{ props.row.temporaryOpenHrs }} h</p>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('device.AddModifyTime')" width="150">
+          <el-table-column :label="$t('device.AddModifyTime')" width="180">
             <template slot-scope="props">
-              <p>{{ (props.row.updateTime || props.row.createTime) | dateFilter('YYYY-MM-DD')}}</p>
+              <p>{{ (props.row.updateTime || props.row.createTime) | dateFilter('YYYY-MM-DD HH:mm:ss')}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="operation" :label="$t('common.operation')">

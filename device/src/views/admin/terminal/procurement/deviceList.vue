@@ -76,6 +76,22 @@
               <el-button class="detail-button" @click="updateItem(props.row, 'bind')" v-if="props.row.bindStatus !== 1">
                 {{$t('device.bidingIntercom')}}
               </el-button>
+              <!-- <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1" v-if="props.row.bindStatus === 1">
+                <el-submenu index="111">
+                  <template slot="title">Open Door1</template>
+                  <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
+                  <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
+                  <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
+                </el-submenu>
+              </el-menu>
+              <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2" v-if="props.row.bindStatus === 1">
+                <el-submenu index="333">
+                  <template slot="title">Open Door2</template>
+                  <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
+                  <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
+                  <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
+                </el-submenu>
+              </el-menu> -->
               <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   <i class="el-icon-arrow-down el-icon-more"></i>
@@ -90,12 +106,20 @@
                   <el-dropdown-item :command="`11_${props.$index}`" v-if="props.row.bindStatus === 1">
                     {{$t('device.unbind')}}
                   </el-dropdown-item>
-                  <el-dropdown-item :command="`12_${props.$index}`" v-if="props.row.bindStatus === 1">
+                  <!-- <el-dropdown-item :command="`12_${props.$index}`" v-if="props.row.bindStatus === 1">
                     {{$t('device.openDoor1')}}
+                    <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1" v-if="props.row.bindStatus === 1">
+                      <el-submenu index="111">
+                        <template slot="title">Open Door1</template>
+                        <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
+                        <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
+                        <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
+                      </el-submenu>
+                    </el-menu>
                   </el-dropdown-item>
                   <el-dropdown-item :command="`13_${props.$index}`" v-if="props.row.bindStatus === 1">
                     {{$t('device.openDoor2')}}
-                  </el-dropdown-item>
+                  </el-dropdown-item> -->
                   <el-dropdown-item :command="`1_${props.$index}`">
                     {{$t('common.delete')}}
                   </el-dropdown-item>
@@ -166,14 +190,30 @@
                     @click="handleCommand(`11_${index}`)" v-if="item.bindStatus === 1">
                       {{$t('device.unbind')}}
                   </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                  <!-- <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
                     @click="handleCommand(`12_${index}`)" v-if="item.bindStatus === 1">
                       {{$t('device.openDoor1')}}
-                  </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                  </el-button> -->
+                  <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1" v-if="item.bindStatus === 1">
+                    <el-submenu index="555">
+                      <template slot="title">Open Door1</template>
+                      <el-menu-item :index="`${index}-1`">TRIG</el-menu-item>
+                      <el-menu-item :index="`${index}-2`">LATCH</el-menu-item>
+                      <el-menu-item :index="`${index}-3`">UNLATCH</el-menu-item>
+                    </el-submenu>
+                  </el-menu>
+                  <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2" v-if="item.bindStatus === 1">
+                    <el-submenu index="222">
+                      <template slot="title">Open Door2</template>
+                      <el-menu-item :index="`${index}-1`">TRIG</el-menu-item>
+                      <el-menu-item :index="`${index}-2`">LATCH</el-menu-item>
+                      <el-menu-item :index="`${index}-3`">UNLATCH</el-menu-item>
+                    </el-submenu>
+                  </el-menu>
+                  <!-- <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
                     @click="handleCommand(`13_${index}`)" v-if="item.bindStatus === 1">
                       {{$t('device.openDoor2')}}
-                  </el-button>
+                  </el-button> -->
                   <!-- <el-dropdown @command="handleCommand" style="line-height: 40px;">
                     <span class="el-dropdown-link">
                       <i class="el-icon-arrow-down el-icon-more" style="font-size: 26px;"></i>
@@ -789,8 +829,8 @@
           this.OpenDoor(data, '2')
         }
       },
-      OpenDoor (row, type) {
-        this.$http.post('@ROOT_API/dfAddress/openDoor', { id: row.id, relay: type }).then((res) => {
+      OpenDoor (row, type, openType) {
+        this.$http.post('@ROOT_API/dfAddress/openDoor', { id: row.id, relay: type, openType: openType }).then((res) => {
           if (res.data.status === '1') {
             this.$message({
               type: 'success',
@@ -906,6 +946,16 @@
         if (row.apartmentPhone2) arr.push(row.apartmentPhone2)
         if (row.apartmentPhone3) arr.push(row.apartmentPhone3)
         return arr.join(';')
+      },
+      handleSelectDoor1 (key) {
+        let arr = key.split('-')
+        let data = this.itemList[arr[0]]
+        this.OpenDoor(data, '1', arr[1])
+      },
+      handleSelectDoor2 (key) {
+        let arr = key.split('-')
+        let data = this.itemList[arr[0]]
+        this.OpenDoor(data, '2', arr[1])
       }
     },
     mixins: [pageMixin],
@@ -941,6 +991,33 @@
   .bottom-buttons {
     display: flex;
     justify-content: space-between;
+  }
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    .el-menu {
+      width: 120px;
+      height: 40px;
+      border: 1px solid #307eb3;
+      border-radius: 4px;
+      .el-submenu {
+        width: 120px;
+        height: 40px;
+        line-height: 40px;
+        .el-submenu__title {
+          padding: 0;
+          width: 120px;
+          height: 40px;
+          line-height: 40px;
+          font-size: 13px;
+          padding-left: 12px;
+          color: #33719b;
+        }
+      }
+      .is-active .el-submenu__title {
+        border-bottom: 0;
+      }
+    }
   }
 </style>
 <style lang="less" scoped>
@@ -1079,9 +1156,6 @@
           height: 220px;
         }
       }
-      // .button-container {
-      //   float: right;
-      // }
     }
   }
 </style>

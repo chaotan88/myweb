@@ -49,14 +49,14 @@
           </div>
         </div>
         <div class="midd-right">
-          <div class="map-search-toobar">
+          <!-- <div class="map-search-toobar">
             <el-input :placeholder="$t('common.pleaseAddress')" v-model="address"></el-input>
             <el-button type="primary" @click="getAddress">{{$t('common.search')}}</el-button>
-          </div>
+          </div> -->
           <!-- <div class="mapdiv" style="width: 800px; height: 500px;">
             <div id="allmap" style="width: 800px; height: 500px;"></div>
           </div> -->
-          <div class="baidu-map">
+          <!-- <div class="baidu-map">
             <baidu-map
               class="map"
               :center="center"
@@ -72,7 +72,45 @@
                   :offset="{width: -40, height: -40}"/>
               </bm-marker>
             </baidu-map>
-          </div>
+          </div> -->
+          <el-table :data="addressList" height="400">
+          <el-table-column type="index" :label="$t('common.index')" width="90"></el-table-column>
+          <el-table-column label="IMEI">
+            <template slot-scope="props">
+              <p>{{props.row.imei}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="Country">
+            <template slot-scope="props">
+              <p>{{props.row.country}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="Address">
+            <template slot-scope="props">
+              <p>{{props.row.address}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="Apartment Name">
+            <template slot-scope="props">
+              <p>{{ props.row.apartmentName}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('device.endTime')" width="100" v-if="currentCard === '2'">
+            <template slot-scope="props">
+              <p>{{ props.row.endTime }}</p>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('device.startTime')" width="100" v-if="currentCard === '2'">
+            <template slot-scope="props">
+              <p>{{ props.row.startTime }}</p>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('device.theEffectiveTime')" width="100" v-if="currentCard === '3'">
+            <template slot-scope="props">
+              <p>{{ props.row.temporaryOpenHrs }} h</p>
+            </template>
+          </el-table-column>
+        </el-table>
         </div>
       </div>
     </div>
