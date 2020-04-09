@@ -43,29 +43,11 @@ switch (process.env.NODE_ENV) {
   default:
     module.exports.domain = { // 开发环境
 
-      // ROOT_API: 'http://192.168.1.124:9999/passpay-shop-admin/shopAdmin/',       // 龙江
-      // ROOT_PUBLIC: 'http://192.168.1.124:9999/passpay-shop-admin/',            // 龙江
-
-      // ROOT_API: 'http://192.168.1.123:8087/passpay-shop-admin/shopAdmin/',       // 李纳
-      // ROOT_PUBLIC: 'http://192.168.1.123:8087/passpay-shop-admin/',            // 李纳
-
-      ROOT_API: 'http://192.168.1.133:9093/passpay-shop-admin/shopAdmin/',    // 少杰
-      ROOT_PUBLIC: 'http://192.168.1.133:9093/passpay-shop-admin/',         // 少杰
-
-      // ROOT_API: 'http://192.168.1.116:8080/passpay-shop-admin/shopAdmin/',        // 徐鹏
-      // ROOT_PUBLIC: 'http://192.168.1.116:8080/passpay-shop-admin/',               // 徐鹏
-
-      // ROOT_API: 'http://192.168.8.130:9090/passpay-shop-admin/shopAdmin/',          // 厚杰
-      // ROOT_PUBLIC: 'http://192.168.8.130:9090/passpay-shop-admin/',                 // 厚杰
-
-      // ROOT_API: 'http://192.168.8.37:8080/passpay-shop-admin/shopAdmin/',    // 强哥
-      // ROOT_PUBLIC: 'http://192.168.8.37:8080/passpay-shop-admin/',         // 强哥
-
-      ROOT_API: 'http://192.168.1.133:9093/passpay-shop-admin/shopAdmin/',     // 少杰
-      ROOT_PUBLIC: 'http://192.168.1.133:9093/passpay-shop-admin/',            // 少杰
-
-     //  ROOT_API: 'http://passpay.andes-hub.com/behindshopadmin/shopAdmin/',       // 测试服
-     //  ROOT_PUBLIC: 'http://passpay.andes-hub.com/behindshopadmin/',            // 测试服 - 登录
-      ROOT_IMG: 'http://120.77.210.28/'
+      // ROOT_API: 'https://120.77.210.28/behindshopadmin/shopAdmin/',
+      // ROOT_PUBLIC: 'https://120.77.210.28/behindshopadmin/',
+      // ROOT_IMG: 'https://120.77.210.28/'
+      ROOT_API: 'http://yxss.andes-mall.com/behindshopadmin/shopAdmin/',
+      ROOT_PUBLIC: 'http://yxss.andes-mall.com/behindshopadmin/',
+      ROOT_IMG: 'http://yxss.andes-mall.com/'
     }
 }

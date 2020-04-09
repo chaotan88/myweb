@@ -1,5 +1,9 @@
 <template>
-  <div class="almost-there">
+  <div class="almost-there"
+    v-loading="loading"
+    element-loading-text="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="login-logo">
       <img src="../../../static/img/logo.png"/>
     </div>
@@ -7,6 +11,7 @@
       <div>Almost there...</div>
       <div>Please check your email to confirm your account</div>
       <div>No confirmation email received? Please check your spam folder or</div>
+      <!-- <div class="to-sign-in">Already have login and password? <a @click="signIn">Sign in</a></div> -->
       <div><span @click="sendEmail = true">Request new confirmation email</span></div>
     </div>
     <div class="send-email" v-else>
@@ -16,7 +21,9 @@
           <el-form-item :label="$t('login.email')" prop="email">
             <el-input v-model="emailForm.email"></el-input>
           </el-form-item>
-          <input  type="button" class="resend-btn" :value="$t('login.reSend')" @click="reSend">
+          <input  type="button" class="resend-btn" :value="$t('login.reSend')" @click="reSend" v-if="showBtn">
+          <input  type="button" class="resend-btn" :value="count" v-else disabled
+            style="background: #eee; color: #333; cursor: not-allowed;">
         </el-form>
         <div class="to-sign-in">Already have login and password? <a @click="signIn">Sign in</a></div>
       </div>
@@ -34,12 +41,46 @@ export default {
         email: [
           { required: true, message: 'Please provide a valid email address.' }
         ]
-      }
+      },
+      loading: false,
+      showBtn: true,
+      count: 300
     }
   },
   mounted () {},
   methods: {
-    reSend () {},
+    reSend () {
+      this.loading = true
+      this.$http.post(this.$dm.AROOT_API + '/login/sendEmailCode', {
+        type: 1,
+        email: this.emailForm.email
+      }).then((response) => {
+        let resData = response.data
+        this.loading = false
+        if (resData.status === '1') {
+          this.$message({
+            message: 'Success',
+            type: 'success',
+            duration: 1000
+          })
+          this.showBtn = false
+          let counter = setInterval(() => {
+            if (this.count > 0) {
+              this.count--
+            } else {
+              this.showBtn = true
+              this.count = 300
+              clearInterval(counter)
+            }
+          }, 1000)
+        } else {
+          this.$message({
+            type: 'error',
+            message: resData.msg
+          })
+        }
+      })
+    },
     signIn () {
       this.$router.push({
         path: '/login'
@@ -55,6 +96,9 @@ export default {
     text-align: center;
     padding: 10px;
     border-bottom: 1px solid #efefef;
+    img {
+      width: 150px;
+    }
   }
   .almost-show-button {
     width: 930px;
@@ -133,19 +177,19 @@ export default {
           cursor: pointer;
         }
       }
-      .to-sign-in {
-        color: #2e2e2e;
-        font-size: 13px;
-        margin-top: 30px;
-        text-align: center;
-        a {
-          cursor: pointer;
-          color: #1b69b6;
-        }
-        a:hover {
-          text-decoration: underline;
-        }
-      }
+    }
+  }
+  .to-sign-in {
+    color: #2e2e2e;
+    font-size: 13px;
+    margin-top: 30px;
+    text-align: center;
+    a {
+      cursor: pointer;
+      color: #1b69b6;
+    }
+    a:hover {
+      text-decoration: underline;
     }
   }
 }

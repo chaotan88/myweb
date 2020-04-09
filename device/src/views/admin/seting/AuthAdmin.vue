@@ -2,24 +2,24 @@
 <template>
   <div class="setting">
     <div class="shadow-common-wrap setting-wrap">
-      <h3>列表</h3>
+      <h3>List</h3>
       <div class="list">
         <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @select="selectChange" @selection-change="handleSelectionChange" :class="{selectionHide: tableData[0] && tableData[0].roleType === 1}">
           <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-          <el-table-column prop="loginName" label="登录名"></el-table-column>
-          <el-table-column prop="tmpTime" label="上次登录">
-            <template slot-scope="scope" v-if="scope.row.tmpTime">{{ scope.row.tmpTime | dateFilter('YYYY-MM-DD HH:mm:ss')}}</template>
+          <el-table-column prop="loginName" label="Login Name"></el-table-column>
+          <el-table-column prop="tmpTime" label="Last login time">
+            <template slot-scope="scope" v-if="scope.row.tmpTime">{{ scope.row.tmpTime | dateFilter}}</template>
           </el-table-column>
-          <el-table-column prop="loginAmount" label="登录次数" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="groupName" label="权限组" show-overflow-tooltip>
+          <el-table-column prop="loginAmount" label="Login times" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="groupName" label="Permission group" show-overflow-tooltip>
             <template slot-scope="scope">{{scope.row.groupName}}</template>
           </el-table-column>
-          <el-table-column prop="operation" label="操作" show-overflow-tooltip>
+          <el-table-column prop="operation" label="Operation" show-overflow-tooltip>
             <template slot-scope="scope">
-              <template v-if="scope.row.roleType === 1">超级管理员不可编辑</template>
+              <template v-if="scope.row.roleType === 1">Editing not allowed</template>
               <template v-else>
-                <el-button type="danger" size="mini" @click="$router.push({path:'/admin/seting/auth/admin/edit', query: { id: scope.row.id }})" class="green">编辑</el-button>
-                <el-button type="danger" size="mini" @click="handleDelete = true, deleteId = [scope.row.id]" class="orange">删除</el-button>
+                <el-button type="danger" size="mini" @click="$router.push({path:'/admin/seting/auth/admin/edit', query: { id: scope.row.id }})" class="green">Modify</el-button>
+                <el-button type="danger" size="mini" @click="handleDelete = true, deleteId = [scope.row.id]" class="orange">Delete</el-button>
               </template>
             </template>
           </el-table-column>
@@ -33,11 +33,11 @@
         <el-pagination background layout="prev, pager, next" :total="totalPages" @current-change="pageChange"></el-pagination>
     </div>
     <!-- 删除键 -->
-    <el-dialog title="提示" :visible.sync="handleDelete" width="480px">
-      <span>确认是否删除账号？</span>
+    <el-dialog title="Info" :visible.sync="handleDelete" width="480px">
+      <span>Confirm whether to delete account？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleDelete = false">取 消</el-button>
-        <el-button type="primary" @click="deleteHandle">确 定</el-button>
+        <el-button @click="handleDelete = false">{{$t("common.cancel")}}</el-button>
+        <el-button type="primary" @click="deleteHandle">{{$t("common.sure")}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -89,7 +89,7 @@ export default {
     deleteBeforeHandle () {
       if (!this.deleteId.length) {
         this.$message({
-          message: '请选择要删除的数据',
+          message: 'Please select data',
           type: 'error',
           duration: 1000
         })
@@ -138,7 +138,7 @@ export default {
     selectChange (row, item) {
       if (item.roleType === 1) {
         this.$message({
-          message: '超级管理员不可编辑',
+          message: 'Administrator does not allow editing',
           type: 'error',
           duration: 1500
         })

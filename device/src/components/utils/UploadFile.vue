@@ -116,7 +116,7 @@ export default {
      */
     uploadExceed (files, fileList) {
       this.$message({
-        message: '最多只能上传' + this.limit + '个文件',
+        message: 'Only' + this.limit + 'file can be uploaded at most',
         type: 'error'
       })
     },
@@ -131,10 +131,10 @@ export default {
         const isLegalPhoto = file.name.split('.')[file.name.split('.').length - 1] === 'txt'
         const fileSize = file.size / 1024 / 1024 < 10
         if (!isLegalPhoto) {
-          this.$message.error('上传文件的格式不合法，请重新上传')
+          this.$message.error('The format of the uploaded file is illegal. Please upload again')
         }
         if (!fileSize) {
-          this.$message.error('上传文件大小不能超过 10MB!')
+          this.$message.error('Upload file size cannot exceed 10MB')
         }
         if (isLegalPhoto && fileSize) this.fileName = file.name
         return isLegalPhoto && fileSize

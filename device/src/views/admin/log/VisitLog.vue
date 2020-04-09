@@ -2,42 +2,51 @@
   <div class="visit-log-wrap">
     <div class="visit-log-con">
       <div class="visit-log-serch">
-        <!-- <el-select v-model="condition.device" placeholder="请选择">
-          <el-option
-            v-for="item in addressList"
-            :key="item.id"
-            :label="item.apartmentName"
-            :value="item.id">
-          </el-option>
-        </el-select> -->
-        <el-select v-model="condition.dateType" :placeholder="$t('log.dateType')">
-          <el-option
-            v-for="item in dateTypes"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            clearable>
-          </el-option>
-        </el-select>
-        <el-select v-model="condition.accountTypes" :placeholder="$t('log.accessType')">
-          <el-option
-            v-for="item in accountType"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            clearable>
-          </el-option>
-        </el-select>
-        <el-input  :placeholder="$t('log.pleaseEnterCardNumber')" v-model="condition.accountNo" clearable></el-input>
-        <el-date-picker
-          v-model="condition.visitTime"
-          type="daterange"
-          range-separator="~"
-          :start-placeholder="$t('log.visitingTime')"
-          :end-placeholder="$t('log.visitingTime')">
-        </el-date-picker>
-        <el-button @click="findData()">{{$t("common.search")}}</el-button>
-        <el-button @click="exportData()">{{$t("common.export")}}</el-button>
+        <div class="frist-row">
+          <el-select v-model="condition.device" placeholder="Location" clearable>
+            <el-option
+              v-for="item in addressList"
+              :key="item.id"
+              :label="item.apartmentName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-select v-model="condition.dateType" placeholder="User Type" clearable>
+            <el-option
+              v-for="item in dateTypes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              clearable>
+            </el-option>
+          </el-select>
+          <el-date-picker
+            v-model="condition.visitTime"
+            type="daterange"
+            range-separator="~"
+            :start-placeholder="$t('log.visitingTime')"
+            :end-placeholder="$t('log.visitingTime')"
+            format="MM-dd-yyyy h:mm:ss A">
+          </el-date-picker>
+        </div>
+        <div class="second-row">
+          <div>
+            <el-select v-model="condition.accountType" placeholder="Open Type" clearable>
+              <el-option
+                v-for="item in accountTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                clearable>
+              </el-option>
+            </el-select>
+            <el-input  placeholder="Account/Card No." v-model="condition.accountNo" clearable></el-input>
+          </div>
+          <div class="buttons">
+            <el-button @click="findData()">{{$t("common.search")}}</el-button>
+            <el-button @click="exportData()">{{$t("common.export")}}</el-button>
+          </div>
+        </div>
       </div>
       <el-table
         :data="itemList"
@@ -51,37 +60,56 @@
           width="90">
         </el-table-column>
         <el-table-column
-          prop="dateType"
-          :label="$t('log.dateType')">
+          prop="address"
+          :label="$t('device.location')">
           <template slot-scope="props">
-            <p v-if="props.row.dateType == 0">Family</p>
-            <p v-if="props.row.dateType == 1">Permanent</p>
-            <p v-if="props.row.dateType == 2">Limit</p>
-            <p v-if="props.row.dateType == 3">Temporary</p>
+            <p>{{props.row.address}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="username"
+          :label="$t('device.userName')">
+          <template slot-scope="props">
+            <p>{{props.row.username}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="dateType"
+          label="User Type">
+          <template slot-scope="props">
+            <p>{{props.row.userTypeValue}}</p>
           </template>
         </el-table-column>
         <el-table-column
           prop="accountType"
-          :label="$t('log.accessType')">
+          label="Open Type">
           <template slot-scope="props">
-            <p v-if="props.row.accountType == 1">Code</p>
-            <p v-if="props.row.accountType == 2">Phone</p>
-            <p v-if="props.row.accountType == 3">Card</p>
+            <p>{{props.row.openTypeValue}}</p>
           </template>
         </el-table-column>
         <el-table-column
           prop="accountNo"
-          :label="$t('log.keyNumber')">
+          :label="$t('log.keyNumber')"
+          min-width="150">
         </el-table-column>
         <el-table-column
+          prop="accountNo"
+          :label="$t('log.openStatus')">
+          <template slot-scope="props">
+            <p v-if="props.row.openStatus === 1">Success</p>
+            <p v-else-if="props.row.openStatus === 0">Fail</p>
+            <p v-else>Success</p>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column
           prop="relay"
           :label="$t('log.relay')">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="openTime"
-          :label="$t('log.visitingTime')">
+          :label="$t('log.visitingTime')" min-width="150">
           <template slot-scope="props">
-            <p>{{props.row.openTime | dateFilter('YYYY-MM-DD')}}</p>
+            <p>{{props.row.openTime | dateFilter}}</p>
           </template>
         </el-table-column>
       </el-table>
@@ -116,27 +144,27 @@
         addressList: [],
         dateTypes: [
           {
-            value: '',
-            label: 'All'
-          },
-          {
             value: '1',
-            label: 'Permanent'
+            label: 'Family'
           },
           {
             value: '2',
-            label: 'Limit'
+            label: 'Permanent'
           },
           {
             value: '3',
+            label: 'Limit'
+          },
+          {
+            value: '4',
             label: 'Temporary'
+          },
+          {
+            value: '5',
+            label: 'Manager'
           }
         ],
         accountTypes: [
-          {
-            value: '',
-            label: 'All'
-          },
           {
             value: '1',
             label: 'Code'
@@ -164,8 +192,10 @@
     methods: {
       findData () {
         this.$http.post('@ROOT_API/dfDeviceOpenLog/getDfDeviceOpenLogPage', this.getParams()).then((res) => {
-          this.itemList = res.data.data.list
-          this.total = res.data.data.total
+          if (res.data.status === '1') {
+            this.itemList = res.data.data.list
+            this.total = res.data.data.total
+          }
         })
       },
       initAddressData () {
@@ -182,9 +212,9 @@
       getParams () {
         let startDate = ''
         let endDate = ''
-        if (this.visitTime && this.visitTime.length > 1) {
-          startDate = this.vistTime[0]
-          endDate = this.vistTime[1]
+        if (this.condition.visitTime && this.condition.visitTime.length > 1) {
+          startDate = this.$formatDate(this.condition.visitTime[0], 'YYYY-MM-DD 00:00:00')
+          endDate = this.$formatDate(this.condition.visitTime[1], 'YYYY-MM-DD 23:59:59')
         }
         return {
           start: this.pageNum,
@@ -192,8 +222,9 @@
           addressId: this.condition.addressId,
           startTime: startDate,
           endTime: endDate,
-          dateType: this.condition.dateType,
-          accountType: this.condition.accountType
+          userType: this.condition.dateType,
+          openType: this.condition.accountType,
+          accountNo: this.condition.accountNo
         }
       }
     },
@@ -214,15 +245,23 @@
     -o-border-radius: 4px;
     -webkit-border-radius: px;
     .visit-log-serch{
+      .second-row {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
       margin-bottom: 21px;
       .el-input{
-        width:150px;
+        width:200px;
         display: inline-block;
         margin-right: 20px;
       }
       .el-button{
         padding: 9px 33px;
         font-size: 14px;
+      }
+      .el-date-editor {
+        width: 500px;
       }
     }
     .del-table{

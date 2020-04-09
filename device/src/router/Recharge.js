@@ -14,7 +14,7 @@ export default {
       path: '/admin/recharge/rechargeList',
       redirect: '/admin/recharge/rechargeList/index',
       meta: {
-        title: '订单列表',
+        title: 'Payment',
         nav: 'menu.rechargeList',
         icon: 'cooperation-icon1',
         auth: true,
@@ -29,7 +29,7 @@ export default {
         {
           path: '/admin/recharge/rechargeList/index',
           meta: {
-            title: '',
+            title: 'Payment',
             auth: true,
             breadcrumb: [
               { title: 'common.orderManage', path: '' },
@@ -44,7 +44,7 @@ export default {
       path: '/admin/recharge/rechargeSetting',
       redirect: '/admin/recharge/rechargeSetting/index',
       meta: {
-        title: '价格设置',
+        title: 'Payment',
         nav: 'recharge.paymentSetting',
         icon: 'cooperation-icon1',
         auth: true,
@@ -59,7 +59,7 @@ export default {
         {
           path: '/admin/recharge/rechargeSetting/index',
           meta: {
-            title: '',
+            title: 'Payment',
             auth: true,
             breadcrumb: [
               { title: 'common.priceManage', path: '' },
@@ -74,7 +74,7 @@ export default {
       path: '/admin/recharge/rechargeVip',
       redirect: '/admin/recharge/rechargeVip/index',
       meta: {
-        title: 'VIP充值',
+        title: 'Payment',
         nav: 'common.vipupdate',
         icon: 'cooperation-icon1',
         auth: true,
@@ -89,7 +89,7 @@ export default {
         {
           path: '/admin/recharge/rechargeVip/index',
           meta: {
-            title: '',
+            title: 'Payment',
             auth: true,
             breadcrumb: [
               { title: 'menu.rechargeManage', path: '' },

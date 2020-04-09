@@ -306,7 +306,7 @@ export default {
     .el-button{
       border: 0;
       font-size: 16px;
-      letter-spacing: 3px;
+      // letter-spacing: 3px;
       padding: 10px 30px;
       background: #33719b;
     }

@@ -179,6 +179,23 @@ export default {
           },
           component: r => require(['@/views/admin/vip/examineList'], r)
         },
+        // 已撤回
+        {
+          path: '/admin/vip/upgrade/audit/revoke',
+          meta: {
+            title: '升级审核',
+            pageBack: true,
+            // refresh: false,
+            auth: true,
+            authCode: 601072,
+            breadcrumb: [
+              { title: '首页', path: '/admin/console' },
+              { title: '推广大使', path: '/admin/vip/' },
+              { title: '升级审核', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/vip/examineList'], r)
+        },
 
         // 详情
         {

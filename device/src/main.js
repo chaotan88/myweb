@@ -5,7 +5,6 @@ import {domain} from '../config/utils'
 import axios from 'axios'
 import Elementui from 'element-ui'
 import fun from './assets/js/fun'
-import BaiduMap from 'vue-baidu-map'
 // 全局过滤器
 import * as filters from './assets/js/filters'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -17,6 +16,18 @@ import './../static/css/css-utils.css'
 // import 'kindeditor/themes/default/default.css'
 import echarts from 'echarts'
 import VueI18n from 'vue-i18n'
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+
+import format from 'date-fns/format'
+import md5 from 'js-md5'
+
+Vue.prototype.$formatDate = (value, formatStr) => {
+  if (!formatStr) formatStr = 'YYYY-MM-DD HH:mm:ss'
+  return format(value, formatStr)
+}
+// 设置语言
+locale.use(lang)
 
 Vue.config.productionTip = false
 // Vue.use(VueKindEditor)
@@ -25,15 +36,19 @@ Vue.prototype.$echarts = echarts
 Vue.use(Elementui)
 Vue.use(VueI18n)
 
+Vue.prototype.$toMd5 = (val) => {
+  return md5(`${val}`)
+}
+
 Vue.prototype.$isVip = () => {
   let deviceAdminInfo = JSON.parse(localStorage.deviceAdminInfo)
-  return deviceAdminInfo.payMemberStatus === 1
+  return deviceAdminInfo.payMemberStatus === md5('1')
 }
 // 请求头信息
 let $http = axios.create()
 
 const i18n = new VueI18n({
-  locale: 'zh',
+  locale: 'en',
   messages: {
     'zh': require('@/assets/languages/zh.json'),
     'en': require('@/assets/languages/en.json')
@@ -93,10 +108,6 @@ $http.interceptors.response.use(res => {
   return res
 })
 
-// 百度地图
-Vue.use(BaiduMap, {
-  ak: 'xOEq2wUHZjsgNQzZIw4FxDRBmMr88Luu'
-})
 // 域名
 Vue.prototype.$dm = domain
 Vue.prototype.$http = $http

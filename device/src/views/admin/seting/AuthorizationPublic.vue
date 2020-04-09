@@ -257,7 +257,7 @@ export default {
         if (res.data.status === '1') {
           this.$message({
             showClose: true,
-            message: '授权成功',
+            message: 'Success',
             type: 'success'
           })
           this.getAgentList()

@@ -402,7 +402,7 @@
               }
               this.$http.post('@ROOT_API/dfDeviceFamily/saveOrUpdateDfDeviceFamily', params).then((res) => {
                 if (res.data.status === '1') {
-                  this.$message.success('保存成功')
+                  this.$message.success('Success')
                   this.updateDialog = false
                   this.findData()
                 } else {
@@ -438,7 +438,7 @@
               })
               this.$http.post('@ROOT_API/dfDeviceFamily/saveOrUpdateDfDeviceFamilyList', saveList).then((res) => {
                 if (res.data.status === '1') {
-                  this.$message.success('保存成功')
+                  this.$message.success('Success')
                   this.updateDialog = false
                   this.findData()
                 } else {

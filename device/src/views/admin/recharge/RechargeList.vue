@@ -44,54 +44,15 @@
         </el-table-column>
         <el-table-column
           prop="orderTime"
-          :label="$t('recharge.orderTime')" width="130">
+          :label="$t('recharge.orderTime')" width="190">
           <template slot-scope="props">
-            {{props.row.expireTime | dateFilter('YYYY-MM-DD')}}
+            {{props.row.expireTime | dateFilter}}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="expireTime"
-          :label="$t('recharge.expireTime')" width="130">
+        <el-table-column prop="operation" :label="$t('common.operation')" min-width="120">
           <template slot-scope="props">
-            {{props.row.expireTime | dateFilter('YYYY-MM-DD')}}
+            <el-button class="detail-button" @click="showDetail(props.row)">{{$t('common.detail')}}</el-button>
           </template>
-        </el-table-column>
-        <el-table-column
-          prop="payStatus"
-          :label="$t('recharge.payStatus')" width="180">
-          <template slot-scope="props">
-            <span v-if="props.row.payStatus == 0">未支付</span>
-            <span v-else-if="props.row.payStatus == 1">支付成功</span>
-            <span v-else-if="props.row.payStatus == 2">支付失败</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="payType"
-          :label="$t('recharge.payType')" width="180">
-          <template slot-scope="props">
-            <span v-if="props.row.payType == 1">palpay</span>
-            <span v-else>其他</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="beforeOrderNo"
-          :label="$t('recharge.beforeOrderNo')" width="210">
-        </el-table-column>
-        <el-table-column
-          prop="beforePrice"
-          :label="$t('recharge.beforePrice')" width="240">
-        </el-table-column>
-        <el-table-column
-          prop="beforeNumber"
-          :label="$t('recharge.beforeNumber')" width="220">
-        </el-table-column>
-        <el-table-column
-          prop="beforeRealNumber"
-          :label="$t('recharge.beforeRealNumber')" width="230">
-        </el-table-column>
-        <el-table-column
-          prop="beforeNoPayPrice"
-          :label="$t('recharge.beforeNoPayPrice')" width="200">
         </el-table-column>
       </el-table>
     </div>
@@ -103,6 +64,39 @@
       :current-page.sync="pageNum"
       @current-change="changePage" v-if="total">
     </el-pagination>
+
+    <!--detail -->
+    <el-dialog title="Detail" :visible.sync="visibleDetail" width="800px">
+      <el-form label-position="right" label-width="220px" class="ta-l" ref="form">
+        <div class="form-item-group">
+          <template>
+            <el-form-item :label="$t('recharge.memberMobileNumber')">{{initData.phone | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.orderNo')">{{initData.orderNo | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.deviceNumber')">{{initData.deviceNumber | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.price')">{{initData.orderPrice | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.orderTime')">{{initData.expireTime | dateFilter | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.expireTime')">{{initData.expireTime | dateFilter | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.payStatus')">
+              <span v-if="initData.payStatus == 0">Wait for pay</span>
+              <span v-else-if="initData.payStatus == 1">Success</span>
+              <span v-else-if="initData.payStatus == 2">File</span>
+            </el-form-item>
+            <el-form-item :label="$t('recharge.payType')">
+              <span v-if="initData.payType == 1">Stripe</span>
+              <span v-else>Other</span>
+            </el-form-item>
+            <el-form-item :label="$t('recharge.beforeOrderNo')">{{initData.beforeOrderNo | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.beforePrice')">{{initData.beforePrice | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.beforeNumber')">{{initData.beforeNumber | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.beforeRealNumber')">{{initData.beforeRealNumber | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.beforeNoPayPrice')">{{initData.beforeNoPayPrice | filterEmpty}}</el-form-item>
+          </template>
+        </div>
+      </el-form>
+      <div class="btns-wrap" style="text-align: center;">
+        <el-button type="primary" @click="visibleDetail=false">OK</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -112,7 +106,9 @@
   export default {
     data () {
       return {
-        condition: ''
+        condition: '',
+        visibleDetail: false,
+        initData: {}
       }
     },
     mounted () {
@@ -139,6 +135,10 @@
           start: 1,
           pageSize: 9999
         }).then((res) => {})
+      },
+      showDetail (row) {
+        this.initData = row
+        this.visibleDetail = true
       }
     },
     mixins: [pageMixin]

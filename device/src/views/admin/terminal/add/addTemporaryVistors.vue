@@ -82,7 +82,7 @@
           if (res.data.status === '1') {
             localStorage.clear()
             this.$message({
-              message: '修改密码成功',
+              message: 'Success',
               type: 'success',
               duration: 500
             })

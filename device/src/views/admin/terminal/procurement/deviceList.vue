@@ -27,7 +27,7 @@
         </div>
         <el-table :data="itemList" v-if="!showListView">
           <!-- <el-table-column type="index" :label="$t('common.index')" width="90"></el-table-column> -->
-          <el-table-column :label="$t('device.apartmentName')" show-overflow-tooltip min-width="125">
+          <el-table-column :label="$t('device.apartmentName')" show-overflow-tooltip min-width="155">
             <template slot-scope="props">
               <p>{{props.row.apartmentName}}</p>
             </template>
@@ -37,7 +37,7 @@
               <p>{{getPhoneStr(props.row)}}</p>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('device.apartmentManager')" width="120">
+          <el-table-column :label="$t('device.apartmentManager')" width="180">
             <template slot-scope="props">
               <p>{{props.row.apartmentManager}}</p>
             </template>
@@ -67,70 +67,70 @@
               <p>{{ props.row.address }}</p>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" :label="$t('common.operation')" min-width="220">
+          <el-table-column prop="operation" :label="$t('common.operation')" min-width="380">
             <template slot-scope="props">
-              <el-button class="detail-button" @click="cloneDevice(props.row)">{{$t('common.clone')}}</el-button>
-              <el-button class="detail-button" @click="setVistor(props.row, 'homeUserManage')" v-if="props.row.bindStatus === 1">
-                {{$t('device.visitorManage')}}
+              <!-- <el-button class="detail-button" @click="setVistor(props.row, 'homeUserManage')" v-if="props.row.bindStatus === 1">
+                {{$t('common.family')}}
               </el-button>
-              <el-button class="detail-button" @click="updateItem(props.row, 'bind')" v-if="props.row.bindStatus !== 1">
-                {{$t('device.bidingIntercom')}}
-              </el-button>
-              <!-- <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1" v-if="props.row.bindStatus === 1">
-                <el-submenu index="111">
-                  <template slot="title">Open Door1</template>
-                  <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
-                  <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
-                  <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
-                </el-submenu>
-              </el-menu>
-              <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2" v-if="props.row.bindStatus === 1">
-                <el-submenu index="333">
-                  <template slot="title">Open Door2</template>
-                  <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
-                  <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
-                  <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
-                </el-submenu>
-              </el-menu> -->
-              <el-dropdown @command="handleCommand">
-                <span class="el-dropdown-link">
-                  <i class="el-icon-arrow-down el-icon-more"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="`2_${props.$index}`">
-                    {{$t('common.update')}}
-                  </el-dropdown-item>
-                  <el-dropdown-item :command="`10_${props.$index}`" v-if="props.row.bindStatus === 1">
-                    {{$t('device.switchDevice')}}
-                  </el-dropdown-item>
-                  <el-dropdown-item :command="`11_${props.$index}`" v-if="props.row.bindStatus === 1">
-                    {{$t('device.unbind')}}
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item :command="`12_${props.$index}`" v-if="props.row.bindStatus === 1">
-                    {{$t('device.openDoor1')}}
-                    <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1" v-if="props.row.bindStatus === 1">
-                      <el-submenu index="111">
-                        <template slot="title">Open Door1</template>
-                        <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
-                        <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
-                        <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
-                      </el-submenu>
-                    </el-menu>
-                  </el-dropdown-item>
-                  <el-dropdown-item :command="`13_${props.$index}`" v-if="props.row.bindStatus === 1">
-                    {{$t('device.openDoor2')}}
-                  </el-dropdown-item> -->
-                  <el-dropdown-item :command="`1_${props.$index}`">
-                    {{$t('common.delete')}}
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item :command="`4_${props.$index}`" v-if="props.row.bindStatus === 1">
-                    {{$t('device.visitorManage')}}
-                  </el-dropdown-item> -->
-                  <!-- <el-dropdown-item :command="`5_${props.$index}`">
-                    {{$t('common.clone')}}
-                  </el-dropdown-item> -->
-                </el-dropdown-menu>
-              </el-dropdown>
+              <el-button class="detail-button" @click="setVistor(props.row, 'vistorManage')" v-if="props.row.bindStatus === 1">
+                {{$t('common.visitor')}}
+              </el-button> -->
+              <div class="opration-cols">
+                <el-button class="detail-button" @click="updateItem(props.row, 'bind')" v-if="props.row.bindStatus !== 1">
+                  {{$t('device.bidingIntercom')}}
+                </el-button>
+                <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1"
+                  v-if="props.row.bindStatus === 1" style="margin-right: 10px;">
+                  <el-submenu index="555">
+                    <template slot="title">Open Door1</template>
+                    <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
+                    <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
+                    <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
+                  </el-submenu>
+                </el-menu>
+                <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2" v-if="props.row.bindStatus === 1">
+                  <el-submenu index="222">
+                    <template slot="title">Open Door2</template>
+                    <el-menu-item :index="`${props.$index}-1`">TRIG</el-menu-item>
+                    <el-menu-item :index="`${props.$index}-2`">LATCH</el-menu-item>
+                    <el-menu-item :index="`${props.$index}-3`">UNLATCH</el-menu-item>
+                  </el-submenu>
+                </el-menu>
+                <el-dropdown @command="handleCommand">
+                  <span class="el-dropdown-link">
+                    <i class="el-icon-arrow-down el-icon-more"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="`4_${props.$index}`"  v-if="props.row.bindStatus === 1">
+                      {{$t('common.family')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`5_${props.$index}`"  v-if="props.row.bindStatus === 1">
+                      {{$t('common.visitor')}}
+                    </el-dropdown-item>
+                     <el-dropdown-item :command="`7_${props.$index}`">
+                      {{$t('common.detail')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`8_${props.$index}`"  v-if="props.row.bindStatus === 1">
+                      {{$t('menu.setting')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`9_${props.$index}`">
+                      {{$t('common.clone')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`2_${props.$index}`">
+                      {{$t('common.update')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`10_${props.$index}`" v-if="props.row.bindStatus === 1">
+                      {{$t('device.switchDevice')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`11_${props.$index}`" v-if="props.row.bindStatus === 1">
+                      {{$t('device.unbind')}}
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="`1_${props.$index}`">
+                      {{$t('common.delete')}}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -146,7 +146,7 @@
               <div>{{item.apartmentName}}</div>
               <div><span>{{$t('device.apartmentManager')}}： </span>{{item.apartmentManager}} - {{item.apartmentPhone}}</div>
               <div><span>{{$t('device.addressDetail')}}： </span>{{item.address}}</div>
-              <div><span>{{$t('device.imeiNumber')}}： </span>{{item.imei}}</div>
+              <div v-if="item.bindStatus === 1"><span>{{$t('device.imeiNumber')}}： </span>{{item.imei}}</div>
               <div class="bottom clearfix bottom-buttons">
                 <span :style="{color: item.bindStatus === 1 ? '#67c23a' : '#909399', lineHeight: '40px'}">{{item.bindStatus === 1 ? 'binded' : 'unbind'}}</span>
               </div>
@@ -170,7 +170,7 @@
                   <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`9_${index}`)" v-if="item.bindStatus !== 1">
                       {{$t('common.clone')}}
                   </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`7_${index}`)" v-if="item.bindStatus !== 1">
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`7_${index}`)">
                       {{$t('common.detail')}}
                   </el-button>
 
@@ -194,7 +194,8 @@
                     @click="handleCommand(`12_${index}`)" v-if="item.bindStatus === 1">
                       {{$t('device.openDoor1')}}
                   </el-button> -->
-                  <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1" v-if="item.bindStatus === 1">
+                  <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1"
+                    v-if="item.bindStatus === 1" style="margin-right: 10px;">
                     <el-submenu index="555">
                       <template slot="title">Open Door1</template>
                       <el-menu-item :index="`${index}-1`">TRIG</el-menu-item>
@@ -210,29 +211,6 @@
                       <el-menu-item :index="`${index}-3`">UNLATCH</el-menu-item>
                     </el-submenu>
                   </el-menu>
-                  <!-- <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
-                    @click="handleCommand(`13_${index}`)" v-if="item.bindStatus === 1">
-                      {{$t('device.openDoor2')}}
-                  </el-button> -->
-                  <!-- <el-dropdown @command="handleCommand" style="line-height: 40px;">
-                    <span class="el-dropdown-link">
-                      <i class="el-icon-arrow-down el-icon-more" style="font-size: 26px;"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                       <el-dropdown-item :command="`9_${index}`" v-if="item.bindStatus === 1">
-                        {{$t('common.clone')}}
-                      </el-dropdown-item>
-                      <el-dropdown-item :command="`1_${index}`">
-                        {{$t('common.delete')}}
-                      </el-dropdown-item>
-                      <el-dropdown-item :command="`10_${index}`" v-if="item.bindStatus === 1">
-                        {{$t('device.switchDevice')}}
-                      </el-dropdown-item>
-                      <el-dropdown-item :command="`11_${index}`" v-if="item.bindStatus === 1">
-                        {{$t('device.unbind')}}
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown> -->
                 </div>
             </div>
           </el-card>
@@ -270,7 +248,7 @@
     <el-dialog
       :title="updateId ? $t('common.update'): $t('common.new')"
       :visible.sync="addDialog"
-      width="40%"
+      width="50%"
       top="5vh"
       center class="grant-pop"
       v-loading="loading"
@@ -297,13 +275,13 @@
         <el-form-item :label="$t('device.addressDetail')" prop="address">
           <el-input v-model="ruleForm.address" :placeholder="$t('device.addressDetail')" clearable></el-input>
         </el-form-item>
-        <el-form-item :label="$t('device.longitude')" prop="longitude">
+        <!-- <el-form-item :label="$t('device.longitude')" prop="longitude">
           <el-input v-model="ruleForm.longitude" :placeholder="$t('device.longitude')" clearable></el-input>
         </el-form-item>
         <p class="show-long-latitu" @click="toBaidu">{{$t('common.dotknowLaAndLo')}}</p>
         <el-form-item :label="$t('device.latitude')" prop="latitude">
           <el-input v-model="ruleForm.latitude" :placeholder="$t('device.latitude')" clearable></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :label="$t('device.apartmentManager')" prop="apartmentManager">
           <el-input v-model="ruleForm.apartmentManager" :placeholder="$t('device.apartmentManager')" clearable></el-input>
         </el-form-item>
@@ -323,8 +301,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialog = false">取 消</el-button>
-        <el-button type="primary" @click="updateItem(ruleForm, 'add')">确 定</el-button>
+        <el-button @click="addDialog = false">{{$t('common.cancel')}}</el-button>
+        <el-button type="primary" @click="updateItem(ruleForm, 'add')">{{$t('common.sure')}}</el-button>
       </span>
     </el-dialog>
     <!-- 地址绑定设备弹窗 -->
@@ -448,6 +426,26 @@
       </span>
     </el-dialog>
 
+    <!--详情 -->
+    <el-dialog title="Detail" :visible.sync="visibleDetail" width="800px">
+      <el-form label-position="right" label-width="220px" class="ta-l" ref="form">
+        <div class="form-item-group">
+          <template>
+            <el-form-item :label="$t('device.apartmentName')">{{initData.apartmentName | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('device.apartmentPhone')">{{initData.apartmentPhone | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('device.apartmentManager')">{{initData.apartmentManager | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('device.doorNumber')">{{initData.doorNumber | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('device.bindStatus')">{{initData.bindStatus === 1 ? 'binded' : 'unbind'}}</el-form-item>
+            <el-form-item :label="$t('device.imeiNumber')">{{initData.imei | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('device.deviceName')">{{initData.name | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('device.addressDetail')">{{initData.cardholder | filterEmpty}}</el-form-item>
+          </template>
+        </div>
+      </el-form>
+      <div class="btns-wrap" style="text-align: center;">
+        <el-button type="primary" @click="visibleDetail=false">OK</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -482,10 +480,12 @@
           four: ''
         },
         settingItem: {},
-        pageSize: 3,
+        pageSize: 6,
         deviceList: [],
         updateId: '',
-        ruleForm: {},
+        ruleForm: {
+          addressImage: ''
+        },
         bingForm: {},
         addRules: {
           apartmentName: [{ required: true, trigger: 'blur' }],
@@ -524,7 +524,9 @@
         addDialogShow: false,
         addImei: '',
         addName: '',
-        addDescribeInfo: ''
+        addDescribeInfo: '',
+        visibleDetail: false,
+        initData: {}
       }
     },
     mounted () {
@@ -628,7 +630,7 @@
           params.bindStatus = 0
           this.updateOrAdd(params).then((res) => {
             if (res.data.status === '1') {
-              this.$message.success('解除绑定成功')
+              this.$message.success('Success')
               this.findData()
             } else {
               this.$message({
@@ -640,7 +642,7 @@
         } else if (type === 'add') {
           this.updateOrAdd(this.ruleForm).then((res) => {
             if (res.data.status === '1') {
-              this.$message.success('添加成功')
+              this.$message.success('Success')
               this.findData()
               this.addDialog = false
             } else {
@@ -655,7 +657,7 @@
             id: this.updateId
           }, this.ruleForm)).then((res) => {
             if (res.data.status === '1') {
-              this.$message.success('修改成功')
+              this.$message.success('Success')
               this.findData()
               this.addDialog = false
             } else {
@@ -671,6 +673,7 @@
         if (this.$isVip()) {
           this.updateId = ''
           this.ruleForm = {
+            addressImage: ''
             // addressImage: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
           }
           this.addDialog = true
@@ -700,7 +703,7 @@
           ids: row.id
         }).then((res) => {
           if (res.data.status === '1') {
-            this.$message.success('删除成功')
+            this.$message.success('Success')
             this.findData()
           } else {
             this.$message({
@@ -716,7 +719,7 @@
         params.id = this.bindItem.id
         this.$http.post('@ROOT_API/dfAddress/bindDeviceForDfAddress', params).then((res) => {
           if (res.data.status === '1') {
-            this.$message.success('绑定成功')
+            this.$message.success('Success')
             this.bindDialog = false
             this.findData()
           } else {
@@ -750,7 +753,7 @@
       cloneDevice (row) {
         this.$http.post('@ROOT_API/dfAddress/cloneDfAddress', { id: row.id }).then((res) => {
           if (res.data.status === '1') {
-            // this.$message.success('克隆成功')
+            // this.$message.success('Success')
             // this.findData()
             this.ruleForm = Object.assign({}, res.data.data)
             delete this.ruleForm['id']
@@ -813,6 +816,9 @@
           this.setVistor(data, 'homeUserManage')
         } else if (arr[0] === '5') {
           this.setVistor(data, 'vistorManage')
+        } else if (arr[0] === '7') {
+          this.initData = data
+          this.visibleDetail = true
         } else if (arr[0] === '9') {
           this.cloneDevice(data)
         } else if (arr[0] === '8') {
@@ -992,7 +998,7 @@
     display: flex;
     justify-content: space-between;
   }
-  .button-container {
+  .button-container, .opration-cols {
     display: flex;
     flex-wrap: wrap;
     .el-menu {
@@ -1016,6 +1022,20 @@
       }
       .is-active .el-submenu__title {
         border-bottom: 0;
+      }
+    }
+  }
+  .opration-cols {
+    display: flex;
+    .el-dropdown {
+      line-height: 40px;
+      margin-left: 10px;
+    }
+  }
+  .device-list {
+    .device-list-wrap {
+      .list .line .el-form .el-form-item .el-form-item__content .el-input input {
+        width: 300px;
       }
     }
   }

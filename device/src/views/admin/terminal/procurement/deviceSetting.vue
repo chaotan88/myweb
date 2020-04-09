@@ -1,5 +1,9 @@
 <template>
-  <div class="device-setting">
+  <div class="device-setting"
+    v-loading="loading"
+    element-loading-text="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <el-form ref="ruleForm1" :rules="rules" :model="deviceInfo">
       <div class="first-row">
         <div class="col1">
@@ -292,7 +296,7 @@
           </div>
           <div class="row3">
             <img-view src="apn.png"/>
-            <el-input v-model="deviceInfo.apn"></el-input>
+            <el-input v-model="deviceInfo.apn" readonly></el-input>
           </div>
         </div>
         <div class="col2">
@@ -457,13 +461,11 @@
       } else {
         this.id = this.$route.params.id
       }
-      this.checkDevice(() => {
-        this.findData()
-      })
       this.findData()
     },
     methods: {
       findData () {
+        this.loading = true
         this.$http.post('@ROOT_API/dfDeviceSettings/getDfDeviceSettings', {
           deviceId: this.id
         }).then((res) => {
@@ -473,6 +475,7 @@
           this.deviceInfo.monitor = res.data.data.monitor || 0
           this.setDoNotWeek()
           this.setAutoRelatTrig()
+          this.loading = false
           // this.startTime = this.setTime(this.deviceInfo.doNotStartTime)
           // this.endTime = this.setTime(this.deviceInfo.doNotEndTime)
         })
@@ -567,7 +570,7 @@
         })
         // this.$http.post('@ROOT_API/dfDeviceSettings/saveOrUpdateDfDeviceSettings', params).then((res) => {
         //   if (res.data.status === '1') {
-        //     this.$message.success('保存成功')
+        //     this.$message.success('Success')
         //     this.$router.go(-1)
         //   } else {
         //     this.$message.error(res.data.msg)
@@ -583,6 +586,7 @@
               this.$message.error(res.data.msg || this.$t('common.errorMsg'))
             }
             this.loading = false
+            this.findData()
           }, () => (this.loading = false))
         })
       },
@@ -779,7 +783,7 @@
           deviceId: this.id
         }).then((res) => {
           if (res.data.status === '1') {
-            this.$message.success('保存成功')
+            this.$message.success('Success')
             this.$router.go(-1)
           } else {
             this.$message.error(res.data.msg || this.$t('common.errorMsg'))
@@ -854,9 +858,9 @@
         margin-bottom: 10px;
         .item1, .item2 {
           display: flex;
-          input {
-            padding: 2px;
-          }
+          // input {
+          //   padding: 2px;
+          // }
         }
       }
     }
@@ -927,15 +931,14 @@
         margin-bottom: 10px;
         display: flex;
         justify-content: space-around;
+        padding: 0px 7%;
         .left-input, .right-input {
-          width: 90px;
+          width: 150px;
         }
         .left-input {
           margin-top: -10px;
-          margin-left: 45px;
         }
         .right-input {
-          margin-right: 105px;
           margin-top: -10px;
         }
       }
@@ -949,7 +952,9 @@
         .red-line, .green-line {
           width: 5px;
           height: 5px;
-          margin-right: 8px;
+          // margin-right: 8px;
+          margin: 0 auto;
+          // margin-right: calc(~"100% /30");;
           margin-top: 20px;
         }
         .red-line {
@@ -991,9 +996,9 @@
     .col2 {
       .row1-col2 {
         .item1, .item2 {
-          input {
-            padding: 2px;
-          }
+          // input {
+          //   padding: 2px;
+          // }
         }
       }
     }

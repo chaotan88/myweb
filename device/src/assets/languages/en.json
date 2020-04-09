@@ -8,6 +8,7 @@
     "new": "new",
     "name": "Name",
     "password": "Password",
+    "oldPassword": "Old Password",
     "accountSetting": "Account Settings",
     "logOut": "Log out",
     "search": "Search",
@@ -70,7 +71,7 @@
     "isSubmitDelete": "Whether to confirm the deletion?",
     "deleteHomeUserSure": "This action will permanently delete the home user, whether to continue?",
     "pleaseInputEmail": "Enter mailbox format（0-150）",
-    "newPassword": "Password",
+    "newPassword": "New Password",
     "confirmNewPassword": "Confirm Password",
     "pleaseAddress": "Please Enter Address",
     "restoreSefaultSettings": "Restore default settings",
@@ -91,7 +92,9 @@
     "clear": "Clear",
     "clearHomeUserSure": "Confirm to clear all?",
     "clearVistorrSure": "Confirm to clear all?",
-    "areYouSure": "Are You Sure？"
+    "areYouSure": "Are You Sure？",
+    "back": "Back",
+    "defaultSettings": "Default settings"
   },
   "menu": {
     "console": "console",
@@ -222,7 +225,8 @@
     "describeInfo": "Description",
     "syncDataToServer": "Synchro Data To Server",
     "openDoor1": "Open Door1",
-    "openDoor2": "Open Door2"
+    "openDoor2": "Open Door2",
+    "userName": "User Name"
   },
   "recharge": {
     "pleaseEnterPhoneNumber": "Please enter the member phone number",
@@ -272,14 +276,15 @@
     "beforePrice": "Order amount of the last year",
     "beforeNumber": "Purchased in the last year",
     "beforeRealNumber": "Devices used in the last year",
-    "currentPrice": "Current order quota"
+    "currentPrice": "Current order quota",
+    "autoRenewal": "Auto Renewal"
   },
   "log": {
     "visitorType": "Visitor type",
     "pleaseEnterCardNumber": "Please enter the key/phone/card number",
     "accessTime": "Access time",
     "accessType": "Access Type",
-    "keyNumber": "Key/phone/card number",
+    "keyNumber": "Key/phone/card No.",
     "relay": "Relay",
     "visitingTime": " Visiting time",
     "operatingTime": "Operating time",
@@ -289,13 +294,14 @@
     "operationModule": "Operation module",
     "operantHehavior": "operant hehavior",
     "specificOperationContents": "Specific operation contents",
-    "dateType": "Date Type"
+    "dateType": "Date Type",
+    "openStatus": "Open Status"
   },
   "account": {
     "loginPhone": "Login phone number",
     "replace": "replace",
     "securitySettings": "Security Settings",
-    "permissionGroup": "permission-group",
+    "permissionGroup": "Permission Group",
     "email": "Email",
     "location": "location",
     "basicSetting": "basic setting",

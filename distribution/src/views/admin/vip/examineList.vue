@@ -51,6 +51,11 @@
                   <span class="d-b va-m">...</span>
                 </div>
                 <el-dropdown-menu slot="dropdown">
+                  <template v-if="(scope.row.dealWithStatus === 2 || scope.row.dealWithStatus === 4) && scope.row.rankId > 3">
+                    <el-dropdown-item>
+                      <div @click="revokeBefore(scope.row)"><i class="icon el-icon-view"></i>撤销</div>
+                    </el-dropdown-item>
+                  </template>
                   <template v-if="scope.row.dealWithStatus !== 1">
                     <el-dropdown-item>
                       <div @click="handleBefore(scope.row)"><i class="icon el-icon-view"></i>详情</div>
@@ -73,6 +78,17 @@
       <!-- 分页 -->
       <el-pagination background layout="prev, pager, next" :current-page="pageData.currentPage" :page-size="pageData.pageSize" :total="pageData.total" @current-change="pageChange" v-if="pageData.total">
       </el-pagination>
+
+    </template>
+    <template slot="other">
+      <!-- 删除 -->
+      <el-dialog title="撤销升级" :visible.sync="revokeVisible" width="480px">
+        确定是否撤销为：{{revokeItem.currentRankName}}
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="revokeVisible = false">取 消</el-button>
+          <el-button type="primary" :loading="confirmLoading" @click="handleRevoke">确 定</el-button>
+        </span>
+      </el-dialog>
     </template>
   </common-tpl>
 </template>
@@ -98,14 +114,17 @@ export default {
         pageSize: 10,
         total: 0
       },
-      userInfo: {}              // 用户信息
+      userInfo: {},              // 用户信息
+      revokeItem: {},
+      revokeVisible: false,
+      confirmLoading: false
     }
   },
   mounted () {
     this.userInfo = JSON.parse(localStorage.getItem(this.$global.USER_INFO))
     this.copyFormData = this.$Utils.deepCopy(this.formData)
     this.formData.dealWithStatus = this.$route.meta.dealWithStatus
-    let pathType = this.$route.path.match(/index|stay|adopt|regression/gi)[0]
+    let pathType = this.$route.path.match(/index|stay|adopt|regression|revoke/gi)[0]
     switch (pathType) {
       case 'index':
         this.pageType = ''
@@ -118,6 +137,9 @@ export default {
         break
       case 'regression':
         this.pageType = 3
+        break
+      case 'revoke':
+        this.pageType = 5
         break
     }
     let getPagetype = localStorage.getItem(this.$global.SYSTEM + 'PageType', this.pageType)
@@ -180,6 +202,32 @@ export default {
         window.open(this.$dm.ROOT_API + url + '?token=' + this.userInfo.token + '&' + filterParams.join('&'), '_blank')
       }
     },
+    handleRevoke () {
+      this.confirmLoading = true
+      this.$http.post('@ROOT_API/buyMemberAccountManageController/returnMemberUpgrade', {
+        id: this.revokeItem.upgradeId
+      }).then((res) => {
+        let resData = res.data
+        if (parseInt(resData.status) !== 1) {
+          this.$message({
+            message: resData.msg,
+            type: 'error',
+            duration: 1500
+          })
+          return false
+        }
+        this.$message({
+          message: resData.msg,
+          type: 'success',
+          duration: 1000
+        })
+        this.revokeVisible = false
+        this.confirmLoading = false
+        this.getListData()
+      }).finally(() => {
+        this.confirmLoading = false
+      })
+    },
     // getListData () {
     //   this.loading = true
     //   var parm = {
@@ -241,6 +289,10 @@ export default {
         this.pageData.currentPage = page
         this.$router.push({query: {page: this.pageData.currentPage}})
       }
+    },
+    revokeBefore (row) {
+      this.revokeItem = row
+      this.revokeVisible = true
     }
   }
 }

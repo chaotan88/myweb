@@ -23,14 +23,14 @@
         :model="addForm"
       >
         <el-form-item :label="$t('recharge.deviceNumber')" prop="deviceNumber">
-          <el-input placeholder="请输入内容" v-model.number="addForm.deviceNumber" clearable></el-input>
+          <el-input placeholder="Please enter" v-model.number="addForm.deviceNumber" clearable></el-input>
         </el-form-item>
       </el-form>
     </div>
     <div v-else class="goods-info">
       <div>
         <span>{{$t("recharge.goodsName")}}:</span>
-        <span>1年 {{orderInfo.deviceNumber}} 个设备</span>
+        <span>1 Years of {{orderInfo.deviceNumber}} PCS</span>
       </div>
       <div>
         <span>{{$t("recharge.orderNumber")}}:</span>
@@ -60,6 +60,10 @@
         <span>{{$t("recharge.orderAmount")}}:</span>
         <span>{{orderInfo.currentPrice}}</span>
       </div>
+      <div>
+        <span>{{$t("recharge.autoRenewal")}}:</span>
+        <span><el-checkbox v-model="autoRenewal" true-label="1" false-label="0"></el-checkbox></span>
+      </div>
     </div>
     <div class="item-desc" v-if="!startPay && addForm.deviceNumber > 0">
       {{$t("recharge.youCanManage")}}
@@ -74,7 +78,7 @@
         <el-radio></el-radio>
         <img src="../../../../static/img/u7462.png" />
         Stripe
-        <span class="tips">荐</span>
+        <span class="tips">Hot</span>
       </div>
     </div>
     <!-- <div id='payapp' v-else>
@@ -90,12 +94,41 @@
     </div> -->
     <div id='payapp' v-else>
       <p>Please give us your payment details:</p>
-      <card class='stripe-card'
+      <!-- <card class='stripe-card'
         :class='{ complete }'
-        stripe='pk_test_ffVzg2f5DlxbDYXOHjh7CFQv00cHMSsuGI'
+        :stripe='stripe'
         :options='stripeOptions'
         @change='complete = $event.complete'
-      />
+      /> -->
+      <div class='credit-card-inputs' :class='{ complete }'>
+        <div class="card-item">
+          <span class="card-label">Card Number</span>
+          <card-number class='stripe-element card-number'
+            ref='cardNumber'
+            :stripe='stripe'
+            :options='Options'
+            @change='number = $event.complete'
+          />
+        </div>
+        <div class="card-item">
+          <span class="card-label">Card Expiry</span>
+          <card-expiry class='stripe-element card-expiry'
+            ref='cardExpiry'
+            :stripe='stripe'
+            :options='expiryOptions'
+            @change='expiry = $event.complete'
+          />
+        </div>
+        <div class="card-item">
+          <span class="card-label">Card Cvc</span>
+          <card-cvc class='stripe-element card-cvc'
+            ref='cardCvc'
+            :stripe='stripe'
+            :options='Options'
+            @change='cvc = $event.complete'
+          />
+        </div>
+      </div>
       <!-- <button class='pay-with-stripe' @click='pay' :disabled='!complete'>Pay with credit card</button> -->
     </div>
     <!-- <div class="payment-amount">
@@ -106,13 +139,13 @@
     <div class="save-box">
       <el-button type="primary" @click="payNow" v-if="!startPay">{{$t("recharge.createOrder")}}</el-button>
       <el-button type="primary" @click="pay" v-else>{{$t("recharge.payNow")}}</el-button>
-      <el-button type="primary" @click="backTo" v-if="startPay" class="back-button">返回</el-button>
+      <el-button type="primary" @click="backTo" v-if="startPay" class="back-button">{{$t("common.back")}}</el-button>
     </div>
   </div>
 </template>
 <script>
 // import { stripeKey, stripeOptions } from './stripeConfig.json'
-import { Card, createToken } from 'vue-stripe-elements'
+import { CardNumber, CardExpiry, CardCvc, createToken } from 'vue-stripe-elements'
 
 export default {
   data () {
@@ -158,17 +191,25 @@ export default {
       addRules: {
         deviceNumber: [
           { required: true, trigger: 'blur' },
-          { type: 'number', message: '设备是数量必须为正整数' }
+          { type: 'number', message: 'Must be a positive integer' }
         ]
       },
       orderInfo: {},
       complete: false,
-      stripeOptions: {},
+      Options: {},
+      expiryOptions: {
+        placeholder: 'MM / YY'
+      },
       card: {},
-      loading: false
+      loading: false,
+      stripe: 'pk_test_ffVzg2f5DlxbDYXOHjh7CFQv00cHMSsuGI',
+      number: false,
+      expiry: false,
+      cvc: false,
+      autoRenewal: '1'
     }
   },
-  components: { Card },
+  components: { CardNumber, CardExpiry, CardCvc },
   mounted () {
     this.currentItem = this.rechargeList[0]
     // this.$nextTick(() => {
@@ -224,7 +265,9 @@ export default {
           if (res.data.status === '1') {
             this.$message({
               type: 'success',
-              message: '购买成功,重新登录后生效'
+              message: 'Purchase success, Please login again',
+              duration: 0,
+              showClose: true
             })
             this.startPay = false
           } else {
@@ -242,6 +285,33 @@ export default {
       // See https://stripe.com/docs/api#tokens for the token object.
       // See https://stripe.com/docs/api#errors for the error object.
       // More general https://stripe.com/docs/stripe.js#stripe-create-token.
+      if (!this.number) {
+        this.$message({
+          type: 'error',
+          duration: 3000,
+          showClose: true,
+          message: 'Card Number is Invalid,Please check.!'
+        })
+        return false
+      }
+      if (!this.expiry) {
+        this.$message({
+          type: 'error',
+          duration: 3000,
+          showClose: true,
+          message: 'Card Expiry is Invalid,Please check.!'
+        })
+        return false
+      }
+      if (!this.cvc) {
+        this.$message({
+          type: 'error',
+          duration: 3000,
+          showClose: true,
+          message: 'Card Cvc is Invalid,Please check.!'
+        })
+        return false
+      }
       this.loading = true
       let adminInfo = JSON.parse(localStorage.getItem('deviceAdminInfo'))
       createToken().then(data => {
@@ -254,15 +324,21 @@ export default {
             email: adminInfo.email,
             card: this.getValForName('cardnumber'),
             cvc: this.getValForName('cvc'),
-            validTrueDate: this.getValForName('exp-date')
+            validTrueDate: this.getValForName('exp-date'),
+            autoRenewStatus: this.autoRenewal
           })
           .then(res => {
             this.loading = false
             if (res.data.status === '1') {
               this.$message({
                 type: 'success',
-                message: '购买成功,重新登录后生效'
+                message: 'Purchase success',
+                duration: 5000,
+                showClose: true
               })
+              let deviceAdminInfo = JSON.parse(localStorage.deviceAdminInfo)
+              deviceAdminInfo.payMemberStatus = this.$toMd5(1)
+              localStorage.setItem('deviceAdminInfo', JSON.stringify(deviceAdminInfo))
               this.startPay = false
             } else {
               this.$message({
@@ -287,7 +363,28 @@ export default {
         return eles[0].value
       }
       return ''
+    },
+    update () {
+      this.complete = this.number && this.expiry && this.cvc
+      if (this.number) {
+        if (!this.expiry) {
+          this.$refs.cardExpiry.focus()
+        } else if (!this.cvc) {
+          this.$refs.cardCvc.focus()
+        }
+      } else if (this.expiry) {
+        if (!this.cvc) {
+          this.$refs.cardCvc.focus()
+        } else if (!this.number) {
+          this.$refs.cardNumber.focus()
+        }
+      }
     }
+  },
+  watch: {
+    number () { this.update() },
+    expiry () { this.update() },
+    cvc () { this.update() }
   }
 }
 </script>
@@ -328,6 +425,34 @@ export default {
 }
 .stripe-card.complete {
   border-color: green;
+}
+.credit-card-inputs.complete {
+  border: 2px solid green;
+  padding: 10px;
+}
+.card-item {
+  display: flex;
+  .card-label {
+    color: #999999;
+    width: 120px;
+    display: block;
+    text-align: right;
+    margin-right: 20px;
+    position: relative;
+  }
+  .card-label:after {
+    content: '*';
+    color: red;
+    position: absolute;
+    top: 5px;
+    right: -10px;
+  }
+  .stripe-element {
+    width: 300px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding-left: 10px;
+  }
 }
 </style>
 <style lang='less' scoped>

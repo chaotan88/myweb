@@ -6,6 +6,7 @@
       <router-link class='d-ib ta-c' to="/admin/vip/upgrade/audit/stay">待审核({{statistics.upgradeVerifyNum ? statistics.upgradeVerifyNum : 0}})</router-link>
       <router-link class='d-ib ta-c' to="/admin/vip/upgrade/audit/adopt">审核通过({{statistics.upgradePassVerifyNum ? statistics.upgradePassVerifyNum : 0}})</router-link>
       <router-link class='d-ib ta-c' to="/admin/vip/upgrade/audit/regression">已打回({{statistics.upgradeNotVerifyNum ? statistics.upgradeNotVerifyNum : 0}})</router-link>
+      <router-link class='d-ib ta-c' to="/admin/vip/upgrade/audit/revoke">已撤销({{statistics.upgradeRevokeNum ? statistics.upgradeRevokeNum : 0}})</router-link>
     </template>
   </third-menu>
 </template>
@@ -18,7 +19,7 @@ export default {
   },
 
   mounted () {
-    let path = this.$route.path.match(/index|stay|adopt|regression/gi)
+    let path = this.$route.path.match(/index|stay|adopt|regression|revoke/gi)
     if (path) this.getStatistics()
   },
 

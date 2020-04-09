@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Console from './Console'
+// import Console from './Console'
 import Seting from './Seting'
 import Device from './Device'
 import Recharge from './Recharge'
@@ -44,7 +44,7 @@ const router = new Router({
       component: r => require(['@/components/admin/Layout'], r),
       children: [
         // 控制台模块
-        Console,
+        // Console,
 
         // 设备模块
         Device,

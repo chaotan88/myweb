@@ -1,5 +1,9 @@
 <template>
-  <div class="login-wrap">
+  <div class="login-wrap"
+    v-loading="loading"
+    element-loading-text="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <!-- <el-select :value="currentLang" :placeholder="$t('common.pleaseSelect')"
       popper-class="dropdown" class="dropdown-menu" @change="languageChange">
       <template v-for="item in downList">
@@ -19,7 +23,7 @@
         <div @click="pageType = 'login'" :class="pageType === 'login' ? 'tab_checked' : ''"><a>{{$t('login.signIn')}}</a></div>
         <div @click="pageType = 'regist'" :class="pageType === 'regist' ? 'tab_checked' : ''"><a>{{$t('login.register')}}</a></div>
       </div>
-      <el-form label-position="top" label-width="80px" :model="loginForm" border :rules="loginRules" ref="loginForm" v-if="pageType === 'login'">
+      <el-form label-position="top" label-width="80px" :model="loginForm" border :rules="loginRules" ref="loginForm" v-show="pageType === 'login'">
         <el-form-item :label="$t('login.usernameOrEmail')" prop="usernameOrEmail">
           <el-input v-model="loginForm.usernameOrEmail"></el-input>
         </el-form-item>
@@ -35,7 +39,7 @@
         </div>
         <input  type="button" class="inp-sub" :value="$t('login.signIn')" @click="LoginHandle">
       </el-form>
-      <el-form label-position="top" label-width="80px" :model="registForm" border :rules="registRules" ref="registForm" v-else-if="pageType === 'regist'">
+      <el-form label-position="top" label-width="80px" :model="registForm" border :rules="registRules" ref="registForm" v-show="pageType === 'regist'">
         <el-form-item :label="$t('login.fullName')" prop="fullName">
           <el-input v-model="registForm.fullName"></el-input>
         </el-form-item>
@@ -78,6 +82,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
@@ -113,8 +118,8 @@ export default {
           { required: true, message: 'Please retype the email address.' }
         ],
         password: [
-          { required: true, message: 'Minimum length is 8 characters.' },
-          { min: 8, message: 'Minimum length is 8 characters.' }
+          { required: true, message: 'Minimum length is 6 characters.' },
+          { min: 6, message: 'Minimum length is 6 characters.' }
         ]
       },
       rePasswordForm: {
@@ -137,7 +142,8 @@ export default {
       ],
       currentLang: '中文',
       isSend: false,
-      rememberMe: false
+      rememberMe: false,
+      loading: false
     }
   },
   mounted () {
@@ -192,8 +198,10 @@ export default {
             this.delCookie('password')
             this.delCookie('rememberMe')
           }
+          this.loading = true
           this.$http.post(this.$dm.AROOT_API + '/login/login', params).then((res) => {
             let resData = res.data
+            this.loading = false
             if (resData.status !== '1') {
               this.$message({
                 message: 'Invalid Login or password.',
@@ -203,17 +211,19 @@ export default {
               return false
             }
             this.$message({
-              message: resData.msg,
+              message: 'Success',
               type: 'success',
               duration: 1000
             })
+            resData.data.payMemberStatus = this.$toMd5(resData.data.payMemberStatus + '')
             localStorage.setItem('deviceAdminInfo', JSON.stringify(resData.data))
             setTimeout(() => {
-              if (resData.data.userName === '超级管理员') {
-                this.$router.push('/admin')
-              } else {
-                this.$router.push('/admin/console/index2')
-              }
+              this.$router.push('/admin/device/manage/deviceList')
+              // if (resData.data.userName === '超级管理员') {
+              //   this.$router.push('/admin')
+              // } else {
+              //   this.$router.push('/admin/console/index2')
+              // }
             }, 500)
           })
         } else {
@@ -240,6 +250,7 @@ export default {
             return false
           }
           let checkArr = []
+          this.loading = true
           checkArr.push(this.checkUserNameExist(this.registForm.userName))
           checkArr.push(this.checkEmailExist(this.registForm.email))
           Promise.all(checkArr).then((res) => {
@@ -248,6 +259,7 @@ export default {
                 type: 'error',
                 message: 'Username has already been taken'
               })
+              this.loading = false
               return false
             }
             if (res[1].data.status !== '1') {
@@ -255,11 +267,13 @@ export default {
                 type: 'error',
                 message: 'Email has already been taken'
               })
+              this.loading = false
               return false
             }
             this.$http.post(this.$dm.AROOT_API + '/login/register', params).then((response) => {
               let resData = response.data
-              if (resData.status !== '1') {
+              this.loading = false
+              if (resData.status === '1') {
                 this.$router.push({
                   path: '/almostThere'
                 })
@@ -521,6 +535,7 @@ export default {
     margin: auto;
     margin-top: 8px;
     border-radius: 4px;
+    z-index: 999;
     i {
       text-align: right;
       cursor: pointer;
@@ -558,6 +573,9 @@ export default {
     text-align: center;
     padding: 10px;
     border-bottom: 1px solid #efefef;
+    img {
+      height: 100px;
+    }
   }
 }
 
@@ -568,7 +586,7 @@ export default {
   margin-top: -120px;
   position: absolute;
   left: 50%;
-  top: 25%;
+  top: 250px;
   z-index: 10;
   border-radius: 6px;
   background: #fff;

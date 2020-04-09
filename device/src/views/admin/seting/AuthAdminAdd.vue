@@ -2,35 +2,35 @@
 <template>
   <div class="addadmin">
     <div class="addadmin-cen">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="登录名" prop="name">
-          <el-input v-model="ruleForm.name" placeholder="限20个字以内，不含特殊字符" v-if="ruleForm.id" :disabled="true"></el-input>
-          <el-input v-model="ruleForm.name" placeholder="限20个字以内，不含特殊字符" v-else></el-input>
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px" class="demo-ruleForm">
+        <el-form-item label="Login Name" prop="name">
+          <el-input v-model="ruleForm.name" :placeholder="`1-20${$t('common.characters')}`" v-if="ruleForm.id" :disabled="true"></el-input>
+          <el-input v-model="ruleForm.name" :placeholder="`1-20${$t('common.characters')}`" v-else></el-input>
           <!-- <span>请输入登录名</span> -->
         </el-form-item>
-        <el-form-item label="输入密码" prop="password">
-          <el-input type="password" v-model="ruleForm.password" placeholder="6-20位字符"></el-input>
+        <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="ruleForm.password" :placeholder="`6-20${$t('common.characters')}`"></el-input>
           <!-- <span>请输入密码</span> -->
         </el-form-item>
-        <el-form-item label="确认密码" prop="newPassword">
-          <el-input type="password" v-model="ruleForm.newPassword" placeholder="6-20位字符"></el-input>
+        <el-form-item label="Password confirmation" prop="newPassword">
+          <el-input type="password" v-model="ruleForm.newPassword" :placeholder="`6-20${$t('common.characters')}`"></el-input>
           <!-- <span>请确认密码</span> -->
         </el-form-item>
-        <el-form-item label="权限组" class="AddGroup">
-          <el-select v-model="ruleForm.groupId" placeholder="运营人员">
+        <el-form-item label="Permission group" class="AddGroup">
+          <el-select v-model="ruleForm.groupId" placeholder="Palease Select">
             <template v-for="item in groupListData">
               <el-option :label="item.groupName" :value="item.id.toString()"></el-option>
             </template>
           </el-select>
-          <span>请选择一个权限组，如果还未设置，请马上设置</span>
+          <span>Please select a permission group. If it has not been set, please set it now</span>
         </el-form-item>
       </el-form>
     </div>
     <div class="ta-c addadmin-b">
       <!--修改-->
-      <el-button type="primary" @click="submitForm('ruleForm')" class="sub" v-if="ruleForm.id">提交</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" class="sub" v-if="ruleForm.id">{{$t("common.sure")}}</el-button>
       <!--添加-->
-      <el-button type="primary" @click="submitForm('ruleForm')" class="sub" v-else>提交</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" class="sub" v-else>{{$t("common.sure")}}</el-button>
     </div>
   </div>
 </template>
@@ -38,14 +38,14 @@
 export default {
   data () {
     var validateName = (rule, value, callback) => {
-      if (!value) callback(new Error('请输入姓名!'))
-      if (value.length > 20 || !value.match(/^[a-zA-Z0-9]+$/ig)) callback(new Error('限20个字以内，不含特殊字符!'))
+      if (!value) callback(new Error('Login Name is required!'))
+      if (value.length > 20 || !value.match(/^[a-zA-Z0-9]+$/ig)) callback(new Error('Limited to 20 character!'))
       callback()
     }
     var validatePassword = (rule, value, callback) => {
       if (this.inputReauird === true || this.ruleForm.password) {
-        if (!value) callback(new Error('请输入密码'))
-        if (!/^\S{6,20}$/.test(value)) callback(new Error('6-20位字符'))
+        if (!value) callback(new Error('Password is required!'))
+        if (!/^\S{6,20}$/.test(value)) callback(new Error('6-20character'))
         callback()
       } if (this.inputReauird === false && !this.ruleForm.password) {
         callback()
@@ -53,9 +53,9 @@ export default {
     }
     var validateNewPassword = (rule, value, callback) => {
       if (this.inputReauird === true || this.ruleForm.password || this.ruleForm.newPassword) {
-        if (!value) callback(new Error('请再次输入密码'))
-        if (!/^\S{6,20}$/.test(value)) callback(new Error('6-20位字符'))
-        if (value !== this.ruleForm.password) callback(new Error('两次输入密码不一致!'))
+        if (!value) callback(new Error('Password confirmation is required!'))
+        if (!/^\S{6,20}$/.test(value)) callback(new Error('6-20character'))
+        if (value !== this.ruleForm.password) callback(new Error('The two passwords are inconsistent!'))
         callback()
       } if (this.inputReauird === false && !this.ruleForm.password && !this.ruleForm.newPassword) {
         callback()

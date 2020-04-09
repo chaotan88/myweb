@@ -3,7 +3,7 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="200px" class="demo-ruleForm">
       <ul>
         <li>
-          <el-form-item :label="$t('common.password')" prop="pasword1" >
+          <el-form-item :label="$t('common.oldPassword')" prop="pasword1" >
             <el-input type="password" v-model="ruleForm.pasword1" :placeholder="`6-20${$t('common.characters')}`"></el-input>
           </el-form-item>
         </li>
@@ -20,7 +20,7 @@
       </ul>
     </el-form>
     <div class="save-box">
-      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')">Save</el-button>
     </div>
   </div>
 </template>
@@ -29,9 +29,9 @@
     data () {
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请再次输入密码'))
+          callback(new Error('Please enter the new password'))
         } else if (value !== this.ruleForm.pasword2) {
-          callback(new Error('两次输入密码不一致!'))
+          callback(new Error('The two passwords are inconsistent!'))
         } else {
           callback()
         }
@@ -44,12 +44,12 @@
         },
         rules: {
           pasword1: [
-            { required: true, message: '请输入原密码', trigger: 'blur' },
-            { min: 6, max: 20, message: '长度在 6 到 20个字符', trigger: 'blur' }
+            { required: true, message: 'Please enter the old password', trigger: 'blur' },
+            { min: 6, max: 20, message: '6 to 20 characters in length', trigger: 'blur' }
           ],
           pasword2: [
-            { required: true, message: '请输入新密码', trigger: 'blur' },
-            { min: 6, max: 20, message: '长度在 6 到 20个字符', trigger: 'blur' }
+            { required: true, message: 'Please enter the new password', trigger: 'blur' },
+            { min: 6, max: 20, message: '6 to 20 characters in length', trigger: 'blur' }
           ],
           pasword3: [
             { required: true, validator: validatePass2, trigger: 'blur' }
@@ -83,7 +83,7 @@
           if (res.data.status === '1') {
             localStorage.clear()
             this.$message({
-              message: '修改密码成功',
+              message: 'Success',
               type: 'success',
               duration: 500
             })

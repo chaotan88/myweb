@@ -1,6 +1,10 @@
 <template>
-  <div class="pos-r admin-header-wrap">
-    <h2 class="d-ib fw-n va-t logo-wrap"><img class="d-ib" src="../../../static/img/admin-logo.png">{{$t("common.logo")}}</h2>
+  <div class="pos-r admin-header-wrap" style="display: flex;">
+    <h2 class="d-ib fw-n va-t logo-wrap" style="height: 80px;">
+      <div style="height: 62px; margin-top: 10px; background: #fff; border-radius: 10px; margin-left: 60px;">
+        <img class="d-ib" src="../../../static/img/admin-logo.png" style="height: 60px; margin: 0 7px;"></div>
+    </h2>
+    <h2 style="line-height: 80px; color: #fff; font-size: 24px; font-weight: normal; margin-left: 35px;">{{$t("common.logo")}}</h2>
     <div :class="['d-ib va-t ta-c', this.$i18n.locale === 'zh' ? 'admin-nav-wrap' : 'admin-nav-wrap-en']">
       <template v-for="item in currentRoutes">
         <!-- {{filterPath(item).path.indexOf('/seting')}} -->
@@ -10,16 +14,24 @@
       </template>
     </div>
     <div class="pos-a personal">
-        <div class="user">
+        <!-- <div class="user">
             <img src="../../../static/img/user-face01.png">
-        </div>
-        <span class="name">{{$t('common.hello')}}: {{adminInfo.userName}}</span>
-        <ul>
+        </div> -->
+        <el-dropdown @command="handleCommand">
+          <span class="el-dropdown-link">
+            {{$t('common.hello')}}: {{adminInfo.userName}}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="a">{{$t('common.updatePassword')}}</el-dropdown-item>
+            <el-dropdown-item command="b">{{$t('common.loginout')}}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <!-- <span class="name"></span> -->
+        <!-- <ul>
             <li @click="$router.push('/admin/seting/account/update')">{{$t('common.updatePassword')}}</li>
-            <!-- <li class="vertical">|</li> -->
             <li class="quit" @click="loginOut">{{$t('common.loginout')}}</li>
-        </ul>
-        <el-select :value="currentLang" placeholder="请选择" popper-class="dropdown" class="dropdown-menu" @change="languageChange">
+        </ul> -->
+        <el-select :value="currentLang" placeholder="Please Select" popper-class="dropdown" class="dropdown-menu" @change="languageChange">
           <template v-for="item in downList">
             <el-option :label="item.name" :value="item.id"></el-option>
           </template>
@@ -46,19 +58,11 @@ export default {
           id: 'zh',
           name: '中文'
         }
-        // {
-        //   ahref: this.$dm.ROOT_IMG + '/admin/#/login?userName=' + JSON.parse(localStorage.getItem('deviceAdminInfo')).loginName + '&token=' + JSON.parse(localStorage.getItem('deviceAdminInfo')).token,
-        //   name: '广告管理'
-        // },
-        // {
-        //   ahref: this.$dm.ROOT_IMG + '/channel/#/login?userName=' + JSON.parse(localStorage.getItem('deviceAdminInfo')).loginName + '&token=' + JSON.parse(localStorage.getItem('deviceAdminInfo')).token,
-        //   name: '渠道管理'
-        // }
       ],
       adminInfo: {},          // 用户信息
       currentRoutes: [],
       activeLink: [], // 父路由的path
-      currentLang: '中文'
+      currentLang: 'EN'
     }
   },
   mounted () {
@@ -98,14 +102,21 @@ export default {
 
     // 1.退出
     loginOut () {
-      this.$message.success('退出成功')
+      this.$message.success('Sucess')
       // localStorage.clear()
       localStorage.removeItem('deviceAdminInfo')
       this.$router.push('/login')
     },
     languageChange (val) {
       this.$i18n.locale = val
-      this.currentLang = this.$i18n.locale === 'zh' ? '中文' : '英文'
+      this.currentLang = this.$i18n.locale === 'zh' ? '中文' : 'EN'
+    },
+    handleCommand (command) {
+      if (command === 'a') {
+        this.$router.push('/admin/seting/account/update')
+      } else if (command === 'b') {
+        this.loginOut()
+      }
     }
   }
 
@@ -153,15 +164,17 @@ export default {
   padding: 0 35px;
   overflow: hidden;
   background: #1f3a4c;
-
+  // background: #3360bb;
   .logo-wrap{
     color: #fff;
     height: 36px;
     font-size: 24px;
-    padding: 22px 0;
+    // padding: 22px 0;
 
     img{
-      height: 100%;
+      // height: 100%;
+      height: 75px;
+      margin-top: -22px;
       margin-right: 15px;
     }
   }
@@ -194,7 +207,7 @@ export default {
     a{
       color: #fff;
       height: 100%;
-      margin: 0 5px;
+      margin: 0 15px;
       padding: 0 5px;
       border-radius: 5px;
       font-size: 16px;
@@ -208,27 +221,42 @@ export default {
   .personal{
     line-height: 80px;
     // margin-right: 35px;
-    right: 0;
+    right: 0px;
     top: 0;
    .user{
-    width: 48px;
-    height: 48px;
-    border: 1px solid #cfd1d4;
-    margin-top: 15px;
-    float: left;
-    border-radius: 50%;
-    overflow: hidden;
-    img{
+      cursor: pointer;
+      width: 48px;
+      height: 48px;
+      border: 1px solid #cfd1d4;
+      margin-top: 15px;
+      margin-right: 50px;
+      float: left;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      img{
         width: 100%;
         height: 100%;
+      }
+      .user-show-container {
+        width: 100px;
+        height: 300px;
+        background: #fff;
+        position: absolute;
+        // display: none;
+        top: 50px;
+      }
+      .user:hover {
+        .user-show-container {
+          display: inline;
+        }
+      }
     }
-   }
    span.name{
     color: #fff;
     font-size: 14px;
     padding: 0 30px 0 15px;
     float: left;
-    displey:inline-block;
    }
     a{
       color: #d7dadc;
@@ -253,6 +281,9 @@ export default {
         // padding-right: 80px;
         cursor: pointer;
       }
+    }
+    .el-dropdown {
+      color: #ff6a00;
     }
   }
 }

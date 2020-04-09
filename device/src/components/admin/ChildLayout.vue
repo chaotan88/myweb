@@ -15,7 +15,7 @@
       <img src="../../../static/img/right-arrow.png"/>
     </div>
     <div class="admin-child-cen">
-      <breadcrumb></breadcrumb>
+      <!-- <breadcrumb></breadcrumb> -->
       <div class="pos-f d-b mask-wrap"></div>
       <div class="pos-r admin-child-main">
         <router-view/>

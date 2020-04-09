@@ -55,10 +55,12 @@
           <div>
             <span class="apartmentName"><span class="label">{{$t('device.apartmentName')}}</span>：<span>{{addressInfo.apartmentName}}</span></span>
             <span class="apartmentName"><span class="label">{{$t('device.apartmentManager')}}</span>：<span>{{addressInfo.apartmentManager}}</span></span>
-            <span class="apartmentManager"><span class="label">{{$t('device.deviceName')}}</span>：<span></span></span>
+            <span class="apartmentManager"><span class="label">{{$t('device.deviceName')}}</span>：<span>{{deviceInfo.name}}</span></span>
           </div>
           <div>
-            <span class="apartmentPhone"><span class="label">{{$t('device.apartmentPhone')}}</span>：<span>{{addressInfo.apartmentPhone}}</span></span>
+            <span class="apartmentPhone"><span class="label">{{$t('device.apartmentPhone')}}</span>：
+            <span :title="`${addressInfo.apartmentPhone1},${addressInfo.apartmentPhone2},${addressInfo.apartmentPhone3}`" v-if="addressInfo.apartmentPhone1">
+              {{addressInfo.apartmentPhone1}}...</span></span>
             <span class="apartmentPhone"><span class="label">{{$t('device.addressDetail')}}</span>：<span>{{addressInfo.address}}</span></span>
             <span class="apartmentManager"><span class="label">{{$t('device.imeiNumber')}}</span>：<span>{{addressInfo.imei}}</span></span>
           </div>
@@ -197,7 +199,7 @@
       element-loading-text="loading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.8)">
-     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="95px" class="demo-ruleForm">
       <ul>
         <li>
           <el-form-item :label="$t('device.roomNumber')" prop="roomNumber" v-if="id">
@@ -374,12 +376,16 @@
           ]
         },
         loading: false,
-        addressInfo: {}
+        addressInfo: {},
+        deviceInfo: {}
       }
     },
     mounted () {
       this.addressId = this.$route.params.id.split('@')[0]
       this.addressInfo = JSON.parse(sessionStorage.getItem('setVistorLocation'))
+      if (this.addressInfo.imei) {
+        this.getDeviceInfo()
+      }
       this.findData()
     },
     methods: {
@@ -392,6 +398,20 @@
         }).then((res) => {
           this.itemList = res.data.data.list
           this.total = res.data.data.total
+        })
+      },
+      getDeviceInfo () {
+        this.$http.post('@ROOT_API/dfDevice/getDfDevicePage', {
+          start: 1,
+          pageSize: 2,
+          imei: this.addressInfo.imei
+        }).then((res) => {
+          let { data, status } = res.data
+          if (status === '1') {
+            let { list } = data
+            let [item] = list
+            this.deviceInfo = item
+          }
         })
       },
       deleteHomeUser (row) {
@@ -471,7 +491,7 @@
               }
               this.$http.post('@ROOT_API/dfDeviceFamily/saveOrUpdateDfDeviceFamily', params).then((res) => {
                 if (res.data.status === '1') {
-                  this.$message.success('保存成功')
+                  this.$message.success('Success')
                   this.updateDialog = false
                   this.findData()
                 } else {
@@ -507,7 +527,7 @@
               })
               this.$http.post('@ROOT_API/dfDeviceFamily/saveOrUpdateDfDeviceFamilyList', saveList).then((res) => {
                 if (res.data.status === '1') {
-                  this.$message.success('保存成功')
+                  this.$message.success('Success')
                   this.updateDialog = false
                   this.findData()
                 } else {

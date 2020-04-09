@@ -12,7 +12,7 @@ export default {
     {
       path: '/admin/log/visitlog',
       meta: {
-        title: '访问日志',
+        title: 'Logging',
         nav: 'menu.accessLog',
         icon: 'console-icon',
         auth: true,
@@ -48,21 +48,21 @@ export default {
       //     component: r => require([''], r)
       //   }
       // ]
-    },
-    {
-      path: '/admin/log/oprationLog',
-      meta: {
-        title: '操作日志',
-        nav: 'menu.oprateLog',
-        icon: 'console-icon',
-        auth: true,
-        authId: 10,
-        menuCode: '101041',
-        breadcrumb: [
-          { title: 'menu.oprateLog', path: '' }
-        ]
-      },
-      component: r => require(['@/views/admin/log/OprationLog'], r)
     }
+    // {
+    //   path: '/admin/log/oprationLog',
+    //   meta: {
+    //     title: 'Logging',
+    //     nav: 'menu.oprateLog',
+    //     icon: 'console-icon',
+    //     auth: true,
+    //     authId: 10,
+    //     menuCode: '101041',
+    //     breadcrumb: [
+    //       { title: 'menu.oprateLog', path: '' }
+    //     ]
+    //   },
+    //   component: r => require(['@/views/admin/log/OprationLog'], r)
+    // }
   ]
 }

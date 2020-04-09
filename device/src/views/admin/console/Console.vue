@@ -95,21 +95,6 @@
               <p>{{ props.row.apartmentName}}</p>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('device.endTime')" width="100" v-if="currentCard === '2'">
-            <template slot-scope="props">
-              <p>{{ props.row.endTime }}</p>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('device.startTime')" width="100" v-if="currentCard === '2'">
-            <template slot-scope="props">
-              <p>{{ props.row.startTime }}</p>
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('device.theEffectiveTime')" width="100" v-if="currentCard === '3'">
-            <template slot-scope="props">
-              <p>{{ props.row.temporaryOpenHrs }} h</p>
-            </template>
-          </el-table-column>
         </el-table>
         </div>
       </div>

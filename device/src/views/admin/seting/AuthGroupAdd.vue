@@ -2,16 +2,16 @@
 <template>
 <div class="add-group-wrap">
   <div class="add-group-cen">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
       <el-row class="form-wrap">
-        <el-form-item label="权限组" prop="name">
-          <el-input v-model="ruleForm.name" placeholder="限20个字，不含特殊字符"></el-input>
+        <el-form-item label="Permission group" prop="name">
+          <el-input v-model="ruleForm.name" :placeholder="`1-20${$t('common.characters')}`"></el-input>
         </el-form-item>
       </el-row>
       <el-form-item prop="selectList" class="table-item-wrap">
         <table cellpadding="0" cellspacing="0" class="ta-l table-wrap">
           <tr>
-            <th colspan="2"><el-checkbox v-model="checkAll" @change="allSelectChange">全选</el-checkbox></th>
+            <th colspan="2"><el-checkbox v-model="checkAll" @change="allSelectChange">Select All</el-checkbox></th>
           </tr>
           <tr v-for="item in groupData" :key="item.id">
             <td><el-checkbox v-model="item.checkAll" @change="rowSelectChange(item)">{{item.meunName}}</el-checkbox></td>
@@ -22,8 +22,8 @@
     </el-form>
   </div>
   <div class="ta-c add-group-b">
-    <el-button type="primary" @click="submitForm('ruleForm')">{{adminId ? '提交修改' : '立即创建'}}</el-button>
-    <el-button @click="$router.back()" v-if="adminId">返回</el-button>
+    <el-button type="primary" @click="submitForm('ruleForm')">{{adminId ? 'Save' : 'Save'}}</el-button>
+    <el-button @click="$router.back()" v-if="adminId">Back</el-button>
   </div>
 </div>
 </template>
@@ -34,9 +34,9 @@ export default {
     // 校验权限组名称
     let validateJurisdiction = (rule, value, callback) => {
       var pattern = /[`~!@#$%^&*()_\-+=<>?:"{}|,./;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/im
-      if (value.length <= 0) return callback(new Error('请输入权限组名称'))
-      if (pattern.test(value)) return callback(new Error('请输入正确的权限组名称'))
-      if (value.length > 20) return callback(new Error('限20个字，不含特殊字符'))
+      if (value.length <= 0) return callback(new Error('Group Name is required!'))
+      if (pattern.test(value)) return callback(new Error('Group Name is Invalid'))
+      if (value.length > 20) return callback(new Error('Limited to 20 character!'))
       callback()
     }
     return {
@@ -56,13 +56,13 @@ export default {
         name: [
           { required: true, validator: validateJurisdiction, trigger: 'blur' }
         ],
-        region: [{ required: true, message: '请选择活动区域', trigger: 'change' }],
-        date1: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
-        date2: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
-        type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }],
-        resource: [{ required: true, message: '请选择活动资源', trigger: 'change' }],
+        region: [{ required: true, message: 'is required!', trigger: 'change' }],
+        date1: [{ type: 'date', required: true, message: 'is required!', trigger: 'change' }],
+        date2: [{ type: 'date', required: true, message: 'is required!', trigger: 'change' }],
+        type: [{ type: 'array', required: true, message: 'is required!', trigger: 'change' }],
+        resource: [{ required: true, message: 'is is required!!', trigger: 'change' }],
         desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }],
-        selectList: [{ type: 'array', required: true, message: '请勾选权限!', trigger: 'change' }]
+        selectList: [{ type: 'array', required: true, message: 'is required!', trigger: 'change' }]
       },
 
       checkAll: false,                  // 是否全选

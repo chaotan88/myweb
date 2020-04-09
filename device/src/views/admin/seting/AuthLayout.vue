@@ -2,10 +2,10 @@
 <template>
   <div class="setting-layout-wrap">
     <div class="ta-c pos-a nav-list-wrap">
-      <router-link class="d-ib" to="/admin/seting/auth/admin/index">管理员</router-link>
-      <router-link class="d-ib" to="/admin/seting/auth/admin/add">添加管理员</router-link>
-      <router-link class="d-ib" to="/admin/seting/auth/group/index">权限组</router-link>
-      <router-link class="d-ib" to="/admin/seting/auth/group/add">添加权限组</router-link>
+      <router-link class="d-ib" to="/admin/seting/auth/admin/index">{{$t('device.apartmentManager')}}</router-link>
+      <router-link class="d-ib" to="/admin/seting/auth/admin/add">{{$t('common.addApartmentManager')}}</router-link>
+      <router-link class="d-ib" to="/admin/seting/auth/group/index">{{$t('account.permissionGroup')}}</router-link>
+      <!-- <router-link class="d-ib" to="/admin/seting/auth/group/add">{{$t('common.addPermissionGroup')}}</router-link> -->
     </div>
     <router-view :key="key"></router-view>
   </div>

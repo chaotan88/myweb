@@ -157,11 +157,14 @@ export default {
     text-align: center;
     padding: 10px;
     border-bottom: 1px solid #efefef;
+    img {
+      height: 150px;
+    }
   }
   .send-email {
     width: 960px;
     margin: auto;
-    margin-top: 200px;
+    margin-top: 50px;
     .send-email-content {
       width: 400px;
       float: right;

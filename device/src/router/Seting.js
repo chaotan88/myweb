@@ -14,7 +14,7 @@ export default {
       path: '/admin/seting/account',
       redirect: '/admin/seting/account/index',
       meta: {
-        title: '设置',
+        title: 'Setting',
         nav: 'menu.accountSetting',
         icon: 'seting-icon1',
         auth: true,
@@ -26,7 +26,7 @@ export default {
         {
           path: '/admin/seting/account/index',
           meta: {
-            title: '账户设置',
+            title: 'Setting',
             auth: true,
             breadcrumb: [
               { title: 'menu.console', path: '/admin/seting/account' },
@@ -38,7 +38,7 @@ export default {
         {
           path: '/admin/seting/account/update',
           meta: {
-            title: '修改密码',
+            title: 'Setting',
             auth: true,
             breadcrumb: [
               { title: 'menu.console', path: '/admin/seting/account' },
@@ -46,100 +46,112 @@ export default {
             ]
           },
           component: r => require(['@/views/admin/seting/AccountUpdate'], r)
-        }
-      ]
-    },
-
-    // 权限设置
-    {
-      path: '/admin/seting/auth',
-      redirect: '/admin/seting/auth/admin/index',
-      meta: {
-        title: '权限设置',
-        nav: 'menu.authSetting',
-        icon: 'seting-icon2',
-        auth: true,
-        authId: 7,
-        menuCode: '101052'
-      },
-      component: r => require(['@/views/admin/seting/AuthLayout'], r),
-      children: [
-        {
-          path: '/admin/seting/auth/admin/index',
-          meta: {
-            title: '管理员',
-            auth: true,
-            breadcrumb: [
-              { title: 'menu.console', path: '/admin/seting/auth' },
-              { title: 'device.apartmentManager', path: '' }
-            ]
-          },
-          component: r => require(['@/views/admin/seting/AuthAdmin'], r)
         },
         {
-          path: '/admin/seting/auth/admin/add',
+          path: '/admin/seting/account/autoRenewal',
           meta: {
-            title: '添加管理员',
+            title: 'Setting',
             auth: true,
             breadcrumb: [
-              { title: 'menu.console', path: '/admin/seting/auth' },
-              { title: 'common.addApartmentManager', path: '' }
+              { title: 'menu.console', path: '/admin/seting/account' },
+              { title: 'recharge.autoRenewal', path: '' }
             ]
           },
-          component: r => require(['@/views/admin/seting/AuthAdminAdd'], r)
-        },
-        // 编辑管理员
-        {
-          path: '/admin/seting/auth/admin/edit',
-          meta: {
-            title: '添加管理员',
-            auth: true,
-            breadcrumb: [
-              { title: 'menu.console', path: '/admin/seting/auth' },
-              { title: 'common.updateApartmentManager', path: '' }
-            ]
-          },
-          component: r => require(['@/views/admin/seting/AuthAdminAdd'], r)
-        },
-        {
-          path: '/admin/seting/auth/group/index',
-          meta: {
-            title: '权限组',
-            auth: true,
-            breadcrumb: [
-              { title: 'menu.console', path: '/admin/seting/auth' },
-              { title: 'account.permissionGroup', path: '' }
-            ]
-          },
-          component: r => require(['@/views/admin/seting/AuthGroup'], r)
-        },
-        {
-          path: '/admin/seting/auth/group/add',
-          meta: {
-            title: '添加权限组',
-            auth: true,
-            breadcrumb: [
-              { title: 'menu.console', path: '/admin/seting/auth' },
-              { title: 'common.addPermissionGroup', path: '' }
-            ]
-          },
-          component: r => require(['@/views/admin/seting/AuthGroupAdd'], r)
-        },
-        // 编辑权限组
-        {
-          path: '/admin/seting/auth/group/edit',
-          meta: {
-            title: '添加权限组',
-            auth: true,
-            breadcrumb: [
-              { title: 'menu.console', path: '/admin/seting/auth' },
-              { title: 'common.updatePermissionGroup', path: '' }
-            ]
-          },
-          component: r => require(['@/views/admin/seting/AuthGroupAdd'], r)
+          component: r => require(['@/views/admin/seting/AutoRenewal'], r)
         }
       ]
     }
+
+    // 权限设置
+    // {
+    //   path: '/admin/seting/auth',
+    //   redirect: '/admin/seting/auth/admin/index',
+    //   meta: {
+    //     title: 'Setting',
+    //     nav: 'menu.authSetting',
+    //     icon: 'seting-icon2',
+    //     auth: true,
+    //     authId: 7,
+    //     menuCode: '101052'
+    //   },
+    //   component: r => require(['@/views/admin/seting/AuthLayout'], r),
+    //   children: [
+    //     {
+    //       path: '/admin/seting/auth/admin/index',
+    //       meta: {
+    //         title: 'Setting',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'menu.console', path: '/admin/seting/auth' },
+    //           { title: 'device.apartmentManager', path: '' }
+    //         ]
+    //       },
+    //       component: r => require(['@/views/admin/seting/AuthAdmin'], r)
+    //     },
+    //     {
+    //       path: '/admin/seting/auth/admin/add',
+    //       meta: {
+    //         title: 'Setting',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'menu.console', path: '/admin/seting/auth' },
+    //           { title: 'common.addApartmentManager', path: '' }
+    //         ]
+    //       },
+    //       component: r => require(['@/views/admin/seting/AuthAdminAdd'], r)
+    //     },
+    //     // 编辑管理员
+    //     {
+    //       path: '/admin/seting/auth/admin/edit',
+    //       meta: {
+    //         title: 'Setting',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'menu.console', path: '/admin/seting/auth' },
+    //           { title: 'common.updateApartmentManager', path: '' }
+    //         ]
+    //       },
+    //       component: r => require(['@/views/admin/seting/AuthAdminAdd'], r)
+    //     },
+    //     {
+    //       path: '/admin/seting/auth/group/index',
+    //       meta: {
+    //         title: 'Setting',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'menu.console', path: '/admin/seting/auth' },
+    //           { title: 'account.permissionGroup', path: '' }
+    //         ]
+    //       },
+    //       component: r => require(['@/views/admin/seting/AuthGroup'], r)
+    //     },
+    //     {
+    //       path: '/admin/seting/auth/group/add',
+    //       meta: {
+    //         title: 'Setting',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'menu.console', path: '/admin/seting/auth' },
+    //           { title: 'common.addPermissionGroup', path: '' }
+    //         ]
+    //       },
+    //       component: r => require(['@/views/admin/seting/AuthGroupAdd'], r)
+    //     },
+    //     // 编辑权限组
+    //     {
+    //       path: '/admin/seting/auth/group/edit',
+    //       meta: {
+    //         title: 'Setting',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'menu.console', path: '/admin/seting/auth' },
+    //           { title: 'common.updatePermissionGroup', path: '' }
+    //         ]
+    //       },
+    //       component: r => require(['@/views/admin/seting/AuthGroupAdd'], r)
+    //     }
+    //   ]
+    // }
 
     // 代理商授权
     // {

@@ -1,5 +1,4 @@
 <template>
-  <!-- 终端-申请终端-管理 -->
   <div class="application">
     <div class="application-wrap">
       <div class="list">
@@ -19,11 +18,11 @@
                {{$t("device.newDeviceInbuond")}}
               </el-button>
             </el-form-item> -->
-            <el-form-item>
+            <!-- <el-form-item>
               <el-button class="add-btn" @click="importDialog = true">
                   {{$t("common.input")}}
                 </el-button>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
               <el-button class="add-btn" @click="addDialogShow = true">
                   {{$t("common.new")}}
@@ -39,11 +38,11 @@
               <p>{{ props.row.imei}}</p>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('device.deviceModel')" width="150">
+          <!-- <el-table-column :label="$t('device.deviceModel')" width="150">
             <template slot-scope="props">
               <p>{{ props.row.type === 1 ? '门禁设备' : '' }}</p>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column :label="$t('device.businessBatchNumber')" width="190">
             <template slot-scope="props">
               <p>{{ props.row.businessNo }}</p>
@@ -59,12 +58,12 @@
               <p>{{ props.row.warehousingTime }}</p>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" :label="$t('common.operation')" width="120">
+          <el-table-column prop="operation" :label="$t('common.operation')" min-width="120">
             <template slot-scope="props">
               <el-button class="detail-button" @click="updateDevice(props.row.id, 2)"
-                v-if="props.row.useStatus === 1">停用</el-button>
+                v-if="props.row.useStatus === 1">Disable</el-button>
               <el-button class="detail-button" @click="updateDevice(props.row.id, 1)"
-                v-else>启用</el-button>
+                v-else>Enable</el-button>
               <!-- <el-button class="detail-button" @click="settingDevice(props.row.id)">设置</el-button> -->
             </template>
           </el-table-column>
@@ -98,8 +97,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialog = false">取 消</el-button>
-        <el-button type="primary" @click="add">确 定</el-button>
+        <el-button @click="addDialog = false">{{$t("common.cancel")}}</el-button>
+        <el-button type="primary" @click="add">{{$t("common.sure")}}</el-button>
       </span>
     </el-dialog>
     <!-- 导入设备弹窗 -->
@@ -119,8 +118,8 @@
         </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="importDialog = false">取 消</el-button>
-        <el-button type="primary" @click="upload">入库</el-button>
+        <el-button @click="importDialog = false">{{$t("common.cancel")}}</el-button>
+        <el-button type="primary" @click="upload">{{$t("common.sure")}}</el-button>
       </span>
     </el-dialog>
     <!-- 分页器 -->
@@ -131,31 +130,31 @@
       width="60%"
       center class="grant-pop">
       <el-table :data="addList">
-        <el-table-column type="index" :label="$t('common.index')" width="80"></el-table-column>
-        <el-table-column :label="$t('device.imeiNumber')" width="160">
+        <el-table-column type="index" :label="$t('common.index')" width="150"></el-table-column>
+        <el-table-column :label="$t('device.imeiNumber')" min-width="160">
           <template slot-scope="props">
             <el-input v-model="props.row.imei"></el-input>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('common.password')" width="160">
+        <!-- <el-table-column :label="$t('common.password')" width="160">
           <template slot-scope="props">
             <el-input v-model="props.row.password" maxlength="4" show-word-limit @change="changePassword(props.$index)"></el-input>
           </template>
-        </el-table-column>
-        <el-table-column :label="$t('device.businessBatchNumber')" width="160">
+        </el-table-column> -->
+        <el-table-column :label="$t('device.businessBatchNumber')" min-width="160">
           <template slot-scope="props">
             <el-input v-model="props.row.businessNo"></el-input>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('device.systemBatchNumber')" width="200">
+        <el-table-column :label="$t('device.systemBatchNumber')" min-width="200">
           <template slot-scope="props">
             <el-input v-model="props.row.systemNo"></el-input>
           </template>
         </el-table-column>>
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogShow = false">取 消</el-button>
-        <el-button type="primary" @click="add">入库</el-button>
+        <el-button @click="addDialogShow = false">{{$t("common.cancel")}}</el-button>
+        <el-button type="primary" @click="add">{{$t("common.sure")}}</el-button>
       </span>
     </el-dialog>
     <!--手工填写添加设备-->
@@ -194,11 +193,11 @@
         },
         addDialogShow: false,
         addList: [
-          {type: 1, imei: '', password: '', businessNo: '', systemNo: ''},
-          {type: 1, imei: '', password: '', businessNo: '', systemNo: ''},
-          {type: 1, imei: '', password: '', businessNo: '', systemNo: ''},
-          {type: 1, imei: '', password: '', businessNo: '', systemNo: ''},
-          {type: 1, imei: '', password: '', businessNo: '', systemNo: ''}
+          {type: 1, imei: '', password: '9999', businessNo: '', systemNo: ''},
+          {type: 1, imei: '', password: '9999', businessNo: '', systemNo: ''},
+          {type: 1, imei: '', password: '9999', businessNo: '', systemNo: ''},
+          {type: 1, imei: '', password: '9999', businessNo: '', systemNo: ''},
+          {type: 1, imei: '', password: '9999', businessNo: '', systemNo: ''}
         ],
         filePath: ''
       }
@@ -240,7 +239,7 @@
           if (res.data.status === '1') {
             this.$message({
               type: 'success',
-              message: '保存成功'
+              message: 'Success'
             })
             this.findData()
             this.addDialogShow = false
@@ -261,7 +260,7 @@
           if (res.data.status === '1') {
             this.$message({
               type: 'success',
-              message: '操作成功'
+              message: 'Success'
             })
             this.findData()
           } else {

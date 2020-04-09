@@ -1,38 +1,37 @@
 <template>
   <div class="update-phone-wrap">
      <template v-if="curStep === 1">
-      <el-form :model="verifiData" :rules="rules" ref="verifiPhone" label-position="right" label-width='100px'>
+      <el-form :model="verifiData" :rules="rules" ref="verifiPhone" label-position="right" label-width='130px'>
         <!--手机号码默认无时-->
         <template>
-          <el-form-item inline label='旧邮箱：' prop='email'>
-            <el-input ref='email' placeholder='按邮箱格式填写' v-model="verifiData.email"></el-input>
+          <el-form-item inline label='Old Email：' prop='email'>
+            <el-input ref='email' placeholder='Mailbox format' v-model="verifiData.email"></el-input>
           </el-form-item>
-          <el-form-item inline label='验证码：' prop='code'>
+          <el-form-item inline label='Verifi Code：' prop='code'>
             <template>
-              <el-input class='inp-code' placeholder='输入6位数验证码' v-model="verifiData.code"></el-input>
-              <el-button class='ta-c pos-a get-code-btn' v-if="initSendCode" @click='sendNewCodeHandle(verifiData.email)'>获得验证码</el-button>
-              <el-button class='ta-c pos-a' disabled v-else>{{sendCodeNum}}s后重新获取</el-button>
+              <el-input class='inp-code' placeholder='6 digit number' v-model="verifiData.code"></el-input>
+              <el-button class='ta-c pos-a get-code-btn' v-if="initSendCode" @click="sendNewCodeHandle(verifiData.email, 'verifiPhone', '1')">Get Code</el-button>
+              <el-button class='ta-c pos-a' disabled v-else>Regain for {{sendCodeNum}}s</el-button>
             </template>
           </el-form-item>
         </template>
         <div class="ta-c next-btn-wrap">
-          <el-button type="primary" @click="submitNextForm('verifiPhone')">下一步</el-button>
+          <el-button type="primary" @click="submitNextForm('verifiPhone')">Next</el-button>
         </div>
       </el-form>
     </template>
     <template v-else>
-      <el-form :model="verifiData" :rules="rules" ref="verifiPhone2" label-position="right" label-width='100px'>
-        <el-form-item inline label='新邮箱：' prop='newEmail'>
-          <el-input ref='newEmail' placeholder='按邮箱格式填写' v-model="verifiData.newEmail"></el-input>
+      <el-form :model="verifiData" :rules="rules" ref="verifiPhone2" label-position="right" label-width='130px'>
+        <el-form-item inline label='new Email：' prop='newEmail'>
+          <el-input ref='newEmail' placeholder='Mailbox format' v-model="verifiData.newEmail"></el-input>
         </el-form-item>
-        <el-form-item inline label='验证码：' prop='newCode'>
-          <el-input class='inp-code' placeholder='输入6位数验证码' v-model="verifiData.newCode"></el-input>
-          <el-button class='ta-c pos-a get-code-btn' v-if="initSendCode" @click='sendNewCodeHandle(verifiData.newEmail)'>获得验证码</el-button>
-          <el-button class='ta-c pos-a' disabled v-else>{{sendCodeNum}}s后重新获取</el-button>
+        <el-form-item inline label='Verifi Code：' prop='newCode'>
+          <el-input class='inp-code' placeholder='6 digit number' v-model="verifiData.newCode"></el-input>
+          <el-button class='ta-c pos-a get-code-btn' v-if="initSendCode" @click="sendNewCodeHandle(verifiData.newEmail, 'verifiPhone2', '2')">Get Code</el-button>
+          <el-button class='ta-c pos-a' disabled v-else>Regain for {{sendCodeNum}}s</el-button>
         </el-form-item>
         <div class="ta-c next-btn-wrap">
-          <el-button type="primary" @click="submitForm('verifiPhone2')">确定</el-button>
-          <!-- <el-button type="primary" @click="submitForm('verifiPhone')">确定</el-button> -->
+          <el-button type="primary" @click="submitForm('verifiPhone2')">Ok</el-button>
         </div>
       </el-form>
     </template>
@@ -61,16 +60,14 @@ export default {
       },
       rules: {
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' }
+          { required: true, message: 'email is required', trigger: 'blur' }
         ],
         code: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 6, max: 6, message: '验证码为6位数', trigger: 'blur' }
+          { required: true, message: 'Verifi Code is required', trigger: 'blur' }
         ],
         newEmail: [{ required: true, type: 'email', trigger: 'blur' }],
         newCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 6, max: 6, message: '验证码为6位数', trigger: 'blur' }
+          { required: true, message: 'Verifi Code is required', trigger: 'blur' }
         ]
       },
       timer: null,                  // 定时器
@@ -97,51 +94,29 @@ export default {
     },
 
     /**
-     * 发送验证码
-     */
-    sendCodeHandle (value) {
-      // ajax发送验证码...
-      this.$http.post('@ROOT_API/login/getVerifyCodeForForgetPassword', {
-        phone: this.phone
-      }).then((res) => {
-        if (res.data.status === '1') {
-          this.initSendCode = false
-          this.countDownHandle()
-        } else {
-          this.$message({message: res.data.msg, type: 'error', duration: 2000})
-        }
-      })
-      .catch(() => {
-        this.$message({message: '获取验证码失败', type: 'error', duration: 2000})
-      })
-    },
-
-    /**
      * 第二步发送新验证码
      */
-    sendNewCodeHandle (value) {
-      // let inpPhone = this.$refs.newPhone.$el.children[0]
-      // let rePhone = /^1\d{10}$/
-      // if (!value || value.length !== 11 || !rePhone.test(value)) {
-      //   inpPhone.focus()
-      //   inpPhone.blur()
-      //   inpPhone.focus()
-      //   return false
-      // }
-      // 发送验证码
-      this.$http.post('@ROOT_API/login/sendEmailCode', {
-        email: value,
-        type: '5'
-      }).then((res) => {
-        if (res.data.status === '1') {
-          this.initSendCode = false
-          this.countDownHandle()
-        } else {
-          this.$message({message: res.data.msg, type: 'error', duration: 2000})
-        }
-      })
-      .catch(() => {
-        this.$message({message: '获取验证码失败', type: 'error', duration: 2000})
+    sendNewCodeHandle (value, formName, type) {
+      this.$refs[formName].validate((valid) => {
+        this.$http.post('@ROOT_API/login/sendEmailCode', {
+          email: value,
+          type: '5'
+        }).then((res) => {
+          if (res.data.status === '1') {
+            this.initSendCode = false
+            this.countDownHandle()
+            let message = 'Success'
+            if (type === '1') {
+              message = 'Please check email for 6-digit verification code'
+            }
+            this.$message({message: message, type: 'success', duration: 0, showClose: true})
+          } else {
+            this.$message({message: res.data.msg, type: 'error', duration: 2000})
+          }
+        })
+        .catch(() => {
+          this.$message({message: 'File', type: 'error', duration: 2000})
+        })
       })
     },
     /**
@@ -246,7 +221,7 @@ export default {
         }
 
         .inp-code{
-          width: 180px;
+          width: 140px;
         }
 
         .el-button{

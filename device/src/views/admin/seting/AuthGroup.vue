@@ -2,17 +2,17 @@
 <template>
   <div class="group">
     <div class="group-wrap">
-      <h3>列表</h3>
+      <h3>List</h3>
       <div class="list">
         <el-table ref="multipleTable" :data="tableData3" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
           <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-          <el-table-column prop="groupName" label="权限组" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="operation" label="操作" class="handle" show-overflow-tooltip width="160">
+          <el-table-column prop="groupName" label="Group Name" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="operation" label="Operation" class="handle" show-overflow-tooltip width="160">
             <template slot-scope="scope">
-              <template v-if="scope.row.groupType === 1">超级管理员不可编辑</template>
+              <template v-if="scope.row.groupType === 1">Editing not allowed</template>
               <template v-else>
-                <el-button size="mini" @click="$router.push({path:'/admin/seting/auth/group/edit', query: { id: scope.row.id, type: 'update' }})" class="green">编辑</el-button>
-                <el-button type="danger" size="mini" @click="handleDelete = true, deleteId = [scope.row.id]" class="orange">删除</el-button>
+                <el-button size="mini" @click="$router.push({path:'/admin/seting/auth/group/edit', query: { id: scope.row.id, type: 'update' }})" class="green">Modify</el-button>
+                <el-button type="danger" size="mini" @click="handleDelete = true, deleteId = [scope.row.id]" class="orange">Delete</el-button>
               </template>
             </template>
           </el-table-column>
@@ -26,11 +26,11 @@
       <el-pagination background layout="prev, pager, next" :page-count="totalPages" @current-change="pageChange"></el-pagination>
     </div>
     <!-- 删除键 -->
-    <el-dialog title="提示" :visible.sync="handleDelete" width="30%">
-      <span>确认是否删除权限组？</span>
+    <el-dialog title="Info" :visible.sync="handleDelete" width="30%">
+      <span>Confirm to delete permission group？</span>
       <span slot="footer" class="dialog-footer">
-      <el-button @click="handleDelete = false">取 消</el-button>
-      <el-button type="primary" @click="deleteHandle">确 定</el-button>
+      <el-button @click="handleDelete = false">{{$t("common.cancel")}}</el-button>
+      <el-button type="primary" @click="deleteHandle">{{$t("common.sure")}}</el-button>
       </span>
     </el-dialog>
 
@@ -79,7 +79,7 @@ export default {
     deleteBeforeHandle () {
       if (!this.deleteId.length) {
         this.$message({
-          message: '请选择要删除的数据',
+          message: 'Please select data',
           type: 'error',
           duration: 1000
         })

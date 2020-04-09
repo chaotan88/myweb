@@ -49,9 +49,9 @@
               <p>{{ props.row.systemNo }}</p>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('device.inboundDate')" width="130">
+          <el-table-column :label="$t('device.inboundDate')" width="200">
             <template slot-scope="props">
-              <p>{{ props.row.warehousingTime | dateFilter('YYYY-MM-DD') }}</p>
+              <p>{{ props.row.warehousingTime | dateFilter }}</p>
             </template>
           </el-table-column>
           <el-table-column :label="$t('device.describeInfo')" width="150">
@@ -347,5 +347,14 @@
       font-size: #367299;
     }
   }
+</style>
+<style lang="less">
+.application {
+  .application-wrap {
+    .list .line .el-form .el-form-item .el-form-item__content .el-input input {
+      width: 300px;
+    }
+  }
+}
 </style>
 

@@ -224,7 +224,7 @@ export default {
           if (res.data.status === '1') {
             this.$message({
               type: 'success',
-              message: '购买成功,重新登录后生效'
+              message: 'Success'
             })
             this.startPay = false
           } else {
@@ -261,7 +261,7 @@ export default {
             if (res.data.status === '1') {
               this.$message({
                 type: 'success',
-                message: '购买成功,重新登录后生效'
+                message: 'Success'
               })
               this.startPay = false
             } else {

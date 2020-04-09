@@ -63,10 +63,12 @@
           <div>
             <span class="apartmentName"><span class="label">{{$t('device.apartmentName')}}</span>：<span>{{addressInfo.apartmentName}}</span></span>
             <span class="apartmentName"><span class="label">{{$t('device.apartmentManager')}}</span>：<span>{{addressInfo.apartmentManager}}</span></span>
-            <span class="apartmentManager"><span class="label">{{$t('device.deviceName')}}</span>：<span></span></span>
+            <span class="apartmentManager"><span class="label">{{$t('device.deviceName')}}</span>：<span>{{deviceInfo.name}}</span></span>
           </div>
           <div>
-            <span class="apartmentPhone"><span class="label">{{$t('device.apartmentPhone')}}</span>：<span>{{addressInfo.apartmentPhone}}</span></span>
+            <span class="apartmentPhone"><span class="label">{{$t('device.apartmentPhone')}}</span>：
+            <span :title="`${addressInfo.apartmentPhone1},${addressInfo.apartmentPhone2},${addressInfo.apartmentPhone3}`" v-if="addressInfo.apartmentPhone1">
+              {{addressInfo.apartmentPhone1}}...</span></span>
             <span class="apartmentPhone"><span class="label">{{$t('device.addressDetail')}}</span>：<span>{{addressInfo.address}}</span></span>
             <span class="apartmentManager"><span class="label">{{$t('device.imeiNumber')}}</span>：<span>{{addressInfo.imei}}</span></span>
           </div>
@@ -74,6 +76,11 @@
         <!-- 表格 -->
         <el-table :data="itemList">
           <el-table-column type="index" :label="$t('common.index')" width="90"></el-table-column>
+          <el-table-column :label="$t('device.userName')" width="130">
+            <template slot-scope="props">
+              <p>{{props.row.username}}</p>
+            </template>
+          </el-table-column>
           <el-table-column :label="$t('device.accessType')" width="130">
             <template slot-scope="props">
               <p v-if="props.row.accountType === 1">code</p>
@@ -124,7 +131,12 @@
               <p>{{ (props.row.updateTime || props.row.createTime) | dateFilter('YYYY-MM-DD HH:mm:ss')}}</p>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" :label="$t('common.operation')">
+          <el-table-column :label="$t('common.remark')" width="150">
+            <template slot-scope="props">
+              <p>{{props.row.remark}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column prop="operation" :label="$t('common.operation')" min-width="180">
             <template slot-scope="props">
               <el-button class="detail-button" @click="deleteItem(props.row)">{{$t('common.delete')}}</el-button>
               <el-button class="detail-button" @click="updateItem(props.row)">{{$t('common.update')}}</el-button>
@@ -147,15 +159,18 @@
     <el-dialog
       :title="updateId ? $t('common.update'): $t('common.new')"
       :visible.sync="updateDialog"
-      width="700px"
+      width="500px"
       center class="grant-pop"
       v-loading="loading"
       element-loading-text="loading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.8)">
-      <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="200px" class="demo-ruleForm" v-if="currentCard === '1'">
+      <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="105px" class="demo-ruleForm" v-if="currentCard === '1'">
         <ul>
           <li>
+            <el-form-item :label="$t('device.userName')" prop="username">
+              <el-input v-model="ruleForm1.username" :placeholder="`1-20${$t('common.characters')}`" minlength="1" maxlength="20"></el-input>
+            </el-form-item>
             <el-form-item :label="$t('device.accessType')" prop="accountType" >
               <el-select v-model="ruleForm1.accountType">
                   <el-option
@@ -195,12 +210,22 @@
               <el-input v-model="ruleForm1.delaySec" :placeholder="$t('common.timeIsNumber')"></el-input>
             </el-form-item>
           </li>
+          <li>
+            <el-form-item :label="$t('common.remark')" prop="remark">
+              <el-input v-model="ruleForm1.remark" :placeholder="`1-100${$t('common.characters')}`" minlength="1" maxlength="100"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4}"></el-input>
+            </el-form-item>
+          </li>
         </ul>
       </el-form>
 
-      <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="150px" class="demo-ruleForm" v-else-if="currentCard === '2'">
+      <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="145px" class="demo-ruleForm" v-else-if="currentCard === '2'">
         <ul>
           <li>
+            <el-form-item :label="$t('device.userName')" prop="username">
+              <el-input v-model="ruleForm2.username" :placeholder="`1-20${$t('common.characters')}`" minlength="1" maxlength="20"></el-input>
+            </el-form-item>
             <el-form-item :label="$t('device.accessType')" prop="accountType">
               <el-select v-model="ruleForm2.accountType">
                 <el-option v-for="item in vistorTypes" :key="item.id" :label="item.label" :value="item.id"></el-option>
@@ -221,7 +246,7 @@
           <li>
             <el-form-item :label="$t('common.allowedUseTime')" prop="startTime" class="date-range">
               <el-input v-model="ruleForm2.startTime"
-                :placeholder="`4${$t('common.characters')}`" minlength="4" maxlength="4" style="width: 200px;"></el-input>
+                :placeholder="`4${$t('common.characters')}`" minlength="4" maxlength="4" style="width: 140px;"></el-input>
               <!-- <el-time-select
                 v-model="ruleForm2.startTime"
                 :picker-options="{
@@ -242,7 +267,7 @@
                 :placeholder="$t('common.selectTime')"
               ></el-time-select> -->
               <el-input v-model="ruleForm2.endTime"
-                :placeholder="`4${$t('common.characters')}`" minlength="4" maxlength="4"  style="width: 200px;"></el-input>
+                :placeholder="`4${$t('common.characters')}`" minlength="4" maxlength="4"  style="width: 140px;"></el-input>
             </el-form-item>
             <el-form-item  label="" prop="week" class="date-week">
               <!-- <el-checkbox
@@ -255,12 +280,20 @@
                 <el-checkbox v-for="week in weekOptions" :label="week" :key="week.id">{{week}}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
+            <el-form-item :label="$t('common.remark')" prop="remark">
+              <el-input v-model="ruleForm2.remark" :placeholder="`1-100${$t('common.characters')}`" minlength="1" maxlength="100"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4}"></el-input>
+            </el-form-item>
           </li>
         </ul>
       </el-form>
-      <el-form :model="ruleForm3" :rules="rules3" ref="ruleForm3" label-width="200px" class="demo-ruleForm" v-else-if="currentCard === '3'">
+      <el-form :model="ruleForm3" :rules="rules3" ref="ruleForm3" label-width="150px" class="demo-ruleForm" v-else-if="currentCard === '3'">
         <ul>
           <li>
+            <el-form-item :label="$t('device.userName')" prop="username">
+              <el-input v-model="ruleForm3.username" :placeholder="`1-20${$t('common.characters')}`" minlength="1" maxlength="20"></el-input>
+            </el-form-item>
             <el-form-item :label="$t('device.accessType')" prop="accountType" >
               <el-select v-model="ruleForm3.accountType">
                   <el-option
@@ -286,6 +319,11 @@
           <li>
             <el-form-item :label="$t('common.validTime')" prop="temporaryOpenHrs" >
               <el-input v-model.number="ruleForm3.temporaryOpenHrs"></el-input>
+            </el-form-item>
+            <el-form-item :label="$t('common.remark')" prop="remark">
+              <el-input v-model="ruleForm3.remark" :placeholder="`1-100${$t('common.characters')}`" minlength="1" maxlength="100"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4}"></el-input>
             </el-form-item>
           </li>
         </ul>
@@ -383,7 +421,9 @@
           phone: '',
           card: '',
           relay: '',
-          delaySec: ''
+          delaySec: '',
+          username: '',
+          remark: ''
         },
         ruleForm2: {
           accountType: 1,
@@ -392,7 +432,9 @@
           card: '',
           startTime: '',
           endTime: '',
-          week: ''
+          week: '',
+          username: '',
+          remark: ''
         },
         ruleForm3: {
           accountType: 1,
@@ -400,9 +442,12 @@
           phone: '',
           card: '',
           relay: '',
-          temporaryOpenHrs: ''
+          temporaryOpenHrs: '',
+          username: '',
+          remark: ''
         },
         rules1: {
+          username: [{ required: true, trigger: 'blur' }],
           accountType: [{ required: true, trigger: 'blur' }],
           code: [
             { required: true, trigger: 'blur' },
@@ -423,6 +468,7 @@
           ]
         },
         rules2: {
+          username: [{ required: true, trigger: 'blur' }],
           accountType: [{ required: true, trigger: 'blur' }],
           code: [
             { required: true, trigger: 'blur' },
@@ -437,12 +483,13 @@
             { required: true, trigger: 'blur' },
             { min: 3, max: 20, trigger: 'blur', message: `3-20${this.$t('common.characters')}` }
           ],
-          startTime: [{ required: true, trigger: 'blur' }],
-          week: [
-            { required: true, trigger: 'blur' }
-          ]
+          startTime: [{ required: true, trigger: 'blur' }]
+          // week: [
+          //   { required: true, trigger: 'blur' }
+          // ]
         },
         rules3: {
+          username: [{ required: true, trigger: 'blur' }],
           accountType: [{ required: true, trigger: 'blur' }],
           code: [
             { required: true, trigger: 'blur' },
@@ -469,7 +516,8 @@
         importDialog: false,
         filePath: '',
         loading: false,
-        addressInfo: {}
+        addressInfo: {},
+        deviceInfo: {}
       }
     },
     mounted () {
@@ -480,6 +528,9 @@
       this.addressInfo = JSON.parse(sessionStorage.getItem('setVistorLocation'))
       this.getVisitorDateTypeGroupData()
       this.findData()
+      if (this.addressInfo.imei) {
+        this.getDeviceInfo()
+      }
     },
     methods: {
       findData () {
@@ -493,11 +544,25 @@
           this.total = res.data.data.total
         })
       },
+      getDeviceInfo () {
+        this.$http.post('@ROOT_API/dfDevice/getDfDevicePage', {
+          start: 1,
+          pageSize: 2,
+          imei: this.addressInfo.imei
+        }).then((res) => {
+          let { data, status } = res.data
+          if (status === '1') {
+            let { list } = data
+            let [item] = list
+            this.deviceInfo = item
+          }
+        })
+      },
       getVisitorDateTypeGroupData () {
         this.$http.post('@ROOT_API/dfDeviceVisitor/getVisitorDateTypeGroupData', {
           addressId: this.addressId
         }).then((res) => {
-          if (res.data) {
+          if (res.data.status === '1') {
             this.totals.total1 = res.data.data.permanentVisitorsNumber || 0
             this.totals.total2 = res.data.data.limitVisitorsNumber || 0
             this.totals.total3 = res.data.data.temporaryVisitorsNumber || 0
@@ -517,7 +582,9 @@
             phone: '',
             card: '',
             relay: '',
-            delaySec: ''
+            delaySec: '',
+            username: '',
+            remark: ''
           }
         } else if (this.currentCard === '2') {
           this.ruleForm2 = {
@@ -527,7 +594,9 @@
             card: '',
             startTime: '',
             endTime: '',
-            week: ''
+            week: '',
+            username: '',
+            remark: ''
           }
           this.checkWeek = []
         } else if (this.currentCard === '3') {
@@ -537,7 +606,9 @@
             phone: '',
             card: '',
             relay: '',
-            temporaryOpenHrs: ''
+            temporaryOpenHrs: '',
+            username: '',
+            remark: ''
           }
         }
         this.updateDialog = true
@@ -571,8 +642,11 @@
         }
       },
       submitForm () {
-        this.loading = true
-        this.checkDevice(() => {
+        let formName = `ruleForm${this.currentCard}`
+        // this.checkDevice(() => {
+        this.$refs[formName].validate((valid) => {
+          if (!valid) return false
+          this.loading = true
           let baseParams = {
             // imei: this.imei,
             addressId: this.addressId,
