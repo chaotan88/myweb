@@ -46,6 +46,9 @@
         <el-form-item :label="$t('login.username')" prop="userName">
           <el-input v-model="registForm.userName"></el-input>
         </el-form-item>
+        <el-form-item :label="$t('login.company')" prop="company">
+          <el-input v-model="registForm.companyName"></el-input>
+        </el-form-item>
         <el-form-item :label="$t('login.email')" prop="email">
           <el-input v-model="registForm.email"></el-input>
         </el-form-item>
@@ -240,7 +243,8 @@ export default {
             userName: this.registForm.userName,
             email: this.registForm.email,
             password: this.registForm.password,
-            confirmPwd: this.registForm.password
+            confirmPwd: this.registForm.password,
+            companyName: this.registForm.companyName
           }
           if (this.registForm.email !== this.registForm.emailConfirmation) {
             this.$message({
@@ -638,7 +642,7 @@ export default {
       padding: 0;
     }
     .el-form-item {
-      margin-top: 15px;
+      margin-top: 5px;
       margin-bottom: 10px;
     }
     .remenber-me {
@@ -781,8 +785,8 @@ export default {
     .el-button--primary:hover{
       background: #33719a;
     }
-    // .el-form-item__label {
-    //   margin-bottom: -10px;
-    // }
+    .el-form-item__label {
+      margin-bottom: -10px;
+    }
   }
 </style>

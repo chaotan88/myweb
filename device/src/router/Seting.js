@@ -4,7 +4,8 @@ export default {
   meta: {
     nav: 'menu.setting',
     auth: true,
-    menuCode: '101050',
+    // menuCode: '101050',
+    menuCode: '000000',
     authId: 1
   },
   component: r => require(['@/components/admin/ChildLayout'], r),

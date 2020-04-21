@@ -2,7 +2,8 @@
   <div :class="leftHide ? 'admin-childlayout-wrap-left-hide' : 'admin-childlayout-wrap'">
     <div class="pos-a slide-nav-wrap" v-if="!leftHide">
       <template v-for="item in childRouter">
-        <router-link class='d-b' :to="item.path" v-if="item.meta.menuCode && menuData.indexOf(item.meta.menuCode) !== -1">
+        <router-link class='d-b' :to="item.path" v-if="item.meta.menuCode && menuData.indexOf(item.meta.menuCode) !== -1"
+          :title="$t(item.meta.nav)">
           <i class="d-ib" :class='item.meta.icon'></i>
           {{$t(item.meta.nav)}}
         </router-link>

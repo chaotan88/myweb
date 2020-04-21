@@ -14,11 +14,11 @@
           :label="$t('common.index')"
           width="90">
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="phone"
           :label="$t('recharge.memberMobileNumber')"
           width="200">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="orderNo"
           :label="$t('recharge.orderNo')" width="210">
@@ -39,7 +39,7 @@
           prop="orderPrice"
           :label="$t('recharge.orderAmount')" width="130">
           <template slot-scope="props">
-            {{props.row.orderPrice}}
+            {{props.row.orderPrice | filterDollar}}
           </template>
         </el-table-column>
         <el-table-column
@@ -70,10 +70,10 @@
       <el-form label-position="right" label-width="220px" class="ta-l" ref="form">
         <div class="form-item-group">
           <template>
-            <el-form-item :label="$t('recharge.memberMobileNumber')">{{initData.phone | filterEmpty}}</el-form-item>
+            <!-- <el-form-item :label="$t('recharge.memberMobileNumber')">{{initData.phone | filterEmpty}}</el-form-item> -->
             <el-form-item :label="$t('recharge.orderNo')">{{initData.orderNo | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.deviceNumber')">{{initData.deviceNumber | filterEmpty}}</el-form-item>
-            <el-form-item :label="$t('recharge.price')">{{initData.orderPrice | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.price')">{{initData.orderPrice | filterEmpty |filterDollar}}</el-form-item>
             <el-form-item :label="$t('recharge.orderTime')">{{initData.expireTime | dateFilter | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.expireTime')">{{initData.expireTime | dateFilter | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.payStatus')">
@@ -86,10 +86,10 @@
               <span v-else>Other</span>
             </el-form-item>
             <el-form-item :label="$t('recharge.beforeOrderNo')">{{initData.beforeOrderNo | filterEmpty}}</el-form-item>
-            <el-form-item :label="$t('recharge.beforePrice')">{{initData.beforePrice | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.beforePrice')">{{initData.beforePrice | filterEmpty | filterDollar}}</el-form-item>
             <el-form-item :label="$t('recharge.beforeNumber')">{{initData.beforeNumber | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.beforeRealNumber')">{{initData.beforeRealNumber | filterEmpty}}</el-form-item>
-            <el-form-item :label="$t('recharge.beforeNoPayPrice')">{{initData.beforeNoPayPrice | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.beforeNoPayPrice')">{{initData.beforeNoPayPrice | filterEmpty | filterDollar}}</el-form-item>
           </template>
         </div>
       </el-form>

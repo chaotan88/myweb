@@ -199,7 +199,7 @@
       element-loading-text="loading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.8)">
-     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="95px" class="demo-ruleForm">
+     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
       <ul>
         <li>
           <el-form-item :label="$t('device.roomNumber')" prop="roomNumber" v-if="id">
@@ -230,7 +230,7 @@
           </el-form-item>
         </li>
         <li>
-          <el-form-item :label="$t('common.password')" prop="code" >
+          <el-form-item :label="$t('device.keypadPIN')" prop="code" >
             <el-input v-model="ruleForm.code" :placeholder="`6${$t('common.characters')}`" minlength="6" maxlength="6"></el-input>
           </el-form-item>
         </li>

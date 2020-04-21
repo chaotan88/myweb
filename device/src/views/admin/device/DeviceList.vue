@@ -59,9 +59,9 @@
               <p>{{ props.row.describeInfo }}</p>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" :label="$t('common.operation')" min-width="120">
+          <el-table-column prop="operation" :label="$t('common.operation')" min-width="250">
             <template slot-scope="props">
-              <el-dropdown @command="handleCommand">
+              <!-- <el-dropdown @command="handleCommand">
                 <span class="el-dropdown-link">
                   {{$t('common.operation')}}<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
@@ -73,9 +73,9 @@
                     {{$t('menu.setting')}}
                   </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown>
-              <!-- <el-button class="detail-button" @click="remove(props.row, 2)">{{$t('device.remove')}}</el-button>
-              <el-button class="detail-button" @click="settingDevice(props.row.id)">{{$t('menu.setting')}}</el-button> -->
+              </el-dropdown> -->
+              <el-button class="detail-button" @click="remove(props.row, 2)">{{$t('device.remove')}}</el-button>
+              <el-button class="detail-button" @click="settingDevice(props.row.id)">{{$t('menu.setting')}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -227,21 +227,27 @@
       },
       remove (item) {
         if (!item.imei) return false
-        this.$http.post('@ROOT_API/dfDevice/delDeviceForUser', {
-          imei: item.imei
-        }).then((res) => {
-          if (res.data.status === '1') {
-            this.$message({
-              type: 'success',
-              message: 'Success'
-            })
-            this.findData()
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.data.msg || this.$t('common.errorMsg')
-            })
-          }
+        this.$confirm(this.$t('common.areYouSure'), 'title', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('@ROOT_API/dfDevice/delDeviceForUser', {
+            imei: item.imei
+          }).then((res) => {
+            if (res.data.status === '1') {
+              this.$message({
+                type: 'success',
+                message: 'Success'
+              })
+              this.findData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
+          })
         })
       },
       updateDevice (id, type) {

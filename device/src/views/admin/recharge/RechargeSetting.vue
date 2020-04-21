@@ -111,7 +111,7 @@
           details: this.settingItem.details
         }).then((res) => {
           if (res.data.status === '1') {
-            this.$message.success('修改成功')
+            this.$message.success('Success')
             this.settingDialog = false
             this.findData()
           } else {

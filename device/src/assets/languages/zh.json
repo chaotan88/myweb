@@ -159,6 +159,7 @@
     "visitorManage": "访客管理",
     "pleaseEnterRoomOrNumber": "请输入房号/电话号码",
     "roomNumber": "房号",
+    "keypadPIN": "密码",
     "hostName": "姓名",
     "phone1": "电话1",
     "phone2": "电话2",
@@ -334,6 +335,7 @@
     "characters": "characters.",
     "notMatchEmail": "Email confirmation doesn't match Email",
     "reSend": "Resend",
-    "resetPassword": "Reset Password"
+    "resetPassword": "Reset Password",
+    "company": "公司"
   }
 }

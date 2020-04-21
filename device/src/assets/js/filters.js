@@ -61,11 +61,16 @@ let filterEmpty = (value, unit = '') => {
   return value + unit
 }
 
+let filterDollar = (value) => {
+  return value ? `$ ${value}` : value
+}
+
 export {
   appOsStatus,
   payTypeStatus,
   payStatus,
   dateFilter,
   selectFilter,
-  filterEmpty
+  filterEmpty,
+  filterDollar
 }

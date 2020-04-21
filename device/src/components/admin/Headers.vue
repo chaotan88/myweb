@@ -22,6 +22,7 @@
             {{$t('common.hello')}}: {{adminInfo.userName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="c">{{$t('common.accountSetting')}}</el-dropdown-item>
             <el-dropdown-item command="a">{{$t('common.updatePassword')}}</el-dropdown-item>
             <el-dropdown-item command="b">{{$t('common.loginout')}}</el-dropdown-item>
           </el-dropdown-menu>
@@ -116,6 +117,8 @@ export default {
         this.$router.push('/admin/seting/account/update')
       } else if (command === 'b') {
         this.loginOut()
+      } else if (command === 'c') {
+        this.$router.push('/admin/seting/account/index')
       }
     }
   }

@@ -10,7 +10,6 @@
           <div class="row1-col1">
             <div class="item1">
               <img-view src="phone1.png"/>
-              <!-- <span>{{$t("device.phone1")}}</span> -->
               <el-input v-model="deviceInfo.familyCallTime1"
                 :placeholder="`4${$t('common.characters')}`" minlength="3" maxlength="30"
                 >
@@ -18,7 +17,6 @@
               <tips title="Ringing time for first phone number of families, ringing time can be 1-99 seconds, default time is 20 seconds."></tips>
             </div>
             <div class="item2">
-              <!-- <span>{{$t("device.phone2")}}</span> -->
               <img-view src="phone2.png"/>
               <el-input v-model="deviceInfo.familyCallTime2"
                 :placeholder="`4${$t('common.characters')}`" minlength="3" maxlength="30"
@@ -27,7 +25,6 @@
               <tips title="Ringing time for second phone number of families, ringing time can be 1-99 seconds, default time is 20 seconds."></tips>
             </div>
             <div class="item3">
-              <!-- <span>{{$t("device.phone3")}}</span> -->
               <img-view src="phone3.png"/>
               <el-input v-model="deviceInfo.familyCallTime3"
                 :placeholder="`4${$t('common.characters')}`" minlength="3" maxlength="30"
@@ -296,7 +293,7 @@
           </div>
           <div class="row3">
             <img-view src="apn.png"/>
-            <el-input v-model="deviceInfo.apn" readonly></el-input>
+            <el-input v-model="deviceInfo.apn"></el-input>
           </div>
         </div>
         <div class="col2">
@@ -308,13 +305,9 @@
                 :placeholder="$t('common.upto64Chart')"
                 type="textarea"
                 :rows="3"
-                @change="welcomeChange()"
                 >
               </el-input>
-              <div>
-                <i class="icon-font el-icon-zoom-in" style="margin-left: 10px; cursor: pointer;" title="preview" @click="previewDialog = true"></i>
-                <tips title="LCD welcome interface, 64 characters in Max. # is not accepted."></tips>
-              </div>
+              <tips title="LCD welcome interface, 64 characters in Max. # is not accepted."></tips>
             </div>
           </div>
           <div class="row2">
@@ -377,75 +370,16 @@
       </div>
       <div class="buttons">
         <div class="buttons-container">
-          <div  @click="restoreDefaultSetting()" title="Restore default settings" class="button_css_setting">
-            <img src="../../../../../static/img/device/btn1_1.png"/>
-            <img src="../../../../../static/img/device/btn1_2.png" style="margin: 0 -7px;"/>
-            <img src="../../../../../static/img/device/btn11.png"/>
-          </div>
-          <!-- <div @click="syncData()" title="Synchro Data To Device">
-            <img src="../../../../../static/img/device/push.png"/>
-          </div> -->
-          <!-- <div @click="importDialog = true">
-            <img src="../../../../../static/img/device/btn31.png"/>
-          </div> -->
           <div @click="save" title="Save" class="button_css_setting">
             <img src="../../../../../static/img/device/btn41.png"/>
           </div>
-          <!-- <div @click="syncDataToServe" title="Synchro Data To Server">
-            <img src="../../../../../static/img/device/sync.png"/>
-          </div> -->
         </div>
       </div>
     </el-form>
-        <!-- 导入设备弹窗 -->
-    <el-dialog
-      :title="$t('menu.setting')"
-      :visible.sync="importDialog"
-      width="480px"
-      center class="grant-pop"
-      v-loading="loading"
-      element-loading-text="loading"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.8)">
-      <el-form :inline="true" class="demo-form-inline" label-width="120px">
-        <el-form-item :label="$t('common.selectFile')">
-          <!-- <el-input v-model="addItem.imei" placeholder="请选择文件" clearable></el-input> -->
-          <UploadFile @success="uploadSuccess"></UploadFile>
-        </el-form-item>
-        <!-- <span @click="downloadTemplate" class="download-template">下载模板</span>
-        <el-form-item>
-        导入前请先下载导入模块，请按导入模版格式导入。
-        </el-form-item> -->
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="importDialog = false">{{$t('common.cancel')}}</el-button>
-        <el-button type="primary" @click="upload">{{$t('common.sure')}}</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="Preview"
-      :visible.sync="previewDialog"
-      width="480px"
-      center class="grant-pop">
-      <div class="led-item">
-        <p class="title">LCD1</p>
-        <P v-for="(item, index) in led1Arr" :key="index" class="str" v-if="index < 4"
-          :style="{textAlign: isLeft ? 'left' : 'center'}">{{item}}</P>
-      </div>
-      <div class="led-item">
-        <p class="title">LCD2</p>
-        <P v-for="(item, index) in led2Arr" :key="index" class="str" v-if="index < 4"
-          :style="{textAlign: isLeft ? 'left' : 'center'}">{{item}}</P>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="previewDialog = false">{{$t('common.sure')}}</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-  import UploadFile from '@/components/utils/UploadFile.vue'
   import ImgView from '@/components/utils/ImgView.vue'
   import Tips from '@/components/utils/Tips.vue'
   const weekOptions = [{ id: 1, label: 'Mo' }, { id: 2, label: 'Tu' }, { id: 3, label: 'We' },
@@ -475,26 +409,17 @@
           localNumber: [
             { validator: validateVistorPhone, trigger: 'blur' }
           ]
-        },
-        previewDialog: false,
-        led1Arr: ['', '', '', ''],
-        led2Arr: ['', '', '', ''],
-        isLeft: true
+        }
       }
     },
     mounted () {
-      if (this.$route.params.id.indexOf('@') !== -1) {
-        this.id = this.$route.params.id.split('@')[1]
-      } else {
-        this.id = this.$route.params.id
-      }
       this.findData()
     },
     methods: {
       findData () {
         this.loading = true
         this.$http.post('@ROOT_API/dfDeviceSettings/getDfDeviceSettings', {
-          deviceId: this.id
+          deviceId: '0'
         }).then((res) => {
           this.deviceInfo = res.data.data || {}
           this.deviceInfo.encryptDisp = res.data.data.encryptDisp || 0
@@ -503,9 +428,6 @@
           this.setDoNotWeek()
           this.setAutoRelatTrig()
           this.loading = false
-          this.welcomeChange()
-          // this.startTime = this.setTime(this.deviceInfo.doNotStartTime)
-          // this.endTime = this.setTime(this.deviceInfo.doNotEndTime)
         })
       },
       setTime (val) {
@@ -522,68 +444,34 @@
       },
       save (type) {
         this.loading = true
-        let params = {}
-        if (type === 'default') {
-          params = {
-            'deviceId': this.id,
-            id: this.deviceInfo.id,
-            imei: this.deviceInfo.imei,
-            'version': '1',
-            'rssi': '1',
-            'mode': '4G',
-            'apn': 'APN',
-            'welcome': 'welcome to beijin!',
-            'encryptDisp': 0,
-            'cid': 0,
-            'monitor': 0,
-            'engineersCode': '9999',
-            'managerCode': '5555',
-            'spkVol': 5,
-            'micVol': 5,
-            'relay1Time': 2,
-            'relay2Time': 2,
-            'localNumber': '13400002222',
-            'msgIntervalDay': 30,
-            'familyCallTime1': 20,
-            'familyCallTime2': 20,
-            'familyCallTime3': 20,
-            'managerCallTime': 60,
-            'autoRelayTrig': '001#1200#0000000_001#1200#0000000_001#1200#0000000_001#1200#0000000_001#1200#0000000_001#1200#0000000_001#1200#0000000_001#1200#0000000_001#1200#0000000',
-            'doNotStartTime': '0010',
-            'doNotEndTime': '1200',
-            'doNotWeek': '1110001',
-            'doNotDisturb': '0010#1200#1110001'
-          }
-        } else {
-          params = {
-            deviceId: this.id,
-            id: this.deviceInfo.id,
-            imei: this.deviceInfo.imei,
-            rssi: this.deviceInfo.rssi,
-            mode: this.deviceInfo.mode,
-            apn: this.deviceInfo.apn,
-            welcome: this.deviceInfo.welcome,
-            encryptDisp: this.deviceInfo.encryptDisp,
-            cid: this.deviceInfo.cid,
-            monitor: this.deviceInfo.monitor,
-            engineersCode: this.deviceInfo.engineersCode,
-            managerCode: this.deviceInfo.managerCode,
-            spkVol: this.deviceInfo.spkVol,
-            micVol: this.deviceInfo.micVol,
-            relay1Time: this.deviceInfo.relay1Time,
-            relay2Time: this.deviceInfo.relay2Time,
-            localNumber: this.deviceInfo.localNumber,
-            msgIntervalDay: this.deviceInfo.msgIntervalDay,
-            familyCallTime1: this.deviceInfo.familyCallTime1,
-            familyCallTime2: this.deviceInfo.familyCallTime2,
-            familyCallTime3: this.deviceInfo.familyCallTime3,
-            managerCallTime: this.deviceInfo.managerCallTime,
-            doNotDisturb: this.getDoNotDisturb(),
-            doNotStartTime: this.deviceInfo.doNotStartTime,
-            doNotEndTime: this.deviceInfo.doNotEndTime,
-            doNotWeek: this.getDoNotWeek(),
-            autoRelayTrig: this.getAutoRelayTrig()
-          }
+        let params = {
+          deviceId: this.deviceInfo.deviceId,
+          id: this.deviceInfo.id,
+          imei: this.deviceInfo.imei,
+          rssi: this.deviceInfo.rssi,
+          mode: this.deviceInfo.mode,
+          apn: this.deviceInfo.apn,
+          welcome: this.deviceInfo.welcome,
+          encryptDisp: this.deviceInfo.encryptDisp,
+          cid: this.deviceInfo.cid,
+          monitor: this.deviceInfo.monitor,
+          engineersCode: this.deviceInfo.engineersCode,
+          managerCode: this.deviceInfo.managerCode,
+          spkVol: this.deviceInfo.spkVol,
+          micVol: this.deviceInfo.micVol,
+          relay1Time: this.deviceInfo.relay1Time,
+          relay2Time: this.deviceInfo.relay2Time,
+          localNumber: this.deviceInfo.localNumber,
+          msgIntervalDay: this.deviceInfo.msgIntervalDay,
+          familyCallTime1: this.deviceInfo.familyCallTime1,
+          familyCallTime2: this.deviceInfo.familyCallTime2,
+          familyCallTime3: this.deviceInfo.familyCallTime3,
+          managerCallTime: this.deviceInfo.managerCallTime,
+          doNotDisturb: this.getDoNotDisturb(),
+          doNotStartTime: this.deviceInfo.doNotStartTime,
+          doNotEndTime: this.deviceInfo.doNotEndTime,
+          doNotWeek: this.getDoNotWeek(),
+          autoRelayTrig: this.getAutoRelayTrig()
         }
         this.checkDevice(() => {
           this.$http.post('@ROOT_API/dfDeviceSettings/saveOrUpdateDfDeviceSettings', params).then((res) => {
@@ -596,14 +484,6 @@
             this.loading = false
           }, () => (this.loading = false))
         })
-        // this.$http.post('@ROOT_API/dfDeviceSettings/saveOrUpdateDfDeviceSettings', params).then((res) => {
-        //   if (res.data.status === '1') {
-        //     this.$message.success('Success')
-        //     this.$router.go(-1)
-        //   } else {
-        //     this.$message.error(res.data.msg)
-        //   }
-        // })
       },
       restoreDefaultSetting () {
         this.checkDevice(() => {
@@ -832,45 +712,9 @@
           }
         })
         this.$set(this.tableData, index, item)
-      },
-      welcomeChange () {
-        let arr = this.deviceInfo.welcome.split('\n')
-        this.led1Arr = arr.slice(0, 4)
-        if (arr.length > 4) {
-          this.led2Arr = arr.slice(4, arr.length)
-        } else {
-          this.led2Arr = []
-        }
-        this.setSpace()
-      },
-      setSpace () {
-        const setSpaceFun = (key) => {
-          this[key][3] = ''
-          // for (let i = 0; i <= 4 - this[key].length; i++) {
-          //   this[key].push('')
-          // }
-        }
-        const setIsLeft = () => {
-          if (this.led1Arr.length > 0) {
-            let [item] = this.led1Arr
-            if (item.substr(0, 1) === '=') {
-              this.isLeft = false
-              this.$set(this.led1Arr, 0, item.replace('=', ''))
-            } else {
-              this.isLeft = true
-            }
-          }
-        }
-        if (this.led1Arr.length < 4) {
-          setSpaceFun('led1Arr')
-        }
-        if (this.led2Arr.length < 4) {
-          setSpaceFun('led2Arr')
-        }
-        setIsLeft()
       }
     },
-    components: { UploadFile, ImgView, Tips }
+    components: { ImgView, Tips }
   }
 </script>
 
@@ -967,7 +811,7 @@
       }
     }
     .col1 {
-      width: 270px;
+      width: 350px;
     }
     .col2 {
       .row1 {
@@ -1088,21 +932,6 @@
   }
   .cell {
     text-overflow: unset;
-  }
-}
-.led-item {
-  margin-bottom: 20px;
-  .title {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  .str {
-    height: 25px;
-    background: #eee;
-    color: #333;
-    line-height: 25px;
-    margin: 5px 0;
-    text-align: center;
   }
 }
 </style>
