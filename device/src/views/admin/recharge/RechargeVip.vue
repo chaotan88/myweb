@@ -196,7 +196,9 @@ export default {
       },
       orderInfo: {},
       complete: false,
-      Options: {},
+      Options: {
+        currency: 'hdk'
+      },
       expiryOptions: {
         placeholder: 'MM / YY'
       },

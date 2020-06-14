@@ -125,6 +125,9 @@
                     <el-dropdown-item :command="`11_${props.$index}`" v-if="props.row.bindStatus === 1">
                       {{$t('device.unbind')}}
                     </el-dropdown-item>
+                    <el-dropdown-item :command="`14_${props.$index}`" v-if="props.row.bindStatus === 1">
+                      {{$t('device.syncDataByDevice')}}
+                    </el-dropdown-item>
                     <el-dropdown-item :command="`1_${props.$index}`">
                       {{$t('common.delete')}}
                     </el-dropdown-item>
@@ -150,52 +153,55 @@
               <div class="bottom clearfix bottom-buttons">
                 <span :style="{color: item.bindStatus === 1 ? '#67c23a' : '#909399', lineHeight: '40px'}">{{item.bindStatus === 1 ? 'binded' : 'unbind'}}</span>
               </div>
-              <div class="button-container">
+              <div class="button-container" v-if="item.bindStatus === 1">
                   <!--已绑定 家庭、访客、参数、编辑  1delete  2update 3bind 4family 5 vistor 6unbing 7detail 8setting 9clone-->
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`4_${index}`)" v-if="item.bindStatus === 1">
-                      {{$t('common.family')}}
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`11_${index}`)">
+                      {{$t('device.unbind')}}
                   </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`5_${index}`)" v-if="item.bindStatus === 1">
-                      {{$t('common.visitor')}}
-                  </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`8_${index}`)" v-if="item.bindStatus === 1">
-                      {{$t('menu.setting')}}
-                  </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`3_${index}`)" v-if="item.bindStatus !== 1">
-                      {{$t('common.bind')}}
-                  </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`2_${index}`)">
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`2_${index}`)">
                       {{$t('common.update')}}
                   </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`9_${index}`)" v-if="item.bindStatus !== 1">
-                      {{$t('common.clone')}}
-                  </el-button>
-                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'" @click="handleCommand(`7_${index}`)">
-                      {{$t('common.detail')}}
-                  </el-button>
-
                   <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
-                    @click="handleCommand(`9_${index}`)" v-if="item.bindStatus === 1">
+                    @click="handleCommand(`9_${index}`)">
                       {{$t('common.clone')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`7_${index}`)">
+                      {{$t('common.detail')}}
                   </el-button>
                   <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
                     @click="handleCommand(`1_${index}`)">
                       {{$t('common.delete')}}
                   </el-button>
+
                   <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
-                    @click="handleCommand(`10_${index}`)" v-if="item.bindStatus === 1">
+                    @click="handleCommand(`10_${index}`)">
                       {{$t('device.switchDevice')}}
                   </el-button>
                   <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
-                    @click="handleCommand(`11_${index}`)" v-if="item.bindStatus === 1">
-                      {{$t('device.unbind')}}
+                    @click="handleCommand(`4_${index}`)">
+                      {{$t('common.family')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`5_${index}`)">
+                      {{$t('common.visitor')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`8_${index}`)">
+                      {{$t('menu.setting')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`14_${index}`)">
+                      {{$t('device.syncDataByDevice')}}
                   </el-button>
                   <!-- <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
                     @click="handleCommand(`12_${index}`)" v-if="item.bindStatus === 1">
                       {{$t('device.openDoor1')}}
                   </el-button> -->
                   <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1"
-                    v-if="item.bindStatus === 1" style="margin-right: 10px;">
+                    style="margin-right: 10px;">
                     <el-submenu index="555">
                       <template slot="title">Open Door1</template>
                       <el-menu-item :index="`${index}-1`">TRIG</el-menu-item>
@@ -203,7 +209,7 @@
                       <el-menu-item :index="`${index}-3`">UNLATCH</el-menu-item>
                     </el-submenu>
                   </el-menu>
-                  <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2" v-if="item.bindStatus === 1">
+                  <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2">
                     <el-submenu index="222">
                       <template slot="title">Open Door2</template>
                       <el-menu-item :index="`${index}-1`">TRIG</el-menu-item>
@@ -211,6 +217,28 @@
                       <el-menu-item :index="`${index}-3`">UNLATCH</el-menu-item>
                     </el-submenu>
                   </el-menu>
+                </div>
+                <div class="button-container" v-else>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`3_${index}`)">
+                      {{$t('common.bind')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`2_${index}`)">
+                      {{$t('common.update')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`9_${index}`)">
+                      {{$t('common.clone')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`7_${index}`)">
+                      {{$t('common.detail')}}
+                  </el-button>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`1_${index}`)">
+                      {{$t('common.delete')}}
+                  </el-button>
                 </div>
             </div>
           </el-card>
@@ -699,19 +727,25 @@
         })
       },
       deleteSubmit (row) {
-        this.$http.post('@ROOT_API/dfAddress/deleteBatchDfAddress', {
-          ids: row.id
-        }).then((res) => {
-          if (res.data.status === '1') {
-            this.$message.success('Success')
-            this.findData()
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.data.msg || this.$t('common.errorMsg')
-            })
-          }
-        })
+        this.$confirm(this.$t('common.areYouSure'), 'title', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('@ROOT_API/dfAddress/deleteBatchDfAddress', {
+            ids: row.id
+          }).then((res) => {
+            if (res.data.status === '1') {
+              this.$message.success('Success')
+              this.findData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
+          })
+        }).catch(() => {})
       },
       bindDeviceSubmit () {
         let params = {}
@@ -833,7 +867,31 @@
           this.OpenDoor(data, '1')
         } else if (arr[0] === '13') {
           this.OpenDoor(data, '2')
+        } else if (arr[0] === '14') {
+          this.syncDataToDevice(data)
         }
+      },
+      syncDataToDevice (row) {
+        this.$confirm(this.$t('common.areYouSure'), 'title', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('@ROOT_API/dfAddress/syncDataToDevice', { id: row.id }).then((res) => {
+            if (res.data.status === '1') {
+              this.$message({
+                type: 'success',
+                message: 'success'
+              })
+              this.findData()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
+          })
+        }).catch(() => {})
       },
       OpenDoor (row, type, openType) {
         this.$http.post('@ROOT_API/dfAddress/openDoor', { id: row.id, relay: type, openType: openType }).then((res) => {
@@ -1124,6 +1182,7 @@
     // }
     .detail-button-en {
       padding: 12px 3px !important;
+      min-width: 50px;
       margin-bottom: 10px;
       margin-left: 0 !important;
       margin-right: 10px;

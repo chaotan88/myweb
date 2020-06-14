@@ -303,18 +303,40 @@
           <div class="row1">
             <div class="item1">
               <!-- <img-view src="welcome.png"/> -->
-              <div style="color: #33719b; margin-right: 2px;">Welcome</div>
-              <el-input v-model="deviceInfo.welcome"
+              <div style="color: #33719b; margin-right: 2px; width: 95px;">Welcome
+                <el-checkbox v-model="isCenter">Centered</el-checkbox>
+                <div style="display: flex;">
+                  <i class="icon-font el-icon-zoom-in" style="margin: auto 0; cursor: pointer;"
+                    title="preview" @click="previewDialog = true; setLCDWidth()"></i>
+                  <tips title="LCD welcome interface, 64 characters in Max. # is not accepted."></tips>
+                </div>
+              </div>
+              <el-tabs v-model="activeName" class="input-arr" type="card">
+                <el-tab-pane label="LCD1" name="first">
+                  <div class="input-arr1">
+                    <el-input width="200" v-model="lcd1" maxlength='16'></el-input>
+                    <el-input v-model="lcd2" maxlength='16'></el-input>
+                    <el-input v-model="lcd3" maxlength='16'></el-input>
+                    <el-input v-model="lcd4" maxlength='16'></el-input>
+                  </div>
+                </el-tab-pane>
+                <el-tab-pane label="LCD2" name="second">
+                  <div class="input-arr2">
+                    <el-input v-model="lcd5" maxlength='16'></el-input>
+                    <el-input v-model="lcd6" maxlength='16'></el-input>
+                    <el-input v-model="lcd7" maxlength='16'></el-input>
+                    <el-input v-model="lcd8" maxlength='16'></el-input>
+                  </div>
+                </el-tab-pane>
+              </el-tabs>
+              <!-- <el-input v-model="deviceInfo.welcome"
                 :placeholder="$t('common.upto64Chart')"
                 type="textarea"
-                :rows="3"
+                :rows="8"
+                :cols="16"
                 @change="welcomeChange()"
                 >
-              </el-input>
-              <div>
-                <i class="icon-font el-icon-zoom-in" style="margin-left: 10px; cursor: pointer;" title="preview" @click="previewDialog = true"></i>
-                <tips title="LCD welcome interface, 64 characters in Max. # is not accepted."></tips>
-              </div>
+              </el-input> -->
             </div>
           </div>
           <div class="row2">
@@ -427,15 +449,41 @@
       :visible.sync="previewDialog"
       width="480px"
       center class="grant-pop">
-      <div class="led-item">
-        <p class="title">LCD1</p>
-        <P v-for="(item, index) in led1Arr" :key="index" class="str" v-if="index < 4"
-          :style="{textAlign: isLeft ? 'left' : 'center'}">{{item}}</P>
+      <div class="led-item-container-left" v-if="!isCenter">
+        <div class="led-item">
+          <p class="title">LCD1</p>
+            <p class="lcd-content" :style="{width: lcdWidth}">{{lcd1}}</p>
+            <p class="lcd-content" :style="{width: lcdWidth}">{{lcd2}}</p>
+            <p class="lcd-content" :style="{width: lcdWidth}">{{lcd3}}</p>
+            <p class="lcd-content" :style="{width: lcdWidth}">{{lcd4}}</p>
+        </div>
+        <div class="led-item">
+          <p class="title">LCD2</p>
+          <p class="lcd-content" :style="{width: lcdWidth}">{{lcd5}}</p>
+          <p class="lcd-content" :style="{width: lcdWidth}">{{lcd6}}</p>
+          <p class="lcd-content" :style="{width: lcdWidth}">{{lcd7}}</p>
+          <p class="lcd-content" :style="{width: lcdWidth}">{{lcd8}}</p>
+        </div>
       </div>
-      <div class="led-item">
-        <p class="title">LCD2</p>
-        <P v-for="(item, index) in led2Arr" :key="index" class="str" v-if="index < 4"
-          :style="{textAlign: isLeft ? 'left' : 'center'}">{{item}}</P>
+      <div class="led-item-container" v-else>
+        <div class="led-item">
+          <p class="title">LCD1</p>
+            <div class="lcd-content">
+              <p>{{lcd1}}</p>
+              <p>{{lcd2}}</p>
+              <p>{{lcd3}}</p>
+              <p>{{lcd4}}</p>
+            </div>
+        </div>
+        <div class="led-item">
+          <p class="title">LCD2</p>
+            <div class="lcd-content">
+              <p>{{lcd5}}</p>
+              <p>{{lcd6}}</p>
+              <p>{{lcd7}}</p>
+              <p>{{lcd8}}</p>
+            </div>
+        </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="previewDialog = false">{{$t('common.sure')}}</el-button>
@@ -479,7 +527,22 @@
         previewDialog: false,
         led1Arr: ['', '', '', ''],
         led2Arr: ['', '', '', ''],
-        isLeft: true
+        led1: '',
+        led2: '',
+        isLeft: true,
+        led1Lineheight: 'unset',
+        led2Lineheight: 'unset',
+        isCenter: true,
+        lcd1: '',
+        lcd2: '',
+        lcd3: '',
+        lcd4: '',
+        lcd5: '',
+        lcd6: '',
+        lcd7: '',
+        lcd8: '',
+        lcdWidth: '150px',
+        activeName: 'first'
       }
     },
     mounted () {
@@ -503,6 +566,7 @@
           this.setDoNotWeek()
           this.setAutoRelatTrig()
           this.loading = false
+          this.setLcdStr()
           this.welcomeChange()
           // this.startTime = this.setTime(this.deviceInfo.doNotStartTime)
           // this.endTime = this.setTime(this.deviceInfo.doNotEndTime)
@@ -532,7 +596,7 @@
             'rssi': '1',
             'mode': '4G',
             'apn': 'APN',
-            'welcome': 'welcome to beijin!',
+            'welcome': '',
             'encryptDisp': 0,
             'cid': 0,
             'monitor': 0,
@@ -562,7 +626,8 @@
             rssi: this.deviceInfo.rssi,
             mode: this.deviceInfo.mode,
             apn: this.deviceInfo.apn,
-            welcome: this.deviceInfo.welcome,
+            // welcome: this.deviceInfo.welcome,
+            welcome: this.getWelcomeStr(),
             encryptDisp: this.deviceInfo.encryptDisp,
             cid: this.deviceInfo.cid,
             monitor: this.deviceInfo.monitor,
@@ -837,18 +902,26 @@
         let arr = this.deviceInfo.welcome.split('\n')
         this.led1Arr = arr.slice(0, 4)
         if (arr.length > 4) {
-          this.led2Arr = arr.slice(4, arr.length)
+          this.led2Arr = arr.slice(4, 8)
         } else {
           this.led2Arr = []
         }
         this.setSpace()
       },
       setSpace () {
-        const setSpaceFun = (key) => {
-          this[key][3] = ''
+        // const setSpaceFun = (key) => {
+        //   this[key][3] = ''
           // for (let i = 0; i <= 4 - this[key].length; i++) {
           //   this[key].push('')
           // }
+        // }
+        const setLongs = (key) => {
+          for (let i = 0; i < this[key].length; i++) {
+            let item = this[key][i]
+            if (item && item.toString().length > 16) {
+              this.$set(this[key], i, item.substr(0, 16))
+            }
+          }
         }
         const setIsLeft = () => {
           if (this.led1Arr.length > 0) {
@@ -861,13 +934,82 @@
             }
           }
         }
-        if (this.led1Arr.length < 4) {
-          setSpaceFun('led1Arr')
-        }
-        if (this.led2Arr.length < 4) {
-          setSpaceFun('led2Arr')
-        }
+        // if (this.led1Arr.length < 4) {
+        //   setSpaceFun('led1Arr')
+        // }
+        // if (this.led2Arr.length < 4) {
+        //   setSpaceFun('led2Arr')
+        // }
+        setLongs('led1Arr')
+        setLongs('led2Arr')
         setIsLeft()
+        if (!this.isLeft) {
+          const lineHeights = [1, 60, 35, 23, 18]
+          this.led1Lineheight = `${lineHeights[this.led1Arr.length]}px`
+          this.led2Lineheight = `${lineHeights[this.led2Arr.length]}px`
+        }
+        this.led1 = this.led1Arr.join('</br>')
+        this.led2 = this.led2Arr.join('</br>')
+      },
+      setLcdStr () {
+        let arr = this.deviceInfo.welcome.split('/')
+        for (let i = 0; i < arr.length; i++) {
+          if (i === 0) {
+            this[`lcd${i + 1}`] = arr[i].replace('=', '')
+          } else {
+            this[`lcd${i + 1}`] = arr[i]
+          }
+          this.isCenter = arr[0].indexOf('=') !== -1
+        }
+      },
+      getWelcomeStr () {
+        let ledArr = []
+        // if (this.isCenter) {
+        //   if (this.lcd1) ledArr.push(this.lcd1)
+        //   if (this.lcd2) ledArr.push(this.lcd2)
+        //   if (this.lcd3) ledArr.push(this.lcd3)
+        //   if (this.lcd4) ledArr.push(this.lcd4)
+        // } else {
+        ledArr.push(this.lcd1 || '')
+        ledArr.push(this.lcd2 || '')
+        ledArr.push(this.lcd3 || '')
+        ledArr.push(this.lcd4 || '')
+        ledArr.push(this.lcd5 || '')
+        ledArr.push(this.lcd6 || '')
+        ledArr.push(this.lcd7 || '')
+        ledArr.push(this.lcd8 || '')
+        // }
+        return this.isCenter ? `=${ledArr.join('/')}/` : ledArr.join('/')
+      },
+      setLCDWidth () {
+        const getStrWidth = (str) => {
+          let el = document.createElement('div')
+          el.innerHTML = str
+          el.style.fontSize = '16px'
+          el.style.float = 'left'
+          el.style.position = 'absolute'
+          document.body.appendChild(el)
+          let wd = el.clientWidth
+          el.remove()
+          return wd
+        }
+        const arr = [
+          getStrWidth(this.lcd1),
+          getStrWidth(this.lcd2),
+          getStrWidth(this.lcd3),
+          getStrWidth(this.lcd4),
+          getStrWidth(this.lcd5),
+          getStrWidth(this.lcd6),
+          getStrWidth(this.lcd7),
+          getStrWidth(this.lcd8),
+          getStrWidth('ssssssssssssssss')
+        ]
+        const getMax = (pre, next) => {
+          return Math.max(pre, next)
+        }
+        let max = arr.reduce(getMax)
+        this.lcdWidth = `${max + 2}px`
+        console.log(arr, this.lcdWidth)
       }
     },
     components: { UploadFile, ImgView, Tips }
@@ -1067,6 +1209,14 @@
       }
     }
   }
+  .el-tabs__header  {
+    margin: 0;
+  }
+  .el-tabs--card>.el-tabs__header .el-tabs__item.is-active {
+    border-bottom-color: #FFF;
+    background: rgb(51, 113, 155);
+    color: #fff;
+  }
 }
 .setting-table {
   th>.cell {
@@ -1090,19 +1240,64 @@
     text-overflow: unset;
   }
 }
-.led-item {
-  margin-bottom: 20px;
-  .title {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  .str {
-    height: 25px;
-    background: #eee;
-    color: #333;
-    line-height: 25px;
-    margin: 5px 0;
+.led-item-container-left {
+  .led-item {
     text-align: center;
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  .lcd-content {
+    background: #eee;
+    width: 120px;
+    height: 20px;
+    padding: 5px 0;
+    margin: 5px 0;
+    font-size: 16px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+.led-item-container {
+  width: fit-content;
+  margin: auto;
+  .led-item {
+    margin-bottom: 20px;
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .lcd-content {
+      background: #eee;
+      min-width: 140px;
+      height: 80px;
+      padding: 5px 0;
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      p {
+        margin: auto;
+      }
+    }
+  }
+}
+.input-arr {
+  .input-arr1, .input-arr2 {
+    display: grid;
+    padding: 3px;
+  }
+  .input-arr1 {
+    border: 1px solid #999;
+  }
+  .input-arr2 {
+    border: 1px solid #999;
+  }
+  input, .el-input {
+    width: 200px;
+    margin-bottom: 5px;
   }
 }
 </style>
