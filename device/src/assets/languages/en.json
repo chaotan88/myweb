@@ -111,7 +111,8 @@
     "subAccountSetting": "Sub-Account Management",
     "authSetting": "Permission Set",
     "deviceList": "Device List",
-    "addressManage": "Address Manage"
+    "addressManage": "Address Manage",
+    "countryManage": "Country Manage"
   },
   "console": {
     "inboundLabel": "Number of inbound devices",
@@ -278,7 +279,11 @@
     "beforeNumber": "Purchased in the last year",
     "beforeRealNumber": "Devices used in the last year",
     "currentPrice": "Current order quota",
-    "autoRenewal": "Auto Renewal"
+    "autoRenewal": "Auto Renewal",
+    "paymentPlans": "Payment Plans",
+    "country": "Country",
+    "countryCode": "Country Code",
+    "currency": "Currency"
   },
   "log": {
     "visitorType": "Visitor type",

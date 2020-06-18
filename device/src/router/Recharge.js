@@ -40,33 +40,65 @@ export default {
         }
       ]
     },
+    // {
+    //   path: '/admin/recharge/rechargeSetting',
+    //   redirect: '/admin/recharge/rechargeSetting/index',
+    //   meta: {
+    //     title: 'Payment',
+    //     nav: 'recharge.paymentPlans',
+    //     icon: 'cooperation-icon1',
+    //     auth: true,
+    //     authId: 10,
+    //     menuCode: '101032',
+    //     breadcrumb: [
+    //       { title: '价格设置', path: '' }
+    //     ]
+    //   },
+    //   component: r => require(['@/views/admin/recharge/RechargeLayout'], r),
+    //   children: [
+    //     {
+    //       path: '/admin/recharge/rechargeSetting/index',
+    //       meta: {
+    //         title: 'Payment',
+    //         auth: true,
+    //         breadcrumb: [
+    //           { title: 'common.priceManage', path: '' },
+    //           { title: 'recharge.paymentPlans', path: '' }
+    //         ]
+    //       },
+    //       // component: r => require(['@/views/admin/recharge/RechargeSetting'], r)
+    //       component: r => require(['@/views/admin/recharge/RechargePlans'], r)
+    //     }
+    //   ]
+    // },
     {
-      path: '/admin/recharge/rechargeSetting',
-      redirect: '/admin/recharge/rechargeSetting/index',
+      path: '/admin/recharge/countryManage',
+      redirect: '/admin/recharge/countryManage/index',
       meta: {
         title: 'Payment',
-        nav: 'recharge.paymentSetting',
+        nav: 'menu.countryManage',
         icon: 'cooperation-icon1',
         auth: true,
         authId: 10,
         menuCode: '101032',
         breadcrumb: [
-          { title: '价格设置', path: '' }
+          { title: 'Country Manage', path: '' }
         ]
       },
       component: r => require(['@/views/admin/recharge/RechargeLayout'], r),
       children: [
         {
-          path: '/admin/recharge/rechargeSetting/index',
+          path: '/admin/recharge/countryManage/index',
           meta: {
             title: 'Payment',
             auth: true,
             breadcrumb: [
               { title: 'common.priceManage', path: '' },
-              { title: 'recharge.paymentSetting', path: '' }
+              { title: 'menu.countryManage', path: '' }
             ]
           },
-          component: r => require(['@/views/admin/recharge/RechargeSetting'], r)
+          // component: r => require(['@/views/admin/recharge/RechargeSetting'], r)
+          component: r => require(['@/views/admin/recharge/CountryManage'], r)
         }
       ]
     },

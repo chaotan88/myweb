@@ -111,7 +111,8 @@
     "subAccountSetting": "子账号设置",
     "authSetting": "权限设置",
     "deviceList": "设备列表",
-    "addressManage": "位置管理"
+    "addressManage": "位置管理",
+    "countryManage": "国家管理"
   },
   "console": {
     "inboundLabel": "入库设备数",
@@ -278,7 +279,11 @@
     "beforeNumber": "上一期购买的数量",
     "beforeRealNumber": "上一期使用的设备的真实数量",
     "currentPrice": "本期订单定额",
-    "autoRenewal": "自动续费"
+    "autoRenewal": "自动续费",
+    "paymentPlans": "付款设置",
+    "country": "国家",
+    "countryCode": "国家编码",
+    "currency": "币种"
   },
   "log": {
     "visitorType": "访客类型",
