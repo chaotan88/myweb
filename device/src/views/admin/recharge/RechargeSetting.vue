@@ -1,60 +1,101 @@
 <template>
   <div class="recharge-setting-wrap">
-    <div class="recharge-setting-con">
-      <!-- <div class="recharge-setting-serch">
-        <el-button @click="addData()">{{$t("common.new")}}</el-button>
-      </div> -->
-      <el-table
-        :data="itemList"
-        style="width: 100%">
-        <el-table-column
-          prop="deviceUsePrice"
-          :label="$t('recharge.deviceUsePrice')">
-        </el-table-column>
-        <el-table-column
-          prop="softUsePrice"
-          :label="$t('recharge.softUsePrice')">
-        </el-table-column>
-        <el-table-column
-          prop="details"
-          :label="$t('recharge.details')">
-        </el-table-column>
-        <el-table-column prop="operation" :label="$t('common.operation')" min-width="220">
-          <template slot-scope="props">
-            <el-button class="detail-button" @click="settingDialog = true">{{$t('common.update')}}</el-button>
-            <!-- <el-button class="detail-button" @click="setVistor(props.row)">{{$t('common.update')}}</el-button> -->
+    <div class="setting-left"
+      v-loading="loading.loadingCurrency"
+      element-loading-text="loading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)">
+      <div class="table-title">
+        Currency List
+      </div>
+      <div class="recharge-setting-con">
+        <el-table
+          :data="currencyList"
+          style="width: 100%"
+          height="500">
+          <el-table-column label="Select" width="70px" align="center" header-align="center">
+          <template slot-scope="scope">
+            <el-radio :label="scope.$index" v-model="templateRadio"
+              @change.native="getTemplateRow(scope.$index,scope.row)" style="margin-left: 10px;">&nbsp;
+            </el-radio>
           </template>
-        </el-table-column>
-      </el-table>
+          </el-table-column>
+          <el-table-column
+            prop="currency"
+            :label="$t('recharge.currency')">
+          </el-table-column>
+          <el-table-column
+            prop="detail"
+            :label="$t('recharge.details')">
+          </el-table-column>
+        </el-table>
+      </div>
+      <!--分页-->
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :page-count="total"
+        :current-page.sync="pageNum"
+        @current-change="changePage" v-if="total">
+      </el-pagination>
     </div>
-    <!--分页-->
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :page-count="total"
-      :current-page.sync="pageNum"
-      @current-change="changePage" v-if="total">
-    </el-pagination>
+    <div class="setting-right"
+      v-loading="loading.loadingPackage"
+      element-loading-text="loading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)">
+      <div class="table-title">
+        Package List
+      </div>
+      <div class="recharge-setting-con">
+        <el-table
+          :data="packageList"
+          style="width: 100%"
+          height="500">
+          <el-table-column
+            prop="packageName"
+            min-width="140"
+            :label="$t('recharge.pachageName')">
+          </el-table-column>
+          <el-table-column
+            prop="packagePrice"
+            min-width="80"
+            :label="$t('recharge.price')">
+          </el-table-column>
+          <el-table-column
+            prop="packageDeviceNum"
+            min-width="150"
+            :label="$t('recharge.deviceNumber')">
+          </el-table-column>
+          <el-table-column prop="operation" :label="$t('common.operation')" min-width="220">
+            <template slot-scope="props">
+              <el-button class="detail-button" @click="updatePackage(props.row)">{{$t('common.update')}}</el-button>
+              <!-- <el-button class="detail-button" @click="setVistor(props.row)">{{$t('common.update')}}</el-button> -->
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
 
     <el-dialog
-      title="设置价格"
+      title="Edit"
       :visible.sync="settingDialog"
       width="480px"
       center class="grant-pop">
       <el-form :model="settingForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm bind-form">
-        <el-form-item :label="$t('recharge.deviceUsePrice')" prop="deviceUsePrice">
-          <el-input placeholder="请输入正整数" v-model="settingItem.deviceUsePrice" clearable></el-input>
+        <el-form-item :label="$t('recharge.pachageName')" prop="packageName">
+          <el-input readonly v-model="updateItem.packageName" clearable></el-input>
         </el-form-item>
-        <el-form-item :label="$t('recharge.softUsePrice')" prop="softUsePrice">
-          <el-input placeholder="请输入正整数" v-model="settingItem.softUsePrice" clearable></el-input>
+        <el-form-item :label="$t('recharge.price')" prop="packagePrice">
+          <el-input v-model="updateItem.packagePrice" clearable></el-input>
         </el-form-item>
-        <el-form-item :label="$t('recharge.details')">
-          <el-input placeholder="请输入内容" v-model="settingItem.details" clearable></el-input>
+        <el-form-item :label="$t('recharge.deviceNumber')" prop="packageDeviceNum">
+          <el-input v-model="updateItem.packageDeviceNum" clearable></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="settingDialog = false">取 消</el-button>
-        <el-button type="primary" @click="savePrice">确 定</el-button>
+        <el-button @click="settingDialog = false">Cancel</el-button>
+        <el-button type="primary" @click="savePackage">Ok</el-button>
       </span>
     </el-dialog>
   </div>
@@ -73,47 +114,60 @@
           softUsePrice: [{ required: true, trigger: 'blur' }]
         },
         settingForm: {},
-        settingItem: {
-          deviceUsePrice: 0,
-          softUsePrice: 0,
-          details: ''
-        }
+        templateRadio: false,
+        templateSelection: {},
+        currencyList: [],
+        packageList: [],
+        loading: {
+          loadingCurrency: false,
+          loadingPackage: false
+        },
+        updateItem: {}
       }
     },
     mounted () {
-      this.findData()
+      this.getCurrencyList()
     },
     methods: {
-      findData () {
-        this.$http.post('@ROOT_API/dfSoftDeviceUsePrice/getDfSoftDeviceUsePrice', {}).then((res) => {
-          this.itemList = []
-          if (res.data.data) {
+      getCurrencyList () {
+        this.loading.loadingCurrency = true
+        this.$http.post('@ROOT_API/dfSoftPackageCurrency/getDfSoftPackageCurrencyAll', {
+          start: 1,
+          pageSize: 999
+        }).then((res) => {
+          if (res) {
             let { data } = res.data
-            this.itemList.push({
-              deviceUsePrice: data.deviceUsePrice || 0,
-              softUsePrice: data.softUsePrice || 0,
-              details: data.details || ''
-            })
-            this.settingItem = data
-          } else {
-            this.itemList.push({
-              deviceUsePrice: 0,
-              softUsePrice: 0,
-              details: ''
-            })
+            this.currencyList = data || []
+            this.loading.loadingCurrency = false
+            if (this.currencyList.length > 0) {}
+            this.templateSelection = this.currencyList[0]
+            this.getPackageList()
           }
         })
       },
-      savePrice () {
-        this.$http.post('@ROOT_API/dfSoftDeviceUsePrice/saveOrUpdateDfSoftDeviceUsePrice', {
-          deviceUsePrice: this.settingItem.deviceUsePrice,
-          softUsePrice: this.settingItem.softUsePrice,
-          details: this.settingItem.details
+      getPackageList () {
+        this.loading.loadingPackage = true
+        this.$http.post('@ROOT_API/dfSoftPackagePrice/getDfSoftPackagePriceAll', {
+          currencyId: this.templateSelection.id
+        }).then((res) => {
+          if (res) {
+            let { data } = res.data
+            this.packageList = data || []
+            this.loading.loadingPackage = false
+          }
+        })
+      },
+      savePackage () {
+        this.$http.post('@ROOT_API/dfSoftPackagePrice/saveOrUpdateDfSoftPackagePrice', {
+          id: this.templateSelection.id,
+          packagePrice: this.updateItem.packagePrice,
+          packageDeviceNum: this.updateItem.packageDeviceNum,
+          packageName: this.updateItem.packageName
         }).then((res) => {
           if (res.data.status === '1') {
             this.$message.success('Success')
             this.settingDialog = false
-            this.findData()
+            this.getPackageList()
           } else {
             this.$message({
               type: 'error',
@@ -121,6 +175,14 @@
             })
           }
         })
+      },
+      getTemplateRow (index, row) {
+        this.templateSelection = row
+        this.getPackageList()
+      },
+      updatePackage (row) {
+        this.updateItem = Object.assign({}, row)
+        this.settingDialog = true
       }
     },
     mixins: [pageMixin]
@@ -128,9 +190,21 @@
 </script>
 <style lang='less'>
 .recharge-setting-wrap{
+  display: flex;
+  background: #fff;
+  .table-title {
+    margin: 20px;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 0;
+  }
+  .setting-left {
+    border-right: 1px dashed #ddd;
+    width: 40%;
+  }
   .recharge-setting-con{
     background: #fff;
-    padding: 40px;
+    padding: 20px;
     border-radius: 4px;
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;

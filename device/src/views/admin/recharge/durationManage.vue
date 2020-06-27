@@ -1,14 +1,10 @@
 <template>
-  <div class="country-manage-wrap">
-    <div class="country-manage-con">
-      <div class="country-manage-serch">
-        <el-button @click="addData()">{{$t("common.new")}}</el-button>
-      </div>
+  <div class="duration-manage-wrap">
+    <div class="duration-manage-con">
       <el-table :data="itemList" style="width: 100%">
-        <el-table-column prop="country" :label="$t('recharge.country')"></el-table-column>
-        <el-table-column prop="countryCode" :label="$t('recharge.countryCode')"></el-table-column>
-        <el-table-column prop="currency" :label="$t('recharge.currency')"></el-table-column>
-        <el-table-column prop="details" :label="$t('recharge.details')"></el-table-column>
+        <el-table-column prop="dateName" :label="$t('recharge.duration')"></el-table-column>
+        <el-table-column prop="discount" :label="$t('recharge.discount')"></el-table-column>
+        <el-table-column prop="detail" :label="$t('recharge.details')"></el-table-column>
         <el-table-column prop="operation" :label="$t('common.operation')" min-width="220">
           <template slot-scope="props">
             <el-button class="detail-button" @click="editData(props.row)">{{$t('common.update')}}</el-button>
@@ -36,33 +32,19 @@
         label-width="150px"
         class="demo-ruleForm bind-form"
       >
-      <el-form-item :label="$t('recharge.country')" prop="deviceUsePrice">
-        <el-select v-model="settingItem.countryCode">
-          <el-option
-          v-for="item in countryList"
-          :key="item.short"
-          :label="item.en"
-          :value="item.short">
-          </el-option>
-        </el-select>
+        <el-form-item :label="$t('recharge.duration')">
+          <el-input placeholder="Please enter" v-model="settingItem.dateName" readonly></el-input>
         </el-form-item>
-        <el-form-item :label="$t('recharge.currency')" prop="currency">
-          <el-select v-model="settingItem.currencyId">
-            <el-option
-            v-for="item in currencyList"
-            :key="item.id"
-            :label="item.currency"
-            :value="item.id">
-            </el-option>
-          </el-select>
+        <el-form-item :label="$t('recharge.discount')">
+          <el-input placeholder="Please enter" v-model="settingItem.discount" clearable></el-input>
         </el-form-item>
         <el-form-item :label="$t('recharge.details')">
-          <el-input placeholder="Please enter" v-model="settingItem.details" clearable></el-input>
+          <el-input placeholder="Please enter" v-model="settingItem.detail" readonly></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="settingDialog = false">取 消</el-button>
-        <el-button type="primary" @click="savePrice" :loading="loading">OK</el-button>
+        <el-button type="primary" @click="saveDuration" :loading="loading">Ok</el-button>
       </span>
     </el-dialog>
   </div>
@@ -70,7 +52,6 @@
 
 <script>
 import { pageMixin } from '@/mixin'
-import { countries } from '../../../assets/data.json'
 
 export default {
   data () {
@@ -94,11 +75,10 @@ export default {
   },
   mounted () {
     this.findData()
-    this.initSelectData()
   },
   methods: {
     findData () {
-      this.$http.post('@ROOT_API/dfSoftDeviceUsePrice/getDfSoftDeviceUsePricePage', {
+      this.$http.post('@ROOT_API/dfSoftPackageDate/getDfSoftPackageDateAll', {
         start: this.pageNum,
         pageSize: this.pageSize
       }).then((res) => {
@@ -109,23 +89,19 @@ export default {
           })
           return false
         } else {
-          let { list, total } = res.data.data
-          this.itemList = list
+          let { data, total } = res.data
+          this.itemList = data
           this.total = total
         }
       })
     },
-    savePrice () {
+    saveDuration () {
       this.loading = true
       let params = {
         id: this.settingItem.id || '',
-        countryCode: this.settingItem.countryCode,
-        currencyId: this.settingItem.currencyId,
-        details: this.settingItem.details
+        discount: this.settingItem.discount
       }
-      this.getCodeById(params, 'countryCode', 'country', 'countryList', 'short', 'en')
-      this.getCodeById(params, 'currencyId', 'currency', 'currencyList', 'id', 'currency')
-      this.$http.post('@ROOT_API/dfSoftDeviceUsePrice/saveOrUpdateDfSoftDeviceUsePrice', params)
+      this.$http.post('@ROOT_API/dfSoftPackageDate/saveOrUpdateDfSoftPackageDate', params)
       .then(res => {
         if (res.data.status === '1') {
           this.$message.success('Success')
@@ -153,39 +129,14 @@ export default {
     editData (item) {
       this.settingItem = Object.assign({}, item)
       this.settingDialog = true
-    },
-    initSelectData () {
-      this.countryList = countries
-      this.$http.post('@ROOT_API/dfSoftPackageCurrency/getDfSoftPackageCurrencyAll', {
-        start: this.pageNum,
-        pageSize: this.pageSize
-      }).then((res) => {
-        if (res.data.status !== '1') {
-          this.$message({
-            type: 'error',
-            message: res.data.msg || this.$t('common.errorMsg')
-          })
-          return false
-        } else {
-          let { data } = res.data
-          this.currencyList = data
-        }
-      })
-    },
-    getCodeById (params, id, codeName, listName, idName, name) {
-      let items = this[listName].filter(da => da[idName] === this.settingItem[id])
-      if (items && items.length > 0) {
-        let [item] = items
-        params[codeName] = item[name]
-      }
     }
   },
   mixins: [pageMixin]
 }
 </script>
 <style lang='less'>
-.country-manage-wrap {
-  .country-manage-con {
+.duration-manage-wrap {
+  .duration-manage-con {
     background: #fff;
     padding: 40px;
     border-radius: 4px;
@@ -193,7 +144,7 @@ export default {
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
     -webkit-border-radius: px;
-    .country-manage-serch {
+    .duration-manage-serch {
       margin-bottom: 21px;
       .el-input {
         width: 385px;

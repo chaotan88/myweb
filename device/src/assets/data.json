@@ -354,7 +354,7 @@
       "pinyin": "amny"
     },
     {
-      
+      "short": "Ascension",
       "name": "阿森松",
       "en": "Ascension",
       "tel": "247",
@@ -546,7 +546,7 @@
   
     },
     {
-      
+      "short": "CaymanIs",
       "name": "开曼群岛",
       "en": "CaymanIs.",
       "tel": "1345",
@@ -962,14 +962,6 @@
   
     },
     {
-      
-      "name": "科特迪瓦",
-      "en": "IvoryCoast",
-      "tel": "225",
-      "pinyin": "ktdw"
-  
-    },
-    {
       "short": "JM",
       "name": "牙买加",
       "en": "Jamaica",
@@ -1227,22 +1219,6 @@
   
     },
     {
-      
-      "name": "马里亚那群岛",
-      "en": "MarianaIs",
-      "tel": "1670",
-      "pinyin": "mlynqd"
-  
-    },
-    {
-      
-      "name": "马提尼克",
-      "en": "Martinique",
-      "tel": "596",
-      "pinyin": "mtnk"
-  
-    },
-    {
       "short": "MU",
       "name": "毛里求斯",
       "en": "Mauritius",
@@ -1345,14 +1321,6 @@
       "en": "Nepal",
       "tel": "977",
       "pinyin": "nbe"
-  
-    },
-    {
-      
-      "name": "荷属安的列斯",
-      "en": "NetheriandsAntilles",
-      "tel": "599",
-      "pinyin": "hsadls"
   
     },
     {

@@ -112,7 +112,8 @@
     "authSetting": "权限设置",
     "deviceList": "设备列表",
     "addressManage": "位置管理",
-    "countryManage": "国家管理"
+    "countryManage": "国家管理",
+    "durationManage": "日期管理"
   },
   "console": {
     "inboundLabel": "入库设备数",

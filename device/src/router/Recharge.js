@@ -40,37 +40,37 @@ export default {
         }
       ]
     },
-    // {
-    //   path: '/admin/recharge/rechargeSetting',
-    //   redirect: '/admin/recharge/rechargeSetting/index',
-    //   meta: {
-    //     title: 'Payment',
-    //     nav: 'recharge.paymentPlans',
-    //     icon: 'cooperation-icon1',
-    //     auth: true,
-    //     authId: 10,
-    //     menuCode: '101032',
-    //     breadcrumb: [
-    //       { title: '价格设置', path: '' }
-    //     ]
-    //   },
-    //   component: r => require(['@/views/admin/recharge/RechargeLayout'], r),
-    //   children: [
-    //     {
-    //       path: '/admin/recharge/rechargeSetting/index',
-    //       meta: {
-    //         title: 'Payment',
-    //         auth: true,
-    //         breadcrumb: [
-    //           { title: 'common.priceManage', path: '' },
-    //           { title: 'recharge.paymentPlans', path: '' }
-    //         ]
-    //       },
-    //       // component: r => require(['@/views/admin/recharge/RechargeSetting'], r)
-    //       component: r => require(['@/views/admin/recharge/RechargePlans'], r)
-    //     }
-    //   ]
-    // },
+    {
+      path: '/admin/recharge/rechargeSetting',
+      redirect: '/admin/recharge/rechargeSetting/index',
+      meta: {
+        title: 'Payment',
+        nav: 'recharge.paymentSetting',
+        icon: 'cooperation-icon1',
+        auth: true,
+        authId: 10,
+        menuCode: '101032',
+        breadcrumb: [
+          { title: '价格设置', path: '' }
+        ]
+      },
+      component: r => require(['@/views/admin/recharge/RechargeLayout'], r),
+      children: [
+        {
+          path: '/admin/recharge/rechargeSetting/index',
+          meta: {
+            title: 'Payment',
+            auth: true,
+            breadcrumb: [
+              { title: 'common.priceManage', path: '' },
+              { title: 'recharge.paymentSetting', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/recharge/RechargeSetting'], r)
+          // component: r => require(['@/views/admin/recharge/RechargePlans'], r)
+        }
+      ]
+    },
     {
       path: '/admin/recharge/countryManage',
       redirect: '/admin/recharge/countryManage/index',
@@ -99,6 +99,37 @@ export default {
           },
           // component: r => require(['@/views/admin/recharge/RechargeSetting'], r)
           component: r => require(['@/views/admin/recharge/CountryManage'], r)
+        }
+      ]
+    },
+    {
+      path: '/admin/recharge/durationManage',
+      redirect: '/admin/recharge/durationManage/index',
+      meta: {
+        title: 'Payment',
+        nav: 'menu.durationManage',
+        icon: 'cooperation-icon1',
+        auth: true,
+        authId: 10,
+        menuCode: '101032',
+        breadcrumb: [
+          { title: '价格设置', path: '' }
+        ]
+      },
+      component: r => require(['@/views/admin/recharge/RechargeLayout'], r),
+      children: [
+        {
+          path: '/admin/recharge/durationManage/index',
+          meta: {
+            title: 'Payment',
+            auth: true,
+            breadcrumb: [
+              { title: 'common.priceManage', path: '' },
+              { title: 'menu.durationManage', path: '' }
+            ]
+          },
+          component: r => require(['@/views/admin/recharge/durationManage'], r)
+          // component: r => require(['@/views/admin/recharge/RechargePlans'], r)
         }
       ]
     },

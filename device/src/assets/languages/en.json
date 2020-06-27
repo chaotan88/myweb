@@ -112,7 +112,8 @@
     "authSetting": "Permission Set",
     "deviceList": "Device List",
     "addressManage": "Address Manage",
-    "countryManage": "Country Manage"
+    "countryManage": "Country Manage",
+    "durationManage": "Duration Manage"
   },
   "console": {
     "inboundLabel": "Number of inbound devices",
@@ -242,7 +243,7 @@
     "prepaidTime": "Prepaid time",
     "expirationDate": "Expiration Date",
     "timePeriod": "Time period",
-    "price": "price",
+    "price": "Price",
     "crossedPrice": "The crossed out price  ",
     "label": "Lable",
     "intercoms5": "5 intercoms / Year ",
@@ -283,7 +284,10 @@
     "paymentPlans": "Payment Plans",
     "country": "Country",
     "countryCode": "Country Code",
-    "currency": "Currency"
+    "currency": "Currency",
+    "pachageName": "Package Name",
+    "duration": "Duration",
+    "discount": "Discount"
   },
   "log": {
     "visitorType": "Visitor type",

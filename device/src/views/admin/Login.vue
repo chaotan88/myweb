@@ -46,6 +46,16 @@
         <el-form-item :label="$t('login.username')" prop="userName">
           <el-input v-model="registForm.userName"></el-input>
         </el-form-item>
+        <el-form-item :label="$t('recharge.country')" prop="countryCode">
+          <el-select v-model="registForm.countryCode" placeholder="" filterable>
+            <el-option
+              v-for="item in countryList"
+              :key="item.countryCode"
+              :label="item.country"
+              :value="item.countryCode">
+              </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item :label="$t('login.company')" prop="company">
           <el-input v-model="registForm.companyName"></el-input>
         </el-form-item>
@@ -85,6 +95,7 @@
 </template>
 
 <script>
+import { countries } from '../../assets/data.json'
 
 export default {
   data () {
@@ -123,6 +134,9 @@ export default {
         password: [
           { required: true, message: 'Minimum length is 6 characters.' },
           { min: 6, message: 'Minimum length is 6 characters.' }
+        ],
+        countryCode: [
+          { required: true, message: 'Please Select Country.' }
         ]
       },
       rePasswordForm: {
@@ -146,10 +160,12 @@ export default {
       currentLang: '中文',
       isSend: false,
       rememberMe: false,
-      loading: false
+      loading: false,
+      countryList: []
     }
   },
   mounted () {
+    this.getCountryList()
     if (this.getCookie('usernameOrEmail')) {
       this.loginForm.usernameOrEmail = this.getCookie('usernameOrEmail')
     }
@@ -244,7 +260,12 @@ export default {
             email: this.registForm.email,
             password: this.registForm.password,
             confirmPwd: this.registForm.password,
-            companyName: this.registForm.companyName
+            companyName: this.registForm.companyName,
+            countryCode: this.registForm.countryCode
+          }
+          let currentCountry = this.countryList.filter(coun => coun.countryCode === this.registForm.countryCode)
+          if (currentCountry && currentCountry.length > 0) {
+            params.country = currentCountry[0].country
           }
           if (this.registForm.email !== this.registForm.emailConfirmation) {
             this.$message({
@@ -514,6 +535,22 @@ export default {
       this.$router.push({
         path: '/forget'
       })
+    },
+    getCountryList () {
+      // this.$http.post('@ROOT_API/dfSoftDeviceUsePrice/getDfSoftDeviceUsePriceAll', {}).then((res) => {
+      //   if (res) {
+      //     let { data } = res.data
+      //     this.countryList = data || []
+      //   }
+      // })
+      let newData = []
+      countries.forEach(coun => {
+        newData.push({
+          countryCode: coun.short,
+          country: coun.en
+        })
+      })
+      this.countryList = newData
     }
   }
 }
@@ -758,6 +795,9 @@ export default {
       margin-left: 10px;
       color: #666;
     }
+  }
+  .el-select {
+    width: 100%;
   }
 }
 .login-cen-regist {
