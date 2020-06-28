@@ -114,7 +114,7 @@
           softUsePrice: [{ required: true, trigger: 'blur' }]
         },
         settingForm: {},
-        templateRadio: false,
+        templateRadio: '',
         templateSelection: {},
         currencyList: [],
         packageList: [],
@@ -139,8 +139,10 @@
             let { data } = res.data
             this.currencyList = data || []
             this.loading.loadingCurrency = false
-            if (this.currencyList.length > 0) {}
-            this.templateSelection = this.currencyList[0]
+            if (this.currencyList.length > 0) {
+              this.templateSelection = this.currencyList[0]
+            }
+            this.templateRadio = 0
             this.getPackageList()
           }
         })

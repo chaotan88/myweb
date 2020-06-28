@@ -1,19 +1,10 @@
 <template>
-  <div class="recharge-vip-wrap"
+  <!-- <div class="recharge-vip-wrap"
     v-loading="loading"
     element-loading-text="loading"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="recharge-list" v-if="!startPay">
-      <!-- <div :class="['recharge-item', item.id === currentItem.id ? 'item-selected' : '']"
-        v-for="item in rechargeList" :key="item.id" @click="currentItem = item">
-        <div class="item-left">{{$t(`recharge.intercoms${item.intercoms}`)}}</div>
-        <div class="item-right">
-          <span class="price"><span class="dollor">$</span>{{item.price}}</span>
-          <span class="price-rel">${{item.priceRel}}</span>
-          <span v-if="item.isOffer" class="specialOffer">{{$t("recharge.specialOffer")}}</span>
-        </div>
-      </div>-->
       <el-form
         :inline="true"
         class="demo-form-inline"
@@ -81,25 +72,8 @@
         <span class="tips">Hot</span>
       </div>
     </div>
-    <!-- <div id='payapp' v-else>
-      <div class="form-row">
-        <label for="card-element">
-          Credit or debit card
-        </label>
-        <div id="card-element">
-        </div>
-        <div id="card-errors" role="alert"></div>
-      </div>
-      <button class='pay-with-stripe' @click='pay'>Submit Payment</button>
-    </div> -->
     <div id='payapp' v-else>
       <p>Please give us your payment details:</p>
-      <!-- <card class='stripe-card'
-        :class='{ complete }'
-        :stripe='stripe'
-        :options='stripeOptions'
-        @change='complete = $event.complete'
-      /> -->
       <div class='credit-card-inputs' :class='{ complete }'>
         <div class="card-item">
           <span class="card-label">Card Number</span>
@@ -129,22 +103,112 @@
           />
         </div>
       </div>
-      <!-- <button class='pay-with-stripe' @click='pay' :disabled='!complete'>Pay with credit card</button> -->
     </div>
-    <!-- <div class="payment-amount">
-      <span>{{$t("recharge.paymentAmount")}}: </span>
-      <span class="dollor">$</span>
-      <span class="amount">{{currentItem.price}}</span>
-    </div>-->
     <div class="save-box">
       <el-button type="primary" @click="payNow" v-if="!startPay">{{$t("recharge.createOrder")}}</el-button>
+      <el-button type="primary" @click="pay" v-else>{{$t("recharge.payNow")}}</el-button>
+      <el-button type="primary" @click="backTo" v-if="startPay" class="back-button">{{$t("common.back")}}</el-button>
+    </div>
+  </div> -->
+  <div class="recharge-vip-wrap">
+    <div v-if="packageStatus === 0 && !startPay">
+      <div class="status-remark">You have not purchased any package, please select package</div>
+      <div class="package-content">
+        <div class="block-title">Select Package</div>
+        <div class="package-list">
+          <div :class="['package-item', item.id === currentPackage.id ? 'select-item' : '']"
+            v-for="(item, index) in dfSoftPackagePriceList" :key="index" @click="selectPackage(item)">
+            <div>{{item.packageName}}</div>
+            <div>{{item.packagePrice}} {{currency}}</div>
+            <div>{{item.remark}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="date-content">
+        <div class="block-title">Select Date</div>
+        <div class="date-list">
+          <div :class="['date-item', item.id === currentDate.id ? 'select-item' : '']"
+            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)">
+            <div>{{item.dateName}}</div>
+            <div>{{item.detail}}</div>
+            <div>{{item.remark}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="price-content" v-if="totalPrice">
+        Total Price: {{totalPrice}} {{currency}}
+      </div>
+    </div>
+    <div id='payapp' v-else>
+      <div class="goods-info">
+        <div>
+          <span>{{$t("recharge.orderNumber")}}:</span>
+          <span>{{orderInfo.orderNo}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.country")}}:</span>
+          <span>{{orderInfo.country}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.deviceNumber")}}:</span>
+          <span>{{orderInfo.packageDeviceNum}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.pachageName")}}:</span>
+          <span>{{orderInfo.packageName}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.duration")}}:</span>
+          <span>{{orderInfo.packageDateName}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.currentPrice")}}:</span>
+          <span>{{orderInfo.orderPrice}} {{orderInfo.currency}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.autoRenewal")}}:</span>
+          <span><el-checkbox v-model="autoRenewal" true-label="1" false-label="0"></el-checkbox></span>
+        </div>
+      </div>
+      <p>Please give us your payment details:</p>
+      <div class='credit-card-inputs' :class='{ complete }'>
+        <div class="card-item">
+          <span class="card-label">Card Number</span>
+          <card-number class='stripe-element card-number'
+            ref='cardNumber'
+            :stripe='stripe'
+            :options='Options'
+            @change='number = $event.complete'
+          />
+        </div>
+        <div class="card-item">
+          <span class="card-label">Card Expiry</span>
+          <card-expiry class='stripe-element card-expiry'
+            ref='cardExpiry'
+            :stripe='stripe'
+            :options='expiryOptions'
+            @change='expiry = $event.complete'
+          />
+        </div>
+        <div class="card-item">
+          <span class="card-label">Card Cvc</span>
+          <card-cvc class='stripe-element card-cvc'
+            ref='cardCvc'
+            :stripe='stripe'
+            :options='Options'
+            @change='cvc = $event.complete'
+          />
+        </div>
+      </div>
+    </div>
+    <div class="save-box">
+      <el-button type="primary" @click="payNow" v-if="!startPay && totalPrice">{{$t("recharge.createOrder")}}</el-button>
       <el-button type="primary" @click="pay" v-else>{{$t("recharge.payNow")}}</el-button>
       <el-button type="primary" @click="backTo" v-if="startPay" class="back-button">{{$t("common.back")}}</el-button>
     </div>
   </div>
 </template>
 <script>
-// import { stripeKey, stripeOptions } from './stripeConfig.json'
 import { CardNumber, CardExpiry, CardCvc, createToken } from 'vue-stripe-elements'
 
 export default {
@@ -208,12 +272,19 @@ export default {
       number: false,
       expiry: false,
       cvc: false,
-      autoRenewal: '1'
+      autoRenewal: '1',
+      packageStatus: 0,
+      dfSoftPackageDateList: [],
+      dfSoftPackagePriceList: [],
+      currency: 'usd',
+      currentPackage: {},
+      currentDate: {},
+      totalPrice: 0
     }
   },
   components: { CardNumber, CardExpiry, CardCvc },
   mounted () {
-    this.currentItem = this.rechargeList[0]
+    // this.currentItem = this.rechargeList[0]
     // this.$nextTick(() => {
     //   let style = {
     //     base: {
@@ -226,34 +297,29 @@ export default {
     //   card.mount('#card-element')
     //   this.card = card
     // })
+    this.getUserPackageInfo()
   },
   methods: {
     payNow () {
-      this.$refs['addRules'].validate(valid => {
-        if (valid) {
-          this.$http
-            .post('@ROOT_API/dfDeviceOrder/addOrder', {
-              payType: this.payType,
-              deviceNumber: this.addForm.deviceNumber
+      this.$http
+        .post('@ROOT_API/dfDeviceOrder/addOrder', {
+          payType: this.payType,
+          packageOrderType: 1,
+          packagePriceId: this.currentPackage.id,
+          packageDateId: this.currentDate.id,
+          deviceNumber: this.addForm.deviceNumber
+        })
+        .then(res => {
+          if (res.data.status === '1') {
+            this.orderInfo = res.data.data
+            if (!this.startPay) this.startPay = true
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.msg || this.$t('common.errorMsg')
             })
-            .then(res => {
-              if (res.data.status === '1') {
-                this.orderInfo = res.data.data
-                if (!this.startPay) this.startPay = true
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: res.data.msg || this.$t('common.errorMsg')
-                })
-              }
-            })
-        } else {
-          this.$message({
-            type: 'error',
-            message: this.$t('common.deviceMumberMustIsNumber')
-          })
-        }
-      })
+          }
+        })
     },
     backTo () {
       this.startPay = false
@@ -381,6 +447,46 @@ export default {
           this.$refs.cardNumber.focus()
         }
       }
+    },
+    getUserPackageInfo () {
+      this.$http.post('@ROOT_API/dfDeviceOrder/getUserPackageInfo', {}).then((res) => {
+        if (res) {
+          let { data } = res.data
+          this.packageStatus = data.packageStatus
+          this.currency = data.currency
+          this.dfSoftPackageDateList = data.dfSoftPackageDateList
+          this.dfSoftPackagePriceList = data.dfSoftPackagePriceList
+        }
+      })
+    },
+    selectPackage (item) {
+      this.currentPackage = Object.assign({}, item)
+      this.getTotalPrice()
+    },
+    selectDate (item) {
+      this.currentDate = Object.assign({}, item)
+      this.getTotalPrice()
+    },
+    getTotalPrice () {
+      if (this.currentPackage.id && this.currentDate.id) {
+        let packageOrderType = 1 // 首次下单
+        if (this.packageStatus === 1) {
+          // 续费，和升级
+        } else if (this.packageStatus === 2) {
+          // 只能续费
+        }
+        this.$http.post('@ROOT_API/dfDeviceOrder/getOrderPrice', {
+          payType: 1,
+          packageOrderType: packageOrderType,
+          packagePriceId: this.currentPackage.id,
+          packageDateId: this.currentDate.id
+        }).then((res) => {
+          if (res) {
+            let { orderPrice } = res.data.data
+            this.totalPrice = orderPrice
+          }
+        })
+      }
     }
   },
   watch: {
@@ -459,6 +565,37 @@ export default {
 </style>
 <style lang='less' scoped>
 .recharge-vip-wrap {
+  background: #fff;
+  padding: 20px;
+  .select-item {
+    border: 1px solid #33719b !important;
+  }
+  .package-list, .date-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    .package-item, .date-item {
+      width: 150px;
+      height: 100px;
+      margin-right: 20px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      div:nth-child(1) {
+        margin-top: 15px;
+      }
+    }
+  }
+  .date-content {
+    margin-top: 20px;
+  }
+  .price-content {
+    margin-top: 20px;
+  }
+  .status-remark {
+    margin-bottom: 10px;
+  }
   .save-box {
     text-align: center;
     margin-top: 30px;
@@ -471,57 +608,57 @@ export default {
       border: 1px solid #33719b;
     }
   }
-  .recharge-list {
-    display: flex;
-    justify-content: space-around;
-    background: #fff;
-    // height: 120px;
-    justify-content: left;
-    .el-form {
-      margin-top: 20px;
-    }
-    .recharge-item {
-      width: 22%;
-      height: 80px;
-      border-radius: 5px;
-      border: 1px solid #eee;
-      display: flex;
-      justify-content: space-around;
-      position: relative;
-      cursor: pointer;
-      margin-top: 20px;
-      .item-left {
-        border-right: 1px solid #eee;
-        width: 50px;
-        padding-top: 17px;
-        padding-right: 10px;
-      }
-      .item-right {
-        margin: auto 0;
-        .price {
-          .dollor {
-            font-size: 26px;
-          }
-        }
-        .price-rel {
-          color: #999999;
-          text-decoration: line-through;
-        }
-        .specialOffer {
-          background: #cc9900;
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 50px;
-          color: #fff;
-          text-align: center;
-        }
-      }
-    }
-    .item-selected {
-      border: 1px solid #cc9900;
-    }
-  }
+  // .recharge-list {
+  //   display: flex;
+  //   justify-content: space-around;
+  //   background: #fff;
+  //   // height: 120px;
+  //   justify-content: left;
+  //   .el-form {
+  //     margin-top: 20px;
+  //   }
+  //   .recharge-item {
+  //     width: 22%;
+  //     height: 80px;
+  //     border-radius: 5px;
+  //     border: 1px solid #eee;
+  //     display: flex;
+  //     justify-content: space-around;
+  //     position: relative;
+  //     cursor: pointer;
+  //     margin-top: 20px;
+  //     .item-left {
+  //       border-right: 1px solid #eee;
+  //       width: 50px;
+  //       padding-top: 17px;
+  //       padding-right: 10px;
+  //     }
+  //     .item-right {
+  //       margin: auto 0;
+  //       .price {
+  //         .dollor {
+  //           font-size: 26px;
+  //         }
+  //       }
+  //       .price-rel {
+  //         color: #999999;
+  //         text-decoration: line-through;
+  //       }
+  //       .specialOffer {
+  //         background: #cc9900;
+  //         position: absolute;
+  //         top: 0;
+  //         right: 0;
+  //         width: 50px;
+  //         color: #fff;
+  //         text-align: center;
+  //       }
+  //     }
+  //   }
+  //   .item-selected {
+  //     border: 1px solid #cc9900;
+  //   }
+  // }
   .goods-info {
     background: #fff;
     padding: 20px;
@@ -537,65 +674,65 @@ export default {
       }
     }
   }
-  .item-desc {
-    background: #fff;
-    color: #666666;
-    font-size: 13px;
-    padding-left: 20px;
-    span {
-      color: red;
-    }
-    padding-bottom: 20px;
-  }
-  .pay-method {
-    background: #fff;
-    padding-top: 20px;
-    display: flex;
-    padding-bottom: 20px;
-    padding-left: 20px;
-    .payment-method-val {
-      height: 45px;
-      border: 1px solid #cc9900;
-      border-radius: 5px;
-      padding: 0 20px;
-      line-height: 43px;
-      position: relative;
-      img {
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
-      }
-      .el-radio {
-        margin-right: 0;
-      }
-    }
-    span {
-      line-height: 43px;
-    }
-    .tips {
-      position: absolute;
-      top: 0;
-      right: 0;
-      line-height: 1;
-      background: #cc9900;
-      color: #fff;
-      font-size: 15px;
-      width: 32px;
-      height: 17px;
-      text-align: center;
-    }
-  }
-  .payment-amount {
-    background: #fff;
-    padding-left: 20px;
-    padding-bottom: 20px;
-    .dollor {
-      font-size: 26px;
-      color: red;
-    }
-    .amount {
-      color: red;
-    }
-  }
+  // .item-desc {
+  //   background: #fff;
+  //   color: #666666;
+  //   font-size: 13px;
+  //   padding-left: 20px;
+  //   span {
+  //     color: red;
+  //   }
+  //   padding-bottom: 20px;
+  // }
+  // .pay-method {
+  //   background: #fff;
+  //   padding-top: 20px;
+  //   display: flex;
+  //   padding-bottom: 20px;
+  //   padding-left: 20px;
+  //   .payment-method-val {
+  //     height: 45px;
+  //     border: 1px solid #cc9900;
+  //     border-radius: 5px;
+  //     padding: 0 20px;
+  //     line-height: 43px;
+  //     position: relative;
+  //     img {
+  //       width: 20px;
+  //       height: 20px;
+  //       vertical-align: middle;
+  //     }
+  //     .el-radio {
+  //       margin-right: 0;
+  //     }
+  //   }
+  //   span {
+  //     line-height: 43px;
+  //   }
+  //   .tips {
+  //     position: absolute;
+  //     top: 0;
+  //     right: 0;
+  //     line-height: 1;
+  //     background: #cc9900;
+  //     color: #fff;
+  //     font-size: 15px;
+  //     width: 32px;
+  //     height: 17px;
+  //     text-align: center;
+  //   }
+  // }
+  // .payment-amount {
+  //   background: #fff;
+  //   padding-left: 20px;
+  //   padding-bottom: 20px;
+  //   .dollor {
+  //     font-size: 26px;
+  //     color: red;
+  //   }
+  //   .amount {
+  //     color: red;
+  //   }
+  // }
 }
 </style>
