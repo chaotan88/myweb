@@ -82,7 +82,7 @@
       :visible.sync="settingDialog"
       width="480px"
       center class="grant-pop">
-      <el-form :model="settingForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm bind-form">
+      <el-form :model="updateItem" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm bind-form">
         <el-form-item :label="$t('recharge.pachageName')" prop="packageName">
           <el-input readonly v-model="updateItem.packageName" clearable></el-input>
         </el-form-item>
@@ -95,7 +95,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="settingDialog = false">Cancel</el-button>
-        <el-button type="primary" @click="savePackage">Ok</el-button>
+        <el-button type="primary" @click="savePackage('ruleForm')">Ok</el-button>
       </span>
     </el-dialog>
   </div>
@@ -104,16 +104,22 @@
 <script>
   import {pageMixin} from '@/mixin'
 
+  let validateInt = (rule, value, callback) => {
+    if (value === '' || value === null) return callback(new Error('Required'))
+    if (value && (value < 0 || !value.toString().match(/^\d+(\.\d{0,2})?$/gi))) return callback(new Error('Please fill in a positive number'))
+    callback()
+  }
   export default {
     data () {
       return {
         condition: '',
         settingDialog: false,
         rules: {
-          deviceUsePrice: [{ required: true, trigger: 'blur' }],
-          softUsePrice: [{ required: true, trigger: 'blur' }]
+          packagePrice: [{ required: true, trigger: 'blur' },
+          {validator: validateInt, trigger: 'blur'}],
+          packageDeviceNum: [{ required: true, trigger: 'blur' },
+          {validator: validateInt, trigger: 'blur'}]
         },
-        settingForm: {},
         templateRadio: '',
         templateSelection: {},
         currencyList: [],
@@ -159,23 +165,26 @@
           }
         })
       },
-      savePackage () {
-        this.$http.post('@ROOT_API/dfSoftPackagePrice/saveOrUpdateDfSoftPackagePrice', {
-          id: this.templateSelection.id,
-          packagePrice: this.updateItem.packagePrice,
-          packageDeviceNum: this.updateItem.packageDeviceNum,
-          packageName: this.updateItem.packageName
-        }).then((res) => {
-          if (res.data.status === '1') {
-            this.$message.success('Success')
-            this.settingDialog = false
-            this.getPackageList()
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.data.msg || this.$t('common.errorMsg')
-            })
-          }
+      savePackage (formName) {
+        this.$refs[formName].validate((valid) => {
+          if (!valid) return false
+          this.$http.post('@ROOT_API/dfSoftPackagePrice/saveOrUpdateDfSoftPackagePrice', {
+            id: this.templateSelection.id,
+            packagePrice: this.updateItem.packagePrice,
+            packageDeviceNum: this.updateItem.packageDeviceNum,
+            packageName: this.updateItem.packageName
+          }).then((res) => {
+            if (res.data.status === '1') {
+              this.$message.success('Success')
+              this.settingDialog = false
+              this.getPackageList()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
+          })
         })
       },
       getTemplateRow (index, row) {

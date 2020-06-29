@@ -287,7 +287,9 @@
     "currency": "Currency",
     "pachageName": "Package Name",
     "duration": "Duration",
-    "discount": "Discount"
+    "discount": "Discount",
+    "upgrade": "Upgrade",
+    "renew": "Renew"
   },
   "log": {
     "visitorType": "Visitor type",

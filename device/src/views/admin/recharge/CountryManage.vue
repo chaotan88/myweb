@@ -37,7 +37,7 @@
         class="demo-ruleForm bind-form"
       >
       <el-form-item :label="$t('recharge.country')" prop="deviceUsePrice">
-        <el-select v-model="settingItem.countryCode">
+        <el-select v-model="settingItem.countryCode" filterable>
           <el-option
           v-for="item in countryList"
           :key="item.short"

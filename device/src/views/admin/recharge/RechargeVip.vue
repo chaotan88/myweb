@@ -110,7 +110,11 @@
       <el-button type="primary" @click="backTo" v-if="startPay" class="back-button">{{$t("common.back")}}</el-button>
     </div>
   </div> -->
-  <div class="recharge-vip-wrap">
+  <div class="recharge-vip-wrap"
+    v-loading="loading"
+    element-loading-text="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div v-if="packageStatus === 0 && !startPay">
       <div class="status-remark">You have not purchased any package, please select package</div>
       <div class="package-content">
@@ -139,7 +143,88 @@
         Total Price: {{totalPrice}} {{currency}}
       </div>
     </div>
-    <div id='payapp' v-else>
+    <div v-else-if="packageStatus === 1 && !startPay">
+      <div class="status-remark">Current package information</div>
+      <div class="goods-info">
+        <div>
+          <span>{{$t("recharge.country")}}:</span>
+          <span>{{currentInfo.country}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.pachageName")}}:</span>
+          <span>{{currentInfo.packageName}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.deviceNumber")}}:</span>
+          <span>{{currentInfo.packageDeviceNum}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.duration")}}:</span>
+          <span>{{currentInfo.vipExpireDate | dateFilter}}</span>
+        </div>
+      </div>
+      <div class="package-content" v-if="pageType === 'upgrade'">
+        <div class="block-title">Select Package</div>
+        <div class="package-list">
+          <div :class="['package-item', item.id === currentPackage.id ? 'select-item' : '']"
+            v-for="(item, index) in dfSoftPackagePriceListUpgrade" :key="index" @click="selectPackage(item)">
+            <div>{{item.packageName}}</div>
+            <div>{{item.packagePrice}} {{currency}}</div>
+            <div>{{item.remark}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="date-content" v-if="pageType === 'renew'">
+        <div class="block-title">Select Date</div>
+        <div class="date-list">
+          <div :class="['date-item', item.id === currentDate.id ? 'select-item' : '']"
+            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)">
+            <div>{{item.dateName}}</div>
+            <div>{{item.detail}}</div>
+            <div>{{item.remark}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="price-content" v-if="totalPrice">
+        Total Price: {{totalPrice}} {{currency}}
+      </div>
+    </div>
+    <div v-else-if="packageStatus === 2 && !startPay">
+      <div class="status-remark">Current package information</div>
+      <div class="goods-info">
+        <div>
+          <span>{{$t("recharge.country")}}:</span>
+          <span>{{currentInfo.country}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.pachageName")}}:</span>
+          <span>{{currentInfo.packageName}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.deviceNumber")}}:</span>
+          <span>{{currentInfo.packageDeviceNum}}</span>
+        </div>
+        <div>
+          <span>{{$t("recharge.duration")}}:</span>
+          <span>{{currentInfo.vipExpireDate | dateFilter}}</span>
+        </div>
+      </div>
+      <div class="date-content" v-if="pageType === 'renew'">
+        <div class="block-title">Select Date</div>
+        <div class="date-list">
+          <div :class="['date-item', item.id === currentDate.id ? 'select-item' : '']"
+            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)">
+            <div>{{item.dateName}}</div>
+            <div>{{item.detail}}</div>
+            <div>{{item.remark}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="price-content" v-if="totalPrice">
+        Total Price: {{totalPrice}} {{currency}}
+      </div>
+    </div>
+    <div id='payapp' v-else-if="startPay">
       <div class="goods-info">
         <div>
           <span>{{$t("recharge.orderNumber")}}:</span>
@@ -202,9 +287,12 @@
       </div>
     </div>
     <div class="save-box">
-      <el-button type="primary" @click="payNow" v-if="!startPay && totalPrice">{{$t("recharge.createOrder")}}</el-button>
-      <el-button type="primary" @click="pay" v-else>{{$t("recharge.payNow")}}</el-button>
-      <el-button type="primary" @click="backTo" v-if="startPay" class="back-button">{{$t("common.back")}}</el-button>
+      <el-button type="primary" @click="payNow" v-if="!startPay && (totalPrice && packageStatus === 0)">{{$t("recharge.createOrder")}}</el-button>
+      <el-button type="primary" @click="pageType='upgrade'" v-if="!startPay && packageStatus === 1 && !pageType">{{$t("recharge.upgrade")}}</el-button>
+      <el-button type="primary" @click="pageType='renew'" v-if="!startPay && packageStatus === 1 && !pageType">{{$t("recharge.renew")}}</el-button>
+      <el-button type="primary" @click="payNow" v-if="!startPay && totalPrice && pageType">{{$t("recharge.createOrder")}}</el-button>
+      <el-button type="primary" @click="pay" v-if="startPay">{{$t("recharge.payNow")}}</el-button>
+      <el-button type="primary" @click="backTo" v-if="startPay || pageType" class="back-button">{{$t("common.back")}}</el-button>
     </div>
   </div>
 </template>
@@ -243,11 +331,7 @@ export default {
       ],
       currentItem: {},
       startPay: false,
-      // orderInfo: {
-      //   goodsName: '1年5个设备VIP',
-      //   orderNumber: '201904233455345345',
-      //   orderAccount: '18717166601'
-      // },
+      currentInfo: {},
       addForm: {
         deviceNumber: ''
       },
@@ -276,10 +360,12 @@ export default {
       packageStatus: 0,
       dfSoftPackageDateList: [],
       dfSoftPackagePriceList: [],
+      dfSoftPackagePriceListUpgrade: [],
       currency: 'usd',
       currentPackage: {},
       currentDate: {},
-      totalPrice: 0
+      totalPrice: 0,
+      pageType: ''
     }
   },
   components: { CardNumber, CardExpiry, CardCvc },
@@ -301,14 +387,20 @@ export default {
   },
   methods: {
     payNow () {
+      this.loading = true
+      let packageOrderType = 1
+      if (this.pageType === 'upgrade') packageOrderType = 2
+      else if (this.pageType === 'renew') packageOrderType = 3
+      let params = {
+        payType: this.payType,
+        packageOrderType: packageOrderType,
+        packagePriceId: this.currentPackage.id || '',
+        packageDateId: this.currentDate.id || ''
+      }
+      if (!params.packagePriceId) delete params['packagePriceId']
+      if (!params.packageDateId) delete params['packageDateId']
       this.$http
-        .post('@ROOT_API/dfDeviceOrder/addOrder', {
-          payType: this.payType,
-          packageOrderType: 1,
-          packagePriceId: this.currentPackage.id,
-          packageDateId: this.currentDate.id,
-          deviceNumber: this.addForm.deviceNumber
-        })
+        .post('@ROOT_API/dfDeviceOrder/addOrder', params)
         .then(res => {
           if (res.data.status === '1') {
             this.orderInfo = res.data.data
@@ -319,10 +411,15 @@ export default {
               message: res.data.msg || this.$t('common.errorMsg')
             })
           }
+          this.loading = false
         })
     },
     backTo () {
       this.startPay = false
+      this.pageType = ''
+      this.currentPackage = {}
+      this.currentDate = {}
+      this.totalPrice = 0
     },
     paySubmit () {
       this.$http
@@ -456,6 +553,12 @@ export default {
           this.currency = data.currency
           this.dfSoftPackageDateList = data.dfSoftPackageDateList
           this.dfSoftPackagePriceList = data.dfSoftPackagePriceList
+          if (data.packageName) {
+            let vipMappings = ['VIP1', 'VIP2', 'VIP3', 'VIP4', 'VIP5', 'VIP6']
+            let index = vipMappings.indexOf(data.packageName)
+            this.dfSoftPackagePriceListUpgrade = data.dfSoftPackagePriceList.filter(df => vipMappings.indexOf(df.packageName) > index)
+          }
+          this.currentInfo = data
         }
       })
     },
@@ -468,23 +571,30 @@ export default {
       this.getTotalPrice()
     },
     getTotalPrice () {
-      if (this.currentPackage.id && this.currentDate.id) {
+      if ((this.currentPackage.id && this.currentDate.id) || this.packageStatus !== 0) {
         let packageOrderType = 1 // 首次下单
-        if (this.packageStatus === 1) {
-          // 续费，和升级
-        } else if (this.packageStatus === 2) {
-          // 只能续费
-        }
-        this.$http.post('@ROOT_API/dfDeviceOrder/getOrderPrice', {
+        if (this.pageType === 'upgrade') packageOrderType = 2
+        else if (this.pageType === 'renew') packageOrderType = 3
+        let params = {
           payType: 1,
           packageOrderType: packageOrderType,
           packagePriceId: this.currentPackage.id,
           packageDateId: this.currentDate.id
-        }).then((res) => {
-          if (res) {
+        }
+        if (!params.packagePriceId) delete params['packagePriceId']
+        if (!params.packageDateId) delete params['packageDateId']
+        this.loading = true
+        this.$http.post('@ROOT_API/dfDeviceOrder/getOrderPrice', params).then((res) => {
+          if (res.data.status === '1') {
             let { orderPrice } = res.data.data
             this.totalPrice = orderPrice
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.msg || this.$t('common.errorMsg')
+            })
           }
+          this.loading = false
         })
       }
     }

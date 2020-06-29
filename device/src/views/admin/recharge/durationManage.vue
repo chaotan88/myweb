@@ -26,7 +26,7 @@
 
     <el-dialog :title="settingItem.id ? 'Edit': 'Add'" :visible.sync="settingDialog" width="480px" center class="grant-pop">
       <el-form
-        :model="settingForm"
+        :model="settingItem"
         :rules="rules"
         ref="ruleForm"
         label-width="150px"
@@ -35,7 +35,7 @@
         <el-form-item :label="$t('recharge.duration')">
           <el-input placeholder="Please enter" v-model="settingItem.dateName" readonly></el-input>
         </el-form-item>
-        <el-form-item :label="$t('recharge.discount')">
+        <el-form-item :label="$t('recharge.discount')" prop="discount">
           <el-input placeholder="Please enter" v-model="settingItem.discount" clearable></el-input>
         </el-form-item>
         <el-form-item :label="$t('recharge.details')">
@@ -44,7 +44,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="settingDialog = false">取 消</el-button>
-        <el-button type="primary" @click="saveDuration" :loading="loading">Ok</el-button>
+        <el-button type="primary" @click="saveDuration('ruleForm')" :loading="loading">Ok</el-button>
       </span>
     </el-dialog>
   </div>
@@ -52,13 +52,21 @@
 
 <script>
 import { pageMixin } from '@/mixin'
+let validateInt = (rule, value, callback) => {
+  if (value === '' || value === null) return callback(new Error('Required'))
+  if (value && (value < 0 || !value.toString().match(/^\d+(\.\d{0,2})?$/gi))) return callback(new Error('Please fill in a positive number'))
+  callback()
+}
 
 export default {
   data () {
     return {
       condition: '',
       settingDialog: false,
-      rules: {},
+      rules: {
+        discount: [{ required: true, trigger: 'blur' },
+        {validator: validateInt, trigger: 'blur'}]
+      },
       settingForm: {},
       settingItem: {
         id: '',
@@ -95,25 +103,28 @@ export default {
         }
       })
     },
-    saveDuration () {
-      this.loading = true
-      let params = {
-        id: this.settingItem.id || '',
-        discount: this.settingItem.discount
-      }
-      this.$http.post('@ROOT_API/dfSoftPackageDate/saveOrUpdateDfSoftPackageDate', params)
-      .then(res => {
-        if (res.data.status === '1') {
-          this.$message.success('Success')
-          this.settingDialog = false
-          this.findData()
-        } else {
-          this.$message({
-            type: 'error',
-            message: res.data.msg || this.$t('common.errorMsg')
-          })
+    saveDuration (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) return false
+        this.loading = true
+        let params = {
+          id: this.settingItem.id || '',
+          discount: this.settingItem.discount
         }
-        this.loading = false
+        this.$http.post('@ROOT_API/dfSoftPackageDate/saveOrUpdateDfSoftPackageDate', params)
+        .then(res => {
+          if (res.data.status === '1') {
+            this.$message.success('Success')
+            this.settingDialog = false
+            this.findData()
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.data.msg || this.$t('common.errorMsg')
+            })
+          }
+          this.loading = false
+        })
       })
     },
     addData () {
