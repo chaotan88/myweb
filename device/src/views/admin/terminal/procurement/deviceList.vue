@@ -128,6 +128,9 @@
                     <el-dropdown-item :command="`14_${props.$index}`" v-if="props.row.bindStatus === 1">
                       {{$t('device.syncDataByDevice')}}
                     </el-dropdown-item>
+                    <el-dropdown-item :command="`15_${props.$index}`" v-if="props.row.bindStatus === 1">
+                      {{$t('device.syncDataByServer')}}
+                    </el-dropdown-item>
                     <el-dropdown-item :command="`1_${props.$index}`">
                       {{$t('common.delete')}}
                     </el-dropdown-item>
@@ -196,10 +199,6 @@
                     @click="handleCommand(`14_${index}`)">
                       {{$t('device.syncDataByDevice')}}
                   </el-button>
-                  <!-- <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
-                    @click="handleCommand(`12_${index}`)" v-if="item.bindStatus === 1">
-                      {{$t('device.openDoor1')}}
-                  </el-button> -->
                   <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor1"
                     style="margin-right: 10px;">
                     <el-submenu index="555">
@@ -209,6 +208,14 @@
                       <el-menu-item :index="`${index}-3`">UNLATCH</el-menu-item>
                     </el-submenu>
                   </el-menu>
+                  <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`15_${index}`)">
+                      {{$t('device.syncDataByServer')}}
+                  </el-button>
+                  <!-- <el-button :class="$i18n.locale === 'zh' ? 'detail-button' : 'detail-button-en'"
+                    @click="handleCommand(`12_${index}`)" v-if="item.bindStatus === 1">
+                      {{$t('device.openDoor1')}}
+                  </el-button> -->
                   <el-menu class="el-menu-demo" mode="horizontal" @select="handleSelectDoor2">
                     <el-submenu index="222">
                       <template slot="title">Open Door2</template>
@@ -474,6 +481,8 @@
         <el-button type="primary" @click="visibleDetail=false">OK</el-button>
       </div>
     </el-dialog>
+    <Progress v-if="showDeviceProgress" :id="syncIId" :syncType="2" @success="finishedDevice"></Progress>
+    <Progress v-if="showServerProgress" :id="syncIId" :syncType="1" @success="finishedServer"></Progress>
   </div>
 </template>
 
@@ -482,6 +491,7 @@
   import RegionSelect from '@/components/utils/RegionSelect'
   import ISVIP from '@/views/public/IsVip.vue'
   import uploadFile from '@/components/utils/UploadComponent.vue'
+  import Progress from '@/components/utils/Progress.vue'
   import {countrys} from '../../../../assets/data.json'
 
   export default {
@@ -554,7 +564,10 @@
         addName: '',
         addDescribeInfo: '',
         visibleDetail: false,
-        initData: {}
+        initData: {},
+        showDeviceProgress: false,
+        showServerProgress: false,
+        syncIId: ''
       }
     },
     mounted () {
@@ -869,27 +882,55 @@
           this.OpenDoor(data, '2')
         } else if (arr[0] === '14') {
           this.syncDataToDevice(data)
+        } else if (arr[0] === '15') {
+          this.syncDataToServer(data)
         }
       },
       syncDataToDevice (row) {
+        this.syncIId = row.id
         this.$confirm(this.$t('common.areYouSure'), 'title', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancle',
           type: 'warning'
         }).then(() => {
           this.$http.post('@ROOT_API/dfAddress/syncDataToDevice', { id: row.id }).then((res) => {
-            if (res.data.status === '1') {
-              this.$message({
-                type: 'success',
-                message: 'success'
-              })
-              this.findData()
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.data.msg || this.$t('common.errorMsg')
-              })
-            }
+            // if (res.data.status === '1') {
+            //   this.$message({
+            //     type: 'success',
+            //     message: 'success'
+            //   })
+            //   this.findData()
+            // } else {
+            //   this.$message({
+            //     type: 'error',
+            //     message: res.data.msg || this.$t('common.errorMsg')
+            //   })
+            // }
+          })
+          this.showDeviceProgress = true
+        }).catch(() => {})
+      },
+      syncDataToServer (row) {
+        this.syncIId = row.id
+        this.$confirm(this.$t('common.areYouSure'), 'title', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('@ROOT_API/dfAddress/syncDataToServer', { id: row.id }).then((res) => {
+            // if (res.data.status === '1') {
+            //   this.$message({
+            //     type: 'success',
+            //     message: 'success'
+            //   })
+            //   this.findData()
+            // } else {
+            //   this.$message({
+            //     type: 'error',
+            //     message: res.data.msg || this.$t('common.errorMsg')
+            //   })
+            // }
+            this.showServerProgress = true
           })
         }).catch(() => {})
       },
@@ -1020,10 +1061,48 @@
         let arr = key.split('-')
         let data = this.itemList[arr[0]]
         this.OpenDoor(data, '2', arr[1])
+      },
+      finishedServer (val) {
+        if (parseInt(val) === 2) {
+          this.$message({
+            type: 'success',
+            message: 'Success'
+          })
+        } else if (parseInt(val) === 3) {
+          this.$message({
+            type: 'error',
+            message: 'Synchronization failed'
+          })
+        } else if (parseInt(val) === 4) {
+          this.$message({
+            type: 'error',
+            message: 'Synchronization timeout'
+          })
+        }
+        this.showServerProgress = false
+      },
+      finishedDevice (val) {
+        if (parseInt(val) === 2) {
+          this.$message({
+            type: 'success',
+            message: 'Success'
+          })
+        } else if (parseInt(val) === 3) {
+          this.$message({
+            type: 'error',
+            message: 'Synchronization failed'
+          })
+        } else if (parseInt(val) === 4) {
+          this.$message({
+            type: 'error',
+            message: 'Synchronization timeout'
+          })
+        }
+        this.showDeviceProgress = false
       }
     },
     mixins: [pageMixin],
-    components: { RegionSelect, ISVIP, uploadFile }
+    components: { RegionSelect, ISVIP, uploadFile, Progress }
   }
 </script>
 

@@ -94,7 +94,8 @@
     "clearVistorrSure": "是否确认清除所有访客?",
     "areYouSure": "是否确定？",
     "back": "返回",
-    "defaultSettings": "恢复默认设置"
+    "defaultSettings": "恢复默认设置",
+    "reset": "重置"
   },
   "menu": {
     "console": "控制台",
@@ -224,6 +225,7 @@
     "unbind": "解绑",
     "onlyClearDevice": "清空设备数据",
     "syncDataByDevice": "同步数据到设备",
+    "syncDataByServer": "同步数据到服务器",
     "deviceName": "设备名称",
     "describeInfo": "描述",
     "syncDataToServer": "同步数据到服务器",
@@ -284,7 +286,17 @@
     "paymentPlans": "付款设置",
     "country": "国家",
     "countryCode": "国家编码",
-    "currency": "币种"
+    "currency": "币种",
+    "pachageName": "Package Name",
+    "duration": "Duration",
+    "discount": "Discount",
+    "upgrade": "Upgrade",
+    "renew": "Renew",
+    "orderMethod": "Order Method",
+    "orderType": "Order Type",
+    "packageDate": "Package Date",
+    "packageprice": "Package Price",
+    "packageDiscount": "Package Discount"
   },
   "log": {
     "visitorType": "访客类型",

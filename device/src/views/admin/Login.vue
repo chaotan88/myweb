@@ -39,7 +39,7 @@
         </div>
         <input  type="button" class="inp-sub" :value="$t('login.signIn')" @click="LoginHandle">
       </el-form>
-      <el-form label-position="top" label-width="80px" :model="registForm" border :rules="registRules" ref="registForm" v-show="pageType === 'regist'">
+      <el-form label-position="top" label-width="80px" :model="registForm" border :rules="registRules" ref="registForm" v-show="pageType === 'regist'" class="regist-form">
         <el-form-item :label="$t('login.fullName')" prop="fullName">
           <el-input v-model="registForm.fullName"></el-input>
         </el-form-item>
@@ -537,20 +537,21 @@ export default {
       })
     },
     getCountryList () {
-      // this.$http.post('@ROOT_API/dfSoftDeviceUsePrice/getDfSoftDeviceUsePriceAll', {}).then((res) => {
-      //   if (res) {
-      //     let { data } = res.data
-      //     this.countryList = data || []
-      //   }
-      // })
-      let newData = []
-      countries.forEach(coun => {
-        newData.push({
-          countryCode: coun.short,
-          country: coun.en
+      this.$http.post(this.$dm.AROOT_API + '/login/getAllCountry', {}).then((res) => {
+        if (res) {
+          let { data } = res.data
+          this.countryList = data || []
+        }
+      }, () => {
+        let newData = []
+        countries.forEach(coun => {
+          newData.push({
+            countryCode: coun.short,
+            country: coun.en
+          })
         })
+        this.countryList = newData
       })
-      this.countryList = newData
     }
   }
 }
@@ -742,7 +743,7 @@ export default {
   .inp-sub{
     width: 100%;
     height: 34px;
-    margin-top: 30px;
+    margin-top:  30px;
     border-radius: 4px;
     font-size: 14px;
     font-weight: 400;
@@ -827,6 +828,21 @@ export default {
     }
     .el-form-item__label {
       margin-bottom: -10px;
+    }
+  }
+  .regist-form {
+    .el-form-item__label {
+      margin-bottom: -20px;
+      margin-top: -15px;
+    }
+    .inp-sub {
+      margin-top: 10px !important;
+    }
+    .el-form-item__error {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
     }
   }
 </style>

@@ -46,9 +46,54 @@
           prop="orderTime"
           :label="$t('recharge.orderTime')" width="190">
           <template slot-scope="props">
+            {{props.row.orderTime | dateFilter}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="expireTime"
+          :label="$t('recharge.expireTime')" width="190">
+          <template slot-scope="props">
             {{props.row.expireTime | dateFilter}}
           </template>
         </el-table-column>
+        <el-table-column
+          prop="packageOrderType"
+          label="Order Method" width="190">
+          <template slot-scope="props">
+            {{props.row.packageOrderType | packageOrderTypeFilter}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="orderType"
+          label="Order Type" width="190">
+          <template slot-scope="props">
+            {{props.row.orderType | orderTypeFilter}}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="packageName"
+          :label="$t('recharge.pachageName')" width="130">
+          <template slot-scope="props">
+            {{props.row.packageName | filterEmpty}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="packageDateName"
+          label="Package Date" width="130">
+          <template slot-scope="props">
+            {{props.row.packageDateName | filterEmpty}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="payStatus"
+          label="Pay Status" width="130">
+            <template slot-scope="props">
+            {{props.row.payStatus | payStatusFilter}}
+          </template>
+        </el-table-column>
+        
+        
         <el-table-column prop="operation" :label="$t('common.operation')" min-width="120">
           <template slot-scope="props">
             <el-button class="detail-button" @click="showDetail(props.row)">{{$t('common.detail')}}</el-button>
@@ -68,13 +113,13 @@
     <!--detail -->
     <el-dialog title="Detail" :visible.sync="visibleDetail" width="800px">
       <el-form label-position="right" label-width="220px" class="ta-l" ref="form">
-        <div class="form-item-group">
+        <div class="form-item-group recharge-item-group">
           <template>
             <!-- <el-form-item :label="$t('recharge.memberMobileNumber')">{{initData.phone | filterEmpty}}</el-form-item> -->
             <el-form-item :label="$t('recharge.orderNo')">{{initData.orderNo | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.deviceNumber')">{{initData.deviceNumber | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.price')">{{initData.orderPrice | filterEmpty |filterDollar}}</el-form-item>
-            <el-form-item :label="$t('recharge.orderTime')">{{initData.expireTime | dateFilter | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.orderTime')">{{initData.orderTime | dateFilter | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.expireTime')">{{initData.expireTime | dateFilter | filterEmpty}}</el-form-item>
             <el-form-item :label="$t('recharge.payStatus')">
               <span v-if="initData.payStatus == 0">Wait for pay</span>
@@ -85,11 +130,14 @@
               <span v-if="initData.payType == 1">Stripe</span>
               <span v-else>Other</span>
             </el-form-item>
-            <el-form-item :label="$t('recharge.beforeOrderNo')">{{initData.beforeOrderNo | filterEmpty}}</el-form-item>
-            <el-form-item :label="$t('recharge.beforePrice')">{{initData.beforePrice | filterEmpty | filterDollar}}</el-form-item>
-            <el-form-item :label="$t('recharge.beforeNumber')">{{initData.beforeNumber | filterEmpty}}</el-form-item>
-            <el-form-item :label="$t('recharge.beforeRealNumber')">{{initData.beforeRealNumber | filterEmpty}}</el-form-item>
-            <el-form-item :label="$t('recharge.beforeNoPayPrice')">{{initData.beforeNoPayPrice | filterEmpty | filterDollar}}</el-form-item>
+            <el-form-item :label="$t('recharge.orderMethod')">{{initData.packageOrderType | packageOrderTypeFilter}}</el-form-item>
+            <el-form-item :label="$t('recharge.orderType')">{{initData.orderType | orderTypeFilter}}</el-form-item>
+            <el-form-item :label="$t('recharge.pachageName')">{{initData.packageName | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.packageDate')">{{initData.packageDateName | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.packageprice')">{{initData.packagePrice | filterEmpty | filterDollar}}</el-form-item>
+            <el-form-item :label="$t('recharge.packageDiscount')">{{initData.packageDiscount | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.country')">{{initData.country | filterEmpty}}</el-form-item>
+            <el-form-item :label="$t('recharge.currency')">{{initData.currency | filterEmpty}}</el-form-item>
           </template>
         </div>
       </el-form>
@@ -188,6 +236,15 @@
         border: 1px solid #ff9501;
         color: #ff9501;
       }
+    }
+  }
+}
+.recharge-item-group {
+  padding-top: 10px;
+  .el-form-item {
+    margin-bottom: 5px;
+    .el-form-item__label, .el-form-item__content {
+      line-height: 30px;
     }
   }
 }

@@ -571,6 +571,7 @@
       },
       changeCard (id) {
         this.currentCard = id
+        this.pageNum = 1
         this.findData()
       },
       addVistor () {

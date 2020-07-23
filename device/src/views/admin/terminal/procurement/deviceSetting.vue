@@ -413,6 +413,9 @@
           <div @click="save" title="Save" class="button_css_setting">
             <img src="../../../../../static/img/device/btn41.png"/>
           </div>
+          <div @click="upgrade" title="Upgrade" class="button_css_setting">
+            <img src="../../../../../static/img/device/btn21.png"/>
+          </div>
           <!-- <div @click="syncDataToServe" title="Synchro Data To Server">
             <img src="../../../../../static/img/device/sync.png"/>
           </div> -->
@@ -489,6 +492,7 @@
         <el-button type="primary" @click="previewDialog = false">{{$t('common.sure')}}</el-button>
       </span>
     </el-dialog>
+    <Progress v-if="showProgress" :id="addressId" :syncType="3" @success="finished"></Progress>
   </div>
 </template>
 
@@ -496,6 +500,8 @@
   import UploadFile from '@/components/utils/UploadFile.vue'
   import ImgView from '@/components/utils/ImgView.vue'
   import Tips from '@/components/utils/Tips.vue'
+  import Progress from '@/components/utils/Progress.vue'
+
   const weekOptions = [{ id: 1, label: 'Mo' }, { id: 2, label: 'Tu' }, { id: 3, label: 'We' },
     { id: 4, label: 'Th' }, { id: 5, label: 'Fr' }, { id: 6, label: 'Sa' }, { id: 7, label: 'Su' }]
   export default {
@@ -542,12 +548,15 @@
         lcd7: '',
         lcd8: '',
         lcdWidth: '150px',
-        activeName: 'first'
+        activeName: 'first',
+        showProgress: false,
+        addressId: ''
       }
     },
     mounted () {
       if (this.$route.params.id.indexOf('@') !== -1) {
         this.id = this.$route.params.id.split('@')[1]
+        this.addressId = this.$route.params.id.split('@')[0]
       } else {
         this.id = this.$route.params.id
       }
@@ -979,7 +988,7 @@
         ledArr.push(this.lcd7 || '')
         ledArr.push(this.lcd8 || '')
         // }
-        return this.isCenter ? `=${ledArr.join('/')}/` : ledArr.join('/')
+        return this.isCenter ? `=${ledArr.join('/')}/` : `${ledArr.join('/')}/`
       },
       setLCDWidth () {
         const getStrWidth = (str) => {
@@ -1010,9 +1019,41 @@
         let max = arr.reduce(getMax)
         this.lcdWidth = `${max + 2}px`
         console.log(arr, this.lcdWidth)
+      },
+      upgrade () {
+        this.$confirm(this.$t('common.areYouSure'), 'title', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post('@ROOT_API/dfDeviceSettings/upgradeDeviceVersion', {
+            deviceId: this.id
+          }).then((res) => {
+          })
+          this.showProgress = true
+        })
+      },
+      finished (val) {
+        if (parseInt(val) === 2) {
+          this.$message({
+            type: 'success',
+            message: 'Success'
+          })
+        } else if (parseInt(val) === 3) {
+          this.$message({
+            type: 'error',
+            message: 'Synchronization failed'
+          })
+        } else if (parseInt(val) === 4) {
+          this.$message({
+            type: 'error',
+            message: 'Synchronization timeout'
+          })
+        }
+        this.showProgress = false
       }
     },
-    components: { UploadFile, ImgView, Tips }
+    components: { UploadFile, ImgView, Tips, Progress }
   }
 </script>
 

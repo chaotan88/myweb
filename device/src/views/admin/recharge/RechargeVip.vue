@@ -122,9 +122,10 @@
         <div class="package-list">
           <div :class="['package-item', item.id === currentPackage.id ? 'select-item' : '']"
             v-for="(item, index) in dfSoftPackagePriceList" :key="index" @click="selectPackage(item)">
+            <i class="icon-font el-icon-circle-check" v-if="item.id === currentPackage.id"></i>
             <div>{{item.packageName}}</div>
             <div>{{item.packagePrice}} {{currency}}</div>
-            <div>{{item.remark}}</div>
+            <div>{{item.packageDeviceNum}} PCS</div>
           </div>
         </div>
       </div>
@@ -132,15 +133,17 @@
         <div class="block-title">Select Date</div>
         <div class="date-list">
           <div :class="['date-item', item.id === currentDate.id ? 'select-item' : '']"
-            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)">
-            <div>{{item.dateName}}</div>
-            <div>{{item.detail}}</div>
-            <div>{{item.remark}}</div>
+            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)"
+            :title="index > 3 ? 'The longer the purchase period, the more discount' : ''">
+            <!-- <i class="icon-font el-icon-circle-check" v-if="item.id === currentDate.id"></i> -->
+            <div>{{item.dateName}}<span v-if="index > 3">hot</span></div>
+            <!-- <div>{{item.detail}}</div>
+            <div>{{item.remark}}</div> -->
           </div>
         </div>
       </div>
-      <div class="price-content" v-if="totalPrice">
-        Total Price: {{totalPrice}} {{currency}}
+      <div class="price-content">
+        Total Price: <span><span style="font-size: 20px">{{totalPrice}}</span> {{currency}}</span>
       </div>
     </div>
     <div v-else-if="packageStatus === 1 && !startPay">
@@ -168,9 +171,10 @@
         <div class="package-list">
           <div :class="['package-item', item.id === currentPackage.id ? 'select-item' : '']"
             v-for="(item, index) in dfSoftPackagePriceListUpgrade" :key="index" @click="selectPackage(item)">
+            <i class="icon-font el-icon-circle-check" v-if="item.id === currentPackage.id"></i>
             <div>{{item.packageName}}</div>
             <div>{{item.packagePrice}} {{currency}}</div>
-            <div>{{item.remark}}</div>
+            <div>{{item.packageDeviceNum}} PCS</div>
           </div>
         </div>
       </div>
@@ -178,15 +182,17 @@
         <div class="block-title">Select Date</div>
         <div class="date-list">
           <div :class="['date-item', item.id === currentDate.id ? 'select-item' : '']"
-            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)">
-            <div>{{item.dateName}}</div>
-            <div>{{item.detail}}</div>
-            <div>{{item.remark}}</div>
+            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)"
+            :title="index > 3 ? 'The longer the purchase period, the more discount' : ''">
+            <!-- <i class="icon-font el-icon-circle-check" v-if="item.id === currentDate.id"></i> -->
+            <div>{{item.dateName}}<span v-if="index > 3">hot</span></div>
+            <!-- <div>{{item.detail}}</div>
+            <div>{{item.remark}}</div> -->
           </div>
         </div>
       </div>
-      <div class="price-content" v-if="totalPrice">
-        Total Price: {{totalPrice}} {{currency}}
+      <div class="price-content">
+        Total Price: <span><span style="font-size: 20px">{{totalPrice}}</span> {{currency}}</span>
       </div>
     </div>
     <div v-else-if="packageStatus === 2 && !startPay">
@@ -213,15 +219,17 @@
         <div class="block-title">Select Date</div>
         <div class="date-list">
           <div :class="['date-item', item.id === currentDate.id ? 'select-item' : '']"
-            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)">
-            <div>{{item.dateName}}</div>
-            <div>{{item.detail}}</div>
-            <div>{{item.remark}}</div>
+            v-for="(item, index) in dfSoftPackageDateList" :key="index" @click="selectDate(item)"
+            :title="index > 3 ? 'The longer the purchase period, the more discount' : ''">
+            <!-- <i class="icon-font el-icon-circle-check" v-if="item.id === currentDate.id"></i> -->
+            <div>{{item.dateName}}<span v-if="index > 3">hot</span></div>
+            <!-- <div>{{item.detail}}</div>
+            <div>{{item.remark}}</div> -->
           </div>
         </div>
       </div>
-      <div class="price-content" v-if="totalPrice">
-        Total Price: {{totalPrice}} {{currency}}
+      <div class="price-content">
+        Total Price: <span><span style="font-size: 20px">{{totalPrice}}</span> {{currency}}</span>
       </div>
     </div>
     <div id='payapp' v-else-if="startPay">
@@ -554,9 +562,10 @@ export default {
           this.dfSoftPackageDateList = data.dfSoftPackageDateList
           this.dfSoftPackagePriceList = data.dfSoftPackagePriceList
           if (data.packageName) {
-            let vipMappings = ['VIP1', 'VIP2', 'VIP3', 'VIP4', 'VIP5', 'VIP6']
-            let index = vipMappings.indexOf(data.packageName)
-            this.dfSoftPackagePriceListUpgrade = data.dfSoftPackagePriceList.filter(df => vipMappings.indexOf(df.packageName) > index)
+            // let vipMappings = ['VIP1', 'VIP2', 'VIP3', 'VIP4', 'VIP5', 'VIP6']
+            // let index = vipMappings.indexOf(data.packageName)
+            // this.dfSoftPackagePriceListUpgrade = data.dfSoftPackagePriceList.filter(df => vipMappings.indexOf(df.packageName) > index)
+            this.dfSoftPackagePriceListUpgrade = data.dfSoftPackagePriceList.filter(df => df.packageNo > data.beforePackageNo)
           }
           this.currentInfo = data
         }
@@ -678,7 +687,9 @@ export default {
   background: #fff;
   padding: 20px;
   .select-item {
-    border: 1px solid #33719b !important;
+    // border: 1px solid #33719b !important;
+    background: #33719b;
+    color: #fff;
   }
   .package-list, .date-list {
     display: flex;
@@ -692,9 +703,39 @@ export default {
       border-radius: 4px;
       text-align: center;
       cursor: pointer;
+      .el-icon-circle-check {
+        width: 100%;
+        text-align: right;
+        color: #fff;
+      }
+      .el-icon-circle-check:before {
+          margin-right: 6px;
+      }
+    }
+    .package-item {
       div:nth-child(1) {
         margin-top: 15px;
       }
+    }
+    .date-item {
+      div:nth-child(1) {
+        line-height: 100px;
+        span {
+          background: #FF8A00;
+          width: 12px;
+          height: 12px;
+          color: #fff;
+          font-size: 9px;
+          margin-left: 5px;
+          border-radius: 50%;
+          padding: 3px;
+        }
+      }
+    }
+    .package-item:hover, .date-item:hover {
+      box-shadow: 10px 10px 10px 10px #eee;
+      border: 1px solid #33719b;
+      // color: #fff;
     }
   }
   .date-content {
@@ -702,6 +743,9 @@ export default {
   }
   .price-content {
     margin-top: 20px;
+    span {
+      color: #ff7800;
+    }
   }
   .status-remark {
     margin-bottom: 10px;

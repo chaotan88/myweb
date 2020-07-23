@@ -65,6 +65,43 @@ let filterDollar = (value) => {
   return value ? `$ ${value}` : value
 }
 
+let packageOrderTypeFilter = (value) => {
+  switch (value) {
+    case 1:
+      return 'first order'
+    case 2:
+      return 'pgrade order'
+    case 3:
+      return 'renew order'
+    default:
+      return emptyTips
+  }
+}
+
+let orderTypeFilter = (value) => {
+  switch (value) {
+    case 1:
+      return 'manual renew'
+    case 2:
+      return 'auto renew'
+    default:
+      return emptyTips
+  }
+}
+
+let payStatusFilter = (value) => {
+  switch (value) {
+    case 0:
+      return 'Wait Pay'
+    case 1:
+      return 'Payment'
+    case 2:
+      return 'Failed'
+    default:
+      return emptyTips
+  }
+}
+
 export {
   appOsStatus,
   payTypeStatus,
@@ -72,5 +109,8 @@ export {
   dateFilter,
   selectFilter,
   filterEmpty,
-  filterDollar
+  filterDollar,
+  packageOrderTypeFilter,
+  orderTypeFilter,
+  payStatusFilter
 }

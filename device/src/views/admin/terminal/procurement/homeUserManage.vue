@@ -165,7 +165,7 @@
               <p>{{ props.row.card3 }}</p>
             </template>
           </el-table-column>
-          <el-table-column prop="operation" :title="$t('common.operation')" min-width="180">
+          <el-table-column prop="operation" :title="$t('common.operation')" min-width="220">
             <template slot-scope="props">
               <el-button class="detail-button" @click="deleteHomeUser(props.row)">{{$t('common.delete')}}</el-button>
               <!-- <div>
@@ -199,7 +199,7 @@
       element-loading-text="loading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.8)">
-     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
+     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="180px" class="demo-ruleForm">
       <ul>
         <li>
           <el-form-item :label="$t('device.roomNumber')" prop="roomNumber" v-if="id">

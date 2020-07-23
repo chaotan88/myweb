@@ -94,7 +94,8 @@
     "clearVistorrSure": "Confirm to clear all?",
     "areYouSure": "Are You Sure？",
     "back": "Back",
-    "defaultSettings": "Default settings"
+    "defaultSettings": "Default settings",
+    "reset": "Reset"
   },
   "menu": {
     "console": "console",
@@ -160,16 +161,16 @@
     "homeUserManage": "Family User",
     "visitorManage": "Visitor",
     "pleaseEnterRoomOrNumber": "Please enter Room number/phone",
-    "roomNumber": "Apartment No.",
+    "roomNumber": "Apartment/house No.",
     "keypadPIN": "Keypad code",
     "hostName": "Name",
     "phone1": "Phone1",
     "phone2": "Phone2",
     "phone3": "Phone3",
     "code": "Code",
-    "card1": "card1",
-    "card2": "card2",
-    "card3": "card3",
+    "card1": "Prox Card ID1",
+    "card2": "Prox Card ID2",
+    "card3": "Prox Card ID3",
     "permanentVisitors": "Permanent visitors",
     "limitVistors": "Limit visitors",
     "temporaryVistors": "Temporary visitor",
@@ -224,6 +225,7 @@
     "unbind": "Unbind",
     "onlyClearDevice": "Only Clear Device",
     "syncDataByDevice": "Synchro Data To Device",
+    "syncDataByServer": "Synchro Data To Server",
     "deviceName": "Device Name",
     "describeInfo": "Description",
     "syncDataToServer": "Synchro Data To Server",
@@ -232,7 +234,7 @@
     "userName": "User Name"
   },
   "recharge": {
-    "pleaseEnterPhoneNumber": "Please enter the member phone number",
+    "pleaseEnterPhoneNumber": "Please enter order number",
     "paymentSetting": "Payment Setting",
     "memberMobileNumber": "Member mobile number",
     "rechargeAmount": "Recharge amount",
@@ -272,8 +274,8 @@
     "expireTime": "Expire Date",
     "beforeNoPayPrice": "Unpaid in the last year",
     "orderAmount": "Order Total",
-    "orderTime": "Order time",
-    "payStatus": "Payment status",
+    "orderTime": "Order Time",
+    "payStatus": "Payment Status",
     "payType": "Payment Types",
     "beforeOrderNo": "Previous order number",
     "beforePrice": "Order total of the last year",
@@ -289,7 +291,12 @@
     "duration": "Duration",
     "discount": "Discount",
     "upgrade": "Upgrade",
-    "renew": "Renew"
+    "renew": "Renew",
+    "orderMethod": "Order Method",
+    "orderType": "Order Type",
+    "packageDate": "Package Date",
+    "packageprice": "Package Price",
+    "packageDiscount": "Package Discount"
   },
   "log": {
     "visitorType": "Visitor type",

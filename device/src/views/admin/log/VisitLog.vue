@@ -1,5 +1,9 @@
 <template>
-  <div class="visit-log-wrap">
+  <div class="visit-log-wrap"
+    v-loading="loading"
+    element-loading-text="loading"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="visit-log-con">
       <div class="visit-log-serch">
         <div class="frist-row">
@@ -43,6 +47,7 @@
             <el-input  placeholder="Account/Card No." v-model="condition.accountNo" clearable></el-input>
           </div>
           <div class="buttons">
+            <el-button @click="reset()">{{$t("common.reset")}}</el-button>
             <el-button @click="findData()">{{$t("common.search")}}</el-button>
             <el-button @click="exportData()">{{$t("common.export")}}</el-button>
           </div>
@@ -178,7 +183,8 @@
             label: 'Card'
           }
         ],
-        isShowVip: false
+        isShowVip: false,
+        loading: false
       }
     },
     mounted () {
@@ -191,11 +197,13 @@
     },
     methods: {
       findData () {
+        this.loading = true
         this.$http.post('@ROOT_API/dfDeviceOpenLog/getDfDeviceOpenLogPage', this.getParams()).then((res) => {
           if (res.data.status === '1') {
             this.itemList = res.data.data.list
             this.total = res.data.data.total
           }
+          this.loading = false
         })
       },
       initAddressData () {
@@ -225,6 +233,15 @@
           userType: this.condition.dateType,
           openType: this.condition.accountType,
           accountNo: this.condition.accountNo
+        }
+      },
+      reset () {
+        this.condition = {
+          addressId: '',
+          dateType: '',
+          accountNo: '',
+          vistTime: [],
+          accountType: ''
         }
       }
     },
