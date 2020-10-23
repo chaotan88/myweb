@@ -14,7 +14,7 @@ import './../static/css/css-utils.css'
 // import VueKindEditor from 'vue-kindeditor'
 // import 'kindeditor/kindeditor-all-min.js'
 // import 'kindeditor/themes/default/default.css'
-import echarts from 'echarts'
+// import echarts from 'echarts'
 import VueI18n from 'vue-i18n'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -32,7 +32,7 @@ locale.use(lang)
 Vue.config.productionTip = false
 // Vue.use(VueKindEditor)
 Vue.use(fun)
-Vue.prototype.$echarts = echarts
+// Vue.prototype.$echarts = echarts
 Vue.use(Elementui)
 Vue.use(VueI18n)
 

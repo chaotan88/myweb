@@ -11,7 +11,10 @@ export default {
   data () {
     return {
       num: 0,
-      interval: false
+      startNum: 0,
+      lastNum: 0,
+      interval: false,
+      running: false
     }
   },
   props: {
@@ -30,32 +33,47 @@ export default {
   methods: {
     getSyncDataSpeed () {
       const getSpeed = () => {
-        this.$http.post('@ROOT_API/dfAddress/getSyncDataSpeed', {
-          id: this.id,
-          syncType: this.syncType
-        }).then((res) => {
-          if (res.data.status !== '1') {
-            this.$message({
-              type: 'error',
-              message: res.data.msg || this.$t('common.errorMsg')
-            })
-            clearInterval(this.interval)
-            this.$emit('success', '')
-          } else {
-            let { syscDataStatus } = res.data
-            if (parseInt(syscDataStatus) === 1) {
-              if (this.num < 90) this.num += 10
-            } else {
+        if (!this.running) {
+          this.running = true
+          this.$http.post('@ROOT_API/dfAddress/getSyncDataSpeed', {
+            id: this.id,
+            syncType: this.syncType
+          }).then((res) => {
+            if (res.data.status !== '1') {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
               clearInterval(this.interval)
-              this.$emit('success', syscDataStatus)
+              this.$emit('success', '')
+            } else {
+              let { syscStatus } = res.data.data
+              if (parseInt(syscStatus) === 1) {
+                console.log('running...')
+              } else {
+                this.num = 100
+                clearInterval(this.interval)
+                this.$emit('success', syscStatus)
+              }
             }
-          }
-        })
+            this.running = false
+          })
+        }
       }
-      getSpeed()
+      const startSync = () => {
+        let addVal = Math.floor(Math.random() * 5)
+        if (this.startNum - this.lastNum >= 10) {
+          this.lastNum = this.startNum
+          getSpeed()
+        }
+        this.startNum += addVal
+        if (this.num + addVal < 99) {
+          this.num += addVal
+        }
+      }
       this.interval = setInterval(() => {
-        getSpeed()
-      }, 10000)
+        startSync()
+      }, 1000)
     }
   }
 }

@@ -1029,8 +1029,15 @@
           this.$http.post('@ROOT_API/dfDeviceSettings/upgradeDeviceVersion', {
             deviceId: this.id
           }).then((res) => {
+            if (res.data.status === '1') {
+              this.showProgress = true
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
           })
-          this.showProgress = true
         })
       },
       finished (val) {

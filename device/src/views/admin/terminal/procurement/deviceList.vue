@@ -482,7 +482,7 @@
       </div>
     </el-dialog>
     <Progress v-if="showDeviceProgress" :id="syncIId" :syncType="2" @success="finishedDevice"></Progress>
-    <Progress v-if="showServerProgress" :id="syncIId" :syncType="1" @success="finishedServer"></Progress>
+    <Progress v-if="showServerProgress" :id="syncIId" :syncType ="1" @success="finishedServer"></Progress>
   </div>
 </template>
 
@@ -894,20 +894,15 @@
           type: 'warning'
         }).then(() => {
           this.$http.post('@ROOT_API/dfAddress/syncDataToDevice', { id: row.id }).then((res) => {
-            // if (res.data.status === '1') {
-            //   this.$message({
-            //     type: 'success',
-            //     message: 'success'
-            //   })
-            //   this.findData()
-            // } else {
-            //   this.$message({
-            //     type: 'error',
-            //     message: res.data.msg || this.$t('common.errorMsg')
-            //   })
-            // }
+            if (res.data.status === '1') {
+              this.showDeviceProgress = true
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
           })
-          this.showDeviceProgress = true
         }).catch(() => {})
       },
       syncDataToServer (row) {
@@ -918,19 +913,14 @@
           type: 'warning'
         }).then(() => {
           this.$http.post('@ROOT_API/dfAddress/syncDataToServer', { id: row.id }).then((res) => {
-            // if (res.data.status === '1') {
-            //   this.$message({
-            //     type: 'success',
-            //     message: 'success'
-            //   })
-            //   this.findData()
-            // } else {
-            //   this.$message({
-            //     type: 'error',
-            //     message: res.data.msg || this.$t('common.errorMsg')
-            //   })
-            // }
-            this.showServerProgress = true
+            if (res.data.status === '1') {
+              this.showServerProgress = true
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg || this.$t('common.errorMsg')
+              })
+            }
           })
         }).catch(() => {})
       },
