@@ -1,0 +1,229 @@
+/*
+*/
+$fcolor1: #ffffff;
+$fcolor2: #dddddd;
+$fcolor3: #333333;
+$fcolor4: #000000;
+$fcolor5: #7e7e7e;
+
+$bcolor1: #ffffff;
+$bcolor2: #f09148;
+$bcolor3: #039472;
+$bcolor4: #109453;
+$bcolor5: #f7f7f7;
+$bcolor6: #0ab25a;
+$bcolor7: #0bb15a;
+
+$selectWidth: 150px;
+$inputWidth: 200px;
+$dateRangeWidth: 350px;
+$inputHeight: 35px;
+/*媒体查询*/
+// @media only screen and (min-width: 750px) and (max-width: 959px){
+//   html {
+//     font-size: 28px !important;
+//   }
+// }
+// @media only screen and (min-width: 960px) and (max-width: 1241px){
+//   html {
+//     font-size: 30px !important;
+//   }
+// }
+
+// @media only screen and (min-width: 1242px){
+//   html {
+//     font-size: 32px !important;
+//   }
+// }
+.el-menu--horizontal {
+    background: #2577e3;
+}
+.el-menu {
+    background: #2577e3;
+    .el-menu-item {
+      background: #2577e3;
+      color: #fff;
+    }
+  }
+.el-select {
+    width: $selectWidth;
+    height: $inputHeight;
+    .el-input {
+        width: 100%;
+        input {
+            height: $inputHeight;
+        }
+    }
+}
+.el-input {
+    width: $inputWidth;
+    height: $inputHeight;
+    input {
+        height: $inputHeight;
+        font-size: 11px;
+    }
+}
+.el-range-editor {
+    width: $dateRangeWidth;
+    height: $inputHeight;
+}
+.search-button, .add-button, .print-button, .export-button, .setting-button, .nexstep-button, .addOrder-button {
+    // float: right;
+    height: 33px;
+    min-width: 76px;
+    width: auto;
+    font-size: 10px;
+    border: 1px solid rgba(52, 168, 83, 0.23);
+    background-color: #009688;
+    line-height: 30px;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    span {
+        font-family: "iconfont" !important;
+        font-size: 16px;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+    }
+}
+.search-button:hover, .add-button:hover, .print-button:hover, .export-button:hover, .setting-button:hover, .nexstep-button:hover, .addOrder-button:hover {
+    // background: #0ab25a;
+    // color: #fff;
+    opacity: .8;
+    filter: alpha(opacity=80);
+    color: #fff
+}
+.search-button {
+    span::before{
+            content: "\e6a0"
+    }
+}
+.add-button {
+    span::before{
+            content: "\e641"
+    }
+}
+.print-button {
+    span::before{
+            content: "\E637"
+    }
+}
+.export-button {
+    span::before{
+            content: "\E63C"
+    }
+}
+.setting-button {
+    span::before{
+        content: "\e694"
+    }
+}
+.addOrder-button {
+    span::before{
+        content: "\e68e"
+    }
+}
+.search-group {
+    display: flex;
+    padding-bottom: 10px;
+    div:nth-child(2) {
+        margin-left: 20px;
+    }
+    div:nth-child(3) {
+        margin-left: 20px;
+    }
+    div:nth-child(4) {
+        margin-left: 20px;
+    }
+    div:nth-child(5) {
+        margin-left: 20px;
+    }
+    div:nth-child(6) {
+        margin-left: 20px;
+    }
+    div:nth-child(7) {
+        margin-left: 20px;
+    }
+    div:nth-child(8) {
+        margin-left: 20px;
+    }
+}
+.table-module {
+    border: 1px solid #eee;
+    .el-table__header-wrapper {
+        height: 46px;
+        tr {
+            background-color: #f8f8f8;
+            th {
+                background-color: #f8f8f8;
+            }
+        }
+    }
+}
+.pagination-module {
+    padding-top: 45px;
+    text-align: right;
+    .el-pagination.is-background .el-pager li.active {
+        background-color: #34a853;
+        color: #fff;
+    }
+}
+.back-button {
+    width: 60px;
+    height: 30px;
+    font-size: 14px;
+    color: #ffffff;
+    background: #0cb05b;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.back-button:hover {
+    background: #68b38c
+}
+.iconfont {
+    cursor: pointer;
+}
+.re-required-before {
+    position: relative;
+}
+.re-required-before::before {
+    position: absolute;
+    content: "*";
+    left: -0.5rem;
+    top: -2px;
+    color: red;
+    font-family: -webkit-pictograph;
+}
+.el-tabs__item.is-active {
+    color: #34a853;
+    background: rgba(52, 168, 83, 0.23);
+}
+
+.special-btn {
+  text-align: center !important;
+  // float: left;
+  padding: 0 6px;
+  background: #0cb05b;
+  border: 1px solid #0cb05b;
+  color: #ffffff;
+  height: 28px;
+  border-radius: 5px;
+  line-height: 28px;
+  margin: 0 auto;
+  cursor: pointer;
+  display: inline-block;
+}
+.selllistinquire .el-dialog__body{
+    padding-bottom: 50px;
+}
+.AddAccount .el-dialog__body{
+    padding-bottom: 50px;
+}
+.compileAddAccount .el-dialog__body{
+    padding-bottom: 50px;
+}
+.v-modal{
+    position:static;
+}
