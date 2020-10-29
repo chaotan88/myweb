@@ -144,10 +144,8 @@ export default {
 
 
       function svc_onMessage(evt) {
-        let jsonData = evt.data;
-        let { LocList } = jsonData;
-        debugger
-        LocList.forEach((loc, index) => {
+        let jsonData = eval('(' + evt.data + ')');
+        jsonData.forEach((loc, index) => {
           if (index === 0) {
             let x = da.x > 18000 ? 18000 : da.x;
             let y = da.y;
