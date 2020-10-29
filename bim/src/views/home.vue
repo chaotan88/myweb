@@ -8,7 +8,8 @@
 export default {
   data () {
     return {
-      count: 0
+      count: 0,
+      first: true
     }
   },
   mounted () {
@@ -145,12 +146,15 @@ export default {
 
       function svc_onMessage(evt) {
         let jsonData = eval('(' + evt.data + ')');
-        jsonData.forEach((loc, index) => {
+        if (this.first && jsonData.length > 0) {
+          viewer3D.addView(modelKeyUser, projectKeyUser);
+          this.first = false;
+        }
+        jsonData.forEach((da, index) => {
           if (index === 0) {
             let x = da.x > 18000 ? 18000 : da.x;
             let y = da.y;
             let z = da.z;
-            viewer3D.addView(modelKeyUser, projectKeyUser);
             viewer3D.setModelMatrix(modelKeyUser, new BOS3D.THREE.Matrix4().set(
               1, 0, 0, x,
               0, 1, 0, y,
