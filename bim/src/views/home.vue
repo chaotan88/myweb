@@ -18,8 +18,10 @@ export default {
     init () {
       var option = { host: 'http://bos3d.bimwinner.com', viewport: 'viewer' }
       var viewer3D = new BOS3D.Viewer(option)
-      var modelKey = 'M1603263440426'
-      var projectKey = 'ld6702529bd14d528a343c9a972750c7'
+      var modelKey = 'M1603263440426';
+      var projectKey = 'ld6702529bd14d528a343c9a972750c7';
+      var modelKeyUser = 'M1603857092131';
+      var projectKeyUser = 'ld6702529bd14d528a343c9a972750c7';
       // 适应屏幕大小
       if (BOS3DUI) {
         window.bos3dui = new BOS3DUI({
@@ -52,38 +54,129 @@ export default {
         var tool = new BOS3D.UI.ToolBar(viewer3D)
         tool.createTool()
       }
-      viewer3D.addView(modelKey, projectKey)
+      viewer3D.addView(modelKey, projectKey);
+      // viewer3D.addView(modelKeyUser, projectKeyUser);
       viewer3D.autoResize()
       window.addEventListener('resize', function () {
         viewer3D.autoResize()
       })
       const colors = ['red', 'green', 'yellow','red', 'green', 'yellow','red', 'green', 'yellow','red', 'green', 'yellow'];
-      viewer3D.getExternalObjectByCompoentKey('M1603263440426_2667611').then((obj) => {
-        console.log(obj, 999999999999999999999);
-      });
-      setInterval(() => {
-        this.getData().then((radaData) => {
-          // 删除
-          for (let i = 0; i < 20; i++) {
-            viewer3D.removeExternalObjectByName(`单个构件_${i}`);
+      // viewer3D.getExternalObjectByCompoentKey('M1603263440426_2667611').then((obj) => {
+      //   console.log(obj, 999999999999999999999);
+      // });
+      // this.initWebSocket();
+      // setInterval(() => {
+      //   this.getData().then((radaData) => {
+      //     // 删除
+
+      //     for (let i = 0; i < 20; i++) {
+      //       // viewer3D.removeExternalObjectByName(`单个构件_${i}`);
+      //       window.spriteMark && spriteMark.remove([`bim_ids${i}`]);
+      //     }
+      //     radaData.forEach((da, index) => {
+      //       if (index < 10) {
+      //         // viewer3D.removeExternalObjectByName(`单个构件_${index}`);
+      //         // var geometry = new BOS3D.THREE.BoxGeometry(1000, 1000, 1000);
+      //         // var material = new BOS3D.THREE.MeshLambertMaterial({
+      //         //   color: colors[index]
+      //         // });
+      //         // var mesh = new BOS3D.THREE.Mesh(geometry, material);
+      //         let x = da.x > 18000 ? 18000 : da.x;
+      //         let y = da.y;
+      //         let z = da.z;
+      //         // console.log(x);
+      //         // mesh.position.set(x, y, z);
+      //         // viewer3D.addExternalObject(`单个构件_${index}`, mesh, false, material);
+      //         //  window.spriteMark=new BOS3D.SpriteMark(viewer3D.viewerImpl);
+      //         //   var options={
+      //         //       id:`bim_ids${index}`,
+      //         //       url:"../static/images/user-face01.png",
+      //         //       // url:"/src/static/images/user-face01.png",
+      //         //       scale:9,
+      //         //       useImageSize:true,
+      //         //       alwaysVisible:true,
+      //         //       position:[x,y,z]
+      //         //   };
+      //         //   spriteMark.add(options,function(a){
+      //         //       // console.log("id："+a+" 精灵标签添加成功");
+      //         //   });
+      //         viewer3D.setModelMatrix(modelKeyUser, new BOS3D.THREE.Matrix4().set(
+      //             1, 0, 0, x,
+      //             0, 1, 0, y,
+      //             0, 0, 1, z,
+      //             0, 0, 0, 1
+      //         ));
+
+      //         viewer3D.render()
+      //       }
+      //     });
+      //   });
+      // }, 1000);
+
+      /***socked ***/
+      var svc_websocket = null;
+      function svc_connectPlatform() {
+        var wsServer = 'ws://106.52.125.177:50001/';
+        try {
+            svc_websocket = new WebSocket(wsServer);
+        } catch (evt) {
+            console.log("new WebSocket error:" + evt.data);
+            svc_websocket = null;
+            if (typeof(connCb) != "undefined" && connCb != null)
+                connCb("-1", "connect error!");
+            return;
+        }
+        svc_websocket.onopen = svc_onOpen;
+        svc_websocket.onclose = svc_onClose;
+        svc_websocket.onmessage = svc_onMessage;
+        svc_websocket.onerror = svc_onError;
+      }
+
+
+      function svc_onOpen(evt) {
+        console.log("Connected to WebSocket server.");
+      }
+
+
+      function svc_onClose(evt) {
+        console.log("Disconnected");
+      }
+
+
+      function svc_onMessage(evt) {
+        let jsonData = evt.data;
+        let { LocList } = jsonData;
+        debugger
+        LocList.forEach((loc, index) => {
+          if (index === 0) {
+            let x = da.x > 18000 ? 18000 : da.x;
+            let y = da.y;
+            let z = da.z;
+            viewer3D.addView(modelKeyUser, projectKeyUser);
+            viewer3D.setModelMatrix(modelKeyUser, new BOS3D.THREE.Matrix4().set(
+              1, 0, 0, x,
+              0, 1, 0, y,
+              0, 0, 1, z,
+              0, 0, 0, 1
+            ));
           }
-          radaData.forEach((da, index) => {
-            if (index < 10) {
-              viewer3D.removeExternalObjectByName(`单个构件_${index}`);
-              var geometry = new BOS3D.THREE.BoxGeometry(1000, 1000, 1000);
-              var material = new BOS3D.THREE.MeshLambertMaterial({
-                color: colors[index]
-              });
-              var mesh = new BOS3D.THREE.Mesh(geometry, material);
-              let x = da.x;
-              let y = da.y;
-              let z = da.z;
-              mesh.position.set(x, y, z);
-              viewer3D.addExternalObject(`单个构件_${index}`, mesh, false, material)
-            }
-          });
         });
-      }, 1000);
+      }
+
+
+      function svc_onError(evt) {
+        console.log('Error occured: ' + evt.data);
+      }
+
+
+      function svc_send(msg) {
+        if (svc_websocket.readyState == WebSocket.OPEN) {
+          svc_websocket.send(msg);
+        } else {
+          console.log("send failed. websocket not open. please check.");
+        }
+      }
+      svc_connectPlatform();
     },
     getData(viewer3D) {
       return new Promise((resovle) => {
@@ -129,7 +222,7 @@ export default {
     loadDetailData() {
       var ws;
       var that = this;
-      let soketURL = 'www.baidu.com';
+      let soketURL = 'ws://106.52.125.177:50001/';
       ws = new WebSocket(soketURL);
       ws.onopen = function() {
         setInterval(function () {
@@ -137,7 +230,9 @@ export default {
         }, 40000);
       }
       ws.onmessage = function(e) {
-        console.log(e.data);
+        let { data } = e;
+        var jsonData = JSON.parse(data);
+
       }
       ws.onclose = function() {
         ws = null;
