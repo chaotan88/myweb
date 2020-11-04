@@ -113,7 +113,6 @@ export default {
       //     });
       //   });
       // }, 1000);
-
       /***socked ***/
       var svc_websocket = null;
       function svc_connectPlatform() {
@@ -146,22 +145,39 @@ export default {
 
       function svc_onMessage(evt) {
         let jsonData = eval('(' + evt.data + ')');
-        if (this.first && jsonData.length > 0) {
-          viewer3D.addView(modelKeyUser, projectKeyUser);
-          this.first = false;
+        // if (this.first && jsonData.length > 0) {
+        //   viewer3D.addView(modelKeyUser, projectKeyUser);
+        //   this.first = false;
+        // }
+        for (let i = 0; i < 20; i++) {
+          window.spriteMark && spriteMark.remove([`bim_ids${i}`]);
         }
         jsonData.forEach((da, index) => {
-          if (index === 0) {
-            let x = da.x > 18000 ? 18000 : da.x;
+          // if (index === 0) {
+            let x = da.x;
             let y = da.y;
             let z = da.z;
-            viewer3D.setModelMatrix(modelKeyUser, new BOS3D.THREE.Matrix4().set(
-              1, 0, 0, x,
-              0, 1, 0, y,
-              0, 0, 1, z,
-              0, 0, 0, 1
-            ));
-          }
+            // viewer3D.addView(modelKeyUser, projectKeyUser);
+            // viewer3D.setModelMatrix(modelKeyUser, new BOS3D.THREE.Matrix4().set(
+            //   1, 0, 0, x,
+            //   0, 1, 0, y,
+            //   0, 0, 1, z,
+            //   0, 0, 0, 1
+            // ));
+              window.spriteMark=new BOS3D.SpriteMark(viewer3D.viewerImpl);
+              var options={
+                id:`bim_ids${index}`,
+                url:"../static/images/user-face01.png",
+                // url:"/src/static/images/user-face01.png",
+                scale:9,
+                useImageSize:true,
+                alwaysVisible:true,
+                position:[x,y,z]
+              };
+              spriteMark.add(options,function(a){
+                  console.log("id："+a+" 精灵标签添加成功");
+              });
+          // }
         });
       }
 
