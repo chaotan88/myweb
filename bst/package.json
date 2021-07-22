@@ -25,7 +25,7 @@
     "vue-piczoom": "^1.0.6",
     "vue-router": "^3.0.1",
     "vux": "^2.9.4",
-    "xlsx": "^0.12.5"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
